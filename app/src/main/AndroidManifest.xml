@@ -12,10 +12,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LaserChessApp">
         <activity
-            android:name=".Pantalla2Activity"
+            android:name=".ClasifActivity"
             android:exported="false" />
         <activity
-            android:name=".PantallaPrincipalActivity"
+            android:name=".PersoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TiendaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SocialActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
