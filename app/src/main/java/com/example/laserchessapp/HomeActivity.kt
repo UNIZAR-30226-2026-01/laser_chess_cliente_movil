@@ -3,6 +3,7 @@ package com.example.laserchessapp
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -14,10 +15,10 @@ class HomeActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_home)
 
-        val btnTiendaActivity = findViewById<Button>(R.id.btnTienda)
-        val btnPersoActivity = findViewById<Button>(R.id.btnPerso)
-        val btnSocialActivity = findViewById<Button>(R.id.btnSocial)
-        val btnClasifActivity = findViewById<Button>(R.id.btnClasif)
+        val btnTiendaActivity = findViewById<ImageButton>(R.id.btnTienda)
+        val btnPersoActivity = findViewById<ImageButton>(R.id.btnPerso)
+        val btnSocialActivity = findViewById<ImageButton>(R.id.btnSocial)
+        val btnClasifActivity = findViewById<ImageButton>(R.id.btnClasif)
         btnTiendaActivity.setOnClickListener { navigateToTienda() }
         btnPersoActivity.setOnClickListener { navigateToPerso() }
         btnSocialActivity.setOnClickListener { navigateToSocial() }
