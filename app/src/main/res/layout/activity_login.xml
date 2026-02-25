@@ -20,15 +20,13 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <!-- Imagen ahora es un placeholder -->
-
-        <!-- Barra  -->
-
         <ImageView
             android:id="@+id/imageViewLogo"
             android:layout_width="416dp"
             android:layout_height="718dp"
             android:background="#2E7D32" />
 
+        <!-- Barra  -->
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
@@ -41,7 +39,7 @@
 
     </LinearLayout>
 
-    <!-- Pop-up -->
+    <!-- Pop-up Login-->
     <LinearLayout
         android:id="@+id/layoutLogin"
         android:layout_width="match_parent"
@@ -93,6 +91,145 @@
             android:text="Continuar"
             android:textSize="16sp"
             android:backgroundTint="#4CAF50"/>
+
+        <!-- Para que los textos de ¿? esten juntos y solo sea clicable el segundo-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¿No tienes cuenta aún? "
+                android:textSize="14sp"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/textViewRegistroLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Regístrate ya"
+                android:textSize="14sp"
+                android:textColor="#2196F3"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+
+
+
+    <!-- Pop-up Registro -->
+    <LinearLayout
+        android:id="@+id/layoutRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="@android:color/white"
+        android:visibility="gone"
+        android:elevation="8dp"
+        android:layout_margin="32dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registro"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center"/>
+
+    <EditText
+        android:id="@+id/editTextRegistroNombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre completo"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:drawable/editbox_background"/>
+
+    <EditText
+        android:id="@+id/editTextRegistroEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Correo electrónico"
+        android:inputType="textEmailAddress"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:drawable/editbox_background"/>
+
+    <EditText
+        android:id="@+id/editTextRegistroPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:drawable/editbox_background"/>
+
+    <EditText
+        android:id="@+id/editTextRegistroConfirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirmar contraseña"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:layout_marginBottom="24dp"
+        android:background="@android:drawable/editbox_background"/>
+
+    <Button
+        android:id="@+id/buttonRegistroConfirmar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Registrarse"
+        android:textSize="16sp"
+        android:backgroundTint="#4CAF50"/>
+
+        <!-- Para que los textos de ¿? esten juntos y solo sea clicable el segundo-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¿Ya estás registrado? "
+                android:textSize="14sp"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/textViewRegistroLink2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Iniciar sesión"
+                android:textSize="14sp"
+                android:textColor="#2196F3"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
