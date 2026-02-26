@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">LaserChessApp</string>
+    <string name="settings">Settings</string>
+    <string name="timer">Timer</string>
+    <string name="game_board">Game Board</string>
+    <string name="history">History</string>
+    <string name="ranked">Ranked</string>
+    <string name="play">Play</string>
+    <string name="time_mode">TIME MODE</string>
+    <string name="avatar">Avatar</string>
+    <string name="user">User</string>
+    <string name="elo">ELO</string>
+    <string name="coin">Coin</string>
 </resources>

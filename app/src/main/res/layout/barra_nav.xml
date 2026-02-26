@@ -9,14 +9,15 @@
         android:id="@+id/btnTienda"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_shop"
-        android:scaleType="centerInside"
         android:padding="2dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_shop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnPerso"
-        app:layout_constraintHorizontal_chainStyle="spread"/>
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageButton
         android:id="@+id/btnPerso"
