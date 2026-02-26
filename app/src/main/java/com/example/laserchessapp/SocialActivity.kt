@@ -8,45 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-class SocialActivity : AppCompatActivity() {
+class SocialActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_social)
-
-        val btnTiendaActivity = findViewById<ImageButton>(R.id.btnTienda)
-        val btnPersoActivity = findViewById<ImageButton>(R.id.btnPerso)
-        val btnClasifActivity = findViewById<ImageButton>(R.id.btnClasif)
-        val btnHomeActivity = findViewById<ImageButton>(R.id.btnHome)
-        btnTiendaActivity.setOnClickListener { navigateToTienda() }
-        btnPersoActivity.setOnClickListener { navigateToPerso() }
-        btnClasifActivity.setOnClickListener { navigateToClasif() }
-        btnHomeActivity.setOnClickListener { navigateToHome() }
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-    }
-
-    fun navigateToTienda(){
-        val intent = Intent(this, TiendaActivity::class.java)
-        startActivity(intent)
-    }
-
-    fun navigateToPerso(){
-        val intent = Intent(this, PersoActivity::class.java)
-        startActivity(intent)
-    }
-
-    fun navigateToClasif(){
-        val intent = Intent(this, ClasifActivity::class.java)
-        startActivity(intent)
-    }
-
-    fun navigateToHome(){
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
+        setupBarraNav(R.id.btnSocial)
     }
 }
