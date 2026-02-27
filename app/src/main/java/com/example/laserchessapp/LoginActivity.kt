@@ -106,18 +106,18 @@ class LoginActivity : AppCompatActivity() {
                         if (progreso < 100) {
                             handler.postDelayed(this, 50)
                         } else {
-                            irAHome()
+                            irAMain()
                         }
                     }
                 }
             })
         } else {
-            irAHome()
+            irAMain()
         }
     }
 
-    private fun irAHome() {
-        val intent = Intent(this, HomeActivity::class.java)
+    private fun irAMain() {
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }
