@@ -13,21 +13,8 @@
 
 
         <activity
-            android:name=".ClasifActivity"
+            android:name=".MainActivity"
             android:exported="false" />
-        <activity
-            android:name=".PersoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".TiendaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SocialActivity"
-            android:exported="false" />
-        <activity
-            android:name=".HomeActivity"
-            android:exported="true">
-        </activity>
 
         <!-- Ahora este lo lanza en vez del home-->
         <activity

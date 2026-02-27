@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    tools:context=".HomeFragment">
 
     <ImageButton
         android:id="@+id/boardSelection"
@@ -79,10 +79,10 @@
         android:src="@drawable/ic_history"
         android:scaleType="centerInside"
         android:padding="2dp"
-        app:layout_constraintBottom_toTopOf="@id/barraNav"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnPlay"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="164dp"
         />
 
     <Button
@@ -91,9 +91,9 @@
         android:layout_height="64dp"
         android:text="@string/play"
         app:layout_constraintStart_toEndOf="@id/btnHistory"
-        app:layout_constraintBottom_toTopOf="@id/barraNav"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnTrofy"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="164dp"
         />
 
     <ImageButton
@@ -105,19 +105,10 @@
         android:scaleType="centerInside"
         android:padding="2dp"
         app:layout_constraintStart_toEndOf="@id/btnPlay"
-        app:layout_constraintBottom_toTopOf="@id/barraNav"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="64dp"
-        />
-
-    <include
-        android:id="@+id/barraNav"
-        layout="@layout/barra_nav"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="164dp"
+        />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/profileCard"
