@@ -11,9 +11,18 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.TextView
+//imporst para conectar
+import com.example.laserchessapp.network.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import android.util.Log
+
+import com.example.laserchessapp.utils.*
 
 class LoginActivity : AppCompatActivity() {
 
+    //Pa el layout y el login
     private lateinit var layoutCarga: LinearLayout
     private lateinit var layoutLogin: LinearLayout    //Layout log
     private lateinit var layoutRegistro: LinearLayout //Layout reg
@@ -23,13 +32,13 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var botonContinuar: Button //boton log
 
     //Pa los enlaces
-    private lateinit var RegistroLink: TextView
-    private lateinit var RegistroLink2: TextView
-
-    private lateinit var RegistroNombre: EditText
-    private lateinit var RegistroEmail: EditText
-    private lateinit var RegistroContr: EditText
-    private lateinit var RegistroConfirmContr: EditText
+    private lateinit var registroLink: TextView
+    private lateinit var registroLink2: TextView
+    //Pa el registro
+    private lateinit var registroNombre: EditText
+    private lateinit var registroEmail: EditText
+    private lateinit var registroContr: EditText
+    private lateinit var registroConfirmContr: EditText
     private lateinit var botonRegistroConfirmar: Button
 
     private var progreso = 0
@@ -37,10 +46,15 @@ class LoginActivity : AppCompatActivity() {
     private var runnable: Runnable? = null
     private var pausado = false
 
+    //Para la conexion
+    private lateinit var apiService: ApiService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
+        TokenManager.init(this)
+        apiService = NetworkUtils.getApiService()
+        checkSavedSession() //para comprobacion
         initViews()
         iniciarCarga()
     }
@@ -49,21 +63,21 @@ class LoginActivity : AppCompatActivity() {
         layoutCarga = findViewById(R.id.layoutCarga)
         layoutLogin = findViewById(R.id.layoutLogin)
         layoutRegistro = findViewById(R.id.layoutRegistro)
-
         barraP = findViewById(R.id.progressBar)
+
+        //Elemntos login
         email = findViewById(R.id.editTextEmail)
         contrasena = findViewById(R.id.editTextPassword)
         botonContinuar = findViewById(R.id.buttonContinue)
 
-
-        RegistroLink = findViewById(R.id.textViewRegistroLink)
-        RegistroLink2 = findViewById(R.id.textViewRegistroLink2)
+        registroLink = findViewById(R.id.textViewRegistroLink)
+        registroLink2 = findViewById(R.id.textViewRegistroLink2)
 
         //Elementos del registro
-        RegistroNombre = findViewById(R.id.editTextRegistroNombre)
-        RegistroEmail = findViewById(R.id.editTextRegistroEmail)
-        RegistroContr = findViewById(R.id.editTextRegistroPassword)
-        RegistroConfirmContr = findViewById(R.id.editTextRegistroConfirmPassword)
+        registroNombre = findViewById(R.id.editTextRegistroNombre)
+        registroEmail = findViewById(R.id.editTextRegistroEmail)
+        registroContr = findViewById(R.id.editTextRegistroPassword)
+        registroConfirmContr = findViewById(R.id.editTextRegistroConfirmPassword)
         botonRegistroConfirmar = findViewById(R.id.buttonRegistroConfirmar)
 
         // Configurar listeners
@@ -72,11 +86,11 @@ class LoginActivity : AppCompatActivity() {
         }
 
         //Listeners para cambiar entre pop-ups
-        RegistroLink.setOnClickListener {
+        registroLink.setOnClickListener {
             mostrarRegistro()
         }
 
-        RegistroLink2.setOnClickListener {
+        registroLink2.setOnClickListener {
             mostrarLogin()
         }
 
@@ -108,10 +122,10 @@ class LoginActivity : AppCompatActivity() {
 
     // Limpiar
     private fun limpiarCamposRegistro() {
-        RegistroNombre.text?.clear()
-        RegistroEmail.text?.clear()
-        RegistroContr.text?.clear()
-        RegistroConfirmContr.text?.clear()
+        registroNombre.text?.clear()
+        registroEmail.text?.clear()
+        registroContr.text?.clear()
+        registroConfirmContr.text?.clear()
     }
 
     // Limpiar
@@ -151,57 +165,134 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun validarYContinuar() {
-        val emailTexto = email.text.toString()
-        val contrasenaTexto = contrasena.text.toString()
+        val credential = email.text.toString().trim()
+        val password = contrasena.text.toString().trim()
 
-        if (emailTexto.isNotEmpty() && contrasenaTexto.isNotEmpty()) {
-            // po pup oculto
-            layoutLogin.visibility = android.view.View.GONE
-            layoutRegistro.visibility = android.view.View.GONE
-            Toast.makeText(this, "Se ha iniciado sesión", Toast.LENGTH_SHORT).show()
-
-            // Reanudar
-            reanudarCarga()
-        } else {
+        if (credential.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
+            return
         }
+
+        // Por si acaso apago el boton
+        botonContinuar.isEnabled = false
+        botonContinuar.text = "Iniciando sesión..."
+        val request = LoginRequest(credential, password)
+
+        apiService.login(request).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                botonContinuar.isEnabled = true
+                botonContinuar.text = "Continuar"
+
+                if (response.isSuccessful) {
+                    val loginResponse = response.body()
+                    loginResponse?.let {
+                        // Guardar el token
+                        TokenManager.saveAccessToken(it.access_token)
+                        TokenManager.saveUserCredential(credential)
+
+                        Log.d("LoginActivity", "Token guardado: ${it.access_token}")
+
+                        // Ocultar layouts y continuar
+                        layoutLogin.visibility = android.view.View.GONE
+                        layoutRegistro.visibility = android.view.View.GONE
+                        Toast.makeText(this@LoginActivity, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
+                        reanudarCarga()
+                    }
+                } else {
+                    var codigo = response.code()
+                    when (codigo) {
+                        401 -> Toast.makeText(this@LoginActivity,
+                            "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+                        400 -> Toast.makeText(this@LoginActivity,
+                            "Datos inválidos", Toast.LENGTH_SHORT).show()
+                        else -> Toast.makeText(this@LoginActivity,
+                            "Error del servidor: $codigo", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                botonContinuar.isEnabled = true
+                botonContinuar.text = "Continuar"
+                Toast.makeText(this@LoginActivity,
+                    "Error de conexión: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
     }
+
+
+
 
     // Validar registro
     private fun validarRegistro() {
-        val nombre = RegistroNombre.text.toString().trim()
-        val email = RegistroEmail.text.toString().trim()
-        val password = RegistroContr.text.toString().trim()
-        val confirmPassword = RegistroConfirmContr.text.toString().trim()
+        val username = registroNombre.text.toString().trim()
+        val mail = registroEmail.text.toString().trim()
+        val password = registroContr.text.toString().trim()
+        val confirmPassword = registroConfirmContr.text.toString().trim()
 
         when {
-            nombre.isEmpty() -> {
-                RegistroNombre.error = "Falta el nombre"
+            username.isEmpty() -> {
+                registroNombre.error = "Falta el nombre"
                 Toast.makeText(this, "Falta el nombre", Toast.LENGTH_SHORT).show()
             }
-            email.isEmpty() -> {
-                RegistroEmail.error = "Falta el correo"
+            mail.isEmpty() -> {
+                registroEmail.error = "Falta el correo"
                 Toast.makeText(this, "Falta el correo electrónico", Toast.LENGTH_SHORT).show()
             }
             password.isEmpty() -> {
-                RegistroContr.error = "Falta la contraseña"
+                registroContr.error = "Falta la contraseña"
                 Toast.makeText(this, "Falta la contraseña", Toast.LENGTH_SHORT).show()
             }
             password.length < 6 -> {
-                RegistroContr.error = "Mínimo 6 caracteres"
+                registroContr.error = "Mínimo 6 caracteres"
                 Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show()
             }
             password != confirmPassword -> {
-                RegistroConfirmContr.error = "No coinciden las contraseñas"
+                registroConfirmContr.error = "No coinciden las contraseñas"
                 Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
             }
             else -> {
-                layoutLogin.visibility = android.view.View.GONE    //con esto se va Login
-                layoutRegistro.visibility = android.view.View.GONE
-                Toast.makeText(this, "Se ha registrado la sesión", Toast.LENGTH_SHORT).show()
-                limpiarCamposRegistro()
-                // Reanudar
-                reanudarCarga()
+                // Deshabilitar botón mientras se procesa
+                botonRegistroConfirmar.isEnabled = false
+                botonRegistroConfirmar.text = "Registrando..."
+
+                val request = RegisterRequest(username, mail, password)
+
+                apiService.register(request).enqueue(object : Callback<AccountResponse> {
+                    override fun onResponse(call: Call<AccountResponse>, response: Response<AccountResponse>) {
+                        botonRegistroConfirmar.isEnabled = true
+                        botonRegistroConfirmar.text = "Confirmar"
+
+                        if (response.isSuccessful) {
+                            val account = response.body()
+                            account?.let {
+                                TokenManager.saveUserId(it.account_id)  // Guardar ID
+                                Toast.makeText(this@LoginActivity,
+                                    "Registro exitoso! ID: ${it.account_id}",
+                                    Toast.LENGTH_LONG).show()
+                                mostrarLogin()
+                                limpiarCamposRegistro()
+                            }
+                        } else {
+                            when (response.code()) {
+                                409 -> Toast.makeText(this@LoginActivity,
+                                    "El usuario o email ya existe", Toast.LENGTH_SHORT).show()
+                                400 -> Toast.makeText(this@LoginActivity,
+                                    "Datos inválidos", Toast.LENGTH_SHORT).show()
+                                else -> Toast.makeText(this@LoginActivity,
+                                    "Error ${response.code()}", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<AccountResponse>, t: Throwable) {
+                        botonRegistroConfirmar.isEnabled = true
+                        botonRegistroConfirmar.text = "Confirmar"
+                        Log.e("LoginActivity", "Error de conexión en registro", t)
+                        Toast.makeText(this@LoginActivity,
+                            "Error de conexión: ${t.message}", Toast.LENGTH_LONG).show()
+                    }
+                })
             }
         }
     }
@@ -241,4 +332,13 @@ class LoginActivity : AppCompatActivity() {
         // Limpiar por si acaso
         handler.removeCallbacksAndMessages(null)
     }
+
+
+    private fun checkSavedSession() {
+        if (TokenManager.isLoggedIn()) {
+            irAHome()
+        }
+    }
+
+
 }

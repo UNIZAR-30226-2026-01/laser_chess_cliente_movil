@@ -152,8 +152,7 @@
         android:textSize="24sp"
         android:textColor="@android:color/black"
         android:textStyle="bold"
-        android:layout_marginBottom="24dp"
-        android:layout_gravity="center"/>
+        android:layout_marginBottom="24dp"/>
 
     <EditText
         android:id="@+id/editTextRegistroNombre"
