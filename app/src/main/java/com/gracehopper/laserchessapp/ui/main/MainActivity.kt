@@ -1,10 +1,11 @@
-package com.example.laserchessapp
+package com.gracehopper.laserchessapp.ui.main
 
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
+import com.gracehopper.laserchessapp.R
 
 class MainActivity : AppCompatActivity(){
 

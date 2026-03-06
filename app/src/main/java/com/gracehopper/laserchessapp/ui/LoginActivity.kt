@@ -1,24 +1,30 @@
-package com.example.laserchessapp
+package com.gracehopper.laserchessapp.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.TextView
-//imporst para conectar
-import com.example.laserchessapp.network.*
+import com.gracehopper.laserchessapp.ui.main.MainActivity
+import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.remote.ApiService
+import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.network.AccountResponse
+import com.gracehopper.laserchessapp.network.LoginRequest
+import com.gracehopper.laserchessapp.network.LoginResponse
+import com.gracehopper.laserchessapp.network.RegisterRequest
+import com.gracehopper.laserchessapp.utils.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.util.Log
-
-import com.example.laserchessapp.utils.*
 
 class LoginActivity : AppCompatActivity() {
 
@@ -103,8 +109,8 @@ class LoginActivity : AppCompatActivity() {
     // pop-up de registro
     private fun mostrarRegistro() {
         // Ocultar login, mostrar registro
-        layoutLogin.visibility = android.view.View.GONE
-        layoutRegistro.visibility = android.view.View.VISIBLE
+        layoutLogin.visibility = View.GONE
+        layoutRegistro.visibility = View.VISIBLE
 
         //Limpiar por si acaso
         limpiarCamposRegistro()
@@ -113,8 +119,8 @@ class LoginActivity : AppCompatActivity() {
     // pop-up de login
     private fun mostrarLogin() {
         // Ocultar registro, mostrar login
-        layoutRegistro.visibility = android.view.View.GONE
-        layoutLogin.visibility = android.view.View.VISIBLE
+        layoutRegistro.visibility = View.GONE
+        layoutLogin.visibility = View.VISIBLE
 
         // Limpiar por si acaso
         limpiarCamposLogin()
@@ -161,7 +167,7 @@ class LoginActivity : AppCompatActivity() {
     private fun pausarCargaYMostrarLogin() {
         pausado = true //barra pausada
         // popup login
-        layoutLogin.visibility = android.view.View.VISIBLE
+        layoutLogin.visibility = View.VISIBLE
     }
 
     private fun validarYContinuar() {
@@ -193,8 +199,8 @@ class LoginActivity : AppCompatActivity() {
                         Log.d("LoginActivity", "Token guardado: ${it.access_token}")
 
                         // Ocultar layouts y continuar
-                        layoutLogin.visibility = android.view.View.GONE
-                        layoutRegistro.visibility = android.view.View.GONE
+                        layoutLogin.visibility = View.GONE
+                        layoutRegistro.visibility = View.GONE
                         Toast.makeText(this@LoginActivity, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
                         reanudarCarga()
                     }

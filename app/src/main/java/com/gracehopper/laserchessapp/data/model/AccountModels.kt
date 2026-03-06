@@ -1,4 +1,4 @@
-package com.example.laserchessapp.network
+package com.gracehopper.laserchessapp.network
 
 //Para definir los datos que se envian
 

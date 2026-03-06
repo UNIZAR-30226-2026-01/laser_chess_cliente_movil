@@ -1,4 +1,4 @@
-package com.example.laserchessapp.utils
+package com.gracehopper.laserchessapp.utils
 
 import android.content.Context
 import android.content.SharedPreferences

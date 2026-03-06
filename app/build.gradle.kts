@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.laserchessapp"
+    namespace = "com.gracehopper.laserchessapp"
     compileSdk = 34
 
     defaultConfig {

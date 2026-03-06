@@ -1,5 +1,10 @@
-package com.example.laserchessapp.network
+package com.gracehopper.laserchessapp.data.remote
 
+import com.gracehopper.laserchessapp.network.AccountResponse
+import com.gracehopper.laserchessapp.network.LoginRequest
+import com.gracehopper.laserchessapp.network.LoginResponse
+import com.gracehopper.laserchessapp.network.RegisterRequest
+import com.gracehopper.laserchessapp.network.UpdateAccountRequest
 import retrofit2.Call
 import retrofit2.http.*
 
