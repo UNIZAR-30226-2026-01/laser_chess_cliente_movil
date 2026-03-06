@@ -1,4 +1,4 @@
-package com.example.laserchessapp
+package com.gracehopper.laserchessapp
 
 import org.junit.Test
 

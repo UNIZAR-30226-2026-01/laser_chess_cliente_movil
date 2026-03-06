@@ -1,4 +1,4 @@
-package com.example.laserchessapp.network
+package com.gracehopper.laserchessapp.data.remote
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
