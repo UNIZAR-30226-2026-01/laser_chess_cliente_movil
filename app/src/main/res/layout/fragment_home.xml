@@ -299,7 +299,7 @@
 
     <include
         android:id="@+id/barraNav"
-        layout="@layout/barra_nav"
+        layout="@layout/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"/>

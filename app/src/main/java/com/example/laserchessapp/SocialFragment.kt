@@ -13,6 +13,6 @@ class SocialFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.activity_social, container, false)
+        return inflater.inflate(R.layout.fragment_social, container, false)
     }
 }
