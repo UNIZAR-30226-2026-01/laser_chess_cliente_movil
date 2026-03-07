@@ -1,33 +1,35 @@
 package com.gracehopper.laserchessapp.data.remote
 
-import com.gracehopper.laserchessapp.network.AccountResponse
-import com.gracehopper.laserchessapp.network.LoginRequest
-import com.gracehopper.laserchessapp.network.LoginResponse
-import com.gracehopper.laserchessapp.network.RegisterRequest
-import com.gracehopper.laserchessapp.network.UpdateAccountRequest
+import com.gracehopper.laserchessapp.data.model.AccountResponse
+import com.gracehopper.laserchessapp.data.model.LoginRequest
+import com.gracehopper.laserchessapp.data.model.LoginResponse
+import com.gracehopper.laserchessapp.data.model.RegisterRequest
+import com.gracehopper.laserchessapp.data.model.UpdateAccountRequest
 import retrofit2.Call
 import retrofit2.http.*
 
-// Para definir los endpoints
+/**
+ * Interfaz que define los endpoints de la API para interactuar con las cuentas de usuario.
+ */
 interface ApiService {
 
-    // Login endpoint
+    // Endpoint para iniciar sesión
     @POST("login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
 
-    // Registro (crear cuenta)
+    // Endpoint para registrar una nueva cuenta
     @POST("register")
     fun register(@Body request: RegisterRequest): Call<AccountResponse>
 
-    // Obtener cuenta por ID
+    // Endpoint para obtener información de una cuenta
     @GET("api/account/{id}")  // /api/account/algomas
     fun getAccount(@Path("id") id: Long): Call<AccountResponse>
 
-    // Actualizar cuenta
+    // Endpoint para actualizar información de una cuenta
     @POST("api/account/update")
     fun updateAccount(@Body request: UpdateAccountRequest): Call<AccountResponse>
 
-    // Eliminar cuenta
+    // Endpoint para eliminar una cuenta
     @DELETE("api/account/delete/")
     fun deleteAccount(): Call<Unit>
 }
