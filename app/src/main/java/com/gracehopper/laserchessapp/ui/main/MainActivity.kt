@@ -40,11 +40,11 @@ class MainActivity : AppCompatActivity(){
     private fun setupBarraNav() {
 
         navBtns = listOf(
-            findViewById(R.id.btnTienda),
-            findViewById(R.id.btnPerso),
+            findViewById(R.id.btnShop),
+            findViewById(R.id.btnCustomize),
             findViewById(R.id.btnHome),
             findViewById(R.id.btnSocial),
-            findViewById(R.id.btnClasif)
+            findViewById(R.id.btnRanking)
         )
 
         navBtns.forEachIndexed { index, button ->
