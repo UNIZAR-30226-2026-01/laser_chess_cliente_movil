@@ -14,6 +14,6 @@ class ShopFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.activity_tienda, container, false)
+        return inflater.inflate(R.layout.fragment_shop, container, false)
     }
 }

@@ -14,6 +14,6 @@ class CustomizeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.activity_perso, container, false)
+        return inflater.inflate(R.layout.fragment_customize, container, false)
     }
 }

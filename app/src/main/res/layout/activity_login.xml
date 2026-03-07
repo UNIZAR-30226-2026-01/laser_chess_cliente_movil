@@ -35,7 +35,7 @@
             android:max="100"
             android:progress="50"
             android:indeterminate="false"
-            android:progressDrawable="@drawable/progreso_barra"/>
+            android:progressDrawable="@drawable/shape_progress_bar"/>
 
     </LinearLayout>
 
