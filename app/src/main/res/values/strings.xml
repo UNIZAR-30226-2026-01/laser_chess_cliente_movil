@@ -11,4 +11,5 @@
     <string name="user">User</string>
     <string name="elo">ELO</string>
     <string name="coin">Coin</string>
+    <string name="title_activity_game">GameActivity</string>
 </resources>
