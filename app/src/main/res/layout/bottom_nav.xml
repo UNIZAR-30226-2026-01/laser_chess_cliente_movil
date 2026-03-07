@@ -6,7 +6,7 @@
     android:layout_height="100dp">
 
     <ImageButton
-        android:id="@+id/btnTienda"
+        android:id="@+id/btnShop"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:padding="2dp"
@@ -15,14 +15,14 @@
         android:src="@drawable/ic_shop"
 
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnPerso"
+        app:layout_constraintEnd_toStartOf="@+id/btnCustomize"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageButton
-        android:id="@+id/btnPerso"
+        android:id="@+id/btnCustomize"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:src="@drawable/ic_customize"
@@ -31,7 +31,7 @@
         android:background="@drawable/selector_nav_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnTienda"
+        app:layout_constraintStart_toEndOf="@id/btnShop"
         app:layout_constraintEnd_toStartOf="@+id/btnHome"/>
 
     <ImageButton
@@ -44,7 +44,7 @@
         android:background="@drawable/selector_nav_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnPerso"
+        app:layout_constraintStart_toEndOf="@id/btnCustomize"
         app:layout_constraintEnd_toStartOf="@id/btnSocial"/>
 
     <ImageButton
@@ -58,10 +58,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnHome"
-        app:layout_constraintEnd_toStartOf="@+id/btnClasif"/>
+        app:layout_constraintEnd_toStartOf="@+id/btnRanking"/>
 
     <ImageButton
-        android:id="@+id/btnClasif"
+        android:id="@+id/btnRanking"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:src="@drawable/ic_ranking"
