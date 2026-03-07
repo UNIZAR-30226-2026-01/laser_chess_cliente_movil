@@ -14,6 +14,6 @@ class RankingFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.activity_clasif, container, false)
+        return inflater.inflate(R.layout.fragment_ranking, container, false)
     }
 }
