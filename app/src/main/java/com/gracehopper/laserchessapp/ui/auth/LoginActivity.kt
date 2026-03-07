@@ -1,4 +1,4 @@
-package com.gracehopper.laserchessapp.ui
+package com.gracehopper.laserchessapp.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,18 +13,22 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.gracehopper.laserchessapp.ui.main.MainActivity
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.model.AccountResponse
+import com.gracehopper.laserchessapp.data.model.LoginRequest
+import com.gracehopper.laserchessapp.data.model.LoginResponse
+import com.gracehopper.laserchessapp.data.model.RegisterRequest
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
-import com.gracehopper.laserchessapp.network.AccountResponse
-import com.gracehopper.laserchessapp.network.LoginRequest
-import com.gracehopper.laserchessapp.network.LoginResponse
-import com.gracehopper.laserchessapp.network.RegisterRequest
+import com.gracehopper.laserchessapp.ui.main.MainActivity
 import com.gracehopper.laserchessapp.utils.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.collections.plusAssign
+import kotlin.compareTo
+import kotlin.text.clear
+import kotlin.toString
 
 class LoginActivity : AppCompatActivity() {
 
