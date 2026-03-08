@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.gracehopper.laserchessapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -11,19 +12,20 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.LaserChessApp">
+        android:theme="@style/Theme.LaserChessApp"
+        android:usesCleartextTraffic="true">
+        <!-- temporal para poder hacerlo en local, permite HTTP no seguro -->
+
         <activity
             android:name=".ui.game.GameActivity"
             android:exported="false"
             android:label="@string/title_activity_game"
-            android:theme="@style/Theme.LaserChessApp" 
-            android:theme="@style/Theme.LaserChessApp"
-            android:usesCleartextTraffic="true"/>
-            <!-- temporal para poder hacerlo en local?? -->
+            android:theme="@style/Theme.LaserChessApp" />
 
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="false" /> <!-- Ahora este lo lanza en vez del home -->
+
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="true">
@@ -33,6 +35,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
