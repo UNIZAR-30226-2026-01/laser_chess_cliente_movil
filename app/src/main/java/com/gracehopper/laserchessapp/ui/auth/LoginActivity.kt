@@ -29,29 +29,25 @@ import retrofit2.Response
 
 /**
  * Actividad de inicio de sesión.
- *
  */
 class LoginActivity : AppCompatActivity() {
 
-    //Pa el layout y el login
     private lateinit var loadingLayout: LinearLayout
-    private lateinit var loginLayout: LinearLayout    //Layout log
-    private lateinit var registerLayout: LinearLayout //Layout reg
+    private lateinit var loginLayout: LinearLayout
+    private lateinit var registerLayout: LinearLayout
     private lateinit var progressBar: ProgressBar
-    private lateinit var loginEmail: EditText        //email Log
-    private lateinit var loginPassword: EditText   //contr log
-    private lateinit var loginButton: Button //boton log
+    private lateinit var loginCredential: EditText
+    private lateinit var loginPassword: EditText
+    private lateinit var loginButton: Button
 
-    //Pa los enlaces
     private lateinit var goToRegisterLink: TextView
     private lateinit var goToLoginLink: TextView
-    //Pa el registro
+
     private lateinit var registerUsername: EditText
     private lateinit var registerEmail: EditText
     private lateinit var registerPassword: EditText
     private lateinit var registerConfirmPassword: EditText
     private lateinit var registerButton: Button
-
 
     private lateinit var authRepository: AuthRepository
 
@@ -97,25 +93,25 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        loadingLayout = findViewById(R.id.layoutCarga)
-        loginLayout = findViewById(R.id.layoutLogin)
-        registerLayout = findViewById(R.id.layoutRegistro)
+        loadingLayout = findViewById(R.id.loadingLayout)
+        loginLayout = findViewById(R.id.loginLayout)
+        registerLayout = findViewById(R.id.registerLayout)
         progressBar = findViewById(R.id.progressBar)
 
         // Elementos de login
-        loginEmail = findViewById(R.id.editTextEmail)
+        loginCredential = findViewById(R.id.editTextEmail)
         loginPassword = findViewById(R.id.editTextPassword)
-        loginButton = findViewById(R.id.buttonContinue)
+        loginButton = findViewById(R.id.buttonLoginContinue)
 
-        goToRegisterLink = findViewById(R.id.textViewRegistroLink)
-        goToLoginLink = findViewById(R.id.textViewRegistroLink2)
+        goToRegisterLink = findViewById(R.id.textViewGoToRegisterLink)
+        goToLoginLink = findViewById(R.id.textViewGoToLoginLink)
 
         // Elementos de register
-        registerUsername = findViewById(R.id.editTextRegistroNombre)
-        registerEmail = findViewById(R.id.editTextRegistroEmail)
-        registerPassword = findViewById(R.id.editTextRegistroPassword)
-        registerConfirmPassword = findViewById(R.id.editTextRegistroConfirmPassword)
-        registerButton = findViewById(R.id.buttonRegistroConfirmar)
+        registerUsername = findViewById(R.id.editTextRegisterUsername)
+        registerEmail = findViewById(R.id.editTextRegisterEmail)
+        registerPassword = findViewById(R.id.editTextRegisterPassword)
+        registerConfirmPassword = findViewById(R.id.editTextRegisterConfirmPassword)
+        registerButton = findViewById(R.id.buttonRegisterConfirm)
 
     }
 
@@ -175,7 +171,7 @@ class LoginActivity : AppCompatActivity() {
 
     // Limpiar
     private fun clearLoginForm() {
-        loginEmail.text?.clear()
+        loginCredential.text?.clear()
         loginPassword.text?.clear()
     }
 
@@ -186,12 +182,21 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun performLogin() {
-        val credential = loginEmail.text.toString().trim()
+        val credential = loginCredential.text.toString().trim()
         val password = loginPassword.text.toString().trim()
 
-        if (credential.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
-            return
+        when {
+            credential.isEmpty() -> {
+                loginCredential.error = "Introduce un username/e-mail"
+                loginCredential.requestFocus()
+                return
+            }
+
+            password.isEmpty() -> {
+                loginPassword.error = "Introduce una contraseña"
+                loginPassword.requestFocus()
+                return
+            }
         }
 
         // Por si acaso apago el boton
@@ -257,14 +262,14 @@ class LoginActivity : AppCompatActivity() {
 
         when {
             username.isEmpty() -> {
-                registerUsername.error = "Falta el nombre"
-                Toast.makeText(this, "Falta el nombre", Toast.LENGTH_SHORT).show()
+                registerUsername.error = "Introduce un nombre de usuario"
+                registerUsername.requestFocus()
                 return
             }
 
             mail.isEmpty() -> {
-                registerEmail.error = "Falta el correo"
-                Toast.makeText(this, "Falta el correo electrónico", Toast.LENGTH_SHORT).show()
+                registerEmail.error = "Introduce un e-mail"
+                registerEmail.requestFocus()
                 return
             }
 
@@ -275,13 +280,20 @@ class LoginActivity : AppCompatActivity() {
             }
 
             password.isEmpty() -> {
-                registerPassword.error = "Falta la contraseña"
-                Toast.makeText(this, "Falta la contraseña", Toast.LENGTH_SHORT).show()
+                registerPassword.error = "Introduce una contraseña"
+                registerPassword.requestFocus()
+                return
+            }
+
+            confirmPassword.isEmpty() -> {
+                registerConfirmPassword.error = "Confirma tu contraseña"
+                registerConfirmPassword.requestFocus()
                 return
             }
 
             password.length < 6 -> {
                 registerPassword.error = "Mínimo 6 caracteres"
+                registerPassword.requestFocus()
                 Toast.makeText(
                     this,
                     "La contraseña debe tener al menos 6 caracteres",
@@ -292,9 +304,10 @@ class LoginActivity : AppCompatActivity() {
 
             password != confirmPassword -> {
                 registerConfirmPassword.error = "No coinciden las contraseñas"
-                Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
+                registerConfirmPassword.requestFocus()
                 return
             }
+
         }
 
         // Deshabilitar botón mientras se procesa
@@ -322,7 +335,7 @@ class LoginActivity : AppCompatActivity() {
                         Toast.LENGTH_LONG).show()
                     showLogin()
                     clearRegisterForm()
-                    loginEmail.setText(mail)
+                    loginCredential.setText(mail)
 
                 } else {
                     when (response.code()) {
