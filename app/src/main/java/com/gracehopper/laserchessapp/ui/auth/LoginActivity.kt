@@ -343,6 +343,8 @@ class LoginActivity : AppCompatActivity() {
                             "El usuario o email ya existe", Toast.LENGTH_SHORT).show()
                         400 -> Toast.makeText(this@LoginActivity,
                             "Datos inválidos", Toast.LENGTH_SHORT).show()
+                        401 -> Toast.makeText(this@LoginActivity,
+                            "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
                         else -> Toast.makeText(this@LoginActivity,
                             "Error ${response.code()}", Toast.LENGTH_SHORT).show()
                     }
