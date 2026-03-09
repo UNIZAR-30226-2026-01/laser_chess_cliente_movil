@@ -3,7 +3,7 @@
     <!-- Fondo que se rellenará -->
     <item android:id="@android:id/background">
         <shape>
-            <solid android:color="#4CAF50"/>
+            <solid android:color="@color/turquoise"/>
         </shape>
     </item>
 

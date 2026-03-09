@@ -12,4 +12,17 @@
     <string name="elo">ELO</string>
     <string name="coin">Coin</string>
     <string name="title_activity_game">GameActivity</string>
+
+    <string name="login">Iniciar sesión</string>
+    <string name="credential">Username/E-mail</string>
+    <string name="password">Contraseña</string>
+    <string name="continueText">Continuar</string>
+    <string name="noAccount">¿No tienes cuenta aún? </string>
+    <string name="switchRegister">Regístrate ya</string>
+
+    <string name="register">Registrarse</string>
+    <string name="username">Username</string>
+    <string name="email">E-mail</string>
+    <string name="confirmPassword">Confirma tu contraseña</string>
+    <string name="switchLogin">¿Ya estás registrado? </string>
 </resources>

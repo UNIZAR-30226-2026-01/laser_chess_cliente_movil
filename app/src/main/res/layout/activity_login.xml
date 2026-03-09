@@ -4,7 +4,7 @@
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4CAF50">
+    android:background="@color/turquoise">
 
     <!-- Pantalla de carga  -->
     <LinearLayout
@@ -24,7 +24,7 @@
             android:id="@+id/imageViewLogo"
             android:layout_width="416dp"
             android:layout_height="718dp"
-            android:background="#2E7D32" />
+            android:background="@color/turquoise" />
 
         <!-- Barra  -->
         <ProgressBar
@@ -58,7 +58,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Iniciar Sesión"
+            android:text="@string/login"
             android:textSize="24sp"
             android:textColor="@android:color/black"
             android:textStyle="bold"
@@ -68,7 +68,7 @@
             android:id="@+id/editTextCredential"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username/E-mail"
+            android:hint="@string/credential"
             android:inputType="textNoSuggestions"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
@@ -78,7 +78,7 @@
             android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Contraseña"
+            android:hint="@string/password"
             android:inputType="textPassword"
             android:padding="12dp"
             android:layout_marginBottom="24dp"
@@ -88,9 +88,9 @@
             android:id="@+id/buttonLoginContinue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Continuar"
+            android:text="@string/continueText"
             android:textSize="16sp"
-            android:backgroundTint="#4CAF50"/>
+            android:backgroundTint="@color/turquoise"/>
 
         <!-- Para que los textos de ¿? esten juntos y solo sea clicable el segundo-->
         <LinearLayout
@@ -104,7 +104,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="¿No tienes cuenta aún? "
+                android:text="@string/noAccount"
                 android:textSize="14sp"
                 android:textColor="@android:color/black"/>
 
@@ -112,7 +112,7 @@
                 android:id="@+id/textViewGoToRegisterLink"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Regístrate ya"
+                android:text="@string/switchRegister"
                 android:textSize="14sp"
                 android:textColor="#2196F3"
                 android:textStyle="bold"
@@ -122,10 +122,6 @@
         </LinearLayout>
 
     </LinearLayout>
-
-
-
-
 
 
 
@@ -148,7 +144,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Registro"
+        android:text="@string/register"
         android:textSize="24sp"
         android:textColor="@android:color/black"
         android:textStyle="bold"
@@ -158,7 +154,7 @@
         android:id="@+id/editTextRegisterUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username"
+        android:hint="@string/username"
         android:inputType="textNoSuggestions"
         android:padding="12dp"
         android:layout_marginBottom="16dp"
@@ -168,7 +164,7 @@
         android:id="@+id/editTextRegisterEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="E-mail"
+        android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:padding="12dp"
         android:layout_marginBottom="16dp"
@@ -178,7 +174,7 @@
         android:id="@+id/editTextRegisterPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Contraseña"
+        android:hint="@string/password"
         android:inputType="textPassword"
         android:padding="12dp"
         android:layout_marginBottom="16dp"
@@ -188,7 +184,7 @@
         android:id="@+id/editTextRegisterConfirmPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Confirmar contraseña"
+        android:hint="@string/confirmPassword"
         android:inputType="textPassword"
         android:padding="12dp"
         android:layout_marginBottom="24dp"
@@ -198,9 +194,9 @@
         android:id="@+id/buttonRegisterConfirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Registrarse"
+        android:text="@string/register"
         android:textSize="16sp"
-        android:backgroundTint="#4CAF50"/>
+        android:backgroundTint="@color/turquoise"/>
 
         <!-- Para que los textos de ¿? esten juntos y solo sea clicable el segundo-->
         <LinearLayout
@@ -214,7 +210,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="¿Ya estás registrado? "
+                android:text="@string/switchLogin"
                 android:textSize="14sp"
                 android:textColor="@android:color/black"/>
 
@@ -222,7 +218,7 @@
                 android:id="@+id/textViewGoToLoginLink"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Iniciar sesión"
+                android:text="@string/login"
                 android:textSize="14sp"
                 android:textColor="#2196F3"
                 android:textStyle="bold"
