@@ -25,4 +25,9 @@
     <string name="email">E-mail</string>
     <string name="confirmPassword">Confirma tu contraseña</string>
     <string name="switchLogin">¿Ya estás registrado? </string>
+
+    <string name="customize">Personalización</string>
+    <string name="ranking">Ranking</string>
+    <string name="shop">Tienda</string>
+    <string name="social">Social</string>
 </resources>
