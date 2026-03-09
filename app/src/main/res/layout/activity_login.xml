@@ -65,11 +65,11 @@
             android:layout_marginBottom="24dp"/>
 
         <EditText
-            android:id="@+id/editTextEmail"
+            android:id="@+id/editTextCredential"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Correo electrónico"
-            android:inputType="textEmailAddress"
+            android:hint="Username/E-mail"
+            android:inputType="textNoSuggestions"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
             android:background="@android:drawable/editbox_background"/>
@@ -158,7 +158,8 @@
         android:id="@+id/editTextRegisterUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nombre completo"
+        android:hint="Username"
+        android:inputType="textNoSuggestions"
         android:padding="12dp"
         android:layout_marginBottom="16dp"
         android:background="@android:drawable/editbox_background"/>
@@ -167,7 +168,7 @@
         android:id="@+id/editTextRegisterEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Correo electrónico"
+        android:hint="E-mail"
         android:inputType="textEmailAddress"
         android:padding="12dp"
         android:layout_marginBottom="16dp"

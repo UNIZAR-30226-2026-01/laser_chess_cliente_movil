@@ -99,7 +99,7 @@ class LoginActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar)
 
         // Elementos de login
-        loginCredential = findViewById(R.id.editTextEmail)
+        loginCredential = findViewById(R.id.editTextCredential)
         loginPassword = findViewById(R.id.editTextPassword)
         loginButton = findViewById(R.id.buttonLoginContinue)
 
