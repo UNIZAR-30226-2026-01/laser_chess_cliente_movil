@@ -197,6 +197,17 @@ class LoginActivity : AppCompatActivity() {
                 loginPassword.requestFocus()
                 return
             }
+
+            password.length < 6 -> {
+                registerPassword.error = "Mínimo 6 caracteres"
+                registerPassword.requestFocus()
+                Toast.makeText(
+                    this,
+                    "La contraseña debe tener al menos 6 caracteres",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return
+            }
         }
 
         // Por si acaso apago el boton
