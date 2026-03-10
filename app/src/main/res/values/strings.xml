@@ -8,7 +8,6 @@
     <string name="play">Play</string>
     <string name="time_mode">TIME MODE</string>
     <string name="avatar">Avatar</string>
-    <string name="user">User</string>
     <string name="elo">ELO</string>
     <string name="coin">Coin</string>
     <string name="title_activity_game">GameActivity</string>
