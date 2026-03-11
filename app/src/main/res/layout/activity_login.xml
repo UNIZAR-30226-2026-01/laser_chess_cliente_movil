@@ -26,17 +26,6 @@
             android:layout_height="718dp"
             android:background="@color/turquoise" />
 
-        <!-- Barra  -->
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:max="100"
-            android:progress="50"
-            android:indeterminate="false"
-            android:progressDrawable="@drawable/shape_progress_bar"/>
-
     </LinearLayout>
 
     <!-- Pop-up Login-->

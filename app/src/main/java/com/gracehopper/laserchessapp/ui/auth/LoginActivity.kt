@@ -35,7 +35,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loadingLayout: LinearLayout
     private lateinit var loginLayout: LinearLayout
     private lateinit var registerLayout: LinearLayout
-    private lateinit var progressBar: ProgressBar
     private lateinit var loginCredential: EditText
     private lateinit var loginPassword: EditText
     private lateinit var loginButton: Button
@@ -50,29 +49,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var registerButton: Button
 
     private lateinit var authRepository: AuthRepository
-
-    private val handler = Handler(Looper.getMainLooper())
-    private var progress = 0
-    private var paused = false
-
-    private val loadingRunnable = object : Runnable {
-        override fun run() {
-            if (!paused && progress < 100) {
-                progress += 1
-                progressBar.progress = progress
-
-                // Si 40% (2 segundos) pausar y popup
-                if (progress == 40) {
-                    pausarCargaYMostrarLogin()
-                } else if (progress < 100) {
-                    // prox actualizacion de la barra
-                    handler.postDelayed(this, 50) // 50ms por paso = 5 segundos total
-                } else {
-                    goToMain()
-                }
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,14 +65,13 @@ class LoginActivity : AppCompatActivity() {
 
         initViews()
         initListeners()
-        startLoading()
+        loginLayout.visibility = View.VISIBLE
     }
 
     private fun initViews() {
         loadingLayout = findViewById(R.id.loadingLayout)
         loginLayout = findViewById(R.id.loginLayout)
         registerLayout = findViewById(R.id.registerLayout)
-        progressBar = findViewById(R.id.progressBar)
 
         // Elementos de login
         loginCredential = findViewById(R.id.editTextCredential)
@@ -137,10 +112,6 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private fun startLoading() {
-        handler.post(loadingRunnable)
-    }
-
     // Pop-up de registro
     private fun showRegister() {
         // Ocultar login, mostrar registro
@@ -173,12 +144,6 @@ class LoginActivity : AppCompatActivity() {
     private fun clearLoginForm() {
         loginCredential.text?.clear()
         loginPassword.text?.clear()
-    }
-
-    private fun pausarCargaYMostrarLogin() {
-        paused = true //barra pausada
-        // popup login
-        loginLayout.visibility = View.VISIBLE
     }
 
     private fun performLogin() {
@@ -239,7 +204,7 @@ class LoginActivity : AppCompatActivity() {
                     registerLayout.visibility = View.GONE
 
                     Toast.makeText(this@LoginActivity, "¡Bienvenid@!", Toast.LENGTH_SHORT).show()
-                    resumeLoading()
+                    goToMain()
 
                 } else {
 
@@ -381,21 +346,10 @@ class LoginActivity : AppCompatActivity() {
         registerButton.text = "Confirmar"
     }
 
-    private fun resumeLoading() {
-        paused = false
-        handler.post(loadingRunnable)
-    }
-
     private fun goToMain() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        // Limpiar por si acaso
-        handler.removeCallbacksAndMessages(null)
     }
 
 }
