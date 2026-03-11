@@ -25,8 +25,5 @@ data class UserProfile(
     val board_skin: Int,
     val piece_skin: Int,
     val win_animation: Int,
-    val elo_blitz: Int,
-    val elo_rapid: Int,
-    val elo_classic: Int,
-    val elo_extended: Int
+    val ratings: UserRatings
 )

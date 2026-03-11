@@ -1,5 +1,7 @@
 package com.gracehopper.laserchessapp.data.model.ranking
 
+import com.gracehopper.laserchessapp.data.model.user.TimeMode
+
 /**
  * Clase que representa un perfil del ranking.
  *
