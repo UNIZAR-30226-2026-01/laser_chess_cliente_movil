@@ -1,9 +1,9 @@
 package com.gracehopper.laserchessapp.data.repository
 
-import com.gracehopper.laserchessapp.data.model.AccountResponse
-import com.gracehopper.laserchessapp.data.model.LoginRequest
-import com.gracehopper.laserchessapp.data.model.LoginResponse
-import com.gracehopper.laserchessapp.data.model.RegisterRequest
+import com.gracehopper.laserchessapp.data.model.auth.AccountResponse
+import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
+import com.gracehopper.laserchessapp.data.model.auth.LoginResponse
+import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import retrofit2.Call
 

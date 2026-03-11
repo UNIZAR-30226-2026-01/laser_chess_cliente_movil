@@ -15,10 +15,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.gracehopper.laserchessapp.R
-import com.gracehopper.laserchessapp.data.model.AccountResponse
-import com.gracehopper.laserchessapp.data.model.LoginRequest
-import com.gracehopper.laserchessapp.data.model.LoginResponse
-import com.gracehopper.laserchessapp.data.model.RegisterRequest
+import com.gracehopper.laserchessapp.data.model.auth.AccountResponse
+import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
+import com.gracehopper.laserchessapp.data.model.auth.LoginResponse
+import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.AuthRepository
 import com.gracehopper.laserchessapp.ui.main.MainActivity

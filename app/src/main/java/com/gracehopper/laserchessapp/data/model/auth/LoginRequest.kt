@@ -1,4 +1,4 @@
-package com.gracehopper.laserchessapp.data.model
+package com.gracehopper.laserchessapp.data.model.auth
 
 /**
  * Clase de datos que representa una solicitud de inicio de sesión.
