@@ -29,7 +29,8 @@
             android:paddingVertical="12dp"
             android:text="SOCIAL"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:background="@drawable/bg_tab_selected" />
 
         <!-- Pestaña Games In Progress -->
         <TextView
@@ -41,75 +42,104 @@
             android:paddingVertical="12dp"
             android:text="IN PROGRESS"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:background="@drawable/bg_tab_unselected" />
     </LinearLayout>
 
-    <!-- Solicitudes -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardSolicitudes"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        app:cardUseCompatPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/layoutTabs"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="12dp">
-
-            <ImageView
-                android:id="@+id/iconSolicitudes"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:contentDescription="@string/avatar"
-                android:src="@drawable/ic_clock" />
-
-            <TextView
-                android:id="@+id/txtSolicitudes"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:text="Solicitudes"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtNumSolicitudes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/iconArrow"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="8dp"
-                android:contentDescription="Ver solicitudes"
-                android:src="@drawable/ic_arrow_right" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- Friends List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerFriends"
+    <!-- Contenido de SOCIAL -->
+    <LinearLayout
+        android:id="@+id/layoutSocialContent"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@id/cardSolicitudes"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutTabs"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent" >
 
+        <!-- Solicitudes -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardSolicitudes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="12dp">
+
+                <ImageView
+                    android:id="@+id/iconSolicitudes"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/avatar"
+                    android:src="@drawable/ic_clock" />
+
+                <TextView
+                    android:id="@+id/txtSolicitudes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:text="Solicitudes"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtNumSolicitudes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/iconArrow"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="Ver solicitudes"
+                    android:src="@drawable/ic_arrow_right" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Friends List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerFriends"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="24dp"
+            android:paddingBottom="96dp" />
+
+    </LinearLayout>
+
+    <!-- Contenido de IN PROGRESS -->
+    <LinearLayout
+        android:id="@+id/layoutInProgressContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutTabs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Partidas en curso"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <!-- Botón añadir amigo -->
     <ImageButton

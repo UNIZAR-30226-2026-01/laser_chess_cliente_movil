@@ -18,6 +18,10 @@ class SocialFragment : Fragment() {
 
     private lateinit var friendsAdapter: FriendAdapter
 
+    private enum class SocialTab {
+        SOCIAL, IN_PROGRESS
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,6 +36,8 @@ class SocialFragment : Fragment() {
 
         setupRecycler()
         loadFakeData()
+        setupTabs()
+        selectTab(SocialTab.SOCIAL)
     }
 
     private fun setupRecycler() {
@@ -50,6 +56,34 @@ class SocialFragment : Fragment() {
         )
 
         friendsAdapter.updateFriends(fakeFriends)
+    }
+
+    private fun setupTabs() {
+        binding.tabSocial.setOnClickListener { selectTab(SocialTab.SOCIAL) }
+
+        binding.tabInProgress.setOnClickListener { selectTab(SocialTab.IN_PROGRESS) }
+    }
+
+    private fun selectTab(tab: SocialTab) {
+        when (tab) {
+            SocialTab.SOCIAL -> {
+                binding.layoutSocialContent.visibility = View.VISIBLE
+                binding.btnAddFriend.visibility = View.VISIBLE
+                binding.layoutInProgressContent.visibility = View.GONE
+
+                binding.tabSocial.setBackgroundResource(R.drawable.bg_tab_selected)
+                binding.tabInProgress.setBackgroundResource(R.drawable.bg_tab_unselected)
+            }
+
+            SocialTab.IN_PROGRESS -> {
+                binding.layoutSocialContent.visibility = View.GONE
+                binding.btnAddFriend.visibility = View.GONE
+                binding.layoutInProgressContent.visibility = View.VISIBLE
+
+                binding.tabSocial.setBackgroundResource(R.drawable.bg_tab_unselected)
+                binding.tabInProgress.setBackgroundResource(R.drawable.bg_tab_selected)
+            }
+        }
     }
 
     override fun onDestroyView() {
