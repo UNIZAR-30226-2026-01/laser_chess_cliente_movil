@@ -2,8 +2,10 @@ package com.gracehopper.laserchessapp.ui.game
 
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.GridLayout
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.gracehopper.laserchessapp.R
 
@@ -20,6 +22,8 @@ class GameActivity : AppCompatActivity() {
 
         createBoard(board)
 
+        addPiece(board, 2, 3)
+
         val btnExit = findViewById<ImageButton>(R.id.btnExit)
 
         btnExit.setOnClickListener {
@@ -32,7 +36,7 @@ class GameActivity : AppCompatActivity() {
         for (row in 0 until rows) {
             for (col in 0 until cols) {
 
-                val cell = View(this)
+                val cell = FrameLayout(this)
 
                 val cParams = GridLayout.LayoutParams().apply {
                     width = 0
@@ -46,10 +50,28 @@ class GameActivity : AppCompatActivity() {
 
                 cell.setBackgroundResource(R.drawable.cell)
 
+                cell.tag = Pair(row, col)
+
                 board.addView(cell)
 
             }
         }
+    }
+
+    private fun addPiece(board: GridLayout, row: Int, col: Int) {
+
+        val idx = row * cols + col
+        val cell = board.getChildAt(idx) as FrameLayout
+
+        val piece = ImageView(this).apply {
+            setImageResource(R.drawable.piece)
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+        }
+
+        cell.addView(piece)
     }
 
 
