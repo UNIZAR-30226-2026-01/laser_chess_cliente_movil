@@ -32,4 +32,9 @@ interface ApiService {
     // Endpoint para eliminar una cuenta
     @DELETE("api/account/delete/")
     fun deleteAccount(): Call<Unit>
+
+    @GET("friendship")
+    fun getFriendships(): Call<List<Friendship>>
+
+
 }
