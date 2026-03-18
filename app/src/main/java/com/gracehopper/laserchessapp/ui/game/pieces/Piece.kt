@@ -1,18 +1,13 @@
 package com.gracehopper.laserchessapp.ui.game.pieces
 
-//interface Piece {
-//
-//    val color : Color
-//
-//    enum class Color {
-//        Blue,
-//        Red;
-//
-//        val isBlue : Boolean
-//            get() = this == Blue
-//
-//        val isRed : Boolean
-//            get() = this == Red
-//    }
-//
-//}
+import com.gracehopper.laserchessapp.ui.game.board.Board
+
+interface Piece {
+
+    val isRed: Boolean
+
+    fun getImageRes(): Int
+
+    fun getValidMoves(row: Int, col: Int, board: Board): List<Pair<Int, Int>>
+
+}

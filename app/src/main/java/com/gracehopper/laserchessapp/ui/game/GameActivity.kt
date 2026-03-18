@@ -8,11 +8,16 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.ui.game.board.Board
+import com.gracehopper.laserchessapp.ui.game.pieces.Deflector
 
 class GameActivity : AppCompatActivity() {
 
     private val rows = 10
     private val cols = 8
+
+    private lateinit var boardM: Board
+    private val cellsM = mutableListOf<FrameLayout>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,9 +25,11 @@ class GameActivity : AppCompatActivity() {
 
         val board = findViewById<GridLayout>(R.id.boardGrid)
 
-        createBoard(board)
+        boardM = Board(rows, cols)
 
-        addPiece(board, 2, 3)
+        boardM.setPiece(2,3, Deflector(true))
+
+        createBoard(board)
 
         val btnExit = findViewById<ImageButton>(R.id.btnExit)
 
@@ -51,6 +58,17 @@ class GameActivity : AppCompatActivity() {
                 cell.setBackgroundResource(R.drawable.cell)
 
                 cell.tag = Pair(row, col)
+                cellsM.add(cell)
+
+                cell.setOnClickListener {
+                    val (r, c) = cell.tag as Pair<Int, Int>
+
+                    val piece = boardM.getPiece(r,c)
+
+                    if(piece != null){
+                        val moves = piece.getValidMoves(r,c,boardM)
+                    }
+                }
 
                 board.addView(cell)
 
