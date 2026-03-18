@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
+import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.databinding.FragmentSocialBinding
 
 class SocialFragment : Fragment() {
@@ -49,7 +51,15 @@ class SocialFragment : Fragment() {
     }
 
     private fun loadFriends() {
+        val repository = FriendRepository(NetworkUtils.getApiService())
 
+        repository.getFriends { friends ->
+            if (friends != null) {
+                friendsAdapter.updateFriends(friends)
+            } else {
+                Log.e("SocialFragment", "Error al cargar amigos")
+            }
+        }
     }
 
     private fun setupTabs() {

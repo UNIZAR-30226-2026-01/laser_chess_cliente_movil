@@ -180,53 +180,37 @@ class LoginActivity : AppCompatActivity() {
         loginButton.text = "Iniciando sesión..."
         val request = LoginRequest(credential, password)
 
-        authRepository.login(request).enqueue(object : Callback<LoginResponse> {
-            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+        authRepository.login(request = request, onSuccess = { loginResponse ->
+            restoreLoginButton()
+
+            TokenManager.saveAccessToken(loginResponse.access_token)
+            TokenManager.saveUserCredential(credential)
+
+            Log.d("LoginActivity", "Token guardado: ${loginResponse.access_token}")
+
+            loginLayout.visibility = View.GONE
+            registerLayout.visibility = View.GONE
+
+            Toast.makeText(this, "¡Bienvenid@!", Toast.LENGTH_SHORT).show()
+            goToMain()
+        },
+            onError = { errorCode ->
                 restoreLoginButton()
 
-                if (response.isSuccessful) {
+                when (errorCode) {
+                    401 -> Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT)
+                        .show()
 
-                    val loginResponse = response.body()
-                    if (loginResponse == null) {
-                        Toast.makeText(this@LoginActivity,
-                            "Error de conexión", Toast.LENGTH_SHORT).show()
-                        return
-                    }
-
-                    // Guardar el token
-                    TokenManager.saveAccessToken(loginResponse.access_token)
-                    TokenManager.saveUserCredential(credential)
-
-                    Log.d("LoginActivity", "Token guardado: ${loginResponse.access_token}")
-
-                    // Ocultar layouts y continuar
-                    loginLayout.visibility = View.GONE
-                    registerLayout.visibility = View.GONE
-
-                    Toast.makeText(this@LoginActivity, "¡Bienvenid@!", Toast.LENGTH_SHORT).show()
-                    goToMain()
-
-                } else {
-
-                    var errorCode = response.code()
-                    when (errorCode) {
-                        401 -> Toast.makeText(this@LoginActivity,
-                            "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
-                        400 -> Toast.makeText(this@LoginActivity,
-                            "Datos inválidos", Toast.LENGTH_SHORT).show()
-                        else -> Toast.makeText(this@LoginActivity,
-                            "Error del servidor: $errorCode", Toast.LENGTH_SHORT).show()
-                    }
-
+                    400 -> Toast.makeText(this, "Datos inválidos", Toast.LENGTH_SHORT).show()
+                    null -> Toast.makeText(this, "Error de conexión", Toast.LENGTH_SHORT).show()
+                    else -> Toast.makeText(
+                        this,
+                        "Error del servidor: $errorCode",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                restoreLoginButton()
-                Toast.makeText(this@LoginActivity,
-                    "Error de conexión: ${t.message}", Toast.LENGTH_LONG).show()
-            }
-        })
+        )
     }
 
     // Validar registro
@@ -292,46 +276,28 @@ class LoginActivity : AppCompatActivity() {
 
         val request = RegisterRequest(username, mail, password)
 
-        authRepository.register(request).enqueue(object : Callback<AccountResponse> {
-            override fun onResponse(call: Call<AccountResponse>, response: Response<AccountResponse>) {
-                restoreRegisterButton()
+        authRepository.register(request = request, onSuccess = { account ->
+            restoreRegisterButton()
 
-                if (response.isSuccessful) {
+            TokenManager.saveUserId(account.account_id)
 
-                    val account = response.body()
-                    if (account == null) {
-                        Toast.makeText(this@LoginActivity,
-                            "Error de conexión", Toast.LENGTH_SHORT).show()
-                        return
-                    }
+            Toast.makeText(this, "¡Registro exitoso!", Toast.LENGTH_SHORT).show()
 
-                    TokenManager.saveUserId(account.account_id)  // Guardar ID
-                    Toast.makeText(this@LoginActivity,
-                        "¡Registro exitoso! ID: ${account.account_id}",
-                        Toast.LENGTH_LONG).show()
-                    showLogin()
-                    clearRegisterForm()
-                    loginCredential.setText(mail)
+            showLogin()
+            clearRegisterForm()
+            loginCredential.setText(mail)
+        }, onError = { errorCode ->
+            restoreRegisterButton()
 
-                } else {
-                    when (response.code()) {
-                        409 -> Toast.makeText(this@LoginActivity,
-                            "El usuario o email ya existe", Toast.LENGTH_SHORT).show()
-                        400 -> Toast.makeText(this@LoginActivity,
-                            "Datos inválidos", Toast.LENGTH_SHORT).show()
-                        401 -> Toast.makeText(this@LoginActivity,
-                            "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
-                        else -> Toast.makeText(this@LoginActivity,
-                            "Error ${response.code()}", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<AccountResponse>, t: Throwable) {
-                restoreRegisterButton()
-                Log.e("LoginActivity", "Error de conexión en registro", t)
-                Toast.makeText(this@LoginActivity,
-                    "Error de conexión: ${t.message}", Toast.LENGTH_LONG).show()
+            when (errorCode) {
+                409 -> Toast.makeText(this, "El usuario ya existe", Toast.LENGTH_SHORT).show()
+                401 -> Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+                400 -> Toast.makeText(this, "Datos inválidos", Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(
+                    this,
+                    "Error del servidor: $errorCode",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
