@@ -1,5 +1,7 @@
 package com.gracehopper.laserchessapp.data.model.social
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * Clase que representa un resumen de Friend.
  *
@@ -9,8 +11,8 @@ package com.gracehopper.laserchessapp.data.model.social
  * @property xp Puntos de experiencia del Friend
  */
 data class FriendSummary (
-    val id: String,
-    val username: String,
-    val avatar: Int,
-    val xp: Int
+    @SerializedName("account_id") val id: Long,
+    @SerializedName("username") val username: String,
+    @SerializedName("avatar") val avatar: Int,
+    @SerializedName("xp") val xp: Int
 )

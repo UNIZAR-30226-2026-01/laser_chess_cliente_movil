@@ -35,7 +35,7 @@ class SocialFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecycler()
-        loadFakeData()
+        loadFriends()
         setupTabs()
         selectTab(SocialTab.SOCIAL)
     }
@@ -48,14 +48,8 @@ class SocialFragment : Fragment() {
         }
     }
 
-    private fun loadFakeData() {
-        val fakeFriends = listOf(
-            FriendSummary("1", "User1", R.drawable.ic_avatar, 1234),
-            FriendSummary("2", "User2", R.drawable.ic_avatar, 5678),
-            FriendSummary("3", "User3", R.drawable.ic_avatar, 9012)
-        )
+    private fun loadFriends() {
 
-        friendsAdapter.updateFriends(fakeFriends)
     }
 
     private fun setupTabs() {
