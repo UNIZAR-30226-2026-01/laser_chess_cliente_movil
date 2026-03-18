@@ -30,6 +30,7 @@ class GameActivity : AppCompatActivity() {
         boardM.setPiece(2,3, Deflector(true))
 
         createBoard(board)
+        drawPieces(board)
 
         val btnExit = findViewById<ImageButton>(R.id.btnExit)
 
@@ -63,10 +64,13 @@ class GameActivity : AppCompatActivity() {
                 cell.setOnClickListener {
                     val (r, c) = cell.tag as Pair<Int, Int>
 
+                    clearHighlights()
+
                     val piece = boardM.getPiece(r,c)
 
                     if(piece != null){
                         val moves = piece.getValidMoves(r,c,boardM)
+                        higlightMoves(moves)
                     }
                 }
 
@@ -76,21 +80,46 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private fun addPiece(board: GridLayout, row: Int, col: Int) {
+    private fun drawPieces(board: GridLayout) {
+        for (row in 0 until rows) {
+            for (col in 0 until cols) {
 
-        val idx = row * cols + col
-        val cell = board.getChildAt(idx) as FrameLayout
+                val piece = boardM.getPiece(row,col)
 
-        val piece = ImageView(this).apply {
-            setImageResource(R.drawable.piece)
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
+                if (piece != null) {
+
+                    val idx = row * cols + col
+                    val cell = board.getChildAt(idx) as FrameLayout
+
+                    val image = ImageView(this).apply {
+                        setImageResource(piece.getImageRes())
+                        layoutParams = FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.MATCH_PARENT,
+                            FrameLayout.LayoutParams.MATCH_PARENT
+                        )
+                    }
+
+                    cell.addView(image)
+
+                }
+            }
         }
-
-        cell.addView(piece)
     }
 
+    private fun higlightMoves(moves: List<Pair<Int, Int>>) {
+
+        for ((row,col) in moves) {
+            val idx = row * cols + col
+            val cell = cellsM[idx]
+
+            cell.setBackgroundResource(R.drawable.cell_move)
+        }
+    }
+
+    private fun clearHighlights() {
+        for (cell in cellsM) {
+            cell.setBackgroundResource(R.drawable.cell)
+        }
+    }
 
 }

@@ -8,7 +8,7 @@ class Deflector(
 ) : Piece {
 
     override fun getImageRes(): Int {
-        TODO("Not yet implemented")
+        return R.drawable.img
     }
 
     override fun getValidMoves(row: Int, col: Int, board: Board): List<Pair<Int, Int>> {
