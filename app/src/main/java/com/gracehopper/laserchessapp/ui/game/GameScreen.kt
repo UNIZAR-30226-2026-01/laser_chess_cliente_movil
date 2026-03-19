@@ -22,10 +22,8 @@ import com.gracehopper.laserchessapp.ui.game.board.Board
 fun GameScreen (board: Board){
     var highlightedMoves by remember { mutableStateOf<List<Pair<Int, Int>>>(emptyList()) }
     var selectedPos by remember { mutableStateOf<Pair<Int, Int>?>(null) }
-    var refresh by remember { mutableStateOf(0) }
 
     Column {
-        refresh
         for (row in 0 until 10) {
             Row {
                 for (col in 0 until 8) {
@@ -59,8 +57,6 @@ fun GameScreen (board: Board){
 
                                             board.setPiece(row, col, selectedPiece)
                                             board.setPiece(r2, c2, null)
-
-                                            refresh++
                                         }
                                     }
 

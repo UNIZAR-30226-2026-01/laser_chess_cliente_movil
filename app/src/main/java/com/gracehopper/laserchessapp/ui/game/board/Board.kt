@@ -1,10 +1,15 @@
 package com.gracehopper.laserchessapp.ui.game.board
 
+import androidx.compose.runtime.mutableStateListOf
 import com.gracehopper.laserchessapp.ui.game.pieces.Piece
 
 class Board(val rows: Int, val cols: Int) {
 
-    private val grid = Array(rows) { Array<Piece?>(cols) { null } }
+    private val grid = List(rows) {
+        mutableStateListOf<Piece?>().apply {
+            repeat(cols) { add(null) }
+        }
+    }
 
     fun getPiece(row: Int, col: Int): Piece? {
         return grid[row][col]
