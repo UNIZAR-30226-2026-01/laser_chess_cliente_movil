@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.data.repository
 
+import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import retrofit2.Call
@@ -32,6 +33,25 @@ class FriendRepository(private val apiService: ApiService) {
 
             override fun onFailure(call: Call<List<FriendSummary>>, t: Throwable) {
                 android.util.Log.e("FriendRepository", "Network failure", t)
+                onError(null)
+            }
+        })
+    }
+
+    fun addFriend (request: CreateFriendshipRequest, onSuccess: () -> Unit,
+                   onError: (Int?) -> Unit) {
+
+        apiService.addFriend(request).enqueue(object : Callback<Unit> {
+
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                if (response.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError(response.code())
+                }
+            }
+
+            override fun onFailure(call: Call<Unit?>, t: Throwable) {
                 onError(null)
             }
         })

@@ -1,17 +1,21 @@
 package com.gracehopper.laserchessapp.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
-import com.gracehopper.laserchessapp.data.model.social.FriendSummary
+import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.databinding.FragmentSocialBinding
@@ -47,6 +51,7 @@ class SocialFragment : Fragment() {
         setupRecycler()
         loadFriends()
         setupTabs()
+        setupListeners()
         selectTab(SocialTab.SOCIAL)
     }
 
@@ -108,6 +113,66 @@ class SocialFragment : Fragment() {
                 binding.tabInProgress.setBackgroundResource(R.drawable.bg_tab_selected)
             }
         }
+    }
+
+    private fun setupListeners() {
+        binding.btnAddFriend.setOnClickListener {
+            showAddFriendDialog()
+        }
+    }
+
+    private fun showAddFriendDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_add_friend, null)
+
+        val editTextUsername = dialogView.findViewById<EditText>(R.id.editTextFriendUsername)
+        val buttonCopyInvitationLink = dialogView.findViewById<Button>(R.id.buttonCopyInvitationLink)
+
+        val invitationLink = "https://laserchess.app/invite/urlquemeinvento"
+
+        buttonCopyInvitationLink.setOnClickListener {
+            val clipboard = requireContext().getSystemService(android.content.Context.CLIPBOARD_SERVICE)
+                    as ClipboardManager
+            val clip = ClipData.newPlainText("invitation_link", invitationLink)
+            clipboard.setPrimaryClip(clip)
+
+            Toast.makeText(requireContext(), "Enlace copiado", Toast.LENGTH_SHORT).show()
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setPositiveButton("Enviar solicitud") { _, _ ->
+                val username = editTextUsername.text.toString().trim()
+
+                if (username.isNotEmpty()) {
+                    sendFriendRequest(username)
+                } else {
+                    Toast.makeText(requireContext(),
+                        "Por favor, introduce un nombre de usuario",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun sendFriendRequest(username : String) {
+        val repository = FriendRepository(NetworkUtils.getApiService())
+        val request = CreateFriendshipRequest(username)
+
+        repository.addFriend(request = request, onSuccess = {
+            Toast.makeText(requireContext(), "Solicitud enviada a $username", Toast.LENGTH_SHORT).show()
+
+            loadFriends()
+        }, onError = { errorCode ->
+            when (errorCode) {
+                400 -> Toast.makeText(requireContext(), "Datos inválidos", Toast.LENGTH_SHORT).show()
+                401 -> Toast.makeText(requireContext(), "No autorizado", Toast.LENGTH_SHORT).show()
+                404 -> Toast.makeText(requireContext(), "Usuario no encontrado", Toast.LENGTH_SHORT).show()
+                409 -> Toast.makeText(requireContext(), "Ya existe una amistad o solicitud", Toast.LENGTH_SHORT).show()
+                null -> Toast.makeText(requireContext(), "Error de conexión", Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(requireContext(), "Error: $errorCode", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun onDestroyView() {
