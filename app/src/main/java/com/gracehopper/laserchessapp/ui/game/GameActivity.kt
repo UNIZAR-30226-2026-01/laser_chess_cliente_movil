@@ -16,6 +16,7 @@ class GameActivity : AppCompatActivity() {
     private val rows = 10
     private val cols = 8
 
+    private var selectedPos: Pair<Int, Int>? = null
     private lateinit var boardM: Board
     private val cellsM = mutableListOf<FrameLayout>()
 
@@ -64,13 +65,32 @@ class GameActivity : AppCompatActivity() {
                 cell.setOnClickListener {
                     val (r, c) = cell.tag as Pair<Int, Int>
 
-                    clearHighlights()
+                    val selected = selectedPos
 
-                    val piece = boardM.getPiece(r,c)
+                    if (selected == null) {
+                        val piece = boardM.getPiece(r, c)
 
-                    if(piece != null){
-                        val moves = piece.getValidMoves(r,c,boardM)
-                        higlightMoves(moves)
+                        if (piece != null) {
+                            selectedPos = Pair(r, c)
+
+                            clearHighlights()
+                            val moves = piece.getValidMoves(r,c,boardM)
+                            highlightMoves(moves)
+                        }
+                    } else {
+                        val (r2,c2) = selected
+                        val piece = boardM.getPiece(r2, c2)
+
+                        if (piece != null) {
+                            val moves = piece.getValidMoves(r2,c2,boardM)
+
+                            if (moves.contains(Pair(r,c))) {
+                                movePiece(r2,c2,r,c)
+                            }
+                        }
+
+                        selectedPos = null
+                        clearHighlights()
                     }
                 }
 
@@ -106,7 +126,7 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    private fun higlightMoves(moves: List<Pair<Int, Int>>) {
+    private fun highlightMoves(moves: List<Pair<Int, Int>>) {
 
         for ((row,col) in moves) {
             val idx = row * cols + col
@@ -120,6 +140,26 @@ class GameActivity : AppCompatActivity() {
         for (cell in cellsM) {
             cell.setBackgroundResource(R.drawable.cell)
         }
+    }
+
+    private fun movePiece(originRow: Int, originCol: Int, toRow: Int, toCol: Int) {
+
+        val piece = boardM.getPiece(originRow,originCol)
+
+        boardM.setPiece(toRow,toCol,piece)
+        boardM.setPiece(originRow,originCol,null)
+
+        redrawBoard()
+    }
+
+    private fun redrawBoard() {
+        val board = findViewById<GridLayout>(R.id.boardGrid)
+
+        for (cell in cellsM) {
+            cell.removeAllViews()
+        }
+
+        drawPieces(board)
     }
 
 }
