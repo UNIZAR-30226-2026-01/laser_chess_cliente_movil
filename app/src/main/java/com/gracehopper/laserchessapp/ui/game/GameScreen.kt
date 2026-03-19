@@ -19,9 +19,14 @@ import com.gracehopper.laserchessapp.ui.game.board.Board
 
 @Composable
 
-fun GameScreen (board: Board){
+fun GameScreen (board: Board, onPieceSelected: (Pair<Int, Int>?) -> Unit, onMove: (Pair<Int, Int>, Pair<Int, Int>) -> Unit, clearSelectionTrigger: Int){
     var highlightedMoves by remember { mutableStateOf<List<Pair<Int, Int>>>(emptyList()) }
     var selectedPos by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+
+    LaunchedEffect(clearSelectionTrigger) {
+        selectedPos = null
+        highlightedMoves = emptyList()
+    }
 
     Column {
         for (row in 0 until 10) {
@@ -45,6 +50,8 @@ fun GameScreen (board: Board){
                                     if (piece != null) {
                                         selectedPos = Pair(row, col)
                                         highlightedMoves = piece.getValidMoves(row, col, board)
+
+                                        onPieceSelected(selectedPos)
                                     }
 
                                 } else {
@@ -55,13 +62,13 @@ fun GameScreen (board: Board){
 
                                         if (highlightedMoves.contains(Pair(row, col))) {
 
-                                            board.setPiece(row, col, selectedPiece)
-                                            board.setPiece(r2, c2, null)
+                                            onMove(Pair(r2, c2), Pair(row, col))
                                         }
                                     }
 
                                     selectedPos = null
                                     highlightedMoves = emptyList()
+                                    onPieceSelected(null)
                                 }
                             }, contentAlignment = Alignment.Center
                     ) {
@@ -96,4 +103,5 @@ fun GameScreen (board: Board){
             }
         }
     }
+
 }
