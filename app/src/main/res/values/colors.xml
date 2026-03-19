@@ -9,5 +9,6 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="turquoise">#00AA9E</color>
-    <color name="grey">#CDCDCD</color>
+    <color name="gray">#CDCDCD</color>
+    <color name="darker_gray">#666666</color>
 </resources>

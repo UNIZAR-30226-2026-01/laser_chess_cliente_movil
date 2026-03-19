@@ -1,13 +1,16 @@
 package com.gracehopper.laserchessapp.ui
 
+import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -125,12 +128,31 @@ class SocialFragment : Fragment() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_friend, null)
 
         val editTextUsername = dialogView.findViewById<EditText>(R.id.editTextFriendUsername)
+        val buttonSendFriendRequest = dialogView.findViewById<Button>(R.id.buttonSendFriendRequest)
         val buttonCopyInvitationLink = dialogView.findViewById<Button>(R.id.buttonCopyInvitationLink)
+        val buttonCloseDialog = dialogView.findViewById<ImageButton>(R.id.buttonCloseDialog)
+        val textInvitationLink = dialogView.findViewById<TextView>(R.id.textInvitationLink)
 
-        val invitationLink = "https://laserchess.app/invite/urlquemeinvento"
+        val invitationLink = "https://www.reddit.com/r/adventuretime/comments/1g9hv45/i_love_adventure_time_so_much_i_cant_even_express/?tl=pt-br"
+
+        textInvitationLink.text = invitationLink
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        textInvitationLink.setOnClickListener {
+            val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE)
+                    as ClipboardManager
+
+            val clip = ClipData.newPlainText("invitation_link", invitationLink)
+            clipboard.setPrimaryClip(clip)
+
+            Toast.makeText(requireContext(), "Enlace copiado", Toast.LENGTH_SHORT).show()
+        }
 
         buttonCopyInvitationLink.setOnClickListener {
-            val clipboard = requireContext().getSystemService(android.content.Context.CLIPBOARD_SERVICE)
+            val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE)
                     as ClipboardManager
             val clip = ClipData.newPlainText("invitation_link", invitationLink)
             clipboard.setPrimaryClip(clip)
@@ -138,21 +160,24 @@ class SocialFragment : Fragment() {
             Toast.makeText(requireContext(), "Enlace copiado", Toast.LENGTH_SHORT).show()
         }
 
-        AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .setPositiveButton("Enviar solicitud") { _, _ ->
-                val username = editTextUsername.text.toString().trim()
+        buttonSendFriendRequest.setOnClickListener {
+            val username = editTextUsername.text.toString().trim()
 
-                if (username.isNotEmpty()) {
-                    sendFriendRequest(username)
-                } else {
-                    Toast.makeText(requireContext(),
-                        "Por favor, introduce un nombre de usuario",
-                        Toast.LENGTH_SHORT).show()
-                }
+            if (username.isNotEmpty()) {
+                sendFriendRequest(username)
+                dialog.dismiss()
+            } else {
+                Toast.makeText(requireContext(),
+                    "Por favor, introduce un nombre de usuario",
+                    Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("Cancelar", null)
-            .show()
+        }
+
+        buttonCloseDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun sendFriendRequest(username : String) {

@@ -31,4 +31,11 @@
     <string name="social">Social</string>
 
     <string name="empty_friends_message">Aún no has empezado ninguna amistad...</string>
+    <string name="add">AÑADIR</string>
+    <string name="writeUsername">Escribe su nombre de usuario:</string>
+    <string name="sendRequest">ENVIAR SOLICITUD</string>
+    <string name="waitApproval">Y espera a ser aceptad@.</string>
+    <string name="sendLink">Envíale el siguiente enlace:</string>
+    <string name="copy">COPIAR</string>
+    <string name="close">Cerrar</string>
 </resources>
