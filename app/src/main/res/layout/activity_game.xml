@@ -73,12 +73,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" >
         
-        <GridLayout
-            android:id="@+id/boardGrid"
+        <androidx.compose.ui.platform.ComposeView
+
+            android:id="@+id/board"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:columnCount="8"
-            android:rowCount="10"
 
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
