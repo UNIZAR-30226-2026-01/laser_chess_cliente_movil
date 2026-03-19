@@ -16,22 +16,23 @@ import retrofit2.Response
  */
 class FriendRepository(private val apiService: ApiService) {
 
-    fun getFriends(callback: (List<FriendSummary>?) -> Unit) {
+    fun getFriends(onSuccess: (List<FriendSummary>?) -> Unit,
+                   onError: (Int?) -> Unit) {
         apiService.getFriendships().enqueue(object : Callback<List<FriendSummary>> {
 
             override fun onResponse(call: Call<List<FriendSummary>>,
                 response: Response<List<FriendSummary>>
             ) {
                 if (response.isSuccessful) {
-                    val friends = response.body()
-                    callback(friends)
+                    onSuccess(response.body().orEmpty())
                 } else {
-                    callback(null)
+                    onError(response.code())
                 }
             }
 
             override fun onFailure(call: Call<List<FriendSummary>>, t: Throwable) {
-                callback(null)
+                android.util.Log.e("FriendRepository", "Network failure", t)
+                onError(null)
             }
         })
     }

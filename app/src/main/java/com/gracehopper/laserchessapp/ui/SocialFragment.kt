@@ -5,8 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
@@ -19,6 +22,8 @@ class SocialFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var friendsAdapter: FriendAdapter
+    private lateinit var emptyMessage: TextView
+    private lateinit var recyclerFriends : RecyclerView
 
     private enum class SocialTab {
         SOCIAL, IN_PROGRESS
@@ -35,6 +40,9 @@ class SocialFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        emptyMessage = view.findViewById(R.id.emptyMessage)
+        recyclerFriends = view.findViewById(R.id.recyclerFriends)
 
         setupRecycler()
         loadFriends()
@@ -53,13 +61,25 @@ class SocialFragment : Fragment() {
     private fun loadFriends() {
         val repository = FriendRepository(NetworkUtils.getApiService())
 
-        repository.getFriends { friends ->
+        repository.getFriends(onSuccess = { friends ->
             if (friends != null) {
-                friendsAdapter.updateFriends(friends)
-            } else {
-                Log.e("SocialFragment", "Error al cargar amigos")
+                if (friends.isEmpty()) {
+                    emptyMessage.visibility = View.VISIBLE
+                } else {
+                    friendsAdapter.updateFriends(friends)
+                    emptyMessage.visibility = View.GONE
+                }
             }
-        }
+        }, onError = { errorCode ->
+            emptyMessage.visibility = View.VISIBLE
+
+            when (errorCode) {
+                401 -> Toast.makeText(requireContext(), "No autorizado", Toast.LENGTH_SHORT).show()
+                500 -> Toast.makeText(requireContext(), "Error del servidor", Toast.LENGTH_SHORT).show()
+                null -> Toast.makeText(requireContext(), "Error de conexión", Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(requireContext(), "Error: $errorCode", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun setupTabs() {
