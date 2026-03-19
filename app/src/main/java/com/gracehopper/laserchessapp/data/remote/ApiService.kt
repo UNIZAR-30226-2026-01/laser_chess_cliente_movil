@@ -5,6 +5,7 @@ import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
 import com.gracehopper.laserchessapp.data.model.auth.LoginResponse
 import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
 import com.gracehopper.laserchessapp.data.model.auth.UpdateAccountRequest
+import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -32,4 +33,9 @@ interface ApiService {
     // Endpoint para eliminar una cuenta
     @DELETE("api/account/delete/")
     fun deleteAccount(): Call<Unit>
+
+    @GET("api/friendship")
+    fun getFriendships(): Call<List<FriendSummary>>
+
+
 }

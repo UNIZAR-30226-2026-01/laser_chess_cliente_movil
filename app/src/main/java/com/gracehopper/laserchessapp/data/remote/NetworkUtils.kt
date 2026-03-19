@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.data.remote
 
+import com.gracehopper.laserchessapp.utils.TokenManager
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -28,6 +29,16 @@ object NetworkUtils {
 
         val client = OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor { chain ->
+                val token = TokenManager.getAccessToken()
+                val requestBuilder = chain.request().newBuilder()
+
+                if (!token.isNullOrEmpty()) {
+                    requestBuilder.addHeader("Authorization", "Bearer $token")
+                }
+
+                chain.proceed(requestBuilder.build())
+            }
             .cookieJar(JavaNetCookieJar(cookieManager))
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)

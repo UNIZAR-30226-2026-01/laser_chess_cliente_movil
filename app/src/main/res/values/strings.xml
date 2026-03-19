@@ -29,4 +29,6 @@
     <string name="ranking">Ranking</string>
     <string name="shop">Tienda</string>
     <string name="social">Social</string>
+
+    <string name="empty_friends_message">Aún no has empezado ninguna amistad...</string>
 </resources>

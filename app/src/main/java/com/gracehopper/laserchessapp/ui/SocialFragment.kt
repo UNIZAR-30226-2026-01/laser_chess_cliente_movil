@@ -5,10 +5,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
+import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.databinding.FragmentSocialBinding
 
 class SocialFragment : Fragment() {
@@ -17,6 +22,8 @@ class SocialFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var friendsAdapter: FriendAdapter
+    private lateinit var emptyMessage: TextView
+    private lateinit var recyclerFriends : RecyclerView
 
     private enum class SocialTab {
         SOCIAL, IN_PROGRESS
@@ -34,8 +41,11 @@ class SocialFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        emptyMessage = view.findViewById(R.id.emptyMessage)
+        recyclerFriends = view.findViewById(R.id.recyclerFriends)
+
         setupRecycler()
-        loadFakeData()
+        loadFriends()
         setupTabs()
         selectTab(SocialTab.SOCIAL)
     }
@@ -48,14 +58,28 @@ class SocialFragment : Fragment() {
         }
     }
 
-    private fun loadFakeData() {
-        val fakeFriends = listOf(
-            FriendSummary("1", "User1", R.drawable.ic_avatar, 1234),
-            FriendSummary("2", "User2", R.drawable.ic_avatar, 5678),
-            FriendSummary("3", "User3", R.drawable.ic_avatar, 9012)
-        )
+    private fun loadFriends() {
+        val repository = FriendRepository(NetworkUtils.getApiService())
 
-        friendsAdapter.updateFriends(fakeFriends)
+        repository.getFriends(onSuccess = { friends ->
+            if (friends != null) {
+                if (friends.isEmpty()) {
+                    emptyMessage.visibility = View.VISIBLE
+                } else {
+                    friendsAdapter.updateFriends(friends)
+                    emptyMessage.visibility = View.GONE
+                }
+            }
+        }, onError = { errorCode ->
+            emptyMessage.visibility = View.VISIBLE
+
+            when (errorCode) {
+                401 -> Toast.makeText(requireContext(), "No autorizado", Toast.LENGTH_SHORT).show()
+                500 -> Toast.makeText(requireContext(), "Error del servidor", Toast.LENGTH_SHORT).show()
+                null -> Toast.makeText(requireContext(), "Error de conexión", Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(requireContext(), "Error: $errorCode", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun setupTabs() {
