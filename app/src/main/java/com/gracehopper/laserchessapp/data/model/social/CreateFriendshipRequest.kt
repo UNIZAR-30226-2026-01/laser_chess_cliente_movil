@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
  * Clase de solicitud para crear una nueva amistad.
  */
 data class CreateFriendshipRequest (
-    @SerializedName("username") val username: String
+    @SerializedName("receiver_username") val receiverUsername: String
 )

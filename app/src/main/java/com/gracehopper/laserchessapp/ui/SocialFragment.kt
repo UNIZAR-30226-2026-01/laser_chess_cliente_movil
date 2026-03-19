@@ -157,15 +157,14 @@ class SocialFragment : Fragment() {
 
     private fun sendFriendRequest(username : String) {
         val repository = FriendRepository(NetworkUtils.getApiService())
-        val request = CreateFriendshipRequest(username)
 
-        repository.addFriend(request = request, onSuccess = {
+        repository.addFriend(username = username, onSuccess = {
             Toast.makeText(requireContext(), "Solicitud enviada a $username", Toast.LENGTH_SHORT).show()
 
             loadFriends()
         }, onError = { errorCode ->
             when (errorCode) {
-                400 -> Toast.makeText(requireContext(), "Datos inválidos", Toast.LENGTH_SHORT).show()
+                400 -> Toast.makeText(requireContext(), "Solicitud inválida", Toast.LENGTH_SHORT).show()
                 401 -> Toast.makeText(requireContext(), "No autorizado", Toast.LENGTH_SHORT).show()
                 404 -> Toast.makeText(requireContext(), "Usuario no encontrado", Toast.LENGTH_SHORT).show()
                 409 -> Toast.makeText(requireContext(), "Ya existe una amistad o solicitud", Toast.LENGTH_SHORT).show()

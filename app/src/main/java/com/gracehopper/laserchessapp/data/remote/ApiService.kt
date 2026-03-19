@@ -7,6 +7,7 @@ import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
 import com.gracehopper.laserchessapp.data.model.auth.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
+import com.gracehopper.laserchessapp.data.model.social.FriendshipStatusResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -40,5 +41,14 @@ interface ApiService {
 
     @POST("api/friendship")
     fun addFriend(@Body request: CreateFriendshipRequest): Call<Unit>
+
+    @GET("api/friendship/{user2Username}")
+    fun getFriendshipStatus(@Path("user2Username") username: String): Call<FriendshipStatusResponse>
+
+    @PUT("api/friendship/{username}")
+    fun acceptFriendship(@Path("user2Username") username: String): Call<Unit>
+
+    @DELETE("api/friendship/{user2Username}")
+    fun deleteFriendship(@Path("user2Username") username: String): Call<Unit>
 
 }
