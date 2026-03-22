@@ -1,13 +1,21 @@
 package com.gracehopper.laserchessapp.ui.game.pieces
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.gracehopper.laserchessapp.ui.game.board.Board
 
-interface Piece {
-
+abstract class Piece(
     val isRed: Boolean
+) {
 
-    fun getImageRes(): Int
+    var rotation by mutableStateOf(0)
 
-    fun getValidMoves(row: Int, col: Int, board: Board): List<Pair<Int, Int>>
+    abstract fun getImageRes(): Int
 
+    abstract fun getValidMoves(
+        row: Int,
+        col: Int,
+        board: Board
+    ): List<Pair<Int, Int>>
 }

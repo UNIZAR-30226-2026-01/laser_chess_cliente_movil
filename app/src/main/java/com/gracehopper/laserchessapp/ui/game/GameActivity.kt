@@ -2,11 +2,13 @@ package com.gracehopper.laserchessapp.ui.game
 
 import android.os.Bundle
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.GridLayout
 import android.widget.ImageButton
-import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.ui.game.board.Board
 import com.gracehopper.laserchessapp.ui.game.pieces.Deflector
@@ -15,151 +17,80 @@ class GameActivity : AppCompatActivity() {
 
     private val rows = 10
     private val cols = 8
-
-    private var selectedPos: Pair<Int, Int>? = null
     private lateinit var boardM: Board
-    private val cellsM = mutableListOf<FrameLayout>()
+    private var clearTrigger by mutableStateOf(0)
+    private var selectedPos: Pair<Int, Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        val board = findViewById<GridLayout>(R.id.boardGrid)
+        val board = findViewById<ComposeView>(R.id.board)
+        val controls = findViewById<LinearLayout>(R.id.rotationButtons)
+        val btnLeft = findViewById<ImageButton>(R.id.btnRotLeft)
+        val btnRight = findViewById<ImageButton>(R.id.btnRotRight)
+
+        val btnExit = findViewById<ImageButton>(R.id.btnExit)
 
         boardM = Board(rows, cols)
 
         boardM.setPiece(2,3, Deflector(true))
 
-        createBoard(board)
-        drawPieces(board)
-
-        val btnExit = findViewById<ImageButton>(R.id.btnExit)
+        board.setContent {
+            GameScreen(
+                board = boardM,
+                onPieceSelected = { pos ->
+                    selectedPos = pos
+                    controls.visibility = if (pos != null) View.VISIBLE else View.GONE
+                },
+                onMove = { from, to -> movePiece(from, to) },
+                clearSelectionTrigger = clearTrigger
+            )
+        }
 
         btnExit.setOnClickListener {
             finish()
         }
-    }
 
-    private fun createBoard(board: GridLayout) {
+        btnLeft.setOnClickListener {
+            selectedPos?.let { (r, c) ->
+                val piece = boardM.getPiece(r, c)
 
-        for (row in 0 until rows) {
-            for (col in 0 until cols) {
+                piece?.rotation = piece?.rotation?.minus(90) ?: 0
 
-                val cell = FrameLayout(this)
-
-                val cParams = GridLayout.LayoutParams().apply {
-                    width = 0
-                    height = 0
-
-                    rowSpec = GridLayout.spec(row, 1, GridLayout.FILL, 1f)
-                    columnSpec = GridLayout.spec(col, 1, GridLayout.FILL, 1f)
-                }
-
-                cell.layoutParams = cParams
-
-                cell.setBackgroundResource(R.drawable.cell)
-
-                cell.tag = Pair(row, col)
-                cellsM.add(cell)
-
-                cell.setOnClickListener {
-                    val (r, c) = cell.tag as Pair<Int, Int>
-
-                    val selected = selectedPos
-
-                    if (selected == null) {
-                        val piece = boardM.getPiece(r, c)
-
-                        if (piece != null) {
-                            selectedPos = Pair(r, c)
-
-                            clearHighlights()
-                            val moves = piece.getValidMoves(r,c,boardM)
-                            highlightMoves(moves)
-                        }
-                    } else {
-                        val (r2,c2) = selected
-                        val piece = boardM.getPiece(r2, c2)
-
-                        if (piece != null) {
-                            val moves = piece.getValidMoves(r2,c2,boardM)
-
-                            if (moves.contains(Pair(r,c))) {
-                                movePiece(r2,c2,r,c)
-                            }
-                        }
-
-                        selectedPos = null
-                        clearHighlights()
-                    }
-                }
-
-                board.addView(cell)
-
+                selectedPos = null
+                clearTrigger++
+                controls.visibility = View.GONE
             }
         }
-    }
 
-    private fun drawPieces(board: GridLayout) {
-        for (row in 0 until rows) {
-            for (col in 0 until cols) {
+        btnRight.setOnClickListener {
+            selectedPos?.let { (r, c) ->
+                val piece = boardM.getPiece(r, c)
 
-                val piece = boardM.getPiece(row,col)
+                piece?.rotation = piece?.rotation?.plus(90) ?: 0
 
-                if (piece != null) {
-
-                    val idx = row * cols + col
-                    val cell = board.getChildAt(idx) as FrameLayout
-
-                    val image = ImageView(this).apply {
-                        setImageResource(piece.getImageRes())
-                        layoutParams = FrameLayout.LayoutParams(
-                            FrameLayout.LayoutParams.MATCH_PARENT,
-                            FrameLayout.LayoutParams.MATCH_PARENT
-                        )
-                    }
-
-                    cell.addView(image)
-
-                }
+                selectedPos = null
+                clearTrigger++
+                controls.visibility = View.GONE
             }
         }
+
     }
 
-    private fun highlightMoves(moves: List<Pair<Int, Int>>) {
+    private fun movePiece(from: Pair<Int, Int>, to: Pair<Int, Int>) {
 
-        for ((row,col) in moves) {
-            val idx = row * cols + col
-            val cell = cellsM[idx]
+        val (r1, c1) = from
+        val (r2, c2) = to
 
-            cell.setBackgroundResource(R.drawable.cell_move)
-        }
+        val piece = boardM.getPiece(r1, c1)
+
+        boardM.setPiece(r2, c2, piece)
+        boardM.setPiece(r1, c1, null)
+
+        selectedPos = null
+        clearTrigger++
     }
 
-    private fun clearHighlights() {
-        for (cell in cellsM) {
-            cell.setBackgroundResource(R.drawable.cell)
-        }
-    }
-
-    private fun movePiece(originRow: Int, originCol: Int, toRow: Int, toCol: Int) {
-
-        val piece = boardM.getPiece(originRow,originCol)
-
-        boardM.setPiece(toRow,toCol,piece)
-        boardM.setPiece(originRow,originCol,null)
-
-        redrawBoard()
-    }
-
-    private fun redrawBoard() {
-        val board = findViewById<GridLayout>(R.id.boardGrid)
-
-        for (cell in cellsM) {
-            cell.removeAllViews()
-        }
-
-        drawPieces(board)
-    }
 
 }
