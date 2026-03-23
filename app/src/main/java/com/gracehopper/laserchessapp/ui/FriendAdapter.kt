@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.databinding.ItemFriendBinding
 
-class FriendAdapter (private var friends: List<FriendSummary>)
+class FriendAdapter (private var friends: List<FriendSummary>,
+            private val onFriendClick: (FriendSummary) -> Unit)
             : RecyclerView.Adapter<FriendAdapter.FriendViewHolder>() {
 
     class FriendViewHolder(val binding: ItemFriendBinding)
@@ -20,11 +21,13 @@ class FriendAdapter (private var friends: List<FriendSummary>)
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
         val friend = friends[position]
 
-        with(holder.binding) {
-            holder.binding.txtFriendUsername.text = friend.username
-            holder.binding.imgFriendAvatar.setImageResource(friend.avatar)
-            holder.binding.txtFriendXp.text = "${friend.xp} xp"
+        holder.binding.apply {
+            txtFriendUsername.text = friend.username
+            imgFriendAvatar.setImageResource(friend.avatar)
+            txtFriendXp.text = "${friend.xp} xp"
         }
+
+        holder.itemView.setOnClickListener { onFriendClick(friend) }
     }
 
     override fun getItemCount(): Int = friends.size

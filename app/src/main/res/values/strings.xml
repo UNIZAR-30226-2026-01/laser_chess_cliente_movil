@@ -5,8 +5,8 @@
     <string name="game_board">Game Board</string>
     <string name="history">History</string>
     <string name="ranked">Ranked</string>
-    <string name="play">Play</string>
-    <string name="time_mode">TIME MODE</string>
+    <string name="play">Jugar</string>
+    <string name="time_mode">MODO DE TIEMPO</string>
     <string name="avatar">Avatar</string>
     <string name="elo">ELO</string>
     <string name="coin">Coin</string>
@@ -38,4 +38,7 @@
     <string name="sendLink">Envíale el siguiente enlace:</string>
     <string name="copy">COPIAR</string>
     <string name="close">Cerrar</string>
+
+    <string name="requestMatch">SOLICITAR PARTIDA</string>
+    <string name="delete">ELIMINAR</string>
 </resources>
