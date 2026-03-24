@@ -23,7 +23,7 @@ fun GameScreen (board: Board, onPieceSelected: (Pair<Int, Int>?) -> Unit, onMove
     var highlightedMoves by remember { mutableStateOf<List<Pair<Int, Int>>>(emptyList()) }
     var selectedPos by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
-    LaunchedEffect(clearSelectionTrigger) {
+    LaunchedEffect(clearSelectionTrigger) {             // Limpiar cuando se active el trigger
         selectedPos = null
         highlightedMoves = emptyList()
     }
@@ -36,6 +36,7 @@ fun GameScreen (board: Board, onPieceSelected: (Pair<Int, Int>?) -> Unit, onMove
                     val piece = board.getPiece(row, col)
                     val isHighlighted = highlightedMoves.contains(Pair(row,col))
 
+                    // Casilla
                     Box(
                         modifier = Modifier
                             .size(48.dp)
@@ -46,7 +47,7 @@ fun GameScreen (board: Board, onPieceSelected: (Pair<Int, Int>?) -> Unit, onMove
                                 val selected = selectedPos
                                 val piece = board.getPiece(row, col)
 
-                                if (selected == null) {
+                                if (selected == null) {             // Primer click
                                     if (piece != null) {
                                         selectedPos = Pair(row, col)
                                         highlightedMoves = piece.getValidMoves(row, col, board)
@@ -54,13 +55,13 @@ fun GameScreen (board: Board, onPieceSelected: (Pair<Int, Int>?) -> Unit, onMove
                                         onPieceSelected(selectedPos)
                                     }
 
-                                } else {
+                                } else {            // Segundo click (mover pieza)
                                     val (r2, c2) = selected
                                     val selectedPiece = board.getPiece(r2, c2)
 
                                     if (selectedPiece != null) {
 
-                                        if (highlightedMoves.contains(Pair(row, col))) {
+                                        if (highlightedMoves.contains(Pair(row, col))) {            // mov. valido
 
                                             onMove(Pair(r2, c2), Pair(row, col))
                                         }
@@ -73,7 +74,7 @@ fun GameScreen (board: Board, onPieceSelected: (Pair<Int, Int>?) -> Unit, onMove
                             }, contentAlignment = Alignment.Center
                     ) {
 
-                        if (isHighlighted) {
+                        if (isHighlighted) {            // casilla de movimiento posible
                             Box(
                                 modifier = Modifier
                                     .size(16.dp)
@@ -81,7 +82,7 @@ fun GameScreen (board: Board, onPieceSelected: (Pair<Int, Int>?) -> Unit, onMove
                             )
                         }
 
-                        if (piece != null) {
+                        if (piece != null) {            // Si hay una pieza en la casilla
 
                             val rotation by animateFloatAsState(
                                 targetValue = piece.rotation.toFloat(),
