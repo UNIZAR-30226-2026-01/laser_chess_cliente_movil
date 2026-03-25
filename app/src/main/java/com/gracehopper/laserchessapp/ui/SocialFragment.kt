@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -174,6 +174,9 @@ class SocialFragment : Fragment() {
         binding.btnAddFriend.setOnClickListener {
             showAddFriendDialog()
         }
+        binding.cardSolicitudes.setOnClickListener {
+            showRequestsDialog()
+        }
     }
 
     private fun showAddFriendDialog() {
@@ -249,6 +252,79 @@ class SocialFragment : Fragment() {
                 else -> Toast.makeText(requireContext(), "Error: $errorCode", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun showRequestsDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_friendship_requests, null)
+
+        val buttonCloseDialog = dialogView.findViewById<ImageButton>(R.id.buttonCloseRequestsDialog)
+        val receivedContainer = dialogView.findViewById<LinearLayout>(R.id.layoutReceivedRequestsContainer)
+        val sentContainer = dialogView.findViewById<LinearLayout>(R.id.layoutSentRequestsContainer)
+        val emptyReceived = dialogView.findViewById<TextView>(R.id.textEmptyReceivedRequests)
+        val emptySent = dialogView.findViewById<TextView>(R.id.textEmptySentRequests)
+
+        // datos falsos de momento
+        val receivedRequests = listOf("Usuario1", "Usuario2")
+        val sentRequests = listOf("Usuario3")
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        if (receivedRequests.isEmpty()) {
+            emptyReceived.visibility = View.VISIBLE
+        } else {
+            for (username in receivedRequests) {
+                val itemView = layoutInflater.inflate(R.layout.item_friendship_request, null)
+
+                val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
+                val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
+                val buttonReject = itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
+
+                textUsername.text = username
+                buttonAccept.visibility = View.VISIBLE
+
+                buttonAccept.setOnClickListener {
+                    Toast.makeText(requireContext(), "Solicitud aceptada: $username", Toast.LENGTH_SHORT).show()
+                }
+
+                buttonReject.setOnClickListener {
+                    Toast.makeText(requireContext(), "Solicitud rechazada: $username", Toast.LENGTH_SHORT).show()
+                }
+
+                receivedContainer.addView(itemView)
+
+            }
+        }
+
+        if (sentRequests.isEmpty()) {
+            emptySent.visibility = View.VISIBLE
+        } else {
+            for (username in sentRequests) {
+                val itemView = layoutInflater.inflate(R.layout.item_friendship_request, sentContainer, false)
+
+                val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
+                val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
+                val buttonCancel = itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
+
+                textUsername.text = username
+                buttonAccept.visibility = View.GONE
+
+                buttonCancel.setOnClickListener {
+                    Toast.makeText(requireContext(), "Solicitud cancelada: $username", Toast.LENGTH_SHORT).show()
+                }
+
+                sentContainer.addView(itemView)
+            }
+        }
+
+        buttonCloseDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
+
     }
 
     override fun onDestroyView() {

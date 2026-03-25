@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/bg_box_border"
+    android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/imgRequestAvatar"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/ic_avatar"
+        android:contentDescription="@string/avatar" />
+
+    <TextView
+        android:id="@+id/textRequestUsername"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:text="@string/username"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black" />
+
+    <LinearLayout
+        android:id="@+id/layoutRequestActions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/buttonAcceptRequest"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="start"
+            android:background="@drawable/bg_box_border"
+            android:src="@drawable/ic_accept"
+            android:contentDescription="@string/close"
+            android:padding="8dp"
+            android:layout_marginBottom="12dp" />
+
+        <ImageButton
+            android:id="@+id/buttonRejectCancelRequest"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="start"
+            android:background="@drawable/bg_box_border"
+            android:src="@drawable/ic_cancel"
+            android:contentDescription="@string/close"
+            android:padding="8dp"
+            android:layout_marginBottom="12dp" />
+    </LinearLayout>
+
+</LinearLayout>

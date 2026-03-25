@@ -48,4 +48,12 @@
 
     <string name="piece_skin">Piezas</string>
     <string name="board_skin">Tablero</string>
-    </resources>
+
+    <string name="requests">SOLICITUDES</string>
+    <string name="received_requests">Recibidas</string>
+    <string name="no_received_requests">No has recibido ninguna solicitud de amistad</string>
+    <string name="sent_requests">Enviadas</string>
+    <string name="no_sent_requests">No has enviado ninguna solicitud de amistad</string>
+    <string name="accept">ACEPTAR</string>
+    <string name="reject">RECHAZAR</string>
+</resources>
