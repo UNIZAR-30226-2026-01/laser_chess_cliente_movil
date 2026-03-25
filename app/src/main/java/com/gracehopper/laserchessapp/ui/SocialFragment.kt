@@ -18,7 +18,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.model.game.BoardType
+import com.gracehopper.laserchessapp.data.model.game.InProgressMatchSummary
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
+import com.gracehopper.laserchessapp.data.model.user.TimeMode
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.databinding.FragmentSocialBinding
@@ -32,6 +35,8 @@ class SocialFragment : Fragment() {
     private lateinit var friendsAdapter: FriendAdapter
     private lateinit var emptyMessage: TextView
     private lateinit var recyclerFriends : RecyclerView
+
+    private lateinit var inProgressAdapter: InProgressAdapter
 
     private enum class SocialTab {
         SOCIAL, IN_PROGRESS
@@ -54,6 +59,7 @@ class SocialFragment : Fragment() {
 
         setupRecycler()
         loadFriends()
+        loadFakeGamesInProgress()
         setupTabs()
         setupListeners()
         selectTab(SocialTab.SOCIAL)
@@ -69,6 +75,12 @@ class SocialFragment : Fragment() {
         binding.recyclerFriends.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = friendsAdapter
+        }
+
+        inProgressAdapter = InProgressAdapter(emptyList()) { game -> resumeGame(game)}
+        binding.recyclerInProgressGames.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = inProgressAdapter
         }
     }
 
@@ -94,6 +106,40 @@ class SocialFragment : Fragment() {
                 else -> Toast.makeText(requireContext(), "Error: $errorCode", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun loadFakeGamesInProgress() {
+        val fakeMatches = listOf(
+            InProgressMatchSummary(
+                id = "1",
+                myTime = "13:00",
+                opponentUsername = "Usuario",
+                opponentTime = "12:00",
+                timeMode = TimeMode.BLITZ,
+                boardType = BoardType.ACE
+            ),
+            InProgressMatchSummary(
+                id = "2",
+                myTime = "14:00",
+                opponentUsername = "Usuario",
+                opponentTime = "11:00",
+                timeMode = TimeMode.EXTENDED,
+                boardType = BoardType.SOPHIE
+            )
+        )
+
+        if (fakeMatches.isEmpty()) {
+            binding.emptyInProgressMessage.visibility = View.VISIBLE
+            binding.recyclerInProgressGames.visibility = View.GONE
+        } else {
+            binding.emptyInProgressMessage.visibility = View.GONE
+            binding.recyclerInProgressGames.visibility = View.VISIBLE
+            inProgressAdapter.updateData(fakeMatches)
+        }
+    }
+
+    private fun resumeGame(game: InProgressMatchSummary) {
+        Toast.makeText(requireContext(), "Retomar partida con id ${game.id}", Toast.LENGTH_SHORT).show()
     }
 
     private fun setupTabs() {
