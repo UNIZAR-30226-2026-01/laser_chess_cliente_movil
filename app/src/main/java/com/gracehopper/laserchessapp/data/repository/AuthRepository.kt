@@ -1,6 +1,6 @@
 package com.gracehopper.laserchessapp.data.repository
 
-import com.gracehopper.laserchessapp.data.model.auth.AccountResponse
+import com.gracehopper.laserchessapp.data.model.auth.RegisterResponse
 import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
 import com.gracehopper.laserchessapp.data.model.auth.LoginResponse
 import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
@@ -53,15 +53,15 @@ class AuthRepository (private val apiService: ApiService) {
      * Realiza una petición para registrar una nueva cuenta de usuario.
      *
      * @param request Objeto que contiene los datos necesarios para el registro
-     * @return Objeto [Call] que envuelve la respuesta [AccountResponse]
+     * @return Objeto [Call] que envuelve la respuesta [RegisterResponse]
      */
-    fun register(request: RegisterRequest, onSuccess: (AccountResponse) -> Unit,
+    fun register(request: RegisterRequest, onSuccess: (RegisterResponse) -> Unit,
                  onError: (Int?) -> Unit) {
-        apiService.register(request).enqueue(object: Callback<AccountResponse> {
+        apiService.register(request).enqueue(object: Callback<RegisterResponse> {
 
             override fun onResponse(
-                call: Call<AccountResponse?>,
-                response: Response<AccountResponse?>
+                call: Call<RegisterResponse?>,
+                response: Response<RegisterResponse?>
             ) {
                 if (response.isSuccessful) {
                     val accountResponse = response.body()
@@ -75,7 +75,7 @@ class AuthRepository (private val apiService: ApiService) {
                 }
             }
 
-            override fun onFailure(call: Call<AccountResponse?>, t: Throwable) {
+            override fun onFailure(call: Call<RegisterResponse?>, t: Throwable) {
                 onError(null)
             }
 

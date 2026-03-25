@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="20dp">
 
     <!-- Caja principal -->
     <LinearLayout
@@ -34,8 +34,8 @@
 
             <ImageView
                 android:id="@+id/imageProfileAvatar"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:src="@drawable/ic_avatar"
                 android:contentDescription="@string/avatar"
                 android:layout_marginEnd="16dp" />
@@ -47,7 +47,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textProfileUsername"
+                    android:id="@+id/txtProfileUsername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/username"
@@ -63,7 +63,7 @@
                     android:gravity="center_vertical">
 
                     <TextView
-                        android:id="@+id/textProfileLevel"
+                        android:id="@+id/txtProfileLevel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Nivel 77"
@@ -82,7 +82,7 @@
                         android:progress="60" />
 
                     <TextView
-                        android:id="@+id/textProfileXp"
+                        android:id="@+id/txtProfileXp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="123 xp"
@@ -174,12 +174,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.4"
-                android:text="Blitz"
+                android:text="@string/time_mode_blitz"
                 android:textSize="18sp"
                 android:textColor="@android:color/black" />
 
             <TextView
-                android:id="@+id/textBlitzElo"
+                android:id="@+id/txtBlitzElo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
@@ -209,12 +209,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.4"
-                android:text="Rapid"
+                android:text="@string/time_mode_rapid"
                 android:textSize="18sp"
                 android:textColor="@android:color/black" />
 
             <TextView
-                android:id="@+id/textRapidElo"
+                android:id="@+id/txtRapidElo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
@@ -244,12 +244,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.4"
-                android:text="Classic"
+                android:text="@string/time_mode_classic"
                 android:textSize="18sp"
                 android:textColor="@android:color/black" />
 
             <TextView
-                android:id="@+id/textClassicElo"
+                android:id="@+id/txtClassicElo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
@@ -279,12 +279,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.4"
-                android:text="Extended"
+                android:text="@string/time_mode_extended"
                 android:textSize="18sp"
                 android:textColor="@android:color/black" />
 
             <TextView
-                android:id="@+id/textExtendedElo"
+                android:id="@+id/txtExtendedElo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
@@ -308,7 +308,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="EQUIPADO"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@android:color/black"
             android:layout_marginBottom="16dp" />

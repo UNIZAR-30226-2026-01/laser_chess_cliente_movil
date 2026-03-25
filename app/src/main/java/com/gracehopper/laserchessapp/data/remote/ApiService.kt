@@ -1,13 +1,16 @@
 package com.gracehopper.laserchessapp.data.remote
 
-import com.gracehopper.laserchessapp.data.model.auth.AccountResponse
+import com.gracehopper.laserchessapp.data.model.auth.RegisterResponse
 import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
 import com.gracehopper.laserchessapp.data.model.auth.LoginResponse
 import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
 import com.gracehopper.laserchessapp.data.model.auth.UpdateAccountRequest
+import com.gracehopper.laserchessapp.data.model.ranking.AllRatingsResponse
 import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.model.social.FriendshipStatusResponse
+import com.gracehopper.laserchessapp.data.model.user.AccountResponse
+import com.gracehopper.laserchessapp.data.model.ranking.RatingResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -22,19 +25,37 @@ interface ApiService {
 
     // Endpoint para registrar una nueva cuenta
     @POST("register")
-    fun register(@Body request: RegisterRequest): Call<AccountResponse>
+    fun register(@Body request: RegisterRequest): Call<RegisterResponse>
 
     // Endpoint para obtener información de una cuenta
     @GET("api/account/{id}")  // /api/account/algomas
     fun getAccount(@Path("id") id: Long): Call<AccountResponse>
 
     // Endpoint para actualizar información de una cuenta
+    // tipo devuelto es registerResponse? REVISAR
     @POST("api/account/update")
-    fun updateAccount(@Body request: UpdateAccountRequest): Call<AccountResponse>
+    fun updateAccount(@Body request: UpdateAccountRequest): Call<RegisterResponse>
 
     // Endpoint para eliminar una cuenta
     @DELETE("api/account/delete/")
     fun deleteAccount(): Call<Unit>
+
+    // ratings
+
+    @GET("api/rating/{userID}")
+    fun getRatings(@Path("userID") userId: Long): Call<AllRatingsResponse>
+
+    @GET("api/rating/{userID}/blitz")
+    fun getBlitzElo(@Path("userID") userId: Long): Call<RatingResponse>
+
+    @GET("api/rating/{userID}/rapid")
+    fun getRapidElo(@Path("userID") userId: Long): Call<RatingResponse>
+
+    @GET("api/rating/{userID}/classic")
+    fun getClassicElo(@Path("userID") userId: Long): Call<RatingResponse>
+
+    @GET("api/rating/{userID}/extended")
+    fun getExtendedElo(@Path("userID") userId: Long): Call<RatingResponse>
 
     @GET("api/friendship")
     fun getFriendships(): Call<List<FriendSummary>>
@@ -45,7 +66,7 @@ interface ApiService {
     @GET("api/friendship/{user2Username}")
     fun getFriendshipStatus(@Path("user2Username") username: String): Call<FriendshipStatusResponse>
 
-    @PUT("api/friendship/{username}")
+    @PUT("api/friendship/{user2Username}")
     fun acceptFriendship(@Path("user2Username") username: String): Call<Unit>
 
     @DELETE("api/friendship/{user2Username}")

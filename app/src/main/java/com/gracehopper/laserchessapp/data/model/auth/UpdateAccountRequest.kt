@@ -1,18 +1,20 @@
 package com.gracehopper.laserchessapp.data.model.auth
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * Clase de datos que representa una solicitud de update de una cuenta.
  *
  * @property username Nombre de usuario
  * @property mail Dirección de correo electrónico del usuario
- * @property board_skin Skin del tablero
- * @property piece_skin Skin de las piezas
- * @property win_animation Animación de fin de partida
+ * @property boardSkin Skin del tablero
+ * @property pieceSkin Skin de las piezas
+ * @property winAnimation Animación de fin de partida
  */
 data class UpdateAccountRequest(
-    val username: String? = null,
-    val mail: String? = null,
-    val board_skin: Int? = null,
-    val piece_skin: Int? = null,
-    val win_animation: Int? = null
+    @SerializedName("username") val username: String? = null,
+    @SerializedName("mail") val mail: String? = null,
+    @SerializedName("board_skin") val boardSkin: Int? = null,
+    @SerializedName("piece_skin") val pieceSkin: Int? = null,
+    @SerializedName("win_animation") val winAnimation: Int? = null
 )

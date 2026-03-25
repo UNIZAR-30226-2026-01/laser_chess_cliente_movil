@@ -1,5 +1,5 @@
 package com.gracehopper.laserchessapp.data.model.user
 
-enum class TimeMode {
+enum class EloType {
     BLITZ, RAPID, CLASSIC, EXTENDED
 }

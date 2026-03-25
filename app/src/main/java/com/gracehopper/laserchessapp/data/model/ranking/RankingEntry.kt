@@ -1,6 +1,6 @@
 package com.gracehopper.laserchessapp.data.model.ranking
 
-import com.gracehopper.laserchessapp.data.model.user.TimeMode
+import com.gracehopper.laserchessapp.data.model.user.EloType
 
 /**
  * Clase que representa un perfil del ranking.
@@ -19,7 +19,7 @@ data class RankingEntry (
     // 2 posibles casos:--------------------------------------------------------
     // 1. backend nos devuelve el elo concreto de un modo de tiempo:
     val elo: Int,
-    val timeMode: TimeMode
+    val timeMode: EloType
     // o -----------------------------------------------------------------------
     // 2. emplear userRatings, tener todo guardado y a la hora de elegir
     //    cuál mostrar se emplea entry.ratings.blitz y tal

@@ -2,30 +2,22 @@ package com.gracehopper.laserchessapp.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.gracehopper.laserchessapp.R
-import com.gracehopper.laserchessapp.data.model.auth.AccountResponse
 import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
-import com.gracehopper.laserchessapp.data.model.auth.LoginResponse
 import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.AuthRepository
 import com.gracehopper.laserchessapp.ui.main.MainActivity
 import com.gracehopper.laserchessapp.utils.TokenManager
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 /**
  * Actividad de inicio de sesión.
@@ -183,10 +175,10 @@ class LoginActivity : AppCompatActivity() {
         authRepository.login(request = request, onSuccess = { loginResponse ->
             restoreLoginButton()
 
-            TokenManager.saveAccessToken(loginResponse.access_token)
+            TokenManager.saveAccessToken(loginResponse.accessToken)
             TokenManager.saveUserCredential(credential)
 
-            Log.d("LoginActivity", "Token guardado: ${loginResponse.access_token}")
+            Log.d("LoginActivity", "Token guardado: ${loginResponse.accessToken}")
 
             loginLayout.visibility = View.GONE
             registerLayout.visibility = View.GONE
@@ -279,7 +271,7 @@ class LoginActivity : AppCompatActivity() {
         authRepository.register(request = request, onSuccess = { account ->
             restoreRegisterButton()
 
-            TokenManager.saveUserId(account.account_id)
+            TokenManager.saveUserId(account.accountId)
 
             Toast.makeText(this, "¡Registro exitoso!", Toast.LENGTH_SHORT).show()
 

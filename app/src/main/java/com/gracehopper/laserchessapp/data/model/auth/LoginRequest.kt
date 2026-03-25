@@ -1,5 +1,7 @@
 package com.gracehopper.laserchessapp.data.model.auth
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * Clase de datos que representa una solicitud de inicio de sesión.
  *
@@ -7,6 +9,6 @@ package com.gracehopper.laserchessapp.data.model.auth
  * @property password Contraseña asociada a la cuenta del usuario
  */
 data class LoginRequest(
-    val credential: String,
-    val password: String
+    @SerializedName("credential") val credential: String,
+    @SerializedName("password") val password: String
 )

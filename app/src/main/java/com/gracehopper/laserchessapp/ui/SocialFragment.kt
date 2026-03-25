@@ -1,6 +1,5 @@
 package com.gracehopper.laserchessapp.ui
 
-import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -11,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -18,11 +18,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
-import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.databinding.FragmentSocialBinding
+import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 
 class SocialFragment : Fragment() {
 
@@ -60,31 +60,8 @@ class SocialFragment : Fragment() {
     }
 
     private fun showUserProfileDialog(friend: FriendSummary) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_friend_profile, null)
-
-        val imageProfileAvatar = dialogView.findViewById<ImageView>(R.id.imageProfileAvatar)
-        val textProfileUsername = dialogView.findViewById<TextView>(R.id.textProfileUsername)
-        val textProfileLevel = dialogView.findViewById<TextView>(R.id.textProfileLevel)
-        val textProfileXp = dialogView.findViewById<TextView>(R.id.textProfileXp)
-        val textProfileElo = dialogView.findViewById<TextView>(R.id.textProfileElo)
-        val buttonClose = dialogView.findViewById<ImageButton>(R.id.buttonCloseProfileDialog)
-
-        imageProfileAvatar.setImageResource(friend.avatar)
-        textProfileUsername.text = friend.username
-        textProfileLevel.text = "Nivel ${friend.level}"
-        textProfileXp.text = "${friend.xp} xp"
-        textProfileElo.text = "ELO Blitz: 1100"
-
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .create()
-
-        buttonClose.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.show()
+        UserProfileDialogFragment.newInstance(friend.id)
+            .show(parentFragmentManager, "UserProfileDialog")
     }
 
     private fun setupRecycler() {
