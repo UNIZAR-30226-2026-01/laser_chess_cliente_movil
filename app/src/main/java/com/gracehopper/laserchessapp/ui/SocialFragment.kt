@@ -300,7 +300,7 @@ class SocialFragment : Fragment() {
                 buttonAccept.visibility = View.VISIBLE
 
                 buttonAccept.setOnClickListener {
-                    acceptFriendshipRequest(username)
+                    //acceptFriendshipRequest(username)
                     Toast.makeText(requireContext(), "Solicitud aceptada: $username", Toast.LENGTH_SHORT).show()
                 }
 
