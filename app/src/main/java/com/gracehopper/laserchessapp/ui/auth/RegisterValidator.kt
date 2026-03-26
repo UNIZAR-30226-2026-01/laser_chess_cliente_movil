@@ -1,11 +1,16 @@
 package com.gracehopper.laserchessapp.ui.auth
 
-import android.util.Patterns
+import java.util.regex.Pattern
 
 /**
  * Clase de validación para el registro de usuarios.
  */
 object RegisterValidator {
+
+    // Expresión regular para validar direcciones de correo electrónico
+    private val EMAIL_PATTERN = Pattern.compile(
+        "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
+    )
 
     /**
      * Valida los datos de registro.
@@ -22,7 +27,7 @@ object RegisterValidator {
         return when {
             username.isEmpty() -> RegisterValidationResult.EmptyUsername
             mail.isEmpty() -> RegisterValidationResult.EmptyMail
-            !Patterns.EMAIL_ADDRESS.matcher(mail).matches() -> RegisterValidationResult.InvalidMail
+            !EMAIL_PATTERN.matcher(mail).matches() -> RegisterValidationResult.InvalidMail
             password.isEmpty() -> RegisterValidationResult.EmptyPassword
             confirmPassword.isEmpty() -> RegisterValidationResult.EmptyConfirmPassword
             password.length < 6 -> RegisterValidationResult.ShortPassword
