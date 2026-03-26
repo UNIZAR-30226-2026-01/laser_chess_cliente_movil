@@ -1,4 +1,4 @@
-package com.gracehopper.laserchessapp.gameLogic
+package com.gracehopper.laserchessapp.gameLogic.move
 
 data class Move(
     val type: Char,             // T (Traslación); R (rot der [right]) , L (rot izq [left])

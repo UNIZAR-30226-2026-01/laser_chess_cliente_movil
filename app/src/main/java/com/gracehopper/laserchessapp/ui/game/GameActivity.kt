@@ -11,8 +11,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.databinding.ActivityGameBinding
-import com.gracehopper.laserchessapp.ui.game.board.Board
-import com.gracehopper.laserchessapp.ui.game.pieces.Deflector
+import com.gracehopper.laserchessapp.gameLogic.board.Board
+import com.gracehopper.laserchessapp.gameLogic.pieces.Deflector
 
 class GameActivity : AppCompatActivity() {
 
@@ -54,7 +54,7 @@ class GameActivity : AppCompatActivity() {
         board.setContent {
             GameScreen(
                 board = boardM,
-                isRedPlayer = false,
+                isRedPlayer = true,
                 onPieceSelected = { pos ->          // Al seleccionar una pieza
                     selectedPos = pos
                     controls.visibility = if (pos != null) View.VISIBLE else View.GONE          // Aparecen ctrls de rot
@@ -73,7 +73,7 @@ class GameActivity : AppCompatActivity() {
             selectedPos?.let { (r, c) ->
                 val piece = boardM.getPiece(r, c)
 
-                piece?.rotation = piece?.rotation?.minus(90) ?: 0
+                piece?.rotateLeft()
 
                 selectedPos = null
                 clearTrigger++
@@ -86,7 +86,7 @@ class GameActivity : AppCompatActivity() {
             selectedPos?.let { (r, c) ->
                 val piece = boardM.getPiece(r, c)
 
-                piece?.rotation = piece?.rotation?.plus(90) ?: 0
+                piece?.rotateRight()
 
                 selectedPos = null
                 clearTrigger++

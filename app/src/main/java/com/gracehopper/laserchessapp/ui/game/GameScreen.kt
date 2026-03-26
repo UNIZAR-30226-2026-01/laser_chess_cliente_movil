@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.gracehopper.laserchessapp.ui.game.board.Board
+import com.gracehopper.laserchessapp.gameLogic.board.Board
 
 @Composable
 

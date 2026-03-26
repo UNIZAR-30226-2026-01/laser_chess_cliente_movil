@@ -1,7 +1,7 @@
-package com.gracehopper.laserchessapp.ui.game.board
+package com.gracehopper.laserchessapp.gameLogic.board
 
 import androidx.compose.runtime.mutableStateListOf
-import com.gracehopper.laserchessapp.ui.game.pieces.Piece
+import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 
 class Board(val rows: Int, val cols: Int) {
 

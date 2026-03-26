@@ -1,4 +1,4 @@
-package com.gracehopper.laserchessapp.gameLogic
+package com.gracehopper.laserchessapp.gameLogic.move
 
 object MoveParser {
 
