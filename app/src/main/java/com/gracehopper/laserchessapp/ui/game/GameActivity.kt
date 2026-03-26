@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.databinding.ActivityGameBinding
 import com.gracehopper.laserchessapp.ui.game.board.Board
 import com.gracehopper.laserchessapp.ui.game.pieces.Deflector
 
@@ -21,8 +22,21 @@ class GameActivity : AppCompatActivity() {
     private var clearTrigger by mutableIntStateOf(0)            // Trigger para avisar a la UI de limpiar selección
     private var selectedPos: Pair<Int, Int>? = null             // Posición de la pieza
 
+    // Bind temporal
+    private lateinit var binding: ActivityGameBinding
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        /* Bind temporal
+        binding = ActivityGameBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.connect.setOnClickListener {
+            val apiKey =
+        }*/
+
+
         setContentView(R.layout.activity_game)
 
         val board = findViewById<ComposeView>(R.id.board)
