@@ -6,7 +6,9 @@ import com.gracehopper.laserchessapp.data.model.user.TimeMode
 /**
  * Clase que representa la respuesta de la API de Elo
  *
- * @param elo rating Elo del usuario
+ * @param userID ID del usuario
+ * @param eloType Tipo de elo
+ * @param value Valor del elo
  */
 data class RatingResponse (
     @SerializedName("user_id") val userID: Int,

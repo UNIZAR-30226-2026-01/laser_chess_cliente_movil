@@ -13,6 +13,6 @@ import com.google.gson.annotations.SerializedName
 data class FriendSummary (
     @SerializedName("account_id") val id: Long,
     @SerializedName("username") val username: String,
-    @SerializedName("avatar") val avatar: Int,
-    @SerializedName("level") val level: Int
+    @SerializedName("level") val level: Int,
+    @SerializedName("avatar") val avatar: Int
 )
