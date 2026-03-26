@@ -12,7 +12,6 @@ import androidx.compose.ui.platform.ComposeView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.databinding.ActivityGameBinding
 import com.gracehopper.laserchessapp.gameLogic.board.Board
-import com.gracehopper.laserchessapp.gameLogic.pieces.Deflector
 
 class GameActivity : AppCompatActivity() {
 
@@ -48,7 +47,7 @@ class GameActivity : AppCompatActivity() {
 
         boardM = Board(rows, cols)
 
-        boardM.setPiece(2,3, Deflector(true))           // Pieza prueba
+        //boardM.setPiece(2,3, Deflector(true))           // Pieza prueba
 
         // UI
         board.setContent {
