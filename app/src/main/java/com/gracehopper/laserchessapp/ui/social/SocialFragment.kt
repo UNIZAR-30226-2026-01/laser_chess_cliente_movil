@@ -1,4 +1,4 @@
-package com.gracehopper.laserchessapp.ui.social
+package com.gracehopper.laserchessapp.ui
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -24,8 +25,6 @@ import com.gracehopper.laserchessapp.data.model.user.TimeMode
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.databinding.FragmentSocialBinding
-import com.gracehopper.laserchessapp.ui.FriendAdapter
-import com.gracehopper.laserchessapp.ui.InProgressAdapter
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 
 class SocialFragment : Fragment() {
@@ -38,10 +37,6 @@ class SocialFragment : Fragment() {
     private lateinit var recyclerFriends : RecyclerView
 
     private lateinit var inProgressAdapter: InProgressAdapter
-
-    private val repository by lazy {
-        FriendRepository(NetworkUtils.getApiService())
-    }
 
     private enum class SocialTab {
         SOCIAL, IN_PROGRESS
@@ -66,23 +61,6 @@ class SocialFragment : Fragment() {
         loadFriends()
         loadFakeGamesInProgress()
         setupTabs()
-
-        // cada vez que el dialogo se cierre, se vuelve a cargar la lista de amigos
-        parentFragmentManager.setFragmentResultListener(
-            "requests_dialog_closed",
-            viewLifecycleOwner
-        ) { _, _ ->
-            loadFriends()
-        }
-
-        // cada vez que se elimine un amigo, se vuelve a cargar la lista de amigos
-        parentFragmentManager.setFragmentResultListener(
-            "friend_removed",
-            viewLifecycleOwner
-        ) { _, _ ->
-            loadFriends()
-        }
-
         setupListeners()
         selectTab(SocialTab.SOCIAL)
     }
@@ -99,7 +77,7 @@ class SocialFragment : Fragment() {
             adapter = friendsAdapter
         }
 
-        inProgressAdapter = InProgressAdapter(emptyList()) { game -> resumeGame(game) }
+        inProgressAdapter = InProgressAdapter(emptyList()) { game -> resumeGame(game)}
         binding.recyclerInProgressGames.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = inProgressAdapter
@@ -107,6 +85,7 @@ class SocialFragment : Fragment() {
     }
 
     private fun loadFriends() {
+        val repository = FriendRepository(NetworkUtils.getApiService())
 
         repository.getFriends(onSuccess = { friends ->
             if (friends != null) {
@@ -196,13 +175,12 @@ class SocialFragment : Fragment() {
             showAddFriendDialog()
         }
         binding.cardSolicitudes.setOnClickListener {
-            DialogRequestsFragment().show(parentFragmentManager, "DialogRequests")
+            showRequestsDialog()
         }
     }
 
     private fun showAddFriendDialog() {
-        val dialogView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.dialog_add_friend, null)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_add_friend, null)
 
         val editTextUsername = dialogView.findViewById<EditText>(R.id.editTextFriendUsername)
         val buttonSendFriendRequest = dialogView.findViewById<Button>(R.id.buttonSendFriendRequest)
@@ -219,11 +197,22 @@ class SocialFragment : Fragment() {
             .create()
 
         textInvitationLink.setOnClickListener {
-            copyInvitationLink(invitationLink)
+            val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE)
+                    as ClipboardManager
+
+            val clip = ClipData.newPlainText("invitation_link", invitationLink)
+            clipboard.setPrimaryClip(clip)
+
+            Toast.makeText(requireContext(), "Enlace copiado", Toast.LENGTH_SHORT).show()
         }
 
         buttonCopyInvitationLink.setOnClickListener {
-            copyInvitationLink(invitationLink)
+            val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE)
+                    as ClipboardManager
+            val clip = ClipData.newPlainText("invitation_link", invitationLink)
+            clipboard.setPrimaryClip(clip)
+
+            Toast.makeText(requireContext(), "Enlace copiado", Toast.LENGTH_SHORT).show()
         }
 
         buttonSendFriendRequest.setOnClickListener {
@@ -246,16 +235,8 @@ class SocialFragment : Fragment() {
         dialog.show()
     }
 
-    fun copyInvitationLink(invitationLink: String) {
-        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE)
-                as ClipboardManager
-        val clip = ClipData.newPlainText("invitation_link", invitationLink)
-        clipboard.setPrimaryClip(clip)
-
-        Toast.makeText(requireContext(), "Enlace copiado", Toast.LENGTH_SHORT).show()
-    }
-
     private fun sendFriendRequest(username : String) {
+        val repository = FriendRepository(NetworkUtils.getApiService())
 
         repository.addFriend(username = username, onSuccess = {
             Toast.makeText(requireContext(), "Solicitud enviada a $username", Toast.LENGTH_SHORT).show()
@@ -271,6 +252,95 @@ class SocialFragment : Fragment() {
                 else -> Toast.makeText(requireContext(), "Error: $errorCode", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun showRequestsDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_friendship_requests, null)
+
+        val buttonCloseDialog = dialogView.findViewById<ImageButton>(R.id.buttonCloseRequestsDialog)
+
+        val receivedContainer = dialogView.findViewById<LinearLayout>(R.id.layoutReceivedRequestsContainer)
+        val receivedTab = dialogView.findViewById<TextView>(R.id.tabReceivedRequests)
+        var layoutReceivedContent = dialogView.findViewById<LinearLayout>(R.id.layoutReceivedRequestsContent)
+
+        val sentContainer = dialogView.findViewById<LinearLayout>(R.id.layoutSentRequestsContainer)
+        val sentTab = dialogView.findViewById<TextView>(R.id.tabSentRequests)
+        val layoutSentContent = dialogView.findViewById<LinearLayout>(R.id.layoutSentRequestsContent)
+
+        val emptyReceived = dialogView.findViewById<TextView>(R.id.textEmptyReceivedRequests)
+        val emptySent = dialogView.findViewById<TextView>(R.id.textEmptySentRequests)
+
+        // Datos falsos de momento
+        val receivedRequests = listOf("Usuario1", "Usuario2")
+        val sentRequests = listOf("Usuario3")
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        // Limpiar contenedores por seguridad
+        receivedContainer.removeAllViews()
+        sentContainer.removeAllViews()
+
+        // RECIBIDIAS
+        if (receivedRequests.isEmpty()) {
+            emptyReceived.visibility = View.VISIBLE
+        } else {
+            emptyReceived.visibility = View.GONE
+
+            for (username in receivedRequests) {
+                val itemView = layoutInflater.inflate(R.layout.item_friendship_request,
+                    receivedContainer, false)
+
+                val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
+                val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
+                val buttonReject = itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
+
+                textUsername.text = username
+                buttonAccept.visibility = View.VISIBLE
+
+                buttonAccept.setOnClickListener {
+                    //acceptFriendshipRequest(username)
+                    Toast.makeText(requireContext(), "Solicitud aceptada: $username", Toast.LENGTH_SHORT).show()
+                }
+
+                buttonReject.setOnClickListener {
+                    Toast.makeText(requireContext(), "Solicitud rechazada: $username", Toast.LENGTH_SHORT).show()
+                }
+
+                receivedContainer.addView(itemView)
+
+            }
+        }
+
+        if (sentRequests.isEmpty()) {
+            emptySent.visibility = View.VISIBLE
+        } else {
+            for (username in sentRequests) {
+                val itemView = layoutInflater.inflate(R.layout.item_friendship_request, sentContainer, false)
+
+                val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
+                val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
+                val buttonCancel = itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
+
+                textUsername.text = username
+                buttonAccept.visibility = View.GONE
+
+                buttonCancel.setOnClickListener {
+                    Toast.makeText(requireContext(), "Solicitud cancelada: $username", Toast.LENGTH_SHORT).show()
+                }
+
+                sentContainer.addView(itemView)
+            }
+        }
+
+        buttonCloseDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
+
     }
 
     override fun onDestroyView() {
