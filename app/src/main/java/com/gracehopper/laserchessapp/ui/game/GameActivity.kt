@@ -12,7 +12,8 @@ import androidx.compose.ui.platform.ComposeView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.databinding.ActivityGameBinding
 import com.gracehopper.laserchessapp.gameLogic.board.Board
-import com.gracehopper.laserchessapp.gameLogic.pieces.Deflector
+import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
+import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
 
 class GameActivity : AppCompatActivity() {
 
@@ -48,7 +49,10 @@ class GameActivity : AppCompatActivity() {
 
         boardM = Board(rows, cols)
 
-        boardM.setPiece(2,3, Deflector(true))           // Pieza prueba
+        // Piezas prueba
+        boardM.setPiece(2,3, Piece(true, PieceType.DEFLECTOR))
+        boardM.setPiece(3,3, Piece(true, PieceType.SWITCHER))
+
 
         // UI
         board.setContent {
@@ -101,10 +105,16 @@ class GameActivity : AppCompatActivity() {
         val (r1, c1) = from
         val (r2, c2) = to
 
-        val piece = boardM.getPiece(r1, c1)
+        val pieceFrom = boardM.getPiece(r1, c1)
+        val pieceTo = boardM.getPiece(r2, c2)
 
-        boardM.setPiece(r2, c2, piece)
-        boardM.setPiece(r1, c1, null)
+        if (pieceFrom != null && pieceFrom.type == PieceType.SWITCHER && pieceTo != null) {
+            boardM.setPiece(r1,c1, pieceTo)
+            boardM.setPiece(r2, c2, pieceFrom)
+        } else {
+            boardM.setPiece(r2, c2, pieceFrom)
+            boardM.setPiece(r1, c1, null)
+        }
 
         selectedPos = null
         clearTrigger++

@@ -3,22 +3,35 @@ package com.gracehopper.laserchessapp.gameLogic.pieces
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 
-enum class PieceType {
-    KING, DEFENDER, SWITCHER, DEFLECTOR
-}
-
-abstract class Piece(
+class Piece(
     val isRed: Boolean,
     val type: PieceType
 ) {
 
     var rotation by mutableIntStateOf(0)
 
-    abstract fun getImageRes(): Int
+    fun rotateLeft() {
+        rotation -= 90
+    }
 
-    open fun getValidMoves(
+    fun rotateRight() {
+        rotation += 90
+    }
+
+     fun getImageRes(): Int {
+        return when(type) {
+            PieceType.KING -> if (isRed) R.drawable.red_king else R.drawable.blue_king
+            PieceType.DEFENDER -> if (isRed) R.drawable.red_shield else R.drawable.blue_shield
+            PieceType.SWITCHER -> if (isRed) R.drawable.red_switch else R.drawable.blue_switch
+            PieceType.DEFLECTOR -> if (isRed) R.drawable.red_deflector else R.drawable.blue_deflector
+            PieceType.LASER -> if (isRed) R.drawable.red_lasser else R.drawable.blue_lasser
+        }
+    }
+
+    fun getValidMoves(
         row: Int,
         col: Int,
         board: Board
@@ -44,7 +57,12 @@ abstract class Piece(
 
                 if (newRow in 0 until board.rows && newCol in 0 until board.cols) {
 
-                    if (board.getPiece(newRow, newCol) == null) {
+                    val target = board.getPiece(newRow, newCol)
+
+                    if (target == null) {
+                        moves.add(Pair(newRow, newCol))
+
+                    } else if (type == PieceType.SWITCHER && target.type != PieceType.SWITCHER) {
                         moves.add(Pair(newRow, newCol))
                     }
                 }
@@ -52,14 +70,4 @@ abstract class Piece(
 
             return moves
         }
-
-    open fun canSwap(): Boolean = false
-
-    fun rotateLeft() {
-        rotation -= 90
     }
-
-    fun rotateRight() {
-        rotation += 90
-    }
-}
