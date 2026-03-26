@@ -47,7 +47,7 @@ class FriendRepository(private val apiService: ApiService) {
     /**
      * Agrega una nueva solicitud de amistad.
      *
-     * @param request Objeto que contiene los datos de la solicitud.
+     * @param username Nombre de usuario del otro usuario
      */
     fun addFriend (username: String, onSuccess: () -> Unit,
                    onError: (Int?) -> Unit) {
@@ -67,6 +67,58 @@ class FriendRepository(private val apiService: ApiService) {
             }
         })
     }
+
+    /**
+     * Obtiene la lista de solicitudes de amistad recibidas.
+     */
+    fun getReceivedFriendshipRequests(onSuccess: (List<FriendSummary>) -> Unit,
+                                   onError: (Int?) -> Unit) {
+
+        apiService.getReceivedFriendshipRequests()
+            .enqueue(object : Callback<List<FriendSummary>> {
+
+                override fun onResponse(call : Call<List<FriendSummary>>,
+                                        response : Response<List<FriendSummary>>) {
+                    if (response.isSuccessful) {
+                        onSuccess(response.body().orEmpty())
+                    } else {
+                        onError(response.code())
+                    }
+                }
+
+                override fun onFailure(call : Call<List<FriendSummary>>, t : Throwable) {
+                    onError(null)
+                }
+            })
+
+    }
+
+    /**
+     * Obtiene la lista de solicitudes de amistad enviadas.
+     */
+    fun getSentFriendshipRequests(onSuccess: (List<FriendSummary>) -> Unit,
+                                  onError: (Int?) -> Unit) {
+
+        apiService.getSentFriendshipRequests()
+            .enqueue(object : Callback<List<FriendSummary>> {
+
+                override fun onResponse(call : Call<List<FriendSummary>>,
+                                        response : Response<List<FriendSummary>>) {
+
+                    if (response.isSuccessful) {
+                        onSuccess(response.body().orEmpty())
+                    } else {
+                        onError(response.code())
+                    }
+                }
+
+                override fun onFailure(call : Call<List<FriendSummary>>, t : Throwable) {
+                    onError(null)
+                }
+            })
+
+    }
+
 
     /**
      * Obtiene el estado de la solicitud de amistad entre dos usuarios.
@@ -98,9 +150,16 @@ class FriendRepository(private val apiService: ApiService) {
         })
     }
 
+    /**
+     * Acepta una solicitud de amistad.
+     *
+     * @param username Nombre de usuario del emisor de la solicitud
+     */
     fun acceptFriendship(username: String, onSuccess: () -> Unit,
                          onError: (Int?) -> Unit) {
+
         apiService.acceptFriendship(username).enqueue(object : Callback<Unit> {
+
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
                 if (response.isSuccessful) {
                     onSuccess()
@@ -112,7 +171,9 @@ class FriendRepository(private val apiService: ApiService) {
             override fun onFailure(call: Call<Unit?>, t: Throwable) {
                 onError(null)
             }
+
         })
+
     }
 
     /**
@@ -122,6 +183,7 @@ class FriendRepository(private val apiService: ApiService) {
      */
     fun deleteFriendship(username: String, onSuccess: () -> Unit,
                          onError: (Int?) -> Unit) {
+
         apiService.deleteFriendship(username).enqueue(object : Callback<Unit> {
 
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
