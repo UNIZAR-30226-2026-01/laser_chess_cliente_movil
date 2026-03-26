@@ -194,11 +194,24 @@ class LoginActivity : AppCompatActivity() {
                 restoreLoginButton()
 
                 when (errorCode) {
-                    401 -> Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT)
-                        .show()
+                    401 -> Toast.makeText(
+                        this,
+                        "Credenciales incorrectas",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                    400 -> Toast.makeText(this, "Datos inválidos", Toast.LENGTH_SHORT).show()
-                    null -> Toast.makeText(this, "Error de conexión", Toast.LENGTH_SHORT).show()
+                    400 -> Toast.makeText(
+                        this,
+                        "Datos inválidos",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    null -> Toast.makeText(
+                        this,
+                        "Error de conexión",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
                     else -> Toast.makeText(
                         this,
                         "Error del servidor: $errorCode",
@@ -284,13 +297,29 @@ class LoginActivity : AppCompatActivity() {
             showLogin()
             clearRegisterForm()
             loginCredential.setText(mail)
-        }, onError = { errorCode ->
+        },
+        onError = { errorCode ->
             restoreRegisterButton()
 
             when (errorCode) {
-                409 -> Toast.makeText(this, "El usuario ya existe", Toast.LENGTH_SHORT).show()
-                401 -> Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
-                400 -> Toast.makeText(this, "Datos inválidos", Toast.LENGTH_SHORT).show()
+                409 -> Toast.makeText(
+                    this,
+                    "El usuario ya existe",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                400 -> Toast.makeText(
+                    this,
+                    "Datos inválidos",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                null -> Toast.makeText(
+                    this,
+                    "Error de conexión",
+                    Toast.LENGTH_SHORT
+                ).show()
+
                 else -> Toast.makeText(
                     this,
                     "Error del servidor: $errorCode",

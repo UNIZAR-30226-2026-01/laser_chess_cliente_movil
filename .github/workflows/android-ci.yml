@@ -27,6 +27,9 @@ jobs:
         - name: Ejecutar tests unitarios
           run: ./gradlew testDebugUnitTest
 
+        - name: Ejecutar lint
+          run: ./gradlew lint
+
         - name: Compilar APK debug
           run: ./gradlew assembleDebug
 
