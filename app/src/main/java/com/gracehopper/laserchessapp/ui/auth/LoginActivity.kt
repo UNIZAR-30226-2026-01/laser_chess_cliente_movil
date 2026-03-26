@@ -3,7 +3,6 @@ package com.gracehopper.laserchessapp.ui.auth
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.util.Patterns
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -142,20 +141,20 @@ class LoginActivity : AppCompatActivity() {
         val credential = loginCredential.text.toString().trim()
         val password = loginPassword.text.toString().trim()
 
-        when {
-            credential.isEmpty() -> {
+        when (LoginValidator.validate(credential, password)) {
+            LoginValidationResult.EmptyCredential -> {
                 loginCredential.error = "Introduce un username/e-mail"
                 loginCredential.requestFocus()
                 return
             }
 
-            password.isEmpty() -> {
+            LoginValidationResult.EmptyPassword -> {
                 loginPassword.error = "Introduce una contraseña"
                 loginPassword.requestFocus()
                 return
             }
 
-            password.length < 6 -> {
+            LoginValidationResult.ShortPassword -> {
                 loginPassword.error = "Mínimo 6 caracteres"
                 loginPassword.requestFocus()
                 Toast.makeText(
@@ -165,6 +164,9 @@ class LoginActivity : AppCompatActivity() {
                 ).show()
                 return
             }
+
+            LoginValidationResult.Valid -> Unit
+
         }
 
         // Por si acaso apago el boton
@@ -172,20 +174,22 @@ class LoginActivity : AppCompatActivity() {
         loginButton.text = "Iniciando sesión..."
         val request = LoginRequest(credential, password)
 
-        authRepository.login(request = request, onSuccess = { loginResponse ->
-            restoreLoginButton()
+        authRepository.login(
+            request = request,
+            onSuccess = { loginResponse ->
+                restoreLoginButton()
 
-            TokenManager.saveAccessToken(loginResponse.accessToken)
-            TokenManager.saveUserCredential(credential)
+                TokenManager.saveAccessToken(loginResponse.accessToken)
+                TokenManager.saveUserCredential(credential)
 
-            Log.d("LoginActivity", "Token guardado: ${loginResponse.accessToken}")
+                Log.d("LoginActivity", "Token guardado: ${loginResponse.accessToken}")
 
-            loginLayout.visibility = View.GONE
-            registerLayout.visibility = View.GONE
+                loginLayout.visibility = View.GONE
+                registerLayout.visibility = View.GONE
 
-            Toast.makeText(this, "¡Bienvenid@!", Toast.LENGTH_SHORT).show()
-            goToMain()
-        },
+                Toast.makeText(this, "¡Bienvenid@!", Toast.LENGTH_SHORT).show()
+                goToMain()
+            },
             onError = { errorCode ->
                 restoreLoginButton()
 
@@ -212,38 +216,38 @@ class LoginActivity : AppCompatActivity() {
         val password = registerPassword.text.toString().trim()
         val confirmPassword = registerConfirmPassword.text.toString().trim()
 
-        when {
-            username.isEmpty() -> {
+        when (RegisterValidator.validate(username, mail, password, confirmPassword)) {
+            RegisterValidationResult.EmptyUsername -> {
                 registerUsername.error = "Introduce un nombre de usuario"
                 registerUsername.requestFocus()
                 return
             }
 
-            mail.isEmpty() -> {
+            RegisterValidationResult.EmptyMail -> {
                 registerEmail.error = "Introduce un e-mail"
                 registerEmail.requestFocus()
                 return
             }
 
-            !Patterns.EMAIL_ADDRESS.matcher(mail).matches() -> {
+            RegisterValidationResult.InvalidMail -> {
                 registerEmail.error = "Email inválido"
                 registerEmail.requestFocus()
                 return
             }
 
-            password.isEmpty() -> {
+            RegisterValidationResult.EmptyPassword -> {
                 registerPassword.error = "Introduce una contraseña"
                 registerPassword.requestFocus()
                 return
             }
 
-            confirmPassword.isEmpty() -> {
+            RegisterValidationResult.EmptyConfirmPassword -> {
                 registerConfirmPassword.error = "Confirma tu contraseña"
                 registerConfirmPassword.requestFocus()
                 return
             }
 
-            password.length < 6 -> {
+            RegisterValidationResult.ShortPassword -> {
                 registerPassword.error = "Mínimo 6 caracteres"
                 registerPassword.requestFocus()
                 Toast.makeText(
@@ -254,11 +258,13 @@ class LoginActivity : AppCompatActivity() {
                 return
             }
 
-            password != confirmPassword -> {
+            RegisterValidationResult.PasswordsMismatch -> {
                 registerConfirmPassword.error = "No coinciden las contraseñas"
                 registerConfirmPassword.requestFocus()
                 return
             }
+
+            RegisterValidationResult.Valid -> Unit
 
         }
 
