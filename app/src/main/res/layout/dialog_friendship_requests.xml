@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp">
@@ -33,67 +34,89 @@
             android:textColor="@android:color/black"
             android:layout_marginBottom="20dp" />
 
-        <!-- Recibidas -->
-        <TextView
-            android:id="@+id/textReceivedRequestsTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/received_requests"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="10dp" />
-
-        <TextView
-            android:id="@+id/textEmptyReceivedRequests"
+        <!-- Tabs -->
+        <LinearLayout
+            android:id="@+id/layoutRequestTabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/no_received_requests"
-            android:textSize="15sp"
-            android:textColor="@color/darker_gray"
-            android:visibility="gone"
-            android:layout_marginBottom="10dp" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
 
+            <TextView
+                android:id="@+id/tabReceivedRequests"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tab_selected"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/received_requests"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tabSentRequests"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tab_unselected"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/sent_requests"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Contenido RECIBIDAS -->
         <LinearLayout
-            android:id="@+id/layoutReceivedRequestsContainer"
+            android:id="@+id/layoutReceivedRequestsContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textEmptyReceivedRequests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_received_requests"
+                android:textSize="15sp"
+                android:textColor="@color/darker_gray"
+                android:visibility="gone"
+                android:layout_marginBottom="10dp" />
+
+            <LinearLayout
+                android:id="@+id/layoutReceivedRequestsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+
+        <!-- Contenido ENVIADAS -->
+        <LinearLayout
+            android:id="@+id/layoutSentRequestsContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="20dp" />
+            android:visibility="gone">
 
-        <!-- Separador -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/black"
-            android:layout_marginBottom="20dp" />
+            <TextView
+                android:id="@+id/textEmptySentRequests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_sent_requests"
+                android:textSize="15sp"
+                android:textColor="@color/darker_gray"
+                android:visibility="gone"
+                android:layout_marginBottom="10dp" />
 
-        <!-- Enviadas -->
-        <TextView
-            android:id="@+id/textSentRequestsTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sent_requests"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="10dp" />
-
-        <TextView
-            android:id="@+id/textEmptySentRequests"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/no_sent_requests"
-            android:textSize="15sp"
-            android:textColor="@color/darker_gray"
-            android:visibility="gone"
-            android:layout_marginBottom="10dp" />
-
-        <LinearLayout
-            android:id="@+id/layoutSentRequestsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            <LinearLayout
+                android:id="@+id/layoutSentRequestsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
 
     </LinearLayout>
 </FrameLayout>
