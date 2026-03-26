@@ -12,11 +12,11 @@ jobs:
         - name: Checkout del código
           uses: actions/checkout@v4
 
-        - name: Configurar JDK 11
+        - name: Configurar JDK 17
           uses: actions/setup-java@v5
           with:
             distribution: temurin
-            java-version: 11
+            java-version: 17
 
         - name: Configurar Gradle
           uses: gradle/actions/setup-gradle@v4
