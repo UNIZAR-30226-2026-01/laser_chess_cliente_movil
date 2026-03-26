@@ -57,11 +57,18 @@ interface ApiService {
     @GET("api/rating/{userID}/extended")
     fun getExtendedElo(@Path("userID") userId: Long): Call<RatingResponse>
 
+    // friendship
     @GET("api/friendship")
     fun getFriendships(): Call<List<FriendSummary>>
 
     @POST("api/friendship")
     fun addFriend(@Body request: CreateFriendshipRequest): Call<Unit>
+
+    @GET("api/friendship/pending")
+    fun getReceivedFriendshipRequests(): Call<List<FriendSummary>>
+
+    @GET("api/friendship/sent")
+    fun getSentFriendshipRequests(): Call<List<FriendSummary>>
 
     @GET("api/friendship/{user2Username}")
     fun getFriendshipStatus(@Path("user2Username") username: String): Call<FriendshipStatusResponse>
