@@ -76,67 +76,68 @@ fun GameScreen (
                     val isHighlighted = highlightedMoves.contains(Pair(row,col))
 
                     // Casilla
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .aspectRatio(1f)
-                            .background(Color.White)
-                            .border(1.dp, Color.Black)
-                            .clickable{
-                                val selected = selectedPos
-                                val piece = board.getPiece(row, col)
+                    key(piece ?: "$row$col") {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .aspectRatio(1f)
+                                .background(Color.White)
+                                .border(1.dp, Color.Black)
+                                .clickable{
+                                    val selected = selectedPos
+                                    val piece = board.getPiece(row, col)
 
-                                if (selected == null) {             // Primer click
-                                    if (piece != null) {
-                                        selectedPos = Pair(row, col)
-                                        highlightedMoves = piece.getValidMoves(row, col, board)
+                                    if (selected == null) {             // Primer click
+                                        if (piece != null) {
+                                            selectedPos = Pair(row, col)
+                                            highlightedMoves = piece.getValidMoves(row, col, board)
 
-                                        onPieceSelected(selectedPos)
-                                    }
-
-                                } else {            // Segundo click (mover pieza)
-                                    val (r2, c2) = selected
-                                    val selectedPiece = board.getPiece(r2, c2)
-
-                                    if (selectedPiece != null) {
-
-                                        if (highlightedMoves.contains(Pair(row, col))) {            // mov. valido
-
-                                            onMove(Pair(r2, c2), Pair(row, col))
+                                            onPieceSelected(selectedPos)
                                         }
+
+                                    } else {            // Segundo click (mover pieza)
+                                        val (r2, c2) = selected
+                                        val selectedPiece = board.getPiece(r2, c2)
+
+                                        if (selectedPiece != null) {
+
+                                            if (highlightedMoves.contains(Pair(row, col))) {            // mov. valido
+
+                                                onMove(Pair(r2, c2), Pair(row, col))
+                                            }
+                                        }
+
+                                        selectedPos = null
+                                        highlightedMoves = emptyList()
+                                        onPieceSelected(null)
                                     }
+                                }, contentAlignment = Alignment.Center
+                        ) {
+                            if (piece != null) {            // Si hay una pieza en la casilla
 
-                                    selectedPos = null
-                                    highlightedMoves = emptyList()
-                                    onPieceSelected(null)
-                                }
-                            }, contentAlignment = Alignment.Center
-                    ) {
+                                val rotation by animateFloatAsState(
+                                    targetValue = piece.rotation.toFloat(),
+                                    animationSpec = tween(200)
+                                )
 
-                        if (isHighlighted) {            // casilla de movimiento posible
-                            Box(
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .background(Color(0xFFFF9800), shape = CircleShape)
-                            )
-                        }
+                                Image(
+                                    painter = painterResource(id = piece.getImageRes()),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .graphicsLayer {
+                                            rotationZ = rotation
+                                        }
+                                )
+                            }
 
-                        if (piece != null) {            // Si hay una pieza en la casilla
-
-                            val rotation by animateFloatAsState(
-                                targetValue = piece.rotation.toFloat(),
-                                animationSpec = tween(200)
-                            )
-
-                            Image(
-                                painter = painterResource(id = piece.getImageRes()),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .graphicsLayer {
-                                        rotationZ = rotation
-                                    }
-                            )
+                            if (isHighlighted) {            // casilla de movimiento posible
+                                Box(
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .background(Color(0xFFFF9800), shape = CircleShape)
+                                )
+                            }
                         }
                     }
                 }
