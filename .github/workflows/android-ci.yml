@@ -1,0 +1,37 @@
+name: Android CI
+
+on:
+    push:
+        branches: [ "main", "ainhoa-branch", "jorge-game" ]
+
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Checkout del código
+          uses: actions/checkout@v4
+
+        - name: Configurar JDK 11
+          uses: actions/setup-java@v5
+          with:
+            distribution: temurin
+            java-version: 11
+
+        - name: Configurar Gradle
+          uses: gradle/actions/setup-gradle@v4
+
+        - name: Dar permisos a gradlew
+          run: chmod +x gradlew
+
+        - name: Ejecutar tests unitarios
+          run: ./gradlew testDebugUnitTest
+
+        - name: Compilar APK debug
+          run: ./gradlew assembleDebug
+
+        - name: Subir APK como artefacto
+          uses: actions/upload-artifact@v4
+          with:
+            name: app-debug-apk
+            path: app/build/outputs/apk/debug/app-debug.apk
