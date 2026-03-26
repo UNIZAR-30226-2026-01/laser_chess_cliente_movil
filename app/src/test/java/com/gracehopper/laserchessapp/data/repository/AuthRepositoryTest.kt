@@ -160,7 +160,7 @@ class AuthRepositoryTest {
         val call = mock(Call::class.java) as Call<RegisterResponse>
         val repository = AuthRepository(apiService)
 
-        val request = RegisterRequest("username", "email@test.tst", "password")
+        val request = RegisterRequest("username", "mail@test.tst", "password")
         val response = RegisterResponse(1L)
 
         `when`(apiService.register(request)).thenReturn(call)
@@ -203,7 +203,7 @@ class AuthRepositoryTest {
         val call = mock(Call::class.java) as Call<RegisterResponse>
         val repository = AuthRepository(apiService)
 
-        val request = RegisterRequest("username", "email@test.tst", "password")
+        val request = RegisterRequest("username", "mail@test.tst", "password")
 
         `when`(apiService.register(request)).thenReturn(call)
 
