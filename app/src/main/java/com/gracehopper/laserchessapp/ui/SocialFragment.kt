@@ -301,23 +301,33 @@ class SocialFragment : Fragment() {
 
                 buttonAccept.setOnClickListener {
                     acceptFriendshipRequest(username)
-                    Toast.makeText(requireContext(), "Solicitud aceptada: $username", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        "Solicitud aceptada: $username",
+                        Toast.LENGTH_SHORT).show()
                 }
 
                 buttonReject.setOnClickListener {
-                    Toast.makeText(requireContext(), "Solicitud rechazada: $username", Toast.LENGTH_SHORT).show()
+                    rejectFriendshipRequest(username)
+                    Toast.makeText(requireContext(),
+                        "Solicitud rechazada: $username",
+                        Toast.LENGTH_SHORT).show()
                 }
 
                 receivedContainer.addView(itemView)
 
             }
+
         }
 
+        // ENVIADAS
         if (sentRequests.isEmpty()) {
             emptySent.visibility = View.VISIBLE
         } else {
+            emptySent.visibility = View.GONE
+
             for (username in sentRequests) {
-                val itemView = layoutInflater.inflate(R.layout.item_friendship_request, sentContainer, false)
+                val itemView = layoutInflater.inflate(R.layout.item_friendship_request,
+                    sentContainer, false)
 
                 val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
                 val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
@@ -327,12 +337,46 @@ class SocialFragment : Fragment() {
                 buttonAccept.visibility = View.GONE
 
                 buttonCancel.setOnClickListener {
-                    Toast.makeText(requireContext(), "Solicitud cancelada: $username", Toast.LENGTH_SHORT).show()
+                    cancelSentFriendshipRequest(username)
+                    Toast.makeText(requireContext(),
+                        "Solicitud cancelada: $username",
+                        Toast.LENGTH_SHORT).show()
                 }
 
                 sentContainer.addView(itemView)
+
             }
+
         }
+
+        // TABS
+        fun selectRequestsTab(showReceived: Boolean) {
+
+            if (showReceived) {
+                layoutReceivedContent.visibility = View.VISIBLE
+                layoutSentContent.visibility = View.GONE
+
+                receivedTab.setBackgroundResource(R.drawable.bg_tab_selected)
+                sentTab.setBackgroundResource(R.drawable.bg_tab_unselected)
+            } else {
+                layoutReceivedContent.visibility = View.GONE
+                layoutSentContent.visibility = View.VISIBLE
+
+                receivedTab.setBackgroundResource(R.drawable.bg_tab_unselected)
+                sentTab.setBackgroundResource(R.drawable.bg_tab_selected)
+            }
+
+        }
+
+        receivedTab.setOnClickListener {
+            selectRequestsTab(true)
+        }
+
+        sentTab.setOnClickListener {
+            selectRequestsTab(false)
+        }
+
+        selectRequestsTab(true)
 
         buttonCloseDialog.setOnClickListener {
             dialog.dismiss()
@@ -341,6 +385,18 @@ class SocialFragment : Fragment() {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
+    }
+
+    private fun acceptFriendshipRequest(username: String) {
+        // TODO llamada al backend para aceptar solicitud
+    }
+
+    private fun rejectFriendshipRequest(username: String) {
+        // TODO llamada al backend para rechazar solicitud
+    }
+
+    private fun cancelSentFriendshipRequest(username: String) {
+        // TODO llamada al backend para cancelar solicitud
     }
 
     override fun onDestroyView() {
