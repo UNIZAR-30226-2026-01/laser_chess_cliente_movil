@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +20,12 @@ import com.gracehopper.laserchessapp.ui.game.board.Board
 
 @Composable
 
-fun GameScreen (board: Board, onPieceSelected: (Pair<Int, Int>?) -> Unit, onMove: (Pair<Int, Int>, Pair<Int, Int>) -> Unit, clearSelectionTrigger: Int){
+fun GameScreen (
+    board: Board,
+    isRedPlayer: Boolean,
+    onPieceSelected: (Pair<Int, Int>?) -> Unit,
+    onMove: (Pair<Int, Int>, Pair<Int, Int>) -> Unit,
+    clearSelectionTrigger: Int){
     var highlightedMoves by remember { mutableStateOf<List<Pair<Int, Int>>>(emptyList()) }
     var selectedPos by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
@@ -28,10 +34,43 @@ fun GameScreen (board: Board, onPieceSelected: (Pair<Int, Int>?) -> Unit, onMove
         highlightedMoves = emptyList()
     }
 
+    val letters = listOf<Char>('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
+    val numbers = listOf<Int>(1, 2, 3, 4, 5, 6, 7, 8)
+
+    val rowRange = if (isRedPlayer) (0 until 10) else (9 downTo 0)
+    val colRange = if(isRedPlayer) (0 until 8) else (7 downTo 0)
+
+    val visibleLetters = if (isRedPlayer) letters else letters.reversed()
+    val visibleNumbers = if (isRedPlayer) numbers else numbers.reversed()
+
     Column {
-        for (row in 0 until 10) {
+
+        // Numeros de celda arriba (contorno)
+        Row {
+            Spacer(modifier = Modifier.weight(1f))
+            for (num in visibleNumbers) {
+                Box(
+                    modifier = Modifier.weight(1f).aspectRatio(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = num.toString())
+                }
+            }
+        }
+
+
+        for ((rowIdx, row) in rowRange.withIndex()) {
             Row {
-                for (col in 0 until 8) {
+
+                // Letras del contorno
+                Box(
+                    modifier = Modifier.weight(1f).aspectRatio(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = visibleLetters[rowIdx].toString())
+                }
+
+                for (col in colRange) {
 
                     val piece = board.getPiece(row, col)
                     val isHighlighted = highlightedMoves.contains(Pair(row,col))
@@ -39,10 +78,10 @@ fun GameScreen (board: Board, onPieceSelected: (Pair<Int, Int>?) -> Unit, onMove
                     // Casilla
                     Box(
                         modifier = Modifier
-                            .size(48.dp)
+                            .weight(1f)
+                            .aspectRatio(1f)
                             .background(Color.White)
                             .border(1.dp, Color.Black)
-                            .padding(1.dp)
                             .clickable{
                                 val selected = selectedPos
                                 val piece = board.getPiece(row, col)

@@ -54,6 +54,7 @@ class GameActivity : AppCompatActivity() {
         board.setContent {
             GameScreen(
                 board = boardM,
+                isRedPlayer = false,
                 onPieceSelected = { pos ->          // Al seleccionar una pieza
                     selectedPos = pos
                     controls.visibility = if (pos != null) View.VISIBLE else View.GONE          // Aparecen ctrls de rot
