@@ -6,10 +6,11 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.databinding.ActivityGameBinding
 import com.gracehopper.laserchessapp.ui.game.board.Board
 import com.gracehopper.laserchessapp.ui.game.pieces.Deflector
 
@@ -17,12 +18,25 @@ class GameActivity : AppCompatActivity() {
 
     private val rows = 10
     private val cols = 8
-    private lateinit var boardM: Board
-    private var clearTrigger by mutableStateOf(0)
-    private var selectedPos: Pair<Int, Int>? = null
+    private lateinit var boardM: Board          // Modelo lógico del tablero
+    private var clearTrigger by mutableIntStateOf(0)            // Trigger para avisar a la UI de limpiar selección
+    private var selectedPos: Pair<Int, Int>? = null             // Posición de la pieza
+
+    // Bind temporal
+    private lateinit var binding: ActivityGameBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        /* Bind temporal
+        binding = ActivityGameBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.connect.setOnClickListener {
+            val apiKey =
+        }*/
+
+
         setContentView(R.layout.activity_game)
 
         val board = findViewById<ComposeView>(R.id.board)
@@ -34,14 +48,16 @@ class GameActivity : AppCompatActivity() {
 
         boardM = Board(rows, cols)
 
-        boardM.setPiece(2,3, Deflector(true))
+        boardM.setPiece(2,3, Deflector(true))           // Pieza prueba
 
+        // UI
         board.setContent {
             GameScreen(
                 board = boardM,
-                onPieceSelected = { pos ->
+                isRedPlayer = false,
+                onPieceSelected = { pos ->          // Al seleccionar una pieza
                     selectedPos = pos
-                    controls.visibility = if (pos != null) View.VISIBLE else View.GONE
+                    controls.visibility = if (pos != null) View.VISIBLE else View.GONE          // Aparecen ctrls de rot
                 },
                 onMove = { from, to -> movePiece(from, to) },
                 clearSelectionTrigger = clearTrigger
@@ -52,6 +68,7 @@ class GameActivity : AppCompatActivity() {
             finish()
         }
 
+        // Rot. izq.
         btnLeft.setOnClickListener {
             selectedPos?.let { (r, c) ->
                 val piece = boardM.getPiece(r, c)
@@ -64,6 +81,7 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
+        // Rot. der.
         btnRight.setOnClickListener {
             selectedPos?.let { (r, c) ->
                 val piece = boardM.getPiece(r, c)
