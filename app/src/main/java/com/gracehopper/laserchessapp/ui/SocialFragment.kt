@@ -38,6 +38,10 @@ class SocialFragment : Fragment() {
 
     private lateinit var inProgressAdapter: InProgressAdapter
 
+    private val repository by lazy {
+        FriendRepository(NetworkUtils.getApiService())
+    }
+
     private enum class SocialTab {
         SOCIAL, IN_PROGRESS
     }
@@ -85,7 +89,6 @@ class SocialFragment : Fragment() {
     }
 
     private fun loadFriends() {
-        val repository = FriendRepository(NetworkUtils.getApiService())
 
         repository.getFriends(onSuccess = { friends ->
             if (friends != null) {
@@ -236,7 +239,6 @@ class SocialFragment : Fragment() {
     }
 
     private fun sendFriendRequest(username : String) {
-        val repository = FriendRepository(NetworkUtils.getApiService())
 
         repository.addFriend(username = username, onSuccess = {
             Toast.makeText(requireContext(), "Solicitud enviada a $username", Toast.LENGTH_SHORT).show()
@@ -261,7 +263,7 @@ class SocialFragment : Fragment() {
 
         val receivedContainer = dialogView.findViewById<LinearLayout>(R.id.layoutReceivedRequestsContainer)
         val receivedTab = dialogView.findViewById<TextView>(R.id.tabReceivedRequests)
-        var layoutReceivedContent = dialogView.findViewById<LinearLayout>(R.id.layoutReceivedRequestsContent)
+        val layoutReceivedContent = dialogView.findViewById<LinearLayout>(R.id.layoutReceivedRequestsContent)
 
         val sentContainer = dialogView.findViewById<LinearLayout>(R.id.layoutSentRequestsContainer)
         val sentTab = dialogView.findViewById<TextView>(R.id.tabSentRequests)
@@ -270,84 +272,12 @@ class SocialFragment : Fragment() {
         val emptyReceived = dialogView.findViewById<TextView>(R.id.textEmptyReceivedRequests)
         val emptySent = dialogView.findViewById<TextView>(R.id.textEmptySentRequests)
 
-        // Datos falsos de momento
-        val receivedRequests = listOf("Usuario1", "Usuario2")
-        val sentRequests = listOf("Usuario3")
-
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
             .create()
 
-        // Limpiar contenedores por seguridad
-        receivedContainer.removeAllViews()
-        sentContainer.removeAllViews()
-
-        // RECIBIDIAS
-        if (receivedRequests.isEmpty()) {
-            emptyReceived.visibility = View.VISIBLE
-        } else {
-            emptyReceived.visibility = View.GONE
-
-            for (username in receivedRequests) {
-                val itemView = layoutInflater.inflate(R.layout.item_friendship_request,
-                    receivedContainer, false)
-
-                val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
-                val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
-                val buttonReject = itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
-
-                textUsername.text = username
-                buttonAccept.visibility = View.VISIBLE
-
-                buttonAccept.setOnClickListener {
-                    acceptFriendshipRequest(username)
-                    Toast.makeText(requireContext(),
-                        "Solicitud aceptada: $username",
-                        Toast.LENGTH_SHORT).show()
-                }
-
-                buttonReject.setOnClickListener {
-                    rejectFriendshipRequest(username)
-                    Toast.makeText(requireContext(),
-                        "Solicitud rechazada: $username",
-                        Toast.LENGTH_SHORT).show()
-                }
-
-                receivedContainer.addView(itemView)
-
-            }
-
-        }
-
-        // ENVIADAS
-        if (sentRequests.isEmpty()) {
-            emptySent.visibility = View.VISIBLE
-        } else {
-            emptySent.visibility = View.GONE
-
-            for (username in sentRequests) {
-                val itemView = layoutInflater.inflate(R.layout.item_friendship_request,
-                    sentContainer, false)
-
-                val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
-                val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
-                val buttonCancel = itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
-
-                textUsername.text = username
-                buttonAccept.visibility = View.GONE
-
-                buttonCancel.setOnClickListener {
-                    cancelSentFriendshipRequest(username)
-                    Toast.makeText(requireContext(),
-                        "Solicitud cancelada: $username",
-                        Toast.LENGTH_SHORT).show()
-                }
-
-                sentContainer.addView(itemView)
-
-            }
-
-        }
+        loadReceivedRequests(receivedContainer, emptyReceived)
+        loadSentRequests(sentContainer, emptySent)
 
         // TABS
         fun selectRequestsTab(showReceived: Boolean) {
@@ -387,16 +317,165 @@ class SocialFragment : Fragment() {
 
     }
 
-    private fun acceptFriendshipRequest(username: String) {
-        // TODO llamada al backend para aceptar solicitud
+    private fun loadReceivedRequests(receivedContainer : LinearLayout,
+                                     emptyReceived : TextView) {
+
+        receivedContainer.removeAllViews()
+
+        repository.getReceivedFriendshipRequests(
+            onSuccess = { receivedRequests ->
+                if (receivedRequests.isEmpty()) {
+                    emptyReceived.visibility = View.VISIBLE
+                } else {
+                    emptyReceived.visibility = View.GONE
+
+                    for (request in receivedRequests) {
+                        val itemView = layoutInflater.inflate(R.layout.item_friendship_request,
+                            receivedContainer, false)
+
+                        val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
+                        val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
+                        val buttonReject = itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
+
+                        textUsername.text = request.username
+                        buttonAccept.visibility = View.VISIBLE
+
+                        buttonAccept.setOnClickListener {
+                            acceptFriendshipRequest(request.username,
+                                receivedContainer, emptyReceived)
+                        }
+
+                        buttonReject.setOnClickListener {
+                            rejectFriendshipRequest(request.username,
+                                receivedContainer, emptyReceived)
+                        }
+
+                        receivedContainer.addView(itemView)
+                    }
+                }
+            },
+            onError = { errorCode ->
+                emptyReceived.visibility = View.VISIBLE
+                Toast.makeText(requireContext(),
+                    "Error al cargar solicitudes recibidas",
+                    Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 
-    private fun rejectFriendshipRequest(username: String) {
-        // TODO llamada al backend para rechazar solicitud
+    private fun loadSentRequests(sentContainer: LinearLayout,
+                                 emptySent: TextView) {
+
+        sentContainer.removeAllViews()
+
+        repository.getSentFriendshipRequests(
+
+            onSuccess = { sentRequests ->
+                if (sentRequests.isEmpty()) {
+                    emptySent.visibility = View.VISIBLE
+                } else {
+                    emptySent.visibility = View.GONE
+
+                    for (request in sentRequests) {
+                        val itemView = layoutInflater.inflate(R.layout.item_friendship_request,
+                            sentContainer, false)
+
+                        val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
+                        val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
+                        val buttonCancel = itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
+
+                        textUsername.text = request.username
+                        buttonAccept.visibility = View.GONE
+
+                        buttonCancel.setOnClickListener {
+                            cancelSentFriendshipRequest(request.username,
+                                sentContainer, emptySent)
+                        }
+
+                        sentContainer.addView(itemView)
+                    }
+                }
+            },
+            onError = { errorCode ->
+                emptySent.visibility = View.VISIBLE
+                Toast.makeText(requireContext(),
+                    "Error al cargar solicitudes enviadas",
+                    Toast.LENGTH_SHORT).show()
+            }
+
+        )
+
     }
 
-    private fun cancelSentFriendshipRequest(username: String) {
-        // TODO llamada al backend para cancelar solicitud
+    private fun acceptFriendshipRequest(username: String,
+                                        receivedContainer: LinearLayout,
+                                        emptyReceived: TextView) {
+
+        repository.acceptFriendship(username = username,
+            onSuccess = {
+                Toast.makeText(requireContext(), "Solicitud aceptada",
+                    Toast.LENGTH_SHORT).show()
+                loadReceivedRequests(receivedContainer, emptyReceived)
+                loadFriends()
+            },
+            onError = { errorCode ->
+                Toast.makeText(requireContext(), "Error al aceptar: $errorCode",
+                    Toast.LENGTH_SHORT).show()
+            }
+        )
+
+    }
+
+    private fun rejectFriendshipRequest(username: String,
+                                        receivedContainer: LinearLayout,
+                                        emptyReceived: TextView) {
+
+        repository.deleteFriendship(username = username,
+            onSuccess = {
+                Toast.makeText(requireContext(), "Solicitud rechazada",
+                    Toast.LENGTH_SHORT).show()
+                loadReceivedRequests(receivedContainer, emptyReceived)
+            },
+            onError = { errorCode ->
+                Toast.makeText(requireContext(), "Error al rechazar: $errorCode",
+                    Toast.LENGTH_SHORT).show()
+            }
+        )
+
+    }
+
+    private fun cancelSentFriendshipRequest(username: String,
+                                            sentContainer: LinearLayout,
+                                            emptySent: TextView) {
+
+        repository.deleteFriendship(username = username,
+            onSuccess = {
+                Toast.makeText(requireContext(), "Solicitud cancelada",
+                    Toast.LENGTH_SHORT).show()
+                loadSentRequests(sentContainer, emptySent)
+            },
+            onError = { errorCode ->
+                Toast.makeText(requireContext(), "Error al cancelar: $errorCode",
+                    Toast.LENGTH_SHORT).show()
+            }
+        )
+
+    }
+
+    private fun removeFriend(username: String) {
+
+        repository.deleteFriendship(username = username,
+            onSuccess = {
+                Toast.makeText(requireContext(), "Amigo eliminado",
+                    Toast.LENGTH_SHORT).show()
+                loadFriends()
+            },
+            onError = { errorCode ->
+                Toast.makeText(requireContext(), "Error al eliminar: $errorCode",
+                    Toast.LENGTH_SHORT).show()
+            }
+        )
+
     }
 
     override fun onDestroyView() {
