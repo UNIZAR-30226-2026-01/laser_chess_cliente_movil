@@ -16,6 +16,7 @@ import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
+import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 
 class UserProfileDialogFragment : DialogFragment() {
 
@@ -197,19 +198,7 @@ class UserProfileDialogFragment : DialogFragment() {
         txtProfileClassicElo.text = profile.ratings.classic.toString()
         txtProfileExtendedElo.text = profile.ratings.extended.toString()
 
-        imageProfileAvatar.setImageResource(mapAvatarToResource(profile.avatar))
-
-    }
-
-    private fun mapAvatarToResource(avatar: Int): Int {
-
-        return when(avatar) {
-            1 -> R.drawable.avatar_1
-            2 -> R.drawable.avatar_2
-            3 -> R.drawable.avatar_3
-            4 -> R.drawable.avatar_4
-            else -> R.drawable.avatar_1
-        }
+        imageProfileAvatar.setImageResource(AvatarUtils.getAvatarDrawable(profile.avatar))
 
     }
 
@@ -219,6 +208,7 @@ class UserProfileDialogFragment : DialogFragment() {
             onSuccess = {
                 Toast.makeText(requireContext(), "Amig@ eliminado",
                     Toast.LENGTH_SHORT).show()
+                parentFragmentManager.setFragmentResult("friend_removed", Bundle())
                 dismiss()
             },
             onError = { errorCode ->
@@ -226,7 +216,6 @@ class UserProfileDialogFragment : DialogFragment() {
                     Toast.LENGTH_SHORT).show()
             }
         )
-        parentFragmentManager.setFragmentResult("friend_removed", Bundle())
 
     }
 
