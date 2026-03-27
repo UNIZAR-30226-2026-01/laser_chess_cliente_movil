@@ -192,6 +192,7 @@ class LoginActivity : AppCompatActivity() {
             },
             onError = { errorCode ->
                 restoreLoginButton()
+                loginPassword.setText("")
 
                 when (errorCode) {
                     401 -> Toast.makeText(

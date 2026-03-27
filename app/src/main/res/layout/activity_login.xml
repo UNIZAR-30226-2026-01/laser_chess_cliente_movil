@@ -101,7 +101,7 @@
                 android:id="@+id/textViewGoToRegisterLink"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/switchRegister"
+                android:text="@string/switch_register"
                 android:textSize="14sp"
                 android:textColor="#2196F3"
                 android:textStyle="bold"
@@ -173,7 +173,7 @@
         android:id="@+id/editTextRegisterConfirmPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/confirmPassword"
+        android:hint="@string/confirm_password"
         android:inputType="textPassword"
         android:padding="12dp"
         android:layout_marginBottom="24dp"
@@ -199,7 +199,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/switchLogin"
+                android:text="@string/switch_login"
                 android:textSize="14sp"
                 android:textColor="@android:color/black"/>
 
