@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -16,6 +17,7 @@ import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogMode
+import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 
 
 class DialogRequestsFragment : DialogFragment() {
@@ -144,10 +146,12 @@ class DialogRequestsFragment : DialogFragment() {
                         )
 
                         val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
+                        val imageAvatar = itemView.findViewById<ImageView>(R.id.imgRequestAvatar)
                         val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
                         val buttonReject = itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
 
                         textUsername.text = request.username
+                        imageAvatar.setImageResource(AvatarUtils.getAvatarDrawable(request.avatar))
                         buttonAccept.visibility = View.VISIBLE
 
                         itemView.setOnClickListener {
@@ -197,10 +201,12 @@ class DialogRequestsFragment : DialogFragment() {
                         )
 
                         val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
+                        val imageAvatar = itemView.findViewById<ImageView>(R.id.imgRequestAvatar)
                         val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
                         val buttonCancel = itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
 
                         textUsername.text = request.username
+                        imageAvatar.setImageResource(AvatarUtils.getAvatarDrawable(request.avatar))
                         buttonAccept.visibility = View.GONE
 
                         itemView.setOnClickListener {
