@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.gameLogic.board.Board
+import com.gracehopper.laserchessapp.ui.game.GameActivity.Companion.imInternalRed
 
 class Piece(
     val isRed: Boolean,
@@ -21,13 +22,16 @@ class Piece(
         rotation += 90
     }
 
-     fun getImageRes(): Int {
+     fun getImageRes(imInternalRed: Boolean): Int {
+
+         val isMyPiece = (this.isRed == imInternalRed)
+
         return when(type) {
-            PieceType.KING -> if (isRed) R.drawable.red_king else R.drawable.blue_king
-            PieceType.DEFENDER -> if (isRed) R.drawable.red_shield else R.drawable.blue_shield
-            PieceType.SWITCHER -> if (isRed) R.drawable.red_switch else R.drawable.blue_switch
-            PieceType.DEFLECTOR -> if (isRed) R.drawable.red_deflector else R.drawable.blue_deflector
-            PieceType.LASER -> if (isRed) R.drawable.red_lasser else R.drawable.blue_lasser
+            PieceType.KING -> if (isMyPiece) R.drawable.blue_king else R.drawable.red_king
+            PieceType.DEFENDER -> if (isMyPiece) R.drawable.blue_shield else R.drawable.red_shield
+            PieceType.DEFLECTOR -> if (isMyPiece) R.drawable.blue_deflector else R.drawable.red_deflector
+            PieceType.SWITCHER -> if (isMyPiece) R.drawable.blue_switch else R.drawable.red_switch
+            PieceType.LASER -> if (isMyPiece) R.drawable.blue_lasser else R.drawable.red_lasser
         }
     }
 

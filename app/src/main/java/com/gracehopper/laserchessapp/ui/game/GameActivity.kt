@@ -17,6 +17,11 @@ import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
 
 class GameActivity : AppCompatActivity() {
 
+    companion object {
+        var imInternalRed: Boolean = true
+        var isMyTurn: Boolean = true
+    }
+
     private val rows = 10
     private val cols = 8
     private lateinit var boardM: Board          // Modelo lógico del tablero
@@ -50,7 +55,7 @@ class GameActivity : AppCompatActivity() {
         boardM = Board(rows, cols)
 
         // Piezas prueba
-        boardM.setPiece(2,3, Piece(true, PieceType.DEFLECTOR))
+        boardM.setPiece(2,3, Piece(false, PieceType.DEFLECTOR))
         boardM.setPiece(3,3, Piece(true, PieceType.SWITCHER))
 
 
@@ -58,7 +63,8 @@ class GameActivity : AppCompatActivity() {
         board.setContent {
             GameScreen(
                 board = boardM,
-                isRedPlayer = true,
+                isRedPlayer = imInternalRed,
+                isMyTurn = isMyTurn,
                 onPieceSelected = { pos ->          // Al seleccionar una pieza
                     selectedPos = pos
                     controls.visibility = if (pos != null) View.VISIBLE else View.GONE          // Aparecen ctrls de rot
