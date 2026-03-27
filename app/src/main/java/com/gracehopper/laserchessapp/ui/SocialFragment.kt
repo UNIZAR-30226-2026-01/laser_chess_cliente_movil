@@ -258,12 +258,19 @@ class SocialFragment : Fragment() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_friendship_requests, null)
 
         val buttonCloseDialog = dialogView.findViewById<ImageButton>(R.id.buttonCloseRequestsDialog)
+
         val receivedContainer = dialogView.findViewById<LinearLayout>(R.id.layoutReceivedRequestsContainer)
+        val receivedTab = dialogView.findViewById<TextView>(R.id.tabReceivedRequests)
+        var layoutReceivedContent = dialogView.findViewById<LinearLayout>(R.id.layoutReceivedRequestsContent)
+
         val sentContainer = dialogView.findViewById<LinearLayout>(R.id.layoutSentRequestsContainer)
+        val sentTab = dialogView.findViewById<TextView>(R.id.tabSentRequests)
+        val layoutSentContent = dialogView.findViewById<LinearLayout>(R.id.layoutSentRequestsContent)
+
         val emptyReceived = dialogView.findViewById<TextView>(R.id.textEmptyReceivedRequests)
         val emptySent = dialogView.findViewById<TextView>(R.id.textEmptySentRequests)
 
-        // datos falsos de momento
+        // Datos falsos de momento
         val receivedRequests = listOf("Usuario1", "Usuario2")
         val sentRequests = listOf("Usuario3")
 
@@ -271,11 +278,19 @@ class SocialFragment : Fragment() {
             .setView(dialogView)
             .create()
 
+        // Limpiar contenedores por seguridad
+        receivedContainer.removeAllViews()
+        sentContainer.removeAllViews()
+
+        // RECIBIDIAS
         if (receivedRequests.isEmpty()) {
             emptyReceived.visibility = View.VISIBLE
         } else {
+            emptyReceived.visibility = View.GONE
+
             for (username in receivedRequests) {
-                val itemView = layoutInflater.inflate(R.layout.item_friendship_request, null)
+                val itemView = layoutInflater.inflate(R.layout.item_friendship_request,
+                    receivedContainer, false)
 
                 val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
                 val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
@@ -285,6 +300,7 @@ class SocialFragment : Fragment() {
                 buttonAccept.visibility = View.VISIBLE
 
                 buttonAccept.setOnClickListener {
+                    //acceptFriendshipRequest(username)
                     Toast.makeText(requireContext(), "Solicitud aceptada: $username", Toast.LENGTH_SHORT).show()
                 }
 

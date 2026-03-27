@@ -62,6 +62,10 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.12.0")
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.junit)
+    testImplementation(libs.junit.junit)
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
@@ -83,4 +87,5 @@ dependencies {
 
     // Debug
         debugImplementation("androidx.compose.ui:ui-tooling")
+    testImplementation(kotlin("test"))
 }

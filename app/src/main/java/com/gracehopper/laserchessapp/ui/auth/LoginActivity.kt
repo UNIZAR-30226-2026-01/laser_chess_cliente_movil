@@ -3,7 +3,6 @@ package com.gracehopper.laserchessapp.ui.auth
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.util.Patterns
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -142,22 +141,22 @@ class LoginActivity : AppCompatActivity() {
         val credential = loginCredential.text.toString().trim()
         val password = loginPassword.text.toString().trim()
 
-        when {
-            credential.isEmpty() -> {
+        when (LoginValidator.validate(credential, password)) {
+            LoginValidationResult.EmptyCredential -> {
                 loginCredential.error = "Introduce un username/e-mail"
                 loginCredential.requestFocus()
                 return
             }
 
-            password.isEmpty() -> {
+            LoginValidationResult.EmptyPassword -> {
                 loginPassword.error = "Introduce una contraseña"
                 loginPassword.requestFocus()
                 return
             }
 
-            password.length < 6 -> {
-                registerPassword.error = "Mínimo 6 caracteres"
-                registerPassword.requestFocus()
+            LoginValidationResult.ShortPassword -> {
+                loginPassword.error = "Mínimo 6 caracteres"
+                loginPassword.requestFocus()
                 Toast.makeText(
                     this,
                     "La contraseña debe tener al menos 6 caracteres",
@@ -165,6 +164,9 @@ class LoginActivity : AppCompatActivity() {
                 ).show()
                 return
             }
+
+            LoginValidationResult.Valid -> Unit
+
         }
 
         // Por si acaso apago el boton
@@ -172,29 +174,44 @@ class LoginActivity : AppCompatActivity() {
         loginButton.text = "Iniciando sesión..."
         val request = LoginRequest(credential, password)
 
-        authRepository.login(request = request, onSuccess = { loginResponse ->
-            restoreLoginButton()
+        authRepository.login(
+            request = request,
+            onSuccess = { loginResponse ->
+                restoreLoginButton()
 
-            TokenManager.saveAccessToken(loginResponse.accessToken)
-            TokenManager.saveUserCredential(credential)
+                TokenManager.saveAccessToken(loginResponse.accessToken)
+                TokenManager.saveUserCredential(credential)
 
-            Log.d("LoginActivity", "Token guardado: ${loginResponse.accessToken}")
+                Log.d("LoginActivity", "Token guardado: ${loginResponse.accessToken}")
 
-            loginLayout.visibility = View.GONE
-            registerLayout.visibility = View.GONE
+                loginLayout.visibility = View.GONE
+                registerLayout.visibility = View.GONE
 
-            Toast.makeText(this, "¡Bienvenid@!", Toast.LENGTH_SHORT).show()
-            goToMain()
-        },
+                Toast.makeText(this, "¡Bienvenid@!", Toast.LENGTH_SHORT).show()
+                goToMain()
+            },
             onError = { errorCode ->
                 restoreLoginButton()
 
                 when (errorCode) {
-                    401 -> Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT)
-                        .show()
+                    401 -> Toast.makeText(
+                        this,
+                        "Credenciales incorrectas",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                    400 -> Toast.makeText(this, "Datos inválidos", Toast.LENGTH_SHORT).show()
-                    null -> Toast.makeText(this, "Error de conexión", Toast.LENGTH_SHORT).show()
+                    400 -> Toast.makeText(
+                        this,
+                        "Datos inválidos",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    null -> Toast.makeText(
+                        this,
+                        "Error de conexión",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
                     else -> Toast.makeText(
                         this,
                         "Error del servidor: $errorCode",
@@ -212,38 +229,38 @@ class LoginActivity : AppCompatActivity() {
         val password = registerPassword.text.toString().trim()
         val confirmPassword = registerConfirmPassword.text.toString().trim()
 
-        when {
-            username.isEmpty() -> {
+        when (RegisterValidator.validate(username, mail, password, confirmPassword)) {
+            RegisterValidationResult.EmptyUsername -> {
                 registerUsername.error = "Introduce un nombre de usuario"
                 registerUsername.requestFocus()
                 return
             }
 
-            mail.isEmpty() -> {
+            RegisterValidationResult.EmptyMail -> {
                 registerEmail.error = "Introduce un e-mail"
                 registerEmail.requestFocus()
                 return
             }
 
-            !Patterns.EMAIL_ADDRESS.matcher(mail).matches() -> {
+            RegisterValidationResult.InvalidMail -> {
                 registerEmail.error = "Email inválido"
                 registerEmail.requestFocus()
                 return
             }
 
-            password.isEmpty() -> {
+            RegisterValidationResult.EmptyPassword -> {
                 registerPassword.error = "Introduce una contraseña"
                 registerPassword.requestFocus()
                 return
             }
 
-            confirmPassword.isEmpty() -> {
+            RegisterValidationResult.EmptyConfirmPassword -> {
                 registerConfirmPassword.error = "Confirma tu contraseña"
                 registerConfirmPassword.requestFocus()
                 return
             }
 
-            password.length < 6 -> {
+            RegisterValidationResult.ShortPassword -> {
                 registerPassword.error = "Mínimo 6 caracteres"
                 registerPassword.requestFocus()
                 Toast.makeText(
@@ -254,11 +271,13 @@ class LoginActivity : AppCompatActivity() {
                 return
             }
 
-            password != confirmPassword -> {
+            RegisterValidationResult.PasswordsMismatch -> {
                 registerConfirmPassword.error = "No coinciden las contraseñas"
                 registerConfirmPassword.requestFocus()
                 return
             }
+
+            RegisterValidationResult.Valid -> Unit
 
         }
 
@@ -278,13 +297,29 @@ class LoginActivity : AppCompatActivity() {
             showLogin()
             clearRegisterForm()
             loginCredential.setText(mail)
-        }, onError = { errorCode ->
+        },
+        onError = { errorCode ->
             restoreRegisterButton()
 
             when (errorCode) {
-                409 -> Toast.makeText(this, "El usuario ya existe", Toast.LENGTH_SHORT).show()
-                401 -> Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
-                400 -> Toast.makeText(this, "Datos inválidos", Toast.LENGTH_SHORT).show()
+                409 -> Toast.makeText(
+                    this,
+                    "El usuario ya existe",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                400 -> Toast.makeText(
+                    this,
+                    "Datos inválidos",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                null -> Toast.makeText(
+                    this,
+                    "Error de conexión",
+                    Toast.LENGTH_SHORT
+                ).show()
+
                 else -> Toast.makeText(
                     this,
                     "Error del servidor: $errorCode",
