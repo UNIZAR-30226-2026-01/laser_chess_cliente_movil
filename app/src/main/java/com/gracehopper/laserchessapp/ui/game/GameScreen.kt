@@ -23,6 +23,7 @@ import com.gracehopper.laserchessapp.gameLogic.board.Board
 fun GameScreen (
     board: Board,
     isRedPlayer: Boolean,
+    isMyTurn: Boolean,
     onPieceSelected: (Pair<Int, Int>?) -> Unit,
     onMove: (Pair<Int, Int>, Pair<Int, Int>) -> Unit,
     clearSelectionTrigger: Int){
@@ -88,7 +89,7 @@ fun GameScreen (
                                     val piece = board.getPiece(row, col)
 
                                     if (selected == null) {             // Primer click
-                                        if (piece != null) {
+                                        if (piece != null && piece.isRed == isRedPlayer && isMyTurn) {
                                             selectedPos = Pair(row, col)
                                             highlightedMoves = piece.getValidMoves(row, col, board)
 
@@ -101,7 +102,7 @@ fun GameScreen (
 
                                         if (selectedPiece != null) {
 
-                                            if (highlightedMoves.contains(Pair(row, col))) {            // mov. valido
+                                            if (highlightedMoves.contains(Pair(row, col)) && selectedPiece.isRed == isRedPlayer && isMyTurn) {            // mov. valido
 
                                                 onMove(Pair(r2, c2), Pair(row, col))
                                             }
@@ -121,7 +122,7 @@ fun GameScreen (
                                 )
 
                                 Image(
-                                    painter = painterResource(id = piece.getImageRes()),
+                                    painter = painterResource(id = piece.getImageRes(isRedPlayer)),
                                     contentDescription = null,
                                     modifier = Modifier
                                         .fillMaxSize()

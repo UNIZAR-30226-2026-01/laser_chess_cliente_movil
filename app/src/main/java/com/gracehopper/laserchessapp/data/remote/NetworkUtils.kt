@@ -14,6 +14,39 @@ object NetworkUtils {
     // Para el emulador de Android creo que 10.0.2.2 pero habra q cambiarlo
     private const val BASE_URL = "http://10.0.2.2:8080/"
     private var apiService: ApiService? = null
+    private var client: OkHttpClient? = null
+
+    fun getOkHttpClient(): OkHttpClient {
+        if (client != null) return client!!
+
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        val cookieManager = CookieManager().apply {
+            setCookiePolicy(CookiePolicy.ACCEPT_ALL)
+        }
+
+        client = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .addInterceptor { chain ->
+                val token = TokenManager.getAccessToken()
+                val requestBuilder = chain.request().newBuilder()
+
+                if (!token.isNullOrEmpty()) {
+                    requestBuilder.addHeader("Authorization", "Bearer $token")
+                }
+
+                chain.proceed(requestBuilder.build())
+            }
+            .cookieJar(JavaNetCookieJar(cookieManager))
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(0, TimeUnit.SECONDS)
+            .build()
+
+        return client!!
+    }
+
 
     fun getApiService(): ApiService {
         if (apiService != null) return apiService!!
