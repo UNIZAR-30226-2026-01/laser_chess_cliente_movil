@@ -92,7 +92,7 @@ class UserProfileDialogFragment : DialogFragment() {
 
                 buttonSecondaryAction.setOnClickListener {
                     currentUsername?.let { username ->
-                        removeFriend(username)
+                        showDeleteFriendConfirmation(username)
                     }
                 }
             }
@@ -200,6 +200,17 @@ class UserProfileDialogFragment : DialogFragment() {
 
         imageProfileAvatar.setImageResource(AvatarUtils.getAvatarDrawable(profile.avatar))
 
+    }
+
+    private fun showDeleteFriendConfirmation(username: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirmar eliminación")
+            .setMessage("¿Segur@ que deseas eliminar a $username?")
+            .setPositiveButton("Sí") { _, _ ->
+                removeFriend(username)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     private fun removeFriend(username: String) {

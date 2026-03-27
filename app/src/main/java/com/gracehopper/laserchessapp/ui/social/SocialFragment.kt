@@ -59,13 +59,13 @@ class SocialFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        emptyMessage = view.findViewById(R.id.emptyMessage)
-        recyclerFriends = view.findViewById(R.id.recyclerFriends)
-
-        setupRecycler()
-        loadFriends()
-        loadFakeGamesInProgress()
-        setupTabs()
+        // cada vez que se elimine un amigo, se vuelve a cargar la lista de amigos
+        parentFragmentManager.setFragmentResultListener(
+            "friend_removed",
+            viewLifecycleOwner
+        ) { _, _ ->
+            loadFriends()
+        }
 
         // cada vez que el dialogo se cierre, se vuelve a cargar la lista de amigos
         parentFragmentManager.setFragmentResultListener(
@@ -75,13 +75,13 @@ class SocialFragment : Fragment() {
             loadFriends()
         }
 
-        // cada vez que se elimine un amigo, se vuelve a cargar la lista de amigos
-        parentFragmentManager.setFragmentResultListener(
-            "friend_removed",
-            viewLifecycleOwner
-        ) { _, _ ->
-            loadFriends()
-        }
+        emptyMessage = view.findViewById(R.id.emptyMessage)
+        recyclerFriends = view.findViewById(R.id.recyclerFriends)
+
+        setupRecycler()
+        loadFriends()
+        loadFakeGamesInProgress()
+        setupTabs()
 
         setupListeners()
         selectTab(SocialTab.SOCIAL)
@@ -109,15 +109,21 @@ class SocialFragment : Fragment() {
     private fun loadFriends() {
 
         repository.getFriends(onSuccess = { friends ->
-            if (friends != null) {
-                if (friends.isEmpty()) {
-                    emptyMessage.visibility = View.VISIBLE
-                } else {
-                    friendsAdapter.updateFriends(friends)
-                    emptyMessage.visibility = View.GONE
-                }
+            val friendsList = friends ?: emptyList()
+
+            if (friendsList.isEmpty()) {
+                friendsAdapter.updateFriends(emptyList())
+                recyclerFriends.visibility = View.GONE
+                emptyMessage.visibility = View.VISIBLE
+            } else {
+                friendsAdapter.updateFriends(friendsList)
+                recyclerFriends.visibility = View.VISIBLE
+                emptyMessage.visibility = View.GONE
             }
+
         }, onError = { errorCode ->
+            friendsAdapter.updateFriends(emptyList())
+            recyclerFriends.visibility = View.GONE
             emptyMessage.visibility = View.VISIBLE
 
             when (errorCode) {
