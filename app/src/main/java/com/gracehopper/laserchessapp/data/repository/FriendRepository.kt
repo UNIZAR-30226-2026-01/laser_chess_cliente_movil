@@ -3,6 +3,7 @@ package com.gracehopper.laserchessapp.data.repository
 import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.model.social.FriendshipStatusResponse
+import com.gracehopper.laserchessapp.data.model.social.ReceivedRequestsResponse
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import retrofit2.Call
 import retrofit2.Callback
@@ -66,6 +67,32 @@ class FriendRepository(private val apiService: ApiService) {
                 onError(null)
             }
         })
+    }
+
+    fun getNumReceivedFriendshipRequests(onSuccess: (Int) -> Unit,
+                                         onError: (Int?) -> Unit) {
+
+        apiService.getNumReceivedFriendshipRequests()
+            .enqueue(object : Callback<ReceivedRequestsResponse> {
+
+                override fun onResponse(
+                    call: Call<ReceivedRequestsResponse>,
+                    response: Response<ReceivedRequestsResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        onSuccess(response.body()?.count ?: 0)
+                    } else {
+                        onError(response.code())
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<ReceivedRequestsResponse>,
+                    t: Throwable
+                ) {
+                    onError(null)
+                }
+            })
     }
 
     /**
