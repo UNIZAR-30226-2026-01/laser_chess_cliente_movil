@@ -17,13 +17,13 @@
     <string name="password">Contraseña</string>
     <string name="continueText">Continuar</string>
     <string name="noAccount">¿No tienes cuenta aún? </string>
-    <string name="switchRegister">Regístrate ya</string>
+    <string name="switch_register">Regístrate ya</string>
 
     <string name="register">Registrarse</string>
     <string name="username">Username</string>
     <string name="email">E-mail</string>
-    <string name="confirmPassword">Confirma tu contraseña</string>
-    <string name="switchLogin">¿Ya estás registrado? </string>
+    <string name="confirm_password">Confirma tu contraseña</string>
+    <string name="switch_login">¿Ya estás registrado? </string>
 
     <string name="customize">Personalización</string>
     <string name="ranking">Ranking</string>
@@ -32,14 +32,14 @@
 
     <string name="empty_friends_message">Aún no has empezado ninguna amistad...</string>
     <string name="add">AÑADIR</string>
-    <string name="writeUsername">Escribe su nombre de usuario:</string>
-    <string name="sendRequest">ENVIAR SOLICITUD</string>
-    <string name="waitApproval">Y espera a ser aceptad@.</string>
-    <string name="sendLink">Envíale el siguiente enlace:</string>
+    <string name="write_username">Escribe su nombre de usuario:</string>
+    <string name="send_request">ENVIAR SOLICITUD</string>
+    <string name="wait_approval">Y espera a ser aceptad@.</string>
+    <string name="send_link">Envíale el siguiente enlace:</string>
     <string name="copy">COPIAR</string>
     <string name="close">Cerrar</string>
 
-    <string name="requestMatch">SOLICITAR PARTIDA</string>
+    <string name="request_match">SOLICITAR PARTIDA</string>
     <string name="delete">ELIMINAR</string>
     <string name="time_mode_blitz">Blitz</string>
     <string name="time_mode_rapid">Rapid</string>
@@ -56,4 +56,5 @@
     <string name="no_sent_requests">No has enviado ninguna solicitud de amistad</string>
     <string name="accept">ACEPTAR</string>
     <string name="reject">RECHAZAR</string>
+    <string name="cancel_request">CANCELAR SOLICITUD</string>
 </resources>

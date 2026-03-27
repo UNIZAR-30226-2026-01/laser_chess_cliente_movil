@@ -47,6 +47,16 @@ class DialogRequestsFragment : DialogFragment() {
             .create()
 
         setupTabs()
+
+        // se vuelve a cargar la lista de solicitudes
+        parentFragmentManager.setFragmentResultListener(
+            "requests_updated",
+            this
+        ) { _, _ ->
+            loadReceivedRequests()
+            loadSentRequests()
+        }
+
         setupListeners(dialog)
 
         loadReceivedRequests()

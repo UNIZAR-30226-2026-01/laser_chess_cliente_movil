@@ -34,7 +34,7 @@ class UserProfileDialogFragment : DialogFragment() {
     private lateinit var buttonPrimaryAction: Button
     private lateinit var buttonSecondaryAction: Button
 
-    private lateinit var username: String
+    private var currentUsername: String? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         userRepository = UserRepository(NetworkUtils.getApiService())
@@ -90,7 +90,9 @@ class UserProfileDialogFragment : DialogFragment() {
                 }
 
                 buttonSecondaryAction.setOnClickListener {
-                    removeFriend(username)
+                    currentUsername?.let { username ->
+                        removeFriend(username)
+                    }
                 }
             }
 
@@ -102,21 +104,15 @@ class UserProfileDialogFragment : DialogFragment() {
                 buttonSecondaryAction.text = getString(R.string.reject)
 
                 buttonPrimaryAction.setOnClickListener {
-                    // TODO Aceptar solicitud
-                    Toast.makeText(
-                        requireContext(),
-                        "Aceptando solicitud de amistad de $userId",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    currentUsername?.let { username ->
+                        acceptFriendshipRequest(username)
+                    }
                 }
 
                 buttonSecondaryAction.setOnClickListener {
-                    // TODO Rechazar solicitud
-                    Toast.makeText(
-                        requireContext(),
-                        "Rechazando solicitud de amistad de $userId",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    currentUsername?.let { username ->
+                        rejectFriendshipRequest(username)
+                    }
                 }
 
             }
@@ -128,11 +124,9 @@ class UserProfileDialogFragment : DialogFragment() {
                 buttonSecondaryAction.text = getString(R.string.cancel_request)
 
                 buttonSecondaryAction.setOnClickListener {
-                    // TODO Cancelar solicitud
-                    Toast.makeText(
-                        requireContext(),
-                        "Cancelando solicitud de amistad a $userId",
-                        Toast.LENGTH_SHORT).show()
+                    currentUsername?.let { username ->
+                        cancelFriendshipRequest(username)
+                    }
                 }
             }
 
@@ -143,10 +137,11 @@ class UserProfileDialogFragment : DialogFragment() {
                 buttonPrimaryAction.text = getString(R.string.send_request)
 
                 buttonPrimaryAction.setOnClickListener {
-                    // TODO Enviar solicitud
-                    Toast.makeText(
-                        requireContext(),
-                        "Enviando solicitud de amistad a $userId",
+                    currentUsername?.let { username ->
+                        // TODO Enviar solicitud
+                    }
+                    Toast.makeText(requireContext(),
+                        "Solicitando amistad a $userId",
                         Toast.LENGTH_SHORT).show()
                 }
             }
@@ -191,7 +186,7 @@ class UserProfileDialogFragment : DialogFragment() {
 
     private fun bindProfile(profile: UserProfile) {
 
-        username = profile.username
+        currentUsername = profile.username
 
         txtProfileUsername.text = profile.username
         txtProfileLevel.text = "Nivel ${profile.level}"
@@ -233,6 +228,60 @@ class UserProfileDialogFragment : DialogFragment() {
         )
         parentFragmentManager.setFragmentResult("friend_removed", Bundle())
 
+    }
+
+    private fun acceptFriendshipRequest(username: String) {
+        friendRepository.acceptFriendship(
+            username = username,
+            onSuccess = {
+                Toast.makeText(requireContext(), "Solicitud aceptada", Toast.LENGTH_SHORT).show()
+                parentFragmentManager.setFragmentResult("requests_updated", Bundle())
+                dismiss()
+            },
+            onError = { errorCode ->
+                Toast.makeText(
+                    requireContext(),
+                    "Error al aceptar: $errorCode",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
+    }
+
+    private fun rejectFriendshipRequest(username: String) {
+        friendRepository.deleteFriendship(
+            username = username,
+            onSuccess = {
+                Toast.makeText(requireContext(), "Solicitud rechazada", Toast.LENGTH_SHORT).show()
+                parentFragmentManager.setFragmentResult("requests_updated", Bundle())
+                dismiss()
+            },
+            onError = { errorCode ->
+                Toast.makeText(
+                    requireContext(),
+                    "Error al rechazar: $errorCode",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
+    }
+
+    private fun cancelFriendshipRequest(username: String) {
+        friendRepository.deleteFriendship(
+            username = username,
+            onSuccess = {
+                Toast.makeText(requireContext(), "Solicitud cancelada", Toast.LENGTH_SHORT).show()
+                parentFragmentManager.setFragmentResult("requests_updated", Bundle())
+                dismiss()
+            },
+            onError = { errorCode ->
+                Toast.makeText(
+                    requireContext(),
+                    "Error al cancelar: $errorCode",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
     }
 
     companion object {

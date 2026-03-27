@@ -102,10 +102,10 @@
             android:layout_marginBottom="24dp">
 
             <Button
-                android:id="@+id/buttonChallengeFriend"
+                android:id="@+id/buttonPrimaryAction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/requestMatch"
+                android:text="@string/request_match"
                 android:textStyle="bold"
                 android:textAllCaps="false"
                 android:textColor="@android:color/black"
@@ -115,7 +115,7 @@
                 android:layout_marginEnd="16dp" />
 
             <Button
-                android:id="@+id/buttonRemoveFriend"
+                android:id="@+id/buttonSecondaryAction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/delete"

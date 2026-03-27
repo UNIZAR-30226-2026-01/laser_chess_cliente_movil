@@ -6,7 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.gracehopper.laserchessapp.ui.RankingFragment
 import com.gracehopper.laserchessapp.ui.HomeFragment
 import com.gracehopper.laserchessapp.ui.CustomizeFragment
-import com.gracehopper.laserchessapp.ui.SocialFragment
+import com.gracehopper.laserchessapp.ui.social.SocialFragment
 import com.gracehopper.laserchessapp.ui.ShopFragment
 
 class ViewPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
