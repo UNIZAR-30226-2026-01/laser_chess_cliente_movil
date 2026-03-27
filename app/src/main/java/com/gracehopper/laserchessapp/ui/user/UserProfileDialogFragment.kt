@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,11 +14,13 @@ import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 
 class UserProfileDialogFragment : DialogFragment() {
 
     private lateinit var userRepository: UserRepository
+    private lateinit var friendRepository: FriendRepository
 
     private lateinit var imageProfileAvatar: ImageView
     private lateinit var txtProfileUsername: TextView
@@ -28,9 +31,14 @@ class UserProfileDialogFragment : DialogFragment() {
     private lateinit var txtProfileClassicElo: TextView
     private lateinit var txtProfileExtendedElo: TextView
     private lateinit var buttonClose: ImageButton
+    private lateinit var buttonPrimaryAction: Button
+    private lateinit var buttonSecondaryAction: Button
+
+    private lateinit var username: String
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         userRepository = UserRepository(NetworkUtils.getApiService())
+        friendRepository = FriendRepository(NetworkUtils.getApiService())
 
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_friend_profile, null)
@@ -47,6 +55,13 @@ class UserProfileDialogFragment : DialogFragment() {
             loadUserProfile(userId)
         }
 
+        val dialogModeName = requireArguments().getString(ARG_DIALOG_MODE)
+        val dialogMode = UserProfileDialogMode.valueOf(
+            dialogModeName ?: UserProfileDialogMode.FRIEND.name
+        )
+
+        setupActionButtons(dialogMode, userId)
+
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
             .create()
@@ -54,6 +69,89 @@ class UserProfileDialogFragment : DialogFragment() {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         return dialog
 
+    }
+
+    private fun setupActionButtons(mode: UserProfileDialogMode, userId: Long) {
+
+        when(mode) {
+
+            UserProfileDialogMode.FRIEND -> {
+                buttonPrimaryAction.visibility = View.VISIBLE
+                buttonSecondaryAction.visibility = View.VISIBLE
+
+                buttonPrimaryAction.text = getString(R.string.request_match)
+                buttonSecondaryAction.text = getString(R.string.delete)
+
+                buttonPrimaryAction.setOnClickListener {
+                    // TODO Solicitar partida amistosa
+                    Toast.makeText(requireContext(),
+                        "Solicitando partida amistosa a $userId",
+                        Toast.LENGTH_SHORT).show()
+                }
+
+                buttonSecondaryAction.setOnClickListener {
+                    removeFriend(username)
+                }
+            }
+
+            UserProfileDialogMode.RECEIVED_REQUEST -> {
+                buttonPrimaryAction.visibility = View.VISIBLE
+                buttonSecondaryAction.visibility = View.VISIBLE
+
+                buttonPrimaryAction.text = getString(R.string.accept)
+                buttonSecondaryAction.text = getString(R.string.reject)
+
+                buttonPrimaryAction.setOnClickListener {
+                    // TODO Aceptar solicitud
+                    Toast.makeText(
+                        requireContext(),
+                        "Aceptando solicitud de amistad de $userId",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                buttonSecondaryAction.setOnClickListener {
+                    // TODO Rechazar solicitud
+                    Toast.makeText(
+                        requireContext(),
+                        "Rechazando solicitud de amistad de $userId",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
+
+            UserProfileDialogMode.SENT_REQUEST -> {
+                buttonPrimaryAction.visibility = View.GONE
+                buttonSecondaryAction.visibility = View.VISIBLE
+
+                buttonSecondaryAction.text = getString(R.string.cancel_request)
+
+                buttonSecondaryAction.setOnClickListener {
+                    // TODO Cancelar solicitud
+                    Toast.makeText(
+                        requireContext(),
+                        "Cancelando solicitud de amistad a $userId",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            UserProfileDialogMode.USER -> {
+                buttonPrimaryAction.visibility = View.VISIBLE
+                buttonSecondaryAction.visibility = View.GONE
+
+                buttonPrimaryAction.text = getString(R.string.send_request)
+
+                buttonPrimaryAction.setOnClickListener {
+                    // TODO Enviar solicitud
+                    Toast.makeText(
+                        requireContext(),
+                        "Enviando solicitud de amistad a $userId",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        }
     }
 
     private fun bindViews(dialogView: View) {
@@ -67,6 +165,8 @@ class UserProfileDialogFragment : DialogFragment() {
         txtProfileClassicElo = dialogView.findViewById(R.id.txtClassicElo)
         txtProfileExtendedElo = dialogView.findViewById(R.id.txtExtendedElo)
         buttonClose = dialogView.findViewById(R.id.buttonCloseProfileDialog)
+        buttonPrimaryAction = dialogView.findViewById(R.id.buttonPrimaryAction)
+        buttonSecondaryAction = dialogView.findViewById(R.id.buttonSecondaryAction)
 
     }
 
@@ -90,6 +190,8 @@ class UserProfileDialogFragment : DialogFragment() {
     }
 
     private fun bindProfile(profile: UserProfile) {
+
+        username = profile.username
 
         txtProfileUsername.text = profile.username
         txtProfileLevel.text = "Nivel ${profile.level}"
@@ -116,14 +218,35 @@ class UserProfileDialogFragment : DialogFragment() {
 
     }
 
+    private fun removeFriend(username: String) {
+
+        friendRepository.deleteFriendship(username = username,
+            onSuccess = {
+                Toast.makeText(requireContext(), "Amig@ eliminado",
+                    Toast.LENGTH_SHORT).show()
+                dismiss()
+            },
+            onError = { errorCode ->
+                Toast.makeText(requireContext(), "Error al eliminar: $errorCode",
+                    Toast.LENGTH_SHORT).show()
+            }
+        )
+        parentFragmentManager.setFragmentResult("friend_removed", Bundle())
+
+    }
+
     companion object {
 
         private const val ARG_FRIEND_ID = "friend_id"
+        private const val ARG_DIALOG_MODE = "dialog_mode"
 
-        fun newInstance(friendId: Long): UserProfileDialogFragment {
+        fun newInstance(friendId: Long,
+                        mode: UserProfileDialogMode = UserProfileDialogMode.FRIEND)
+                        : UserProfileDialogFragment {
             val fragment = UserProfileDialogFragment()
             val args = Bundle().apply {
                 putLong(ARG_FRIEND_ID, friendId)
+                putString(ARG_DIALOG_MODE, mode.name)
             }
             fragment.arguments = args
             return fragment
