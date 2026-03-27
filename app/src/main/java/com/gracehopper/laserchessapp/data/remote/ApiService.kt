@@ -11,6 +11,7 @@ import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.model.social.FriendshipStatusResponse
 import com.gracehopper.laserchessapp.data.model.user.AccountResponse
 import com.gracehopper.laserchessapp.data.model.ranking.RatingResponse
+import com.gracehopper.laserchessapp.data.model.social.ReceivedRequestsResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -64,9 +65,12 @@ interface ApiService {
     @POST("api/friendship")
     fun addFriend(@Body request: CreateFriendshipRequest): Call<Unit>
 
+
     @GET("api/friendship/pending")
     fun getReceivedFriendshipRequests(): Call<List<FriendSummary>>
 
+    @GET("api/friendship/pending/count")
+    fun getNumReceivedFriendshipRequests(): Call<ReceivedRequestsResponse>
     @GET("api/friendship/sent")
     fun getSentFriendshipRequests(): Call<List<FriendSummary>>
 

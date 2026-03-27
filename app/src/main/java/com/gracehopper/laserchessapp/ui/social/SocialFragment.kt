@@ -67,12 +67,22 @@ class SocialFragment : Fragment() {
             loadFriends()
         }
 
+        // cada vez que se acepte/rechace una solicitud de amistad, se vuelve a cargar
+        parentFragmentManager.setFragmentResultListener(
+            "requests_updated",
+            viewLifecycleOwner
+        ) { _, _ ->
+            loadFriends()
+            loadNumReceivedRequests()
+        }
+
         // cada vez que el dialogo se cierre, se vuelve a cargar la lista de amigos
         parentFragmentManager.setFragmentResultListener(
             "requests_dialog_closed",
             viewLifecycleOwner
         ) { _, _ ->
             loadFriends()
+            loadNumReceivedRequests()
         }
 
         emptyMessage = view.findViewById(R.id.emptyMessage)
@@ -80,6 +90,7 @@ class SocialFragment : Fragment() {
 
         setupRecycler()
         loadFriends()
+        loadNumReceivedRequests()
         loadFakeGamesInProgress()
         setupTabs()
 
@@ -133,6 +144,29 @@ class SocialFragment : Fragment() {
                 else -> Toast.makeText(requireContext(), "Error: $errorCode", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun loadNumReceivedRequests() {
+
+        repository.getNumReceivedFriendshipRequests(
+            onSuccess = { response ->
+
+                if (response == 0) {
+                    binding.txtNumSolicitudes.visibility = View.GONE
+                } else {
+                    binding.txtNumSolicitudes.visibility = View.VISIBLE
+                    binding.txtNumSolicitudes.text = response.toString()
+                }
+
+            },
+            onError = {
+                binding.txtNumSolicitudes.visibility = View.GONE
+                Toast.makeText(requireContext(),
+                    "Error al cargar el número de solicitudes",
+                    Toast.LENGTH_SHORT).show()
+            }
+        )
+
     }
 
     private fun loadFakeGamesInProgress() {
