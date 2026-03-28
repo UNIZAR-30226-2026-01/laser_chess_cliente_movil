@@ -14,6 +14,8 @@ import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocket
+import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocketListener
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
@@ -36,6 +38,7 @@ class UserProfileDialogFragment : DialogFragment() {
     private lateinit var buttonSecondaryAction: Button
 
     private var currentUsername: String? = null
+    private var privateMatchWebSocket: PrivateMatchWebSocket? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         userRepository = UserRepository(NetworkUtils.getApiService())
@@ -84,10 +87,9 @@ class UserProfileDialogFragment : DialogFragment() {
                 buttonSecondaryAction.text = getString(R.string.delete)
 
                 buttonPrimaryAction.setOnClickListener {
-                    // TODO Solicitar partida amistosa
-                    Toast.makeText(requireContext(),
-                        "Solicitando partida amistosa a $userId",
-                        Toast.LENGTH_SHORT).show()
+                    currentUsername?.let { username ->
+                        requestPrivateMatch(username)
+                    }
                 }
 
                 buttonSecondaryAction.setOnClickListener {
@@ -139,7 +141,7 @@ class UserProfileDialogFragment : DialogFragment() {
 
                 buttonPrimaryAction.setOnClickListener {
                     currentUsername?.let { username ->
-                        // TODO Enviar solicitud
+                        // TODO Enviar solicitud de amistad
                     }
                     Toast.makeText(requireContext(),
                         "Solicitando amistad a $userId",
@@ -211,6 +213,62 @@ class UserProfileDialogFragment : DialogFragment() {
             }
             .setNegativeButton("Cancelar", null)
             .show()
+    }
+
+    private fun requestPrivateMatch(username: String) {
+
+        buttonPrimaryAction.isEnabled = false
+
+        val listener = PrivateMatchWebSocketListener(
+            onConnected = {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(
+                        requireContext(),
+                        "Solicitud enviada a $username",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    // PANTALLA DE ESPERA
+                    dismiss()
+                }
+            },
+            onMessageReceived = { message ->
+                requireActivity().runOnUiThread {
+                    // RECIBIR MENSAJES DE INICIO DE PARTIDA¿¿¿
+                    // POR AQUÍ CONECTAMOS CON GAME EN CUANTO RECIBA OK DE INICIO DE PARTIDA
+                    Toast.makeText(
+                        requireContext(),
+                        "Mensaje recibido: $message",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            },
+            onError = { error ->
+                requireActivity().runOnUiThread {
+                    buttonPrimaryAction.isEnabled = true
+                    Toast.makeText(
+                        requireContext(),
+                        "Error al solicitar partida: $error",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            },
+            onClosed = {
+                requireActivity().runOnUiThread {
+                    buttonPrimaryAction.isEnabled = true
+                }
+            }
+        )
+
+        privateMatchWebSocket = PrivateMatchWebSocket(listener)
+
+        privateMatchWebSocket?.createChallenge(
+            username = username,
+            board = 1,
+            startingTime = 300,
+            timeIncrement = 10
+        )
+
     }
 
     private fun removeFriend(username: String) {
