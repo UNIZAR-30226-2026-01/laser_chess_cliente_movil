@@ -5,6 +5,7 @@ import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
 import com.gracehopper.laserchessapp.data.model.auth.LoginResponse
 import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
 import com.gracehopper.laserchessapp.data.model.auth.UpdateAccountRequest
+import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
 import com.gracehopper.laserchessapp.data.model.ranking.AllRatingsResponse
 import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
@@ -82,5 +83,10 @@ interface ApiService {
 
     @DELETE("api/friendship/{user2Username}")
     fun deleteFriendship(@Path("user2Username") username: String): Call<Unit>
+
+
+    // para retar a una partida amistosa
+    @GET("api/rt/challenges")
+    fun getPendingChallenges(): Call<List<PendingChallengeResponse>>
 
 }
