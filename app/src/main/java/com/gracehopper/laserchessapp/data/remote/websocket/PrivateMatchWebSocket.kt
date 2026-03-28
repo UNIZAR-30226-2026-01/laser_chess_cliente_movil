@@ -5,10 +5,16 @@ import okhttp3.Request
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 
+/**
+ * Clase de bajo nivel que:
+ * - abre socket
+ * - envía mensajes
+ * - lo cierra
+ */
 class PrivateMatchWebSocket (private val listener: WebSocketListener) {
 
-    private val BASE_URL = "ws://10.0.2.2:8080/api/rt/challenge"
     private var webSocket: WebSocket? = null
+    private val BASE_URL = "ws://10.0.2.2:8080/api/rt/challenge"
 
     /**
      * Crea una nueva solicitud de reto a un usuario específico.

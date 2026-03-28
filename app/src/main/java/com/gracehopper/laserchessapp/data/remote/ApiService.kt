@@ -85,7 +85,7 @@ interface ApiService {
     fun deleteFriendship(@Path("user2Username") username: String): Call<Unit>
 
 
-    // para retar a una partida amistosa
+    // para ver retos de amistosas
     @GET("api/rt/challenges")
     fun getPendingChallenges(): Call<List<PendingChallengeResponse>>
 

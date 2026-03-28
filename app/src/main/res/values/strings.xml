@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">LaserChessApp</string>
     <string name="settings">Settings</string>
+    <string name="notifications">Notificaciones</string>
     <string name="timer">Timer</string>
     <string name="game_board">Game Board</string>
     <string name="history">History</string>
