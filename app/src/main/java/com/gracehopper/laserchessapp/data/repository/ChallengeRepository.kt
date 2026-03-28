@@ -1,5 +1,5 @@
 package com.gracehopper.laserchessapp.data.repository
-/
+
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import retrofit2.Call
