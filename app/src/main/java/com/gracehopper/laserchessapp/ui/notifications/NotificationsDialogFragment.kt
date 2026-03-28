@@ -1,6 +1,7 @@
 package com.gracehopper.laserchessapp.ui.notifications
 
 import android.R
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -13,8 +14,12 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gracehopper.laserchessapp.data.manager.ActiveMatchManager
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
+import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocket
+import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocketListener
 import com.gracehopper.laserchessapp.data.repository.ChallengeRepository
+import com.gracehopper.laserchessapp.ui.game.GameActivity
 
 class NotificationsDialogFragment : DialogFragment() {
 
@@ -25,6 +30,8 @@ class NotificationsDialogFragment : DialogFragment() {
     private lateinit var adapter: PendingChallengesAdapter
 
     private val challengeRepository = ChallengeRepository()
+
+    private var privateMatchWebSocket: PrivateMatchWebSocket? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,11 +76,7 @@ class NotificationsDialogFragment : DialogFragment() {
         adapter = PendingChallengesAdapter(
             challenges = emptyList(),
             onAcceptClicked = { challenge ->
-                Toast.makeText(
-                    requireContext(),
-                    "Aceptar reto de ${challenge.challengerUsername}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                acceptChallenge(challenge)
             },
             onRejectClicked = { challenge ->
                 Toast.makeText(
@@ -124,6 +127,46 @@ class NotificationsDialogFragment : DialogFragment() {
             recyclerChallenges.visibility = View.VISIBLE
             textEmptyState.visibility = View.GONE
         }
+    }
+
+    private fun acceptChallenge(challenge: PendingChallengeResponse) {
+
+        ActiveMatchManager.setCallbacks(
+            onConnected = {
+                requireActivity().runOnUiThread {
+                    // abrir GAME
+                }
+            },
+            onError = { error ->
+                requireActivity().runOnUiThread {
+                    // mostrar toast error
+                }
+            },
+            onMessageReceived = { message ->
+                requireActivity().runOnUiThread {
+                    // procesar mensajes ??
+                }
+            },
+            onClosed = {
+                requireActivity().runOnUiThread {
+                    // mostrar toast
+                }
+            }
+        )
+
+        ActiveMatchManager.acceptChallenge(challengerUsername = challenge.challengerUsername,
+            board = challenge.board,
+            startingTime = challenge.startingTime,
+            timeIncrement = challenge.timeIncrement
+        )
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // no cierro socket
+        // si acepto y cierro dialog -> rompo partida lel
+        // mirar cuando haya conexión con game
     }
 
 }

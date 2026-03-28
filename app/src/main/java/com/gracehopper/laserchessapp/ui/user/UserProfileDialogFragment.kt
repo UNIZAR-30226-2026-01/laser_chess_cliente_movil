@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.manager.ActiveMatchManager
 import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocket
@@ -219,51 +220,36 @@ class UserProfileDialogFragment : DialogFragment() {
 
         buttonPrimaryAction.isEnabled = false
 
-        val listener = PrivateMatchWebSocketListener(
+        ActiveMatchManager.setCallbacks(
             onConnected = {
+                // entra aquí cuando el websocket ya está abierto
+                // y el challenge ya está enviado a username
                 requireActivity().runOnUiThread {
-                    Toast.makeText(
-                        requireContext(),
-                        "Solicitud enviada a $username",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    // PANTALLA DE ESPERA
-                    dismiss()
-                }
-            },
-            onMessageReceived = { message ->
-                requireActivity().runOnUiThread {
-                    // RECIBIR MENSAJES DE INICIO DE PARTIDA¿¿¿
-                    // POR AQUÍ CONECTAMOS CON GAME EN CUANTO RECIBA OK DE INICIO DE PARTIDA
-                    Toast.makeText(
-                        requireContext(),
-                        "Mensaje recibido: $message",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // abrir pantalla de carga
                 }
             },
             onError = { error ->
                 requireActivity().runOnUiThread {
-                    buttonPrimaryAction.isEnabled = true
-                    Toast.makeText(
-                        requireContext(),
-                        "Error al solicitar partida: $error",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    // mostrar toast
+                }
+            },
+            onMessageReceived = { message ->
+                // entra aquí cuando llega el primer mensaje (partida iniciada)
+                // habría que mirar qué estructura tienen los mensajes
+                requireActivity().runOnUiThread {
+                    // cerrar pantalla de carga
+                    // abrir GAME
                 }
             },
             onClosed = {
                 requireActivity().runOnUiThread {
-                    buttonPrimaryAction.isEnabled = true
+                    // mostrar toast
                 }
             }
         )
 
-        privateMatchWebSocket = PrivateMatchWebSocket(listener)
-
-        privateMatchWebSocket?.createChallenge(
-            username = username,
+        // valores fake
+        ActiveMatchManager.createChallenge(challengedUsername = username,
             board = 1,
             startingTime = 300,
             timeIncrement = 10
