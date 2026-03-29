@@ -136,17 +136,22 @@ class NotificationsDialogFragment : DialogFragment() {
                     Toast.makeText(requireContext(),
                         "Reto aceptado. Conectando partida...",
                         Toast.LENGTH_SHORT).show()
+                }
+            },
+            onMessageReceived = { message ->
+                requireActivity().runOnUiThread {
+
+                    ActiveMatchManager.markInGame()
+
+                    Toast.makeText(requireContext(),
+                        "La partida ha comenzado",
+                        Toast.LENGTH_SHORT).show()
 
                     dismiss()
 
-                    val intent = Intent(requireContext(),
-                        GameActivity::class.java).apply {
-                        putExtra("opponent_username", challenge.challengerUsername)
-                        putExtra("board", challenge.board)
-                        putExtra("starting_time", challenge.startingTime)
-                        putExtra("time_increment", challenge.timeIncrement)
-                    }
+                    val intent = Intent(requireContext(), GameActivity::class.java)
                     startActivity(intent)
+
                 }
             },
             onError = { error ->
@@ -154,11 +159,6 @@ class NotificationsDialogFragment : DialogFragment() {
                     Toast.makeText(requireContext(),
                         "Error al aceptar reto: $error",
                         Toast.LENGTH_SHORT).show()
-                }
-            },
-            onMessageReceived = { message ->
-                requireActivity().runOnUiThread {
-                    // esta lógica la tratará la pantalla de carga
                 }
             },
             onClosed = {
