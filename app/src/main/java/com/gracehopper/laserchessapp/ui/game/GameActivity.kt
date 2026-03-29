@@ -9,11 +9,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.databinding.ActivityGameBinding
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
+
 
 class GameActivity : AppCompatActivity() {
 
@@ -34,6 +38,10 @@ class GameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
+        controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE)
+        controller.hide(WindowInsetsCompat.Type.systemBars())
 
         /* Bind temporal
         binding = ActivityGameBinding.inflate(layoutInflater)
