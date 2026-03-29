@@ -1,6 +1,8 @@
 package com.gracehopper.laserchessapp.ui.matchConfig
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,11 +26,15 @@ class TimeSettingsFragment : Fragment() {
     private val parentConfigDialog: MatchConfigDialogFragment?
         get() = parentFragment as? MatchConfigDialogFragment
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    private val selectableModes = listOf(
+        TimeMode.BLITZ,
+        TimeMode.RAPID,
+        TimeMode.CLASSIC,
+        TimeMode.EXTENDED
+    )
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_time_settings, container, false)
     }
 
@@ -41,11 +47,12 @@ class TimeSettingsFragment : Fragment() {
 
         setupModeSpinner()
         setupCustomConfig()
+        setupCustomTextWatchers()
         pushCurrentConfigToParent()
     }
 
     private fun setupModeSpinner() {
-        val modeNames = TimeMode.entries.map { TimeModeConfig.getName(it) }
+        val modeNames = selectableModes.map { TimeModeConfig.getName(it) }
 
         spinnerMode.adapter = ArrayAdapter(
             requireContext(),
@@ -58,6 +65,7 @@ class TimeSettingsFragment : Fragment() {
     }
 
     private fun updateIncrementSpinner(mode: TimeMode) {
+
         val increments = TimeModeConfig.getAllowedIncrements(mode).map { "${it}s" }
 
         spinnerIncrement.adapter = ArrayAdapter(
@@ -87,7 +95,7 @@ class TimeSettingsFragment : Fragment() {
         }
 
         spinnerMode.onItemSelectedListener = SimpleItemSelectedListener { position ->
-            val selectedMode = TimeMode.entries[position]
+            val selectedMode = selectableModes[position]
             updateIncrementSpinner(selectedMode)
         }
 
@@ -96,13 +104,38 @@ class TimeSettingsFragment : Fragment() {
         }
     }
 
+    private fun setupCustomTextWatchers() {
+
+        val watcher = object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int,
+                                           count: Int, after: Int) = Unit
+
+            override fun onTextChanged(s: CharSequence?, start: Int,
+                                       before: Int, count: Int) {
+                if (checkboxCustom.isChecked) {
+                    pushCurrentConfigToParent()
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) = Unit
+
+        }
+
+        editCustomTimeMinutes.addTextChangedListener(watcher)
+        editCustomIncrementSeconds.addTextChangedListener(watcher)
+
+    }
+
     override fun onPause() {
         super.onPause()
         pushCurrentConfigToParent()
     }
 
     private fun pushCurrentConfigToParent() {
+
         if (checkboxCustom.isChecked) {
+
             val customMinutes = editCustomTimeMinutes.text.toString().toIntOrNull() ?: 5
             val customIncrement = editCustomIncrementSeconds.text.toString().toIntOrNull() ?: 0
 
@@ -110,13 +143,15 @@ class TimeSettingsFragment : Fragment() {
             val validIncrement = customIncrement.coerceIn(0, 60)
 
             parentConfigDialog?.updateTimeConfig(
-                mode = TimeMode.entries[spinnerMode.selectedItemPosition],
+                mode = TimeMode.CUSTOM,
                 startingTimeSeconds = validMinutes * 60,
                 incrementSeconds = validIncrement,
                 isCustom = true
             )
+
         } else {
-            val selectedMode = TimeMode.entries[spinnerMode.selectedItemPosition]
+
+            val selectedMode = selectableModes[spinnerMode.selectedItemPosition]
             val increments = TimeModeConfig.getAllowedIncrements(selectedMode)
             val incrementPosition = spinnerIncrement.selectedItemPosition.coerceIn(increments.indices)
 
@@ -126,7 +161,9 @@ class TimeSettingsFragment : Fragment() {
                 incrementSeconds = increments[incrementPosition],
                 isCustom = false
             )
+
         }
+
     }
 
     companion object {
@@ -134,4 +171,5 @@ class TimeSettingsFragment : Fragment() {
             return TimeSettingsFragment()
         }
     }
+
 }

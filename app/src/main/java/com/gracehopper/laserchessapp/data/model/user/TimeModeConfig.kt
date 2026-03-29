@@ -7,6 +7,7 @@ object TimeModeConfig {
         TimeMode.RAPID -> "Rapid"
         TimeMode.CLASSIC -> "Classic"
         TimeMode.EXTENDED -> "Extended"
+        TimeMode.CUSTOM -> "Custom"
     }
 
 
@@ -15,6 +16,7 @@ object TimeModeConfig {
         TimeMode.RAPID -> 15 * 60
         TimeMode.CLASSIC -> 30 * 60
         TimeMode.EXTENDED -> 60 * 60
+        TimeMode.CUSTOM -> 0
     }
 
     fun getAllowedIncrements(mode: TimeMode): List<Int> = when (mode) {
@@ -22,6 +24,7 @@ object TimeModeConfig {
         TimeMode.RAPID -> listOf(0, 5, 10)
         TimeMode.CLASSIC -> listOf(0, 10, 15)
         TimeMode.EXTENDED -> listOf(0, 15, 20)
+        TimeMode.CUSTOM -> emptyList()
     }
 
 }
