@@ -19,6 +19,8 @@ import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocket
 import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocketListener
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
+import com.gracehopper.laserchessapp.ui.game.WaitingMatchDialogFragment
+import com.gracehopper.laserchessapp.ui.matchConfig.MatchConfigDialogFragment
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 
 class UserProfileDialogFragment : DialogFragment() {
@@ -89,7 +91,10 @@ class UserProfileDialogFragment : DialogFragment() {
 
                 buttonPrimaryAction.setOnClickListener {
                     currentUsername?.let { username ->
-                        requestPrivateMatch(username)
+                        MatchConfigDialogFragment(username).show(
+                            parentFragmentManager,
+                            "MatchConfigDialog"
+                        )
                     }
                 }
 
@@ -214,47 +219,6 @@ class UserProfileDialogFragment : DialogFragment() {
             }
             .setNegativeButton("Cancelar", null)
             .show()
-    }
-
-    private fun requestPrivateMatch(username: String) {
-
-        buttonPrimaryAction.isEnabled = false
-
-        ActiveMatchManager.setCallbacks(
-            onConnected = {
-                // entra aquí cuando el websocket ya está abierto
-                // y el challenge ya está enviado a username
-                requireActivity().runOnUiThread {
-                    // abrir pantalla de carga
-                }
-            },
-            onError = { error ->
-                requireActivity().runOnUiThread {
-                    // mostrar toast
-                }
-            },
-            onMessageReceived = { message ->
-                // entra aquí cuando llega el primer mensaje (partida iniciada)
-                // habría que mirar qué estructura tienen los mensajes
-                requireActivity().runOnUiThread {
-                    // cerrar pantalla de carga
-                    // abrir GAME
-                }
-            },
-            onClosed = {
-                requireActivity().runOnUiThread {
-                    // mostrar toast
-                }
-            }
-        )
-
-        // valores fake
-        ActiveMatchManager.createChallenge(challengedUsername = username,
-            board = 1,
-            startingTime = 300,
-            timeIncrement = 10
-        )
-
     }
 
     private fun removeFriend(username: String) {

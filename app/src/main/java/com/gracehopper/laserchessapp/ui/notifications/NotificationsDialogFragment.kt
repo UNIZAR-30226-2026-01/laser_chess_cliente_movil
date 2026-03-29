@@ -31,8 +31,6 @@ class NotificationsDialogFragment : DialogFragment() {
 
     private val challengeRepository = ChallengeRepository()
 
-    private var privateMatchWebSocket: PrivateMatchWebSocket? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = true
@@ -79,6 +77,7 @@ class NotificationsDialogFragment : DialogFragment() {
                 acceptChallenge(challenge)
             },
             onRejectClicked = { challenge ->
+                // TODO Rechazar solicitud de partida amistosa
                 Toast.makeText(
                     requireContext(),
                     "Rechazar reto de ${challenge.challengerUsername}",
@@ -134,22 +133,37 @@ class NotificationsDialogFragment : DialogFragment() {
         ActiveMatchManager.setCallbacks(
             onConnected = {
                 requireActivity().runOnUiThread {
-                    // abrir GAME
+                    Toast.makeText(requireContext(),
+                        "Reto aceptado. Conectando partida...",
+                        Toast.LENGTH_SHORT).show()
+
+                    dismiss()
+
+                    val intent = Intent(requireContext(),
+                        GameActivity::class.java).apply {
+                        putExtra("opponent_username", challenge.challengerUsername)
+                        putExtra("board", challenge.board)
+                        putExtra("starting_time", challenge.startingTime)
+                        putExtra("time_increment", challenge.timeIncrement)
+                    }
+                    startActivity(intent)
                 }
             },
             onError = { error ->
                 requireActivity().runOnUiThread {
-                    // mostrar toast error
+                    Toast.makeText(requireContext(),
+                        "Error al aceptar reto: $error",
+                        Toast.LENGTH_SHORT).show()
                 }
             },
             onMessageReceived = { message ->
                 requireActivity().runOnUiThread {
-                    // procesar mensajes ??
+                    // esta lógica la tratará la pantalla de carga
                 }
             },
             onClosed = {
                 requireActivity().runOnUiThread {
-                    // mostrar toast
+                    // feedback si se cierra la conexión¿
                 }
             }
         )
