@@ -13,6 +13,7 @@ import com.gracehopper.laserchessapp.data.model.social.FriendshipStatusResponse
 import com.gracehopper.laserchessapp.data.model.user.AccountResponse
 import com.gracehopper.laserchessapp.data.model.ranking.RatingResponse
 import com.gracehopper.laserchessapp.data.model.social.ReceivedRequestsResponse
+import com.gracehopper.laserchessapp.data.model.user.MyAccountResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -30,7 +31,10 @@ interface ApiService {
     fun register(@Body request: RegisterRequest): Call<RegisterResponse>
 
     // Endpoint para obtener información de una cuenta
-    @GET("api/account/{id}")  // /api/account/algomas
+    @GET("api/account")
+    fun getMyAccount(): Call<MyAccountResponse>
+
+    @GET("api/account/{id}")
     fun getAccount(@Path("id") id: Long): Call<AccountResponse>
 
     // Endpoint para actualizar información de una cuenta

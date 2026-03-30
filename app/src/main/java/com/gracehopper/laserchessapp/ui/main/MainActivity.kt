@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.repository.FriendRepository
+import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
 import com.gracehopper.laserchessapp.utils.ChallengeNotificationHelper
 
@@ -20,6 +23,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewPager2: ViewPager2
     private lateinit var navBtns: List<ImageButton>
+
+    private val repository by lazy {
+        UserRepository(NetworkUtils.getApiService())
+    }
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -31,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     private val cambioPaginaCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            actualizarBotones(position)
+            updateButtonSelection(position)
         }
     }
 
@@ -55,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         // Home por defecto
         viewPager2.setCurrentItem(2, false)
-        actualizarBotones(2)
+        updateButtonSelection(2)
 
         handleNotificationIntent(intent)
 
@@ -97,16 +104,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun actualizarBotones(index: Int) {
+    private fun updateButtonSelection(index: Int) {
         navBtns.forEach {
             it.isSelected = false }
         navBtns[index].isSelected = true
-    }
-
-    // Destructor
-    override fun onDestroy(){
-        super.onDestroy()
-        viewPager2.unregisterOnPageChangeCallback(cambioPaginaCallback)
     }
 
     private fun handleNotificationIntent(intent: Intent?) {
@@ -132,6 +133,16 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         handleNotificationIntent(intent)
+    }
+
+    private fun loadMyProfile() {
+
+    }
+
+    // Destructor
+    override fun onDestroy(){
+        super.onDestroy()
+        viewPager2.unregisterOnPageChangeCallback(cambioPaginaCallback)
     }
 
 }
