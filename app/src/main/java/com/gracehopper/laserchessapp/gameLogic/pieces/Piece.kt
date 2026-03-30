@@ -14,12 +14,19 @@ class Piece(
 
     var rotation by mutableIntStateOf(0)
 
+    fun canRotate(): Boolean {
+        return type != PieceType.KING
+    }
     fun rotateLeft() {
-        rotation -= 90
+        if (canRotate()) {
+            rotation -= 90
+        }
     }
 
     fun rotateRight() {
-        rotation += 90
+        if (canRotate()) {
+            rotation += 90
+        }
     }
 
      fun getImageRes(imInternalRed: Boolean): Int {
@@ -40,6 +47,8 @@ class Piece(
         col: Int,
         board: Board
     ): List<Pair<Int, Int>> {
+
+        if (type == PieceType.LASER) return emptyList()
 
         val moves = mutableListOf<Pair<Int, Int>>()
 
@@ -66,7 +75,7 @@ class Piece(
                     if (target == null) {
                         moves.add(Pair(newRow, newCol))
 
-                    } else if (type == PieceType.SWITCHER && target.type != PieceType.SWITCHER) {
+                    } else if (type == PieceType.SWITCHER && target.type != PieceType.SWITCHER && target.type != PieceType.KING) {
                         moves.add(Pair(newRow, newCol))
                     }
                 }

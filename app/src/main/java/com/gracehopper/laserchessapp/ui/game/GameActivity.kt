@@ -29,6 +29,7 @@ class GameActivity : AppCompatActivity() {
         var isMyTurn: Boolean = true
     }
 
+    private val testMode = true
     private val rows = 10
     private val cols = 8
     private lateinit var boardM: Board          // Modelo lógico del tablero
@@ -46,13 +47,6 @@ class GameActivity : AppCompatActivity() {
         controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE)
         controller.hide(WindowInsetsCompat.Type.systemBars())
 
-        /* Bind temporal
-        binding = ActivityGameBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        binding.connect.setOnClickListener {
-            val apiKey =
-        }*/
-
 
         setContentView(R.layout.activity_game)
 
@@ -69,11 +63,14 @@ class GameActivity : AppCompatActivity() {
         Log.d("PLAYER", "Soy rojo interno: $imInternalRed")
         Log.d("PLAYER", "CSV: ${ActiveMatchManager.intialBoardCSV != null}")
 
-        val csv = ActiveMatchManager.intialBoardCSV
-        if (csv != null) {
-            BoardParser.boadFromCSV(boardM, csv)
+        if (testMode) {
+            loadTestBoard()
+        } else {
+            val csv = ActiveMatchManager.intialBoardCSV
+            if (csv != null) {
+                BoardParser.boadFromCSV(boardM, csv)
+            }
         }
-
         // UI
         board.setContent {
             GameScreen(
@@ -82,8 +79,18 @@ class GameActivity : AppCompatActivity() {
                 isMyTurn = isMyTurn,
                 onPieceSelected = { pos ->          // Al seleccionar una pieza
                     selectedPos = pos
-                    controls.visibility = if (pos != null) View.VISIBLE else View.GONE          // Aparecen ctrls de rot
-                },
+
+                    if (pos != null) {
+                        val (r, c) = pos
+                        val piece = boardM.getPiece(r, c)
+
+                        controls.visibility =
+                            if (piece != null && piece.canRotate()) View.VISIBLE
+                            else View.GONE
+                    } else {
+                            View.GONE
+                        }
+                    }, // Aparecen ctrls de rot
                 onMove = { from, to -> movePiece(from, to) },
                 clearSelectionTrigger = clearTrigger
             )
@@ -141,5 +148,24 @@ class GameActivity : AppCompatActivity() {
         clearTrigger++
     }
 
+    private fun loadTestBoard() {
+
+        // ROJAS
+        boardM.setPiece(0,0, Piece(true, PieceType.LASER))
+        boardM.setPiece(1,1, Piece(true, PieceType.KING))
+        boardM.setPiece(2,2, Piece(true, PieceType.DEFLECTOR))
+        boardM.setPiece(3,3, Piece(true, PieceType.DEFENDER))
+        boardM.setPiece(4,4, Piece(true, PieceType.SWITCHER))
+
+        // AZULES
+        boardM.setPiece(9,7, Piece(false, PieceType.LASER))
+        boardM.setPiece(8,6, Piece(false, PieceType.KING))
+        boardM.setPiece(7,5, Piece(false, PieceType.DEFLECTOR))
+        boardM.setPiece(6,4, Piece(false, PieceType.DEFENDER))
+        boardM.setPiece(5,3, Piece(false, PieceType.SWITCHER))
+
+        boardM.getPiece(2,2)?.rotation = 90
+        boardM.getPiece(7,5)?.rotation = 180
+    }
 
 }
