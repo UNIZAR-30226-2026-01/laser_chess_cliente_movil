@@ -141,6 +141,8 @@ class NotificationsDialogFragment : DialogFragment() {
             onMessageReceived = { message ->
                 requireActivity().runOnUiThread {
 
+                    ActiveMatchManager.handleServerMessage(message)
+
                     ActiveMatchManager.markInGame()
 
                     Toast.makeText(requireContext(),

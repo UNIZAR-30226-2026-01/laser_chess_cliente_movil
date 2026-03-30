@@ -6,16 +6,22 @@ import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
 object BoardParser {
 
     fun boadFromCSV(board: Board, csv: String) {
-        val rows = csv.split("\n")
+        val csvRows = csv.split("\n")
 
-        for (r in rows.indices) {
-            val cols = rows[r].split(",")
+        for (r in csvRows.indices) {
+            val cols = csvRows[r].split(",")
+
             for (c in cols.indices) {
                 val cell = cols[c].trim()
 
                 if (cell.isNotEmpty()) {
                     val piece = parsePieceFromCode(cell)
-                    board.setPiece(r, c, piece)
+
+                    // Transformación de coordenadas a vertical
+                    val boardRow = c
+                    val boardCol = board.cols - 1 - r
+
+                    board.setPiece(boardRow, boardCol, piece)
                 }
             }
         }
@@ -33,8 +39,8 @@ object BoardParser {
             'L' -> PieceType.LASER
             'K' -> PieceType.KING
             'S' -> PieceType.SWITCHER
-            'D' -> PieceType.DEFENDER
-            'E' -> PieceType.DEFLECTOR
+            'D' -> PieceType.DEFLECTOR
+            'E' -> PieceType.DEFENDER
             else -> {
                 throw IllegalArgumentException("Invalid piece code: $code")
             }
@@ -43,10 +49,10 @@ object BoardParser {
         val piece = Piece(isRed, type)
 
         when (orientationChar) {
-            'U' -> piece.rotation = 0
-            'R' -> piece.rotation = 90
-            'D' -> piece.rotation = 180
-            'L' -> piece.rotation = 270
+            'U' -> piece.rotation = 270
+            'R' -> piece.rotation = 0
+            'D' -> piece.rotation = 90
+            'L' -> piece.rotation = 180
         }
 
         return piece

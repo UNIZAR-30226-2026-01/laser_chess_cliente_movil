@@ -85,6 +85,8 @@ object ActiveMatchManager {
                 Log.d("WS", "InitialState: $intialBoardCSV")
                 Log.d("WS", "Tablero CSV: $intialBoardCSV")
                 Log.d("WS", "Soy rojo interno: $imRedPlayer")
+                Log.d("PLAYER", "RedPlayerId (backend): $redPlayerId")
+                Log.d("PLAYER", "MyId (token): $myId")
             }
         }
     }

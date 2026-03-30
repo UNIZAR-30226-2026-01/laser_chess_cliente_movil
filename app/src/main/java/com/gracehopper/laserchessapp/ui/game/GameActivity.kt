@@ -1,6 +1,7 @@
 package com.gracehopper.laserchessapp.ui.game
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -13,8 +14,10 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.manager.ActiveMatchManager
 import com.gracehopper.laserchessapp.databinding.ActivityGameBinding
 import com.gracehopper.laserchessapp.gameLogic.board.Board
+import com.gracehopper.laserchessapp.gameLogic.board.BoardParser
 import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
 
@@ -62,10 +65,14 @@ class GameActivity : AppCompatActivity() {
 
         boardM = Board(rows, cols)
 
-        // Piezas prueba
-        boardM.setPiece(2,3, Piece(false, PieceType.DEFLECTOR))
-        boardM.setPiece(3,3, Piece(true, PieceType.SWITCHER))
+        imInternalRed = ActiveMatchManager.imRedPlayer
+        Log.d("PLAYER", "Soy rojo interno: $imInternalRed")
+        Log.d("PLAYER", "CSV: ${ActiveMatchManager.intialBoardCSV != null}")
 
+        val csv = ActiveMatchManager.intialBoardCSV
+        if (csv != null) {
+            BoardParser.boadFromCSV(boardM, csv)
+        }
 
         // UI
         board.setContent {
