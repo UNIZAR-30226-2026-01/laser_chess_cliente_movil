@@ -1,6 +1,7 @@
 package com.gracehopper.laserchessapp.ui.main
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
 import com.gracehopper.laserchessapp.utils.ChallengeNotificationHelper
 
 class MainActivity : AppCompatActivity() {
@@ -54,6 +56,9 @@ class MainActivity : AppCompatActivity() {
         // Home por defecto
         viewPager2.setCurrentItem(2, false)
         actualizarBotones(2)
+
+        handleNotificationIntent(intent)
+
     }
 
     /**
@@ -102,6 +107,31 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy(){
         super.onDestroy()
         viewPager2.unregisterOnPageChangeCallback(cambioPaginaCallback)
+    }
+
+    private fun handleNotificationIntent(intent: Intent?) {
+
+        val openNotifications =
+            intent?.getBooleanExtra("open_notifications_dialog", false) == true
+
+        if (openNotifications) {
+            openNotificationsDialog()
+            intent?.removeExtra("open_notifications_dialog")
+        }
+
+    }
+
+    private fun openNotificationsDialog() {
+        val existing = supportFragmentManager.findFragmentByTag("NotificationsDialog")
+        if (existing != null) return
+
+        NotificationsDialogFragment().show(supportFragmentManager, "NotificationsDialog")
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleNotificationIntent(intent)
     }
 
 }
