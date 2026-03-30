@@ -28,7 +28,7 @@ class InProgressAdapter(private var games: List<InProgressGameSummary>,
             textTimeMode.text = game.timeMode.toString()
             textBoardType.text = game.boardType.toString()
 
-            buttonResumeMatch.setOnClickListener { onResumeClick(game) }
+            buttonResumeGame.setOnClickListener { onResumeClick(game) }
         }
     }
 
