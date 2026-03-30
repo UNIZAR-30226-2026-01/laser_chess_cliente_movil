@@ -14,10 +14,8 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.gracehopper.laserchessapp.data.manager.ActiveMatchManager
+import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
-import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocket
-import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocketListener
 import com.gracehopper.laserchessapp.data.repository.ChallengeRepository
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 
@@ -130,7 +128,7 @@ class NotificationsDialogFragment : DialogFragment() {
 
     private fun acceptChallenge(challenge: PendingChallengeResponse) {
 
-        ActiveMatchManager.setCallbacks(
+        ActiveGameManager.setCallbacks(
             onConnected = {
                 requireActivity().runOnUiThread {
                     Toast.makeText(requireContext(),
@@ -141,7 +139,7 @@ class NotificationsDialogFragment : DialogFragment() {
             onMessageReceived = { message ->
                 requireActivity().runOnUiThread {
 
-                    ActiveMatchManager.markInGame()
+                    ActiveGameManager.markInGame()
 
                     Toast.makeText(requireContext(),
                         "La partida ha comenzado",
@@ -168,7 +166,7 @@ class NotificationsDialogFragment : DialogFragment() {
             }
         )
 
-        ActiveMatchManager.acceptChallenge(challengerUsername = challenge.challengerUsername,
+        ActiveGameManager.acceptChallenge(challengerUsername = challenge.challengerUsername,
             board = challenge.board,
             startingTime = challenge.startingTime,
             timeIncrement = challenge.timeIncrement

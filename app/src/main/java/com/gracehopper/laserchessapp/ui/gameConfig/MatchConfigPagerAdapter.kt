@@ -1,4 +1,4 @@
-package com.gracehopper.laserchessapp.ui.matchConfig
+package com.gracehopper.laserchessapp.ui.gameConfig
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter

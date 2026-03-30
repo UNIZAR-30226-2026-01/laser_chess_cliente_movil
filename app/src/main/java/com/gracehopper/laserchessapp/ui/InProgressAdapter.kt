@@ -3,11 +3,11 @@ package com.gracehopper.laserchessapp.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.gracehopper.laserchessapp.data.model.game.InProgressMatchSummary
+import com.gracehopper.laserchessapp.data.model.game.InProgressGameSummary
 import com.gracehopper.laserchessapp.databinding.ItemInProgressBinding
 
-class InProgressAdapter(private var games: List<InProgressMatchSummary>,
-    private val onResumeClick: (InProgressMatchSummary) -> Unit)
+class InProgressAdapter(private var games: List<InProgressGameSummary>,
+                        private val onResumeClick: (InProgressGameSummary) -> Unit)
     : RecyclerView.Adapter<InProgressAdapter.InProgressViewHolder>() {
 
     class InProgressViewHolder(val binding: ItemInProgressBinding)
@@ -34,7 +34,7 @@ class InProgressAdapter(private var games: List<InProgressMatchSummary>,
 
     override fun getItemCount(): Int = games.size
 
-    fun updateData(newGames: List<InProgressMatchSummary>) {
+    fun updateData(newGames: List<InProgressGameSummary>) {
         games = newGames
         notifyDataSetChanged()
     }

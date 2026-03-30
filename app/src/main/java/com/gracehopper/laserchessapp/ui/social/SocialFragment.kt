@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.game.BoardType
-import com.gracehopper.laserchessapp.data.model.game.InProgressMatchSummary
+import com.gracehopper.laserchessapp.data.model.game.InProgressGameSummary
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
@@ -171,7 +171,7 @@ class SocialFragment : Fragment() {
 
     private fun loadFakeGamesInProgress() {
         val fakeMatches = listOf(
-            InProgressMatchSummary(
+            InProgressGameSummary(
                 id = "1",
                 myTime = "13:00",
                 opponentUsername = "Usuario",
@@ -179,7 +179,7 @@ class SocialFragment : Fragment() {
                 timeMode = TimeMode.BLITZ,
                 boardType = BoardType.ACE
             ),
-            InProgressMatchSummary(
+            InProgressGameSummary(
                 id = "2",
                 myTime = "14:00",
                 opponentUsername = "Usuario",
@@ -199,7 +199,7 @@ class SocialFragment : Fragment() {
         }
     }
 
-    private fun resumeGame(game: InProgressMatchSummary) {
+    private fun resumeGame(game: InProgressGameSummary) {
         Toast.makeText(requireContext(), "Retomar partida con id ${game.id}", Toast.LENGTH_SHORT).show()
     }
 

@@ -1,4 +1,4 @@
-package com.gracehopper.laserchessapp.ui.matchConfig
+package com.gracehopper.laserchessapp.ui.gameConfig
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -9,10 +9,10 @@ import android.widget.ImageButton
 import androidx.fragment.app.DialogFragment
 import androidx.viewpager2.widget.ViewPager2
 import com.gracehopper.laserchessapp.R
-import com.gracehopper.laserchessapp.data.manager.ActiveMatchManager
-import com.gracehopper.laserchessapp.data.model.game.MatchConfig
+import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
+import com.gracehopper.laserchessapp.data.model.game.GameConfig
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
-import com.gracehopper.laserchessapp.ui.game.WaitingMatchDialogFragment
+import com.gracehopper.laserchessapp.ui.game.WaitingGameDialogFragment
 
 class MatchConfigDialogFragment(
     private val challengedUsername: String
@@ -26,7 +26,7 @@ class MatchConfigDialogFragment(
 
     private lateinit var pagerAdapter: MatchConfigPagerAdapter
 
-    private val matchConfig = MatchConfig()
+    private val gameConfig = GameConfig()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class MatchConfigDialogFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.dialog_match_config, container, false)
+        return inflater.inflate(R.layout.dialog_game_config, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,8 +69,8 @@ class MatchConfigDialogFragment(
     }
 
     fun updateSelectedBoard(boardId: Int, boardName: String) {
-        matchConfig.boardId = boardId
-        matchConfig.boardName = boardName
+        gameConfig.boardId = boardId
+        gameConfig.boardName = boardName
     }
 
     fun updateTimeConfig(
@@ -79,10 +79,10 @@ class MatchConfigDialogFragment(
         incrementSeconds: Int,
         isCustom: Boolean
     ) {
-        matchConfig.mode = mode
-        matchConfig.startingTimeSeconds = startingTimeSeconds
-        matchConfig.incrementSeconds = incrementSeconds
-        matchConfig.isCustom = isCustom
+        gameConfig.mode = mode
+        gameConfig.startingTimeSeconds = startingTimeSeconds
+        gameConfig.incrementSeconds = incrementSeconds
+        gameConfig.isCustom = isCustom
     }
 
     private fun setupListeners() {
@@ -102,15 +102,15 @@ class MatchConfigDialogFragment(
 
         buttonConfirm.setOnClickListener {
             if (!isCurrentStepValid()) return@setOnClickListener
-            if (matchConfig.boardId == null) return@setOnClickListener
+            if (gameConfig.boardId == null) return@setOnClickListener
 
-            ActiveMatchManager.setCallbacks(
+            ActiveGameManager.setCallbacks(
                 onConnected = {
                     requireActivity().runOnUiThread {
                         dismiss()
-                        WaitingMatchDialogFragment().show(
+                        WaitingGameDialogFragment().show(
                             parentFragmentManager,
-                            "WaitingMatchDialog"
+                            "WaitingGameDialog"
                         )
                     }
                 },
@@ -123,11 +123,11 @@ class MatchConfigDialogFragment(
                 onClosed = {}
             )
 
-            ActiveMatchManager.createChallenge(
+            ActiveGameManager.createChallenge(
                 challengedUsername = challengedUsername,
-                board = matchConfig.boardId!!,
-                startingTime = matchConfig.startingTimeSeconds,
-                timeIncrement = matchConfig.incrementSeconds
+                board = gameConfig.boardId!!,
+                startingTime = gameConfig.startingTimeSeconds,
+                timeIncrement = gameConfig.incrementSeconds
             )
         }
 
@@ -149,8 +149,8 @@ class MatchConfigDialogFragment(
 
     private fun isCurrentStepValid(): Boolean {
         return when (viewPager.currentItem) {
-            0 -> matchConfig.boardId != null
-            1 -> matchConfig.startingTimeSeconds > 0 && matchConfig.incrementSeconds >= 0
+            0 -> gameConfig.boardId != null
+            1 -> gameConfig.startingTimeSeconds > 0 && gameConfig.incrementSeconds >= 0
             else -> false
         }
     }

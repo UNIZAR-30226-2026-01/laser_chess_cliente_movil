@@ -12,9 +12,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
-import com.gracehopper.laserchessapp.data.manager.ActiveMatchManager
+import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 
-class WaitingMatchDialogFragment : DialogFragment() {
+class WaitingGameDialogFragment : DialogFragment() {
 
     private lateinit var textOpponent: TextView
     private lateinit var textDetails: TextView
@@ -31,7 +31,7 @@ class WaitingMatchDialogFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.dialog_waiting_match, container, false)
+        return inflater.inflate(R.layout.dialog_waiting_game, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,7 +39,7 @@ class WaitingMatchDialogFragment : DialogFragment() {
 
         textOpponent = view.findViewById(R.id.textWaitingOpponent)
         textDetails = view.findViewById(R.id.textWaitingDetails)
-        buttonCancel = view.findViewById(R.id.buttonCancelMatchRequest)
+        buttonCancel = view.findViewById(R.id.buttonCancelChallengeRequest)
 
         loadMatchInfo()
         setupListeners()
@@ -60,10 +60,10 @@ class WaitingMatchDialogFragment : DialogFragment() {
     }
 
     private fun loadMatchInfo() {
-        val opponent = ActiveMatchManager.currentOpponentUsername ?: "rival"
-        val board = ActiveMatchManager.currentBoard ?: 1
-        val startingTime = ActiveMatchManager.currentStartingTime ?: 300
-        val increment = ActiveMatchManager.currentTimeIncrement ?: 0
+        val opponent = ActiveGameManager.currentOpponentUsername ?: "rival"
+        val board = ActiveGameManager.currentBoard ?: 1
+        val startingTime = ActiveGameManager.currentStartingTime ?: 300
+        val increment = ActiveGameManager.currentTimeIncrement ?: 0
 
         textOpponent.text = "Esperando a que $opponent acepte la partida"
         textDetails.text = "Tablero $board · ${startingTime}s + ${increment}s"
@@ -71,7 +71,7 @@ class WaitingMatchDialogFragment : DialogFragment() {
 
     private fun setupListeners() {
         buttonCancel.setOnClickListener {
-            ActiveMatchManager.closeConnection()
+            ActiveGameManager.closeConnection()
 
             Toast.makeText(
                 requireContext(),
@@ -84,18 +84,18 @@ class WaitingMatchDialogFragment : DialogFragment() {
     }
 
     private fun setupCallbacks() {
-        ActiveMatchManager.setCallbacks(
+        ActiveGameManager.setCallbacks(
             onConnected = {
                 // conectados
             },
             onMessageReceived = { message ->
                 requireActivity().runOnUiThread {
 
-                    ActiveMatchManager.handleServerMessage(message)
+                    ActiveGameManager.handleServerMessage(message)
 
                     // si llega cualquier mensaje,
                     // asumimos que la partida ya ha empezado
-                    ActiveMatchManager.markInGame()
+                    ActiveGameManager.markInGame()
 
                     Toast.makeText(
                         requireContext(),

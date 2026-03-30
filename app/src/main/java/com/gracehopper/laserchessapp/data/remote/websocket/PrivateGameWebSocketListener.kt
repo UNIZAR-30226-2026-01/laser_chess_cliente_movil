@@ -13,10 +13,10 @@ import okhttp3.WebSocketListener
  * @param onError Callback a ejecutar en caso de error
  * @param onClosed Callback a ejecutar cuando se cierre la conexión
  */
-class PrivateMatchWebSocketListener(private val onConnected: () -> Unit,
-                                    private val onMessageReceived: (String) -> Unit,
-                                    private val onError: (String) -> Unit,
-                                    private val onClosed: () -> Unit)
+class PrivateGameWebSocketListener(private val onConnected: () -> Unit,
+                                   private val onMessageReceived: (String) -> Unit,
+                                   private val onError: (String) -> Unit,
+                                   private val onClosed: () -> Unit)
                                     : WebSocketListener() {
 
     /**

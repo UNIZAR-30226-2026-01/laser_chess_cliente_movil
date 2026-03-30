@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 /**
  * Clase de datos para obtener todos los ratings del usuario
+ *
  * @property userId Id del usuario
  * @property blitz Rating de blitz
  * @property rapid Rating de rapid

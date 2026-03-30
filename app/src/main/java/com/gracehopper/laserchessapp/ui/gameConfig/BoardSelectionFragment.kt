@@ -1,4 +1,4 @@
-package com.gracehopper.laserchessapp.ui.matchConfig
+package com.gracehopper.laserchessapp.ui.gameConfig
 
 import android.os.Bundle
 import android.view.*

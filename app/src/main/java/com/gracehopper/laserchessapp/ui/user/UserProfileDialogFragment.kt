@@ -12,15 +12,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
-import com.gracehopper.laserchessapp.data.manager.ActiveMatchManager
 import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
-import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocket
-import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocketListener
+import com.gracehopper.laserchessapp.data.remote.websocket.PrivateGameWebSocket
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
-import com.gracehopper.laserchessapp.ui.game.WaitingMatchDialogFragment
-import com.gracehopper.laserchessapp.ui.matchConfig.MatchConfigDialogFragment
+import com.gracehopper.laserchessapp.ui.gameConfig.MatchConfigDialogFragment
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 
 class UserProfileDialogFragment : DialogFragment() {
@@ -41,7 +38,7 @@ class UserProfileDialogFragment : DialogFragment() {
     private lateinit var buttonSecondaryAction: Button
 
     private var currentUsername: String? = null
-    private var privateMatchWebSocket: PrivateMatchWebSocket? = null
+    private var privateGameWebSocket: PrivateGameWebSocket? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         userRepository = UserRepository(NetworkUtils.getApiService())

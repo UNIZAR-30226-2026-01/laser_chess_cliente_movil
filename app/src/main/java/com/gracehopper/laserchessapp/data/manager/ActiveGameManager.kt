@@ -2,14 +2,14 @@ package com.gracehopper.laserchessapp.data.manager
 
 import android.util.Log
 import com.google.gson.Gson
-import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocket
-import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocketListener
+import com.gracehopper.laserchessapp.data.remote.websocket.PrivateGameWebSocket
+import com.gracehopper.laserchessapp.data.remote.websocket.PrivateGameWebSocketListener
 import com.gracehopper.laserchessapp.data.remote.websocket.ServerSocketMessage
 import com.gracehopper.laserchessapp.utils.TokenManager
 
-object ActiveMatchManager {
+object ActiveGameManager {
 
-    enum class MatchState {
+    enum class GameState {
         INACTIVE,
         CONNECTING,
         WAITING_ACCEPTANCE,
@@ -19,7 +19,7 @@ object ActiveMatchManager {
         ERROR
     }
 
-    private var privateMatchWebSocket: PrivateMatchWebSocket? = null
+    private var privateGameWebSocket: PrivateGameWebSocket? = null
 
     var currentOpponentUsername: String? = null
         private set
@@ -39,7 +39,7 @@ object ActiveMatchManager {
     var imRedPlayer: Boolean = true
         private set
 
-    var currentState: MatchState = MatchState.INACTIVE
+    var currentState: GameState = GameState.INACTIVE
         private set
 
     var lastError: String? = null
@@ -102,15 +102,15 @@ object ActiveMatchManager {
         currentBoard = board
         currentStartingTime = startingTime
         currentTimeIncrement = timeIncrement
-        currentState = MatchState.CONNECTING
+        currentState = GameState.CONNECTING
         lastError = null
 
         val listener = buildListener(
-            onOpenState = MatchState.WAITING_ACCEPTANCE
+            onOpenState = GameState.WAITING_ACCEPTANCE
         )
 
-        privateMatchWebSocket = PrivateMatchWebSocket(listener)
-        privateMatchWebSocket?.createChallenge(challengedUsername,
+        privateGameWebSocket = PrivateGameWebSocket(listener)
+        privateGameWebSocket?.createChallenge(challengedUsername,
             board, startingTime, timeIncrement)
 
     }
@@ -126,53 +126,53 @@ object ActiveMatchManager {
         currentBoard = board
         currentStartingTime = startingTime
         currentTimeIncrement = timeIncrement
-        currentState = MatchState.CONNECTING
+        currentState = GameState.CONNECTING
         lastError = null
 
         val listener = buildListener(
-            onOpenState = MatchState.STARTING_GAME
+            onOpenState = GameState.STARTING_GAME
         )
 
-        privateMatchWebSocket = PrivateMatchWebSocket(listener)
-        privateMatchWebSocket?.acceptChallenge(challengerUsername)
+        privateGameWebSocket = PrivateGameWebSocket(listener)
+        privateGameWebSocket?.acceptChallenge(challengerUsername)
 
     }
 
     fun sendGameMessage(message: String) {
-        privateMatchWebSocket?.sendMessage(message)
+        privateGameWebSocket?.sendMessage(message)
     }
 
     fun markInGame() {
-        currentState = MatchState.IN_GAME
+        currentState = GameState.IN_GAME
     }
 
     fun closeConnection() {
-        privateMatchWebSocket?.close()
-        privateMatchWebSocket = null
-        currentState = MatchState.CLOSED
+        privateGameWebSocket?.close()
+        privateGameWebSocket = null
+        currentState = GameState.CLOSED
     }
 
     fun resetAll() {
-        privateMatchWebSocket?.close()
-        privateMatchWebSocket = null
+        privateGameWebSocket?.close()
+        privateGameWebSocket = null
 
         currentOpponentUsername = null
         currentBoard = null
         currentStartingTime = null
         currentTimeIncrement = null
-        currentState = MatchState.INACTIVE
+        currentState = GameState.INACTIVE
         lastError = null
 
         clearCallbacks()
     }
 
     private fun resetConnectionOnly() {
-        privateMatchWebSocket?.close()
-        privateMatchWebSocket = null
+        privateGameWebSocket?.close()
+        privateGameWebSocket = null
     }
 
-    private fun buildListener(onOpenState: MatchState) : PrivateMatchWebSocketListener {
-        return PrivateMatchWebSocketListener(
+    private fun buildListener(onOpenState: GameState) : PrivateGameWebSocketListener {
+        return PrivateGameWebSocketListener(
             onConnected = {
                 currentState = onOpenState
                 onConnectedCallback?.invoke()
@@ -181,12 +181,12 @@ object ActiveMatchManager {
                 onMessageReceivedCallback?.invoke(message)
             },
             onError = { error ->
-                currentState = MatchState.ERROR
+                currentState = GameState.ERROR
                 lastError = error
                 onErrorCallback?.invoke(error)
             },
             onClosed = {
-                currentState = MatchState.CLOSED
+                currentState = GameState.CLOSED
                 onClosedCallback?.invoke()
             }
         )

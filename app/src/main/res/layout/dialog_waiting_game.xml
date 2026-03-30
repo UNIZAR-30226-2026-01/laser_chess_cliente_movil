@@ -31,7 +31,7 @@
                 android:layout_marginBottom="20dp" />
 
             <ProgressBar
-                android:id="@+id/progressWaitingMatch"
+                android:id="@+id/progressWaitingGame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp" />
@@ -55,7 +55,7 @@
                 android:layout_marginBottom="24dp" />
 
             <Button
-                android:id="@+id/buttonCancelMatchRequest"
+                android:id="@+id/buttonCancelChallengeRequest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancelar" />
