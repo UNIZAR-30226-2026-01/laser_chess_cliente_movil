@@ -1,7 +1,11 @@
 package com.gracehopper.laserchessapp.data.manager
 
+import android.util.Log
+import com.google.gson.Gson
 import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocket
 import com.gracehopper.laserchessapp.data.remote.websocket.PrivateMatchWebSocketListener
+import com.gracehopper.laserchessapp.data.remote.websocket.ServerSocketMessage
+import com.gracehopper.laserchessapp.utils.TokenManager
 
 object ActiveMatchManager {
 
@@ -27,6 +31,12 @@ object ActiveMatchManager {
         private set
 
     var currentTimeIncrement: Int? = null
+        private set
+
+    var intialBoardCSV: String? = null
+        private set
+
+    var imRedPlayer: Boolean = true
         private set
 
     var currentState: MatchState = MatchState.INACTIVE
@@ -58,6 +68,28 @@ object ActiveMatchManager {
         onErrorCallback = null
         onClosedCallback = null
     }
+
+    fun handleServerMessage(message: String) {
+        val gson = Gson()
+        val serverMsg = gson.fromJson(message, ServerSocketMessage::class.java)
+
+        when (serverMsg.Type) {
+            "InitialState" -> {
+                intialBoardCSV = serverMsg.Content
+
+                val redPlayerId = serverMsg.Extra?.toLong()
+                val myId = TokenManager.getUserId()
+
+                imRedPlayer = (redPlayerId == myId)
+
+                Log.d("WS", "InitialState: $intialBoardCSV")
+                Log.d("WS", "Tablero CSV: $intialBoardCSV")
+                Log.d("WS", "Soy rojo interno: $imRedPlayer")
+            }
+        }
+    }
+
+
 
     fun createChallenge(challengedUsername: String,
                         board: Int,

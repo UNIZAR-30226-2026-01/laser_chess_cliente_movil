@@ -14,7 +14,7 @@ package com.gracehopper.laserchessapp.data.model.user
  * @property ratings Calificaciones del usuario
  */
 data class UserProfile(
-    val id: String,
+    val id: Long,
     val username: String,
     val avatar: Int,
     val level: Int,

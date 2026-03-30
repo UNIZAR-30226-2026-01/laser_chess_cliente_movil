@@ -8,7 +8,7 @@ data class ClientSocketMessage(
 data class ServerSocketMessage(
     val Type: String,
     val Content: String,
-    val Laser: String?
+    val Extra: String?
 )
 
 

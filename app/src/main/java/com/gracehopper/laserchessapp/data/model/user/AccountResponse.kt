@@ -15,7 +15,7 @@ import com.google.gson.annotations.SerializedName
  * @property winAnimation Animación de fin de partida
  */
 data class AccountResponse(
-    @SerializedName("account_id") val accountId: String,
+    @SerializedName("account_id") val accountId: Long,
     @SerializedName("username") val username: String,
     @SerializedName("avatar") val avatar: Int,
     @SerializedName("level") val level: Int,

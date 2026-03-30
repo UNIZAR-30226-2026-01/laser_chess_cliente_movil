@@ -90,6 +90,9 @@ class WaitingMatchDialogFragment : DialogFragment() {
             },
             onMessageReceived = { message ->
                 requireActivity().runOnUiThread {
+
+                    ActiveMatchManager.handleServerMessage(message)
+
                     // si llega cualquier mensaje,
                     // asumimos que la partida ya ha empezado
                     ActiveMatchManager.markInGame()

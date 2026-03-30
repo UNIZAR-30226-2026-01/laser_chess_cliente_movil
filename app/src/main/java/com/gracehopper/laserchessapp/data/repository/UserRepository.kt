@@ -40,7 +40,7 @@ class UserRepository(private val apiService: ApiService) {
                         userId = userId,
                         onSuccess = { ratings ->
                             val profile = UserProfile(
-                                id = account.accountId.toString(),
+                                id = account.accountId,
                                 username = account.username,
                                 avatar = account.avatar,
                                 level = account.level,

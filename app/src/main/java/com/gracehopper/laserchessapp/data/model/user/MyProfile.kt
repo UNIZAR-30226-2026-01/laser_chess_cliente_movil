@@ -19,7 +19,7 @@ package com.gracehopper.laserchessapp.data.model.user
  * @property elo_extended Elo en modo extended
  */
 data class MyProfile(
-    val id: String,
+    val id: Long,
     val mail: String,
     val username: String,
     val avatar: Int,
