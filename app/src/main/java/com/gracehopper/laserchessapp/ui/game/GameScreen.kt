@@ -116,8 +116,10 @@ fun GameScreen (
                         ) {
                             if (piece != null) {            // Si hay una pieza en la casilla
 
+                                val visualRotation = if (isRedPlayer) piece.rotation else (piece.rotation + 180)
+
                                 val rotation by animateFloatAsState(
-                                    targetValue = piece.rotation.toFloat(),
+                                    targetValue = visualRotation.toFloat(),
                                     animationSpec = tween(200)
                                 )
 
