@@ -19,6 +19,9 @@ import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
 import com.gracehopper.laserchessapp.data.repository.ChallengeRepository
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 
+/**
+ * Diálogo de notificaciones de retos de partidas amistosas
+ */
 class NotificationsDialogFragment : DialogFragment() {
 
     private lateinit var buttonClose: ImageButton
