@@ -35,7 +35,6 @@ class NotificationsDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = true
-        setStyle(STYLE_NO_TITLE, R.style.Theme_Translucent_NoTitleBar)
     }
 
     override fun onCreateView(
@@ -60,15 +59,7 @@ class NotificationsDialogFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-
-        dialog?.window?.apply {
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            setDimAmount(0.55f)
-        }
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
     private fun setupRecyclerView() {
