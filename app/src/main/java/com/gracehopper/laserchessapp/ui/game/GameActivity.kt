@@ -15,7 +15,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveMatchManager
-import com.gracehopper.laserchessapp.databinding.ActivityGameBinding
+import com.gracehopper.laserchessapp.data.repository.GameRepository
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.gameLogic.board.BoardParser
 import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
@@ -29,15 +29,14 @@ class GameActivity : AppCompatActivity() {
         var isMyTurn: Boolean = true
     }
 
-    private val testMode = true
+    private val testMode = false
+    private val gameRepository = GameRepository()
     private val rows = 10
     private val cols = 8
     private lateinit var boardM: Board          // Modelo lógico del tablero
     private var clearTrigger by mutableIntStateOf(0)            // Trigger para avisar a la UI de limpiar selección
     private var selectedPos: Pair<Int, Int>? = null             // Posición de la pieza
 
-    // Bind temporal
-    private lateinit var binding: ActivityGameBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,10 +101,14 @@ class GameActivity : AppCompatActivity() {
 
         // Rot. izq.
         btnLeft.setOnClickListener {
-            selectedPos?.let { (r, c) ->
-                val piece = boardM.getPiece(r, c)
-
-                piece?.rotateLeft()
+            selectedPos?.let { pos ->
+                if (testMode){
+                    val piece = boardM.getPiece(pos.first, pos.second)
+                    piece?.rotateLeft()
+                }
+                else {
+                    gameRepository.sendRotateLeft(pos)
+                }
 
                 selectedPos = null
                 clearTrigger++
@@ -115,10 +118,14 @@ class GameActivity : AppCompatActivity() {
 
         // Rot. der.
         btnRight.setOnClickListener {
-            selectedPos?.let { (r, c) ->
-                val piece = boardM.getPiece(r, c)
+            selectedPos?.let { pos ->
 
-                piece?.rotateRight()
+                if (testMode) {
+                    val piece = boardM.getPiece(pos.first, pos.second)
+                    piece?.rotateRight()
+                } else {
+                    gameRepository.sendRotateRight(pos)
+                }
 
                 selectedPos = null
                 clearTrigger++
@@ -130,18 +137,22 @@ class GameActivity : AppCompatActivity() {
 
     private fun movePiece(from: Pair<Int, Int>, to: Pair<Int, Int>) {
 
-        val (r1, c1) = from
-        val (r2, c2) = to
+        if (testMode) {
+            val (r1, c1) = from
+            val (r2, c2) = to
 
-        val pieceFrom = boardM.getPiece(r1, c1)
-        val pieceTo = boardM.getPiece(r2, c2)
+            val pieceFrom = boardM.getPiece(r1, c1)
+            val pieceTo = boardM.getPiece(r2, c2)
 
-        if (pieceFrom != null && pieceFrom.type == PieceType.SWITCHER && pieceTo != null) {
-            boardM.setPiece(r1,c1, pieceTo)
-            boardM.setPiece(r2, c2, pieceFrom)
+            if (pieceFrom != null && pieceFrom.type == PieceType.SWITCHER && pieceTo != null) {
+                boardM.setPiece(r1, c1, pieceTo)
+                boardM.setPiece(r2, c2, pieceFrom)
+            } else {
+                boardM.setPiece(r2, c2, pieceFrom)
+                boardM.setPiece(r1, c1, null)
+            }
         } else {
-            boardM.setPiece(r2, c2, pieceFrom)
-            boardM.setPiece(r1, c1, null)
+            gameRepository.sendMove(from, to)
         }
 
         selectedPos = null
