@@ -5,7 +5,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,21 +17,33 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
+import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
-import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
+import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
+import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 import com.gracehopper.laserchessapp.utils.ChallengeNotificationHelper
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var viewPager2: ViewPager2
-    private lateinit var navBtns: List<ImageButton>
 
     private val repository by lazy {
         UserRepository(NetworkUtils.getApiService())
     }
 
+    private lateinit var viewPager2: ViewPager2
+    private lateinit var navBtns: List<ImageButton>
+
+    private lateinit var imgProfileAvatar: ImageView
+    private lateinit var txtProfileUsername: TextView
+    private lateinit var txtProfileLevel: TextView
+    private lateinit var txtProfileXp: TextView
+    private lateinit var progressProfileXP: ProgressBar
+    private lateinit var profileCardContainer: View
+
+
+    // Launcher para solicitar permiso de notificaciones
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             granted ->
@@ -65,6 +81,11 @@ class MainActivity : AppCompatActivity() {
         updateButtonSelection(2)
 
         handleNotificationIntent(intent)
+
+        initViews()
+        observeCurrentUserProfile()
+        loadMyProfile()
+        setupProfileCard()
 
     }
 
@@ -135,7 +156,87 @@ class MainActivity : AppCompatActivity() {
         handleNotificationIntent(intent)
     }
 
+    private fun initViews() {
+
+        imgProfileAvatar = findViewById(R.id.imgMyProfileAvatar)
+        txtProfileUsername = findViewById(R.id.txtMyProfileUsername)
+        txtProfileLevel = findViewById(R.id.txtMyProfileLevel)
+        txtProfileXp = findViewById(R.id.txtMyProfileXp)
+        progressProfileXP = findViewById(R.id.progressMyProfileXp)
+        profileCardContainer = findViewById(R.id.profileCardInclude)
+
+    }
+
+    private fun observeCurrentUserProfile() {
+
+        CurrentUserManager.myProfile.observe(this) { profile ->
+            if (profile != null) {
+                updateProfileCard(profile)
+            }
+        }
+
+    }
+
     private fun loadMyProfile() {
+
+        if (CurrentUserManager.isProfileLoaded()) return
+
+        repository.getMyProfile(
+            onSuccess = { profile ->
+            CurrentUserManager.setMyProfile(profile)
+            },
+            onError = {
+                runOnUiThread {
+                    Toast.makeText(this,
+                        "No se pudo cargar tu perfil",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+
+    }
+
+    private fun updateProfileCard(profile: MyProfile) {
+
+        txtProfileUsername.text = profile.username
+        txtProfileLevel.text = "Nivel ${profile.level}"
+        txtProfileXp.text = "${profile.xp} xp"
+        imgProfileAvatar.setImageResource(AvatarUtils.getAvatarDrawable(profile.avatar))
+        progressProfileXP.max = 100
+        progressProfileXP.progress = profile.xp % 100
+
+    }
+
+    private fun setupProfileCard() {
+
+        profileCardContainer.setOnClickListener {
+
+            if (CurrentUserManager.getMyCurrentProfile() == null) {
+                Toast.makeText(this,
+                    "Perfil aún no cargado",
+                    Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val dialog = MyProfileDialogFragment.newInstance()
+            dialog.show(supportFragmentManager, "MyProfileDialog")
+
+        }
+
+    }
+
+    private fun refreshMyProfile() {
+
+        repository.getMyProfile(
+            onSuccess = { profile ->
+                CurrentUserManager.setMyProfile(profile)
+            },
+            onError = {
+                Toast.makeText(this,
+                    "No se puedo actualizar tu perfil",
+                    Toast.LENGTH_SHORT).show()
+            }
+        )
 
     }
 

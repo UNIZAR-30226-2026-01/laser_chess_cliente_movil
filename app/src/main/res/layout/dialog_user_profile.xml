@@ -320,7 +320,7 @@
             android:gravity="center">
 
             <LinearLayout
-                android:layout_width="120dp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
@@ -330,8 +330,8 @@
 
                 <ImageView
                     android:id="@+id/imagePieceSkin"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
                     android:src="@drawable/ic_piece_placeholder"
                     android:contentDescription="Skin piezas" />
 
@@ -339,23 +339,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Piezas"
-                    android:textSize="14sp"
+                    android:textSize="11sp"
                     android:textColor="@android:color/black"
                     android:layout_marginTop="8dp" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="120dp"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:background="@drawable/bg_box_border"
-                android:padding="12dp">
+                android:padding="12dp"
+                android:layout_marginEnd="20dp">
 
                 <ImageView
                     android:id="@+id/imageBoardSkin"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
                     android:src="@drawable/ic_board_placeholder"
                     android:contentDescription="Skin tablero" />
 
@@ -363,7 +364,31 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tablero"
-                    android:textSize="14sp"
+                    android:textSize="11sp"
+                    android:textColor="@android:color/black"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_box_border"
+                android:padding="12dp" >
+
+                <ImageView
+                    android:id="@+id/imageWinAnimation"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:src="@drawable/ic_piece_placeholder"
+                    android:contentDescription="Skin piezas" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Animación"
+                    android:textSize="11dp"
                     android:textColor="@android:color/black"
                     android:layout_marginTop="8dp" />
             </LinearLayout>

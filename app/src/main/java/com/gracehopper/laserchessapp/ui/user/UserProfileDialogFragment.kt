@@ -8,17 +8,18 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
-import com.gracehopper.laserchessapp.data.remote.websocket.PrivateGameWebSocket
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.gameConfig.MatchConfigDialogFragment
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
+import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 class UserProfileDialogFragment : DialogFragment() {
 
@@ -29,23 +30,29 @@ class UserProfileDialogFragment : DialogFragment() {
     private lateinit var txtProfileUsername: TextView
     private lateinit var txtProfileLevel: TextView
     private lateinit var txtProfileXp: TextView
+    private lateinit var progressProfileXP: ProgressBar
+
     private lateinit var txtProfileBlitzElo: TextView
     private lateinit var txtProfileRapidElo: TextView
     private lateinit var txtProfileClassicElo: TextView
     private lateinit var txtProfileExtendedElo: TextView
+
+    private lateinit var imgPieceSkin: ImageView
+    private lateinit var imgBoardSkin: ImageView
+    private lateinit var imgWinAnimation: ImageView
+
     private lateinit var buttonClose: ImageButton
     private lateinit var buttonPrimaryAction: Button
     private lateinit var buttonSecondaryAction: Button
 
     private var currentUsername: String? = null
-    private var privateGameWebSocket: PrivateGameWebSocket? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         userRepository = UserRepository(NetworkUtils.getApiService())
         friendRepository = FriendRepository(NetworkUtils.getApiService())
 
         val dialogView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.dialog_friend_profile, null)
+            .inflate(R.layout.dialog_user_profile, null)
 
         bindViews(dialogView)
         setupCloseButton()
@@ -161,10 +168,17 @@ class UserProfileDialogFragment : DialogFragment() {
         txtProfileUsername = dialogView.findViewById(R.id.txtProfileUsername)
         txtProfileLevel = dialogView.findViewById(R.id.txtProfileLevel)
         txtProfileXp = dialogView.findViewById(R.id.txtProfileXp)
+        progressProfileXP = dialogView.findViewById(R.id.progressProfileXp)
+
         txtProfileBlitzElo = dialogView.findViewById(R.id.txtBlitzElo)
         txtProfileRapidElo = dialogView.findViewById(R.id.txtRapidElo)
         txtProfileClassicElo = dialogView.findViewById(R.id.txtClassicElo)
         txtProfileExtendedElo = dialogView.findViewById(R.id.txtExtendedElo)
+
+        imgPieceSkin = dialogView.findViewById(R.id.imagePieceSkin)
+        imgBoardSkin = dialogView.findViewById(R.id.imageBoardSkin)
+        imgWinAnimation = dialogView.findViewById(R.id.imageWinAnimation)
+
         buttonClose = dialogView.findViewById(R.id.buttonCloseProfileDialog)
         buttonPrimaryAction = dialogView.findViewById(R.id.buttonPrimaryAction)
         buttonSecondaryAction = dialogView.findViewById(R.id.buttonSecondaryAction)
@@ -204,6 +218,13 @@ class UserProfileDialogFragment : DialogFragment() {
         txtProfileExtendedElo.text = profile.ratings.extended.toString()
 
         imageProfileAvatar.setImageResource(AvatarUtils.getAvatarDrawable(profile.avatar))
+
+        progressProfileXP.max = 100
+        progressProfileXP.progress = profile.xp % 100
+
+        imgPieceSkin.setImageResource(ItemUtils.getPieceSkinDrawable(profile.pieceSkin))
+        imgBoardSkin.setImageResource(ItemUtils.getBoardSkinDrawable(profile.boardSkin))
+        imgWinAnimation.setImageResource(ItemUtils.getWinAnimationDrawable(profile.winAnimation))
 
     }
 

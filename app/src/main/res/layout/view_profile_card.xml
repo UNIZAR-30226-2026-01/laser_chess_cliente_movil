@@ -15,7 +15,7 @@
         android:padding="12dp">
 
         <ImageView
-            android:id="@+id/imgAvatar"
+            android:id="@+id/imgMyProfileAvatar"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/ic_avatar"
@@ -30,18 +30,47 @@
             android:layout_marginStart="12dp">
 
             <TextView
-                android:id="@+id/txtUsername"
+                android:id="@+id/txtMyProfileUsername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/username"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <View
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:background="@color/gray"
-                android:layout_marginTop="6dp"/>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/txtMyProfileLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nivel 77"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:layout_marginEnd="10dp" />
+
+                <ProgressBar
+                    android:id="@+id/progressMyProfileXp"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="100"
+                    android:progress="60" />
+
+                <TextView
+                    android:id="@+id/txtMyProfileXp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="123 xp"
+                    android:textSize="13sp"
+                    android:textColor="@android:color/black"
+                    android:layout_marginStart="10dp" />
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

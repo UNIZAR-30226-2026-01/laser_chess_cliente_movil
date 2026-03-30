@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+
+    <!-- Caja principal -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_modal_border"
+        android:padding="24dp">
+
+        <!-- Botón cerrar -->
+        <ImageButton
+            android:id="@+id/buttonCloseMyProfileDialog"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="start"
+            android:background="@drawable/bg_box_border"
+            android:src="@drawable/ic_close"
+            android:contentDescription="@string/close"
+            android:padding="8dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Cabecera perfil -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/imageMyProfileAvatar"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/ic_avatar"
+                android:contentDescription="@string/avatar"
+                android:layout_marginEnd="16dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtMyProfileUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/username"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/txtMyProfileLevel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nivel 77"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/black"
+                        android:layout_marginEnd="10dp" />
+
+                    <ProgressBar
+                        android:id="@+id/progressMyProfileXp"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:max="100"
+                        android:progress="60" />
+
+                    <TextView
+                        android:id="@+id/txtMyProfileXp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="123 xp"
+                        android:textSize="13sp"
+                        android:textColor="@android:color/black"
+                        android:layout_marginStart="10dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Encabezado tabla rankings -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.4"
+                android:text="@string/time_mode"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="0.8"
+                android:src="@drawable/ic_elo"
+                android:contentDescription="@string/elo"
+                android:scaleType="fitCenter"
+                android:layout_gravity="center_vertical" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:text="RANGO"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Fila Blitz -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.4"
+                android:text="@string/time_mode_blitz"
+                android:textSize="18sp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/txtBlitzMyElo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:text="123"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/imageBlitzMyRank"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_weight="0.8"
+                android:src="@drawable/ic_rank_placeholder"
+                android:contentDescription="Rango Blitz"
+                android:adjustViewBounds="true" />
+        </LinearLayout>
+
+        <!-- Fila Rapid -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.4"
+                android:text="@string/time_mode_rapid"
+                android:textSize="18sp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/txtRapidMyElo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:text="122"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/imageRapidMyRank"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_weight="0.8"
+                android:src="@drawable/ic_rank_placeholder"
+                android:contentDescription="Rango Rapid"
+                android:adjustViewBounds="true" />
+        </LinearLayout>
+
+        <!-- Fila Classic -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.4"
+                android:text="@string/time_mode_classic"
+                android:textSize="18sp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/txtClassicMyElo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:text="110"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/imageClassicMyRank"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_weight="0.8"
+                android:src="@drawable/ic_rank_placeholder"
+                android:contentDescription="Rango Classic"
+                android:adjustViewBounds="true" />
+        </LinearLayout>
+
+        <!-- Fila Extended -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.4"
+                android:text="@string/time_mode_extended"
+                android:textSize="18sp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/txtExtendedMyElo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:text="153"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/imageExtendedMyRank"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_weight="0.8"
+                android:src="@drawable/ic_rank_placeholder"
+                android:contentDescription="Rango Extended"
+                android:adjustViewBounds="true" />
+        </LinearLayout>
+
+        <!-- Equipado -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EQUIPADO"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_box_border"
+                android:padding="12dp"
+                android:layout_marginEnd="20dp">
+
+                <ImageView
+                    android:id="@+id/imageMyPieceSkin"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:src="@drawable/ic_piece_placeholder"
+                    android:contentDescription="Skin piezas" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Piezas"
+                    android:textSize="11sp"
+                    android:textColor="@android:color/black"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_box_border"
+                android:padding="12dp"
+                android:layout_marginEnd="20dp">
+
+                <ImageView
+                    android:id="@+id/imageMyBoardSkin"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:src="@drawable/ic_board_placeholder"
+                    android:contentDescription="Skin tablero" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tablero"
+                    android:textSize="11sp"
+                    android:textColor="@android:color/black"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_box_border"
+                android:padding="12dp" >
+
+                <ImageView
+                    android:id="@+id/imageMyWinAnimation"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:src="@drawable/ic_piece_placeholder"
+                    android:contentDescription="Skin piezas" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Animación"
+                    android:textSize="11dp"
+                    android:textColor="@android:color/black"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>
