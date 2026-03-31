@@ -19,10 +19,13 @@ import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.repository.GameRepository
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.gameLogic.board.BoardParser
+import com.gracehopper.laserchessapp.gameLogic.laser.LaserUtils
 import com.gracehopper.laserchessapp.gameLogic.move.CoordsConverter
 import com.gracehopper.laserchessapp.gameLogic.move.MoveParser
 import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
+import android.os.Handler
+import android.os.Looper
 
 
 class GameActivity : AppCompatActivity() {
@@ -42,6 +45,7 @@ class GameActivity : AppCompatActivity() {
     private var clearTrigger by mutableIntStateOf(0)            // Trigger para avisar a la UI de limpiar selección
     private var selectedPos: Pair<Int, Int>? = null             // Posición de la pieza
     private lateinit var controls : LinearLayout
+    var laserPath by mutableStateOf<List<Pair<Int, Int>>>(emptyList())
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,8 +82,8 @@ class GameActivity : AppCompatActivity() {
         }
 
         ActiveGameManager.setCallbacks(
-            onMessageReceived = { moveStr, laserPath ->
-                runOnUiThread { applyServerMove(moveStr) }
+            onMessageReceived = { moveStr, laserPathStr ->
+                runOnUiThread { applyServerMove(moveStr, laserPathStr) }
             },
             onClosed = {
                 runOnUiThread { finish() }
@@ -110,7 +114,8 @@ class GameActivity : AppCompatActivity() {
                         }
                     }, // Aparecen ctrls de rot
                 onMove = { from, to -> movePiece(from, to) },
-                clearSelectionTrigger = clearTrigger
+                clearSelectionTrigger = clearTrigger,
+                laserPath = laserPath
             )
         }
 
@@ -210,48 +215,49 @@ class GameActivity : AppCompatActivity() {
         boardM.getPiece(7,5)?.rotation = 180
     }
 
-    private fun applyServerMove(moveStr: String) {
+    private fun applyServerMove(moveStr: String, laserPathStr: String?) {
         val move = MoveParser.parseMove(moveStr)
 
         val fromPos = CoordsConverter.notationToPosition(move.from)
         val piece = boardM.getPiece(fromPos.first, fromPos.second)
-        Log.d("MOVE_DEBUG", "fromNotation=${move.from} -> fromPos=$fromPos -> piece=$piece")
 
         when (move.type) {
             'T' -> {
                 val toPos = CoordsConverter.notationToPosition(move.to!!)
                 val pieceTo = boardM.getPiece(toPos.first, toPos.second)
-                Log.d("MOVE_DEBUG", "toNotation=${move.to} -> toPos=$toPos -> pieceTo=$pieceTo")
 
                 boardM.setPiece(toPos.first, toPos.second, piece)
                 boardM.setPiece(fromPos.first, fromPos.second, pieceTo)
-                Log.d("MOVE_DEBUG", "Tras mover: pos $fromPos=${boardM.getPiece(fromPos.first, fromPos.second)} pos $toPos=${boardM.getPiece(toPos.first, toPos.second)}")
             }
+
             'R' -> {
-                Log.d("MOVE_DEBUG", "Rotando derecha pieza en $fromPos: $piece")
                 piece?.rotateRight()
             }
+
             'L' -> {
-                Log.d("MOVE_DEBUG", "Rotando izquierda pieza en $fromPos: $piece")
                 piece?.rotateLeft()
             }
         }
 
-        move.destroyed?.let {
-            val destroyedPos = CoordsConverter.notationToPosition(it)
-            Log.d("MOVE_DEBUG", "destroyed=${it} -> destroyedPos=$destroyedPos -> piece=${boardM.getPiece(destroyedPos.first, destroyedPos.second)}")
-            boardM.setPiece(destroyedPos.first, destroyedPos.second, null)
-        }
+        laserPath = LaserUtils.parseLaserPath(laserPathStr)
+        Log.d("LASER", "Laser path board coords: $laserPath")
 
-        Log.d("MOVE_DEBUG", "clearTrigger antes: $clearTrigger")
-        if (waitingForServerConfirmation) {
-            waitingForServerConfirmation = false
-        } else {
-            isMyTurn = true
-        }
+        Handler(Looper.getMainLooper()).postDelayed({
+            move.destroyed?.let {
+                val destroyedPos = CoordsConverter.notationToPosition(it)
+                boardM.setPiece(destroyedPos.first, destroyedPos.second, null)
+            }
 
-        controls.visibility = View.GONE
-        clearTrigger++
-        Log.d("MOVE_DEBUG", "clearTrigger después: $clearTrigger")
+            laserPath = emptyList()
+
+            if (waitingForServerConfirmation) {
+                waitingForServerConfirmation = false
+            } else {
+                isMyTurn = true
+            }
+
+            controls.visibility = View.GONE
+            clearTrigger++
+        }, 1000)
     }
 }

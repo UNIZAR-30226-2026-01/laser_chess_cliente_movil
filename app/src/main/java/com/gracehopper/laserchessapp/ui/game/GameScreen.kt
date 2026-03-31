@@ -26,7 +26,8 @@ fun GameScreen (
     isMyTurn: Boolean,
     onPieceSelected: (Pair<Int, Int>?) -> Unit,
     onMove: (Pair<Int, Int>, Pair<Int, Int>) -> Unit,
-    clearSelectionTrigger: Int){
+    clearSelectionTrigger: Int,
+    laserPath: List<Pair<Int, Int>>){
     var highlightedMoves by remember { mutableStateOf<List<Pair<Int, Int>>>(emptyList()) }
     var selectedPos by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
@@ -144,6 +145,15 @@ fun GameScreen (
                                     modifier = Modifier
                                         .size(16.dp)
                                         .background(Color(0xFFFF9800), shape = CircleShape)
+                                )
+                            }
+
+                            val isLaser = laserPath.contains(Pair(row,col))
+                            if (isLaser) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(Color.Red.copy(alpha = 0.4f))
                                 )
                             }
                         }
