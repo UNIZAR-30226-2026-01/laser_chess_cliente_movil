@@ -15,7 +15,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.gracehopper.laserchessapp.R
-import com.gracehopper.laserchessapp.data.manager.ActiveMatchManager
+import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.repository.GameRepository
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.gameLogic.board.BoardParser
@@ -63,21 +63,21 @@ class GameActivity : AppCompatActivity() {
 
         boardM = Board(rows, cols)
 
-        imInternalRed = ActiveMatchManager.imRedPlayer
+        imInternalRed = ActiveGameManager.imRedPlayer
         isMyTurn = imInternalRed
         Log.d("PLAYER", "Soy rojo interno: $imInternalRed")
-        Log.d("PLAYER", "CSV: ${ActiveMatchManager.intialBoardCSV != null}")
+        Log.d("PLAYER", "CSV: ${ActiveGameManager.intialBoardCSV != null}")
 
         if (testMode) {
             loadTestBoard()
         } else {
-            val csv = ActiveMatchManager.intialBoardCSV
+            val csv = ActiveGameManager.intialBoardCSV
             if (csv != null) {
                 BoardParser.boadFromCSV(boardM, csv)
             }
         }
 
-        ActiveMatchManager.setCallbacks(
+        ActiveGameManager.setCallbacks(
             onMessageReceived = { moveStr, laserPath ->
                 runOnUiThread { applyServerMove(moveStr) }
             },
@@ -160,7 +160,7 @@ class GameActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        ActiveMatchManager.clearCallbacks()
+        ActiveGameManager.clearCallbacks()
     }
 
 
