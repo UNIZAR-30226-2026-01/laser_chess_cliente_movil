@@ -85,7 +85,7 @@ fun GameScreen (
                             modifier = Modifier
                                 .weight(1f)
                                 .aspectRatio(1f)
-                                .background(Color.White)
+                                .background(getCellColor(row, col, isRedPlayer))
                                 .border(1.dp, Color.Black)
                                 .clickable{
                                     val selected = selectedPos
@@ -150,6 +150,32 @@ fun GameScreen (
                     }
                 }
             }
+        }
+    }
+}
+
+fun getCellColor(row: Int, col: Int, isRedPlayer: Boolean): Color {
+
+    return if (isRedPlayer) {
+        when {
+            row == 0 -> Color(0xFFFFCDD2) // fila a roja
+            row == 8 && (col == 0 || col == 7) -> Color(0xFFFFCDD2) // i1 i8 rojas
+
+            row == 9 -> Color(0xFFBBDEFB) // fila j azul
+            row == 1 && (col == 0 || col == 7) -> Color(0xFFBBDEFB) // b1 b8 azul
+
+            else -> Color.White
+        }
+    } else {
+        // Soy azul interno
+        when {
+            row == 9 -> Color(0xFFFFCDD2) // fila j roja
+            row == 1 && (col == 0 || col == 7) -> Color(0xFFFFCDD2) // b1 b8 rojas
+
+            row == 0 -> Color(0xFFBBDEFB) // fila a azul
+            row == 8 && (col == 0 || col == 7) -> Color(0xFFBBDEFB) // i1 i8 azul
+
+            else -> Color.White
         }
     }
 }

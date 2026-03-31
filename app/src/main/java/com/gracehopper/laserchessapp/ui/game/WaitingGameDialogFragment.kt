@@ -91,8 +91,6 @@ class WaitingGameDialogFragment : DialogFragment() {
             onMessageReceived = { message, extra ->
                 requireActivity().runOnUiThread {
 
-                    ActiveGameManager.handleServerMessage(message)
-
                     // si llega cualquier mensaje,
                     // asumimos que la partida ya ha empezado
                     ActiveGameManager.markInGame()

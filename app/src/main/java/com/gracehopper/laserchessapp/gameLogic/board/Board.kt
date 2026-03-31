@@ -18,4 +18,12 @@ class Board(val rows: Int, val cols: Int) {
     fun setPiece(row: Int, col: Int, piece: Piece?) {
         grid[row][col] = piece
     }
+
+    fun isForbiddenCell(row: Int, col: Int, isRedPiece: Boolean): Boolean {
+        return if (isRedPiece) {
+            row == 0 || (row == 8 && (col == 0 || col == 7))
+        } else {
+            row == 9 || (row == 1 && (col == 0 || col == 7))
+        }
+    }
 }

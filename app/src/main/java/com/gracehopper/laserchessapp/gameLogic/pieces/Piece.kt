@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.gameLogic.board.Board
-import com.gracehopper.laserchessapp.ui.game.GameActivity.Companion.imInternalRed
+import com.gracehopper.laserchessapp.ui.game.GameActivity
 
 class Piece(
     val isRed: Boolean,
@@ -70,13 +70,24 @@ class Piece(
 
                 if (newRow in 0 until board.rows && newCol in 0 until board.cols) {
 
+                    if (board.isForbiddenCell(newRow, newCol, this.isRed)) continue
+
                     val target = board.getPiece(newRow, newCol)
 
                     if (target == null) {
                         moves.add(Pair(newRow, newCol))
 
                     } else if (type == PieceType.SWITCHER && target.type != PieceType.SWITCHER && target.type != PieceType.KING) {
-                        moves.add(Pair(newRow, newCol))
+                        val imRed = GameActivity.imInternalRed
+
+                        if (target.isRed != imRed) {
+                            val enemyForbidden = board.isForbiddenCell(row, col, target.isRed)
+                            if (!enemyForbidden) {
+                                moves.add(Pair(newRow, newCol))
+                            }
+                        } else {
+                            moves.add(Pair(newRow, newCol))
+                        }
                     }
                 }
             }
