@@ -32,6 +32,8 @@ class GameActivity : AppCompatActivity() {
         var isMyTurn by mutableStateOf(true)
     }
 
+    private var waitingForServerConfirmation = false
+
     private val testMode = false
     private val gameRepository = GameRepository()
     private val rows = 10
@@ -39,7 +41,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var boardM: Board          // Modelo lógico del tablero
     private var clearTrigger by mutableIntStateOf(0)            // Trigger para avisar a la UI de limpiar selección
     private var selectedPos: Pair<Int, Int>? = null             // Posición de la pieza
-
+    private lateinit var controls : LinearLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +55,7 @@ class GameActivity : AppCompatActivity() {
         setContentView(R.layout.activity_game)
 
         val board = findViewById<ComposeView>(R.id.board)
-        val controls = findViewById<LinearLayout>(R.id.rotationButtons)
+        controls = findViewById<LinearLayout>(R.id.rotationButtons)
         val btnLeft = findViewById<ImageButton>(R.id.btnRotLeft)
         val btnRight = findViewById<ImageButton>(R.id.btnRotRight)
 
@@ -125,6 +127,7 @@ class GameActivity : AppCompatActivity() {
                 }
                 else {
                     gameRepository.sendRotateLeft(pos)
+                    waitingForServerConfirmation = true
                     isMyTurn = false
                 }
 
@@ -143,6 +146,7 @@ class GameActivity : AppCompatActivity() {
                     piece?.rotateRight()
                 } else {
                     gameRepository.sendRotateRight(pos)
+                    waitingForServerConfirmation = true
                     isMyTurn = false
                 }
 
@@ -178,6 +182,7 @@ class GameActivity : AppCompatActivity() {
             }
         } else {
             gameRepository.sendMove(from, to)
+            waitingForServerConfirmation = true
             isMyTurn = false
         }
 
@@ -210,30 +215,43 @@ class GameActivity : AppCompatActivity() {
 
         val fromPos = CoordsConverter.notationToPosition(move.from)
         val piece = boardM.getPiece(fromPos.first, fromPos.second)
+        Log.d("MOVE_DEBUG", "fromNotation=${move.from} -> fromPos=$fromPos -> piece=$piece")
 
         when (move.type) {
             'T' -> {
                 val toPos = CoordsConverter.notationToPosition(move.to!!)
                 val pieceTo = boardM.getPiece(toPos.first, toPos.second)
+                Log.d("MOVE_DEBUG", "toNotation=${move.to} -> toPos=$toPos -> pieceTo=$pieceTo")
 
                 boardM.setPiece(toPos.first, toPos.second, piece)
                 boardM.setPiece(fromPos.first, fromPos.second, pieceTo)
+                Log.d("MOVE_DEBUG", "Tras mover: pos $fromPos=${boardM.getPiece(fromPos.first, fromPos.second)} pos $toPos=${boardM.getPiece(toPos.first, toPos.second)}")
             }
-            'R' -> piece?.rotateRight()
-            'L' -> piece?.rotateLeft()
+            'R' -> {
+                Log.d("MOVE_DEBUG", "Rotando derecha pieza en $fromPos: $piece")
+                piece?.rotateRight()
+            }
+            'L' -> {
+                Log.d("MOVE_DEBUG", "Rotando izquierda pieza en $fromPos: $piece")
+                piece?.rotateLeft()
+            }
         }
 
         move.destroyed?.let {
             val destroyedPos = CoordsConverter.notationToPosition(it)
+            Log.d("MOVE_DEBUG", "destroyed=${it} -> destroyedPos=$destroyedPos -> piece=${boardM.getPiece(destroyedPos.first, destroyedPos.second)}")
             boardM.setPiece(destroyedPos.first, destroyedPos.second, null)
         }
 
-        Log.d("MOVE", "Move: $moveStr")
-        Log.d("MOVE", "From internal: $fromPos")
-        Log.d("MOVE", "Destroyed internal: ${move.destroyed}")
+        Log.d("MOVE_DEBUG", "clearTrigger antes: $clearTrigger")
+        if (waitingForServerConfirmation) {
+            waitingForServerConfirmation = false
+        } else {
+            isMyTurn = true
+        }
 
-        isMyTurn = !isMyTurn
-
+        controls.visibility = View.GONE
         clearTrigger++
+        Log.d("MOVE_DEBUG", "clearTrigger después: $clearTrigger")
     }
 }

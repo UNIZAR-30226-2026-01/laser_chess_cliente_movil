@@ -30,6 +30,8 @@ fun GameScreen (
     var highlightedMoves by remember { mutableStateOf<List<Pair<Int, Int>>>(emptyList()) }
     var selectedPos by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
+    val recomposeTrigger = clearSelectionTrigger
+
     LaunchedEffect(clearSelectionTrigger) {             // Limpiar cuando se active el trigger
         selectedPos = null
         highlightedMoves = emptyList()
@@ -72,73 +74,78 @@ fun GameScreen (
                 }
 
                 for (col in colRange) {
-
-                    val piece = board.getPiece(row, col)
-                    val isHighlighted = highlightedMoves.contains(Pair(row,col))
-
-                    // Casilla
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .aspectRatio(1f)
-                            .background(Color.White)
-                            .border(1.dp, Color.Black)
-                            .clickable{
-                                val selected = selectedPos
-                                val piece = board.getPiece(row, col)
-
-                                if (selected == null) {             // Primer click
-                                    if (piece != null && piece.isRed == isRedPlayer && isMyTurn) {
-                                        selectedPos = Pair(row, col)
-                                        highlightedMoves = piece.getValidMoves(row, col, board)
-
-                                        onPieceSelected(selectedPos)
-                                    }
-
-                                } else {            // Segundo click (mover pieza)
-                                    val (r2, c2) = selected
-                                    val selectedPiece = board.getPiece(r2, c2)
-
-                                    if (selectedPiece != null) {
-
-                                        if (highlightedMoves.contains(Pair(row, col)) && selectedPiece.isRed == isRedPlayer && isMyTurn) {            // mov. valido
-
-                                            onMove(Pair(r2, c2), Pair(row, col))
-                                        }
-                                    }
-
-                                    selectedPos = null
-                                    highlightedMoves = emptyList()
-                                    onPieceSelected(null)
-                                }
-                            }, contentAlignment = Alignment.Center
-                    ) {
-                        if (piece != null) {            // Si hay una pieza en la casilla
-
-                            val visualRotation = if (isRedPlayer) piece.rotation + 180 else (piece.rotation)
-
-                            val rotation by animateFloatAsState(
-                                targetValue = visualRotation.toFloat(),
-                                animationSpec = tween(200)
-                            )
-
-                            Image(
-                                painter = painterResource(id = piece.getImageRes(isRedPlayer)),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .graphicsLayer {
-                                        rotationZ = rotation
-                                    }
-                            )
+                    key(row, col) {
+                        val piece by remember(board, row, col, recomposeTrigger) {
+                            derivedStateOf { board.getPiece(row, col) }
                         }
+                        val isHighlighted = highlightedMoves.contains(Pair(row,col))
 
-                        if (isHighlighted) {            // casilla de movimiento posible
-                            Box(
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .background(Color(0xFFFF9800), shape = CircleShape)
-                            )
+                        // Casilla
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .aspectRatio(1f)
+                                .background(Color.White)
+                                .border(1.dp, Color.Black)
+                                .clickable{
+                                    val selected = selectedPos
+                                    val clickedPiece = board.getPiece(row, col)
+
+                                    if (selected == null) {             // Primer click
+                                        if (clickedPiece != null && clickedPiece.isRed == isRedPlayer && isMyTurn) {
+                                            selectedPos = Pair(row, col)
+                                            highlightedMoves = clickedPiece.getValidMoves(row, col, board)
+
+                                            onPieceSelected(selectedPos)
+                                        }
+
+                                    } else {            // Segundo click (mover pieza)
+                                        val (r2, c2) = selected
+                                        val selectedPiece = board.getPiece(r2, c2)
+
+                                        if (selectedPiece != null) {
+
+                                            if (highlightedMoves.contains(Pair(row, col)) && selectedPiece.isRed == isRedPlayer && isMyTurn) {            // mov. valido
+
+                                                onMove(Pair(r2, c2), Pair(row, col))
+                                            }
+                                        }
+
+                                        selectedPos = null
+                                        highlightedMoves = emptyList()
+                                        onPieceSelected(null)
+                                    }
+                                }, contentAlignment = Alignment.Center
+                        ) {
+                            piece?.let { p ->
+                                key(p) {
+                                    val visualRotation =
+                                        if (isRedPlayer) p.rotation + 180 else p.rotation
+
+                                    val rotation by animateFloatAsState(
+                                        targetValue = visualRotation.toFloat(),
+                                        animationSpec = tween(200)
+                                    )
+
+                                    Image(
+                                        painter = painterResource(id = p.getImageRes(isRedPlayer)),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .graphicsLayer {
+                                                rotationZ = rotation
+                                            }
+                                    )
+                                }
+                            }
+
+                            if (isHighlighted) {            // casilla de movimiento posible
+                                Box(
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .background(Color(0xFFFF9800), shape = CircleShape)
+                                )
+                            }
                         }
                     }
                 }
