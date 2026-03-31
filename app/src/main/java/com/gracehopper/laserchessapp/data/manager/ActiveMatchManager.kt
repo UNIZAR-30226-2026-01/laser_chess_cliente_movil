@@ -46,12 +46,12 @@ object ActiveMatchManager {
         private set
 
     private var onConnectedCallback: (() -> Unit)? = null
-    private var onMessageReceivedCallback: ((String) -> Unit)? = null
+    private var onMessageReceivedCallback: ((String, String?) -> Unit)? = null
     private var onErrorCallback: ((String) -> Unit)? = null
     private var onClosedCallback: (() -> Unit)? = null
 
     fun setCallbacks(onConnected: (() -> Unit)? = null,
-                    onMessageReceived: ((String) -> Unit)? = null,
+                    onMessageReceived: ((String, String?) -> Unit)? = null,
                     onError: ((String) -> Unit)? = null,
                     onClosed: (() -> Unit)? = null) {
 
@@ -82,11 +82,10 @@ object ActiveMatchManager {
 
                 imRedPlayer = (redPlayerId == myId)
 
-                Log.d("WS", "InitialState: $intialBoardCSV")
-                Log.d("WS", "Tablero CSV: $intialBoardCSV")
-                Log.d("WS", "Soy rojo interno: $imRedPlayer")
-                Log.d("PLAYER", "RedPlayerId (backend): $redPlayerId")
-                Log.d("PLAYER", "MyId (token): $myId")
+                onMessageReceivedCallback?.invoke("INITIAL_STATE", null)
+            }
+            "Move" -> {
+                onMessageReceivedCallback?.invoke(serverMsg.Content, serverMsg.Extra)
             }
         }
     }
@@ -180,7 +179,7 @@ object ActiveMatchManager {
                 onConnectedCallback?.invoke()
             },
             onMessageReceived = { message ->
-                onMessageReceivedCallback?.invoke(message)
+                handleServerMessage(message)
             },
             onError = { error ->
                 currentState = MatchState.ERROR

@@ -77,75 +77,72 @@ fun GameScreen (
                     val isHighlighted = highlightedMoves.contains(Pair(row,col))
 
                     // Casilla
-                    key(piece ?: "$row$col") {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .aspectRatio(1f)
-                                .background(Color.White)
-                                .border(1.dp, Color.Black)
-                                .clickable{
-                                    val selected = selectedPos
-                                    val piece = board.getPiece(row, col)
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(1f)
+                            .background(Color.White)
+                            .border(1.dp, Color.Black)
+                            .clickable{
+                                val selected = selectedPos
+                                val piece = board.getPiece(row, col)
 
-                                    if (selected == null) {             // Primer click
-                                        if (piece != null && piece.isRed == isRedPlayer && isMyTurn) {
-                                            selectedPos = Pair(row, col)
-                                            highlightedMoves = piece.getValidMoves(row, col, board)
+                                if (selected == null) {             // Primer click
+                                    if (piece != null && piece.isRed == isRedPlayer && isMyTurn) {
+                                        selectedPos = Pair(row, col)
+                                        highlightedMoves = piece.getValidMoves(row, col, board)
 
-                                            onPieceSelected(selectedPos)
-                                        }
-
-                                    } else {            // Segundo click (mover pieza)
-                                        val (r2, c2) = selected
-                                        val selectedPiece = board.getPiece(r2, c2)
-
-                                        if (selectedPiece != null) {
-
-                                            if (highlightedMoves.contains(Pair(row, col)) && selectedPiece.isRed == isRedPlayer && isMyTurn) {            // mov. valido
-
-                                                onMove(Pair(r2, c2), Pair(row, col))
-                                            }
-                                        }
-
-                                        selectedPos = null
-                                        highlightedMoves = emptyList()
-                                        onPieceSelected(null)
+                                        onPieceSelected(selectedPos)
                                     }
-                                }, contentAlignment = Alignment.Center
-                        ) {
-                            if (piece != null) {            // Si hay una pieza en la casilla
 
-                                val visualRotation = if (isRedPlayer) piece.rotation + 180 else (piece.rotation)
+                                } else {            // Segundo click (mover pieza)
+                                    val (r2, c2) = selected
+                                    val selectedPiece = board.getPiece(r2, c2)
 
-                                val rotation by animateFloatAsState(
-                                    targetValue = visualRotation.toFloat(),
-                                    animationSpec = tween(200)
-                                )
+                                    if (selectedPiece != null) {
 
-                                Image(
-                                    painter = painterResource(id = piece.getImageRes(isRedPlayer)),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .graphicsLayer {
-                                            rotationZ = rotation
+                                        if (highlightedMoves.contains(Pair(row, col)) && selectedPiece.isRed == isRedPlayer && isMyTurn) {            // mov. valido
+
+                                            onMove(Pair(r2, c2), Pair(row, col))
                                         }
-                                )
-                            }
+                                    }
 
-                            if (isHighlighted) {            // casilla de movimiento posible
-                                Box(
-                                    modifier = Modifier
-                                        .size(16.dp)
-                                        .background(Color(0xFFFF9800), shape = CircleShape)
-                                )
-                            }
+                                    selectedPos = null
+                                    highlightedMoves = emptyList()
+                                    onPieceSelected(null)
+                                }
+                            }, contentAlignment = Alignment.Center
+                    ) {
+                        if (piece != null) {            // Si hay una pieza en la casilla
+
+                            val visualRotation = if (isRedPlayer) piece.rotation + 180 else (piece.rotation)
+
+                            val rotation by animateFloatAsState(
+                                targetValue = visualRotation.toFloat(),
+                                animationSpec = tween(200)
+                            )
+
+                            Image(
+                                painter = painterResource(id = piece.getImageRes(isRedPlayer)),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .graphicsLayer {
+                                        rotationZ = rotation
+                                    }
+                            )
+                        }
+
+                        if (isHighlighted) {            // casilla de movimiento posible
+                            Box(
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .background(Color(0xFFFF9800), shape = CircleShape)
+                            )
                         }
                     }
                 }
             }
         }
     }
-
 }

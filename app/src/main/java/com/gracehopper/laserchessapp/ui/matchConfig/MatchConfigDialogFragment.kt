@@ -119,7 +119,10 @@ class MatchConfigDialogFragment(
                         // aquí tu toast si quieres
                     }
                 },
-                onMessageReceived = {},
+                onMessageReceived = { message, extra ->
+                    requireActivity().runOnUiThread {
+                    }
+                },
                 onClosed = {}
             )
 

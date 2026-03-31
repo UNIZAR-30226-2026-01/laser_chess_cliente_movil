@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.WindowCompat
@@ -18,6 +19,8 @@ import com.gracehopper.laserchessapp.data.manager.ActiveMatchManager
 import com.gracehopper.laserchessapp.data.repository.GameRepository
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.gameLogic.board.BoardParser
+import com.gracehopper.laserchessapp.gameLogic.move.CoordsConverter
+import com.gracehopper.laserchessapp.gameLogic.move.MoveParser
 import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
 
@@ -26,7 +29,7 @@ class GameActivity : AppCompatActivity() {
 
     companion object {
         var imInternalRed: Boolean = true
-        var isMyTurn: Boolean = true
+        var isMyTurn by mutableStateOf(true)
     }
 
     private val testMode = false
@@ -59,6 +62,7 @@ class GameActivity : AppCompatActivity() {
         boardM = Board(rows, cols)
 
         imInternalRed = ActiveMatchManager.imRedPlayer
+        isMyTurn = imInternalRed
         Log.d("PLAYER", "Soy rojo interno: $imInternalRed")
         Log.d("PLAYER", "CSV: ${ActiveMatchManager.intialBoardCSV != null}")
 
@@ -70,6 +74,19 @@ class GameActivity : AppCompatActivity() {
                 BoardParser.boadFromCSV(boardM, csv)
             }
         }
+
+        ActiveMatchManager.setCallbacks(
+            onMessageReceived = { moveStr, laserPath ->
+                runOnUiThread { applyServerMove(moveStr) }
+            },
+            onClosed = {
+                runOnUiThread { finish() }
+            },
+            onError = {
+                runOnUiThread { finish() }
+            }
+        )
+
         // UI
         board.setContent {
             GameScreen(
@@ -108,6 +125,7 @@ class GameActivity : AppCompatActivity() {
                 }
                 else {
                     gameRepository.sendRotateLeft(pos)
+                    isMyTurn = false
                 }
 
                 selectedPos = null
@@ -125,6 +143,7 @@ class GameActivity : AppCompatActivity() {
                     piece?.rotateRight()
                 } else {
                     gameRepository.sendRotateRight(pos)
+                    isMyTurn = false
                 }
 
                 selectedPos = null
@@ -134,6 +153,12 @@ class GameActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ActiveMatchManager.clearCallbacks()
+    }
+
 
     private fun movePiece(from: Pair<Int, Int>, to: Pair<Int, Int>) {
 
@@ -153,6 +178,7 @@ class GameActivity : AppCompatActivity() {
             }
         } else {
             gameRepository.sendMove(from, to)
+            isMyTurn = false
         }
 
         selectedPos = null
@@ -179,4 +205,35 @@ class GameActivity : AppCompatActivity() {
         boardM.getPiece(7,5)?.rotation = 180
     }
 
+    private fun applyServerMove(moveStr: String) {
+        val move = MoveParser.parseMove(moveStr)
+
+        val fromPos = CoordsConverter.notationToPosition(move.from)
+        val piece = boardM.getPiece(fromPos.first, fromPos.second)
+
+        when (move.type) {
+            'T' -> {
+                val toPos = CoordsConverter.notationToPosition(move.to!!)
+                val pieceTo = boardM.getPiece(toPos.first, toPos.second)
+
+                boardM.setPiece(toPos.first, toPos.second, piece)
+                boardM.setPiece(fromPos.first, fromPos.second, pieceTo)
+            }
+            'R' -> piece?.rotateRight()
+            'L' -> piece?.rotateLeft()
+        }
+
+        move.destroyed?.let {
+            val destroyedPos = CoordsConverter.notationToPosition(it)
+            boardM.setPiece(destroyedPos.first, destroyedPos.second, null)
+        }
+
+        Log.d("MOVE", "Move: $moveStr")
+        Log.d("MOVE", "From internal: $fromPos")
+        Log.d("MOVE", "Destroyed internal: ${move.destroyed}")
+
+        isMyTurn = !isMyTurn
+
+        clearTrigger++
+    }
 }
