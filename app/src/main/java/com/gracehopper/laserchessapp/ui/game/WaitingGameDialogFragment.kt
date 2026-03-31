@@ -97,17 +97,17 @@ class WaitingGameDialogFragment : DialogFragment() {
                     // asumimos que la partida ya ha empezado
                     ActiveGameManager.markInGame()
 
-                    Toast.makeText(
-                        requireContext(),
-                        "La partida ha comenzado",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "La partida ha comenzado",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
-                    dismiss()
+                        dismiss()
 
-                    val intent = Intent(requireContext(), GameActivity::class.java)
-                    startActivity(intent)
-
+                        val intent = Intent(requireContext(), GameActivity::class.java)
+                        startActivity(intent)
+                    }
                 }
             },
             onError = { error ->

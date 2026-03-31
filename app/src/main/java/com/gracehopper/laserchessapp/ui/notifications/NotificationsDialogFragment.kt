@@ -130,20 +130,21 @@ class NotificationsDialogFragment : DialogFragment() {
                         Toast.LENGTH_SHORT).show()
                 }
             },
-            onMessageReceived = { message ->
+            onMessageReceived = { message, extra ->
                 requireActivity().runOnUiThread {
 
-                    ActiveGameManager.markInGame()
+                    if (message == "INITIAL_STATE") {
+                        ActiveGameManager.markInGame()
 
-                    Toast.makeText(requireContext(),
-                        "La partida ha comenzado",
-                        Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            "La partida ha comenzado",
+                            Toast.LENGTH_SHORT).show()
 
-                    dismiss()
+                        dismiss()
 
-                    val intent = Intent(requireContext(), GameActivity::class.java)
-                    startActivity(intent)
-
+                        val intent = Intent(requireContext(), GameActivity::class.java)
+                        startActivity(intent)
+                    }
                 }
             },
             onError = { error ->

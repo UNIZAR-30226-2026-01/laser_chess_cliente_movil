@@ -30,6 +30,8 @@ fun GameScreen (
     var highlightedMoves by remember { mutableStateOf<List<Pair<Int, Int>>>(emptyList()) }
     var selectedPos by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
+    val recomposeTrigger = clearSelectionTrigger
+
     LaunchedEffect(clearSelectionTrigger) {             // Limpiar cuando se active el trigger
         selectedPos = null
         highlightedMoves = emptyList()
@@ -72,12 +74,13 @@ fun GameScreen (
                 }
 
                 for (col in colRange) {
+                    key(row, col) {
+                        val piece by remember(board, row, col, recomposeTrigger) {
+                            derivedStateOf { board.getPiece(row, col) }
+                        }
+                        val isHighlighted = highlightedMoves.contains(Pair(row,col))
 
-                    val piece = board.getPiece(row, col)
-                    val isHighlighted = highlightedMoves.contains(Pair(row,col))
-
-                    // Casilla
-                    key(piece ?: "$row$col") {
+                        // Casilla
                         Box(
                             modifier = Modifier
                                 .weight(1f)
@@ -86,12 +89,12 @@ fun GameScreen (
                                 .border(1.dp, Color.Black)
                                 .clickable{
                                     val selected = selectedPos
-                                    val piece = board.getPiece(row, col)
+                                    val clickedPiece = board.getPiece(row, col)
 
                                     if (selected == null) {             // Primer click
-                                        if (piece != null && piece.isRed == isRedPlayer && isMyTurn) {
+                                        if (clickedPiece != null && clickedPiece.isRed == isRedPlayer && isMyTurn) {
                                             selectedPos = Pair(row, col)
-                                            highlightedMoves = piece.getValidMoves(row, col, board)
+                                            highlightedMoves = clickedPiece.getValidMoves(row, col, board)
 
                                             onPieceSelected(selectedPos)
                                         }
@@ -114,22 +117,26 @@ fun GameScreen (
                                     }
                                 }, contentAlignment = Alignment.Center
                         ) {
-                            if (piece != null) {            // Si hay una pieza en la casilla
+                            piece?.let { p ->
+                                key(p) {
+                                    val visualRotation =
+                                        if (isRedPlayer) p.rotation + 180 else p.rotation
 
-                                val rotation by animateFloatAsState(
-                                    targetValue = piece.rotation.toFloat(),
-                                    animationSpec = tween(200)
-                                )
+                                    val rotation by animateFloatAsState(
+                                        targetValue = visualRotation.toFloat(),
+                                        animationSpec = tween(200)
+                                    )
 
-                                Image(
-                                    painter = painterResource(id = piece.getImageRes(isRedPlayer)),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .graphicsLayer {
-                                            rotationZ = rotation
-                                        }
-                                )
+                                    Image(
+                                        painter = painterResource(id = p.getImageRes(isRedPlayer)),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .graphicsLayer {
+                                                rotationZ = rotation
+                                            }
+                                    )
+                                }
                             }
 
                             if (isHighlighted) {            // casilla de movimiento posible
@@ -145,5 +152,4 @@ fun GameScreen (
             }
         }
     }
-
 }
