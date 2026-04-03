@@ -50,7 +50,7 @@
                     android:id="@+id/txtMyProfileUsername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/username"
+                    android:text=""
                     android:textSize="26sp"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"
@@ -66,7 +66,7 @@
                         android:id="@+id/txtMyProfileLevel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nivel 77"
+                        android:text=""
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@android:color/black"
@@ -85,7 +85,7 @@
                         android:id="@+id/txtMyProfileXp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="123 xp"
+                        android:text=""
                         android:textSize="13sp"
                         android:textColor="@android:color/black"
                         android:layout_marginStart="10dp" />
@@ -122,7 +122,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
-                android:text="RANGO"
+                android:text="@string/rank"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
@@ -149,7 +149,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
-                android:text="123"
+                android:text=""
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
                 android:gravity="center" />
@@ -160,7 +160,7 @@
                 android:layout_height="24dp"
                 android:layout_weight="0.8"
                 android:src="@drawable/ic_rank_placeholder"
-                android:contentDescription="Rango Blitz"
+                android:contentDescription="@string/blitz_rank"
                 android:adjustViewBounds="true" />
         </LinearLayout>
 
@@ -184,7 +184,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
-                android:text="122"
+                android:text=""
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
                 android:gravity="center" />
@@ -195,7 +195,7 @@
                 android:layout_height="24dp"
                 android:layout_weight="0.8"
                 android:src="@drawable/ic_rank_placeholder"
-                android:contentDescription="Rango Rapid"
+                android:contentDescription="@string/rapid_rank"
                 android:adjustViewBounds="true" />
         </LinearLayout>
 
@@ -219,7 +219,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
-                android:text="110"
+                android:text=""
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
                 android:gravity="center" />
@@ -230,7 +230,7 @@
                 android:layout_height="24dp"
                 android:layout_weight="0.8"
                 android:src="@drawable/ic_rank_placeholder"
-                android:contentDescription="Rango Classic"
+                android:contentDescription="@string/classic_rank"
                 android:adjustViewBounds="true" />
         </LinearLayout>
 
@@ -254,7 +254,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
-                android:text="153"
+                android:text=""
                 android:textSize="18sp"
                 android:textColor="@android:color/black"
                 android:gravity="center" />
@@ -265,7 +265,7 @@
                 android:layout_height="24dp"
                 android:layout_weight="0.8"
                 android:src="@drawable/ic_rank_placeholder"
-                android:contentDescription="Rango Extended"
+                android:contentDescription="@string/extended_rank"
                 android:adjustViewBounds="true" />
         </LinearLayout>
 
@@ -273,7 +273,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="EQUIPADO"
+            android:text="@string/equiped"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@android:color/black"
@@ -299,12 +299,12 @@
                     android:layout_width="52dp"
                     android:layout_height="52dp"
                     android:src="@drawable/ic_piece_placeholder"
-                    android:contentDescription="Skin piezas" />
+                    android:contentDescription="@string/piece_skin_desc" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Piezas"
+                    android:text="@string/piece_skin"
                     android:textSize="11sp"
                     android:textColor="@android:color/black"
                     android:layout_marginTop="8dp" />
@@ -324,12 +324,12 @@
                     android:layout_width="52dp"
                     android:layout_height="52dp"
                     android:src="@drawable/ic_board_placeholder"
-                    android:contentDescription="Skin tablero" />
+                    android:contentDescription="@string/board_skin_desc" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tablero"
+                    android:text="@string/board_skin"
                     android:textSize="11sp"
                     android:textColor="@android:color/black"
                     android:layout_marginTop="8dp" />
@@ -348,13 +348,13 @@
                     android:layout_width="52dp"
                     android:layout_height="52dp"
                     android:src="@drawable/ic_piece_placeholder"
-                    android:contentDescription="Skin piezas" />
+                    android:contentDescription="@string/animation_desc" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Animación"
-                    android:textSize="11dp"
+                    android:text="@string/animation"
+                    android:textSize="11sp"
                     android:textColor="@android:color/black"
                     android:layout_marginTop="8dp" />
             </LinearLayout>

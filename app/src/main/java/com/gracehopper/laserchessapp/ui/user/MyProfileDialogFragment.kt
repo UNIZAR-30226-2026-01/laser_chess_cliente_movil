@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
@@ -89,14 +90,25 @@ class MyProfileDialogFragment : DialogFragment() {
 
     private fun loadMyProfile() {
 
+        val cachedProfile = CurrentUserManager.getMyCurrentProfile()
+
+        if (cachedProfile != null) {
+            bindProfile(cachedProfile)
+            return
+        }
+
         userRepository.getMyProfile(
             onSuccess = { profile ->
-                bindProfile(profile)},
-            onError = { Toast.makeText(requireContext(),
-                "Error al cargar tu perfil",
-                Toast.LENGTH_SHORT).show()
+                CurrentUserManager.setMyProfile(profile)
+                bindProfile(profile)
+            },
+            onError = {
+                Toast.makeText(requireContext(),
+                    "Error al cargar tu perfil",
+                    Toast.LENGTH_SHORT).show()
                 dismiss()
-            })
+            }
+        )
 
     }
 
