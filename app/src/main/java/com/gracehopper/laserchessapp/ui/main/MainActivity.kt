@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         observeCurrentUserProfile()
-        loadMyProfile()
+        isMyProfileLoaded()
         setupProfileCard()
 
     }
@@ -177,7 +177,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun loadMyProfile() {
+    private fun isMyProfileLoaded() {
 
         if (CurrentUserManager.isProfileLoaded()) return
 
@@ -210,13 +210,6 @@ class MainActivity : AppCompatActivity() {
     private fun setupProfileCard() {
 
         profileCardContainer.setOnClickListener {
-
-            if (CurrentUserManager.getMyCurrentProfile() == null) {
-                Toast.makeText(this,
-                    "Perfil aún no cargado",
-                    Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
 
             val dialog = MyProfileDialogFragment.newInstance()
             dialog.show(supportFragmentManager, "MyProfileDialog")

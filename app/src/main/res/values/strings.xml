@@ -47,8 +47,19 @@
     <string name="time_mode_classic">Classic</string>
     <string name="time_mode_extended">Extended</string>
 
+    <string name="rank">RANGO</string>
+    <string name="blitz_rank">Rango Blitz</string>
+    <string name="rapid_rank">Rango Rapid</string>
+    <string name="classic_rank">Rango Classic</string>
+    <string name="extended_rank">Rango Extended</string>
+
+    <string name="equiped">EQUIPAD</string>
     <string name="piece_skin">Piezas</string>
+    <string name="piece_skin_desc">Skin piezas</string>
     <string name="board_skin">Tablero</string>
+    <string name="board_skin_desc">Skin tablero</string>
+    <string name="animation">Animación</string>
+    <string name="animation_desc">Animación de fin de partida</string>
 
     <string name="requests">SOLICITUDES</string>
     <string name="received_requests">Recibidas</string>
