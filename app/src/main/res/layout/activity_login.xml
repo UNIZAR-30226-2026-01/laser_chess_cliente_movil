@@ -81,7 +81,6 @@
             android:textSize="16sp"
             android:backgroundTint="@color/turquoise"/>
 
-        <!-- Para que los textos de ¿? esten juntos y solo sea clicable el segundo-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

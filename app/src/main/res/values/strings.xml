@@ -53,7 +53,7 @@
     <string name="classic_rank">Rango Classic</string>
     <string name="extended_rank">Rango Extended</string>
 
-    <string name="equiped">EQUIPAD</string>
+    <string name="equipped">EQUIPADO</string>
     <string name="piece_skin">Piezas</string>
     <string name="piece_skin_desc">Skin piezas</string>
     <string name="board_skin">Tablero</string>
@@ -69,4 +69,9 @@
     <string name="accept">ACEPTAR</string>
     <string name="reject">RECHAZAR</string>
     <string name="cancel_request">CANCELAR SOLICITUD</string>
+
+    <string name="edit_avatar">Editar avatar</string>
+    <string name="edit_username">Editar nombre de usuario</string>
+    <string name="edit_equipped">Editar equipo</string>
+
 </resources>

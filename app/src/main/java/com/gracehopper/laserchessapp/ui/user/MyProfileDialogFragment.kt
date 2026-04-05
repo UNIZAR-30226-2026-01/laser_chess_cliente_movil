@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -16,9 +17,13 @@ import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
+import com.gracehopper.laserchessapp.ui.main.MainActivity
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
+/**
+ * DialogFragment que muestra el perfil del usuario loggeado.
+ */
 class MyProfileDialogFragment : DialogFragment() {
 
     private lateinit var userRepository: UserRepository
@@ -28,6 +33,7 @@ class MyProfileDialogFragment : DialogFragment() {
     private lateinit var txtProfileLevel: TextView
     private lateinit var txtProfileXp: TextView
     private lateinit var progressProfileXP: ProgressBar
+    private lateinit var txtProfileCoins: TextView
 
     private lateinit var txtProfileBlitzElo: TextView
     private lateinit var txtProfileRapidElo: TextView
@@ -38,7 +44,13 @@ class MyProfileDialogFragment : DialogFragment() {
     private lateinit var imgBoardSkin: ImageView
     private lateinit var imgWinAnimation: ImageView
 
+    private lateinit var buttonEditAvatar: ImageButton
+    private lateinit var buttonEditUsername: ImageButton
+    private lateinit var buttonEditEquipped: ImageButton
+
     private lateinit var buttonClose: ImageButton
+
+    private var currentProfile: MyProfile? = null
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -50,6 +62,7 @@ class MyProfileDialogFragment : DialogFragment() {
 
         bindViews(dialogView)
         setupCloseButton()
+        setupEditButtons()
         loadMyProfile()
 
         val dialog = AlertDialog.Builder(requireContext())
@@ -68,6 +81,7 @@ class MyProfileDialogFragment : DialogFragment() {
         txtProfileLevel = dialogView.findViewById(R.id.txtMyProfileLevel)
         txtProfileXp = dialogView.findViewById(R.id.txtMyProfileXp)
         progressProfileXP = dialogView.findViewById(R.id.progressMyProfileXp)
+        txtProfileCoins = dialogView.findViewById(R.id.txtMyProfileCoins)
 
         txtProfileBlitzElo = dialogView.findViewById(R.id.txtBlitzMyElo)
         txtProfileRapidElo = dialogView.findViewById(R.id.txtRapidMyElo)
@@ -78,8 +92,97 @@ class MyProfileDialogFragment : DialogFragment() {
         imgBoardSkin = dialogView.findViewById(R.id.imageMyBoardSkin)
         imgWinAnimation = dialogView.findViewById(R.id.imageMyWinAnimation)
 
+        buttonEditAvatar = dialogView.findViewById(R.id.buttonEditAvatar)
+        buttonEditUsername = dialogView.findViewById(R.id.buttonEditUsername)
+        buttonEditEquipped = dialogView.findViewById(R.id.buttonEditEquipped)
+
         buttonClose = dialogView.findViewById(R.id.buttonCloseMyProfileDialog)
 
+    }
+
+    private fun setupEditButtons() {
+
+        buttonEditAvatar.setOnClickListener { openCustomizePage() }
+
+        buttonEditUsername.setOnClickListener { openEditUsername() }
+
+        buttonEditEquipped.setOnClickListener { openCustomizePage() }
+
+    }
+
+    private fun openEditUsername() {
+        // TODO: abrir diálogo para editar username
+        val editText = EditText(requireContext()).apply {
+            setText(currentProfile?.username.orEmpty())
+            setSelection(text.length)
+            hint = "Nuevo username"
+            maxLines = 1
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Cambiar username")
+            .setMessage("Introduce tu nuevo username.")
+            .setView(editText)
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Guardar", null)
+            .create()
+            .also { dialog ->
+
+                dialog.setOnShowListener {
+
+                    val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+                    positiveButton.setOnClickListener {
+                        val newUsername = editText.text.toString().trim()
+                        validateAndSaveUsername(newUsername, dialog)
+                    }
+
+                }
+
+                dialog.show()
+
+            }
+
+        Toast.makeText(requireContext(), "Edit Username", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun validateAndSaveUsername(newUsername: String, dialog: AlertDialog) {
+
+        val currentUsername = currentProfile?.username.orEmpty()
+
+        when {
+
+            newUsername.isBlank() -> {
+                Toast.makeText(requireContext(),
+                    "El username no puede estar vacío",
+                    Toast.LENGTH_SHORT).show()
+            }
+
+            newUsername == currentUsername -> {
+                Toast.makeText(requireContext(),
+                    "El nuevo username debe ser distinto al actual",
+                    Toast.LENGTH_SHORT).show()
+            }
+
+            else -> {
+
+                // TODO: llamada para actualizar username
+                // en ella, actualizar CurrentProfile, CurrentUserManager.setMyProfile(updatedProfile),
+                // y bindProfile(updatedProfile)
+
+                Toast.makeText(requireContext(),
+                    "Username actualizado",
+                    Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+
+        }
+
+    }
+
+    private fun openCustomizePage() {
+        (activity as? MainActivity)?.openCustomizeFragment()
+        dismiss()
     }
 
     private fun setupCloseButton() {
@@ -114,9 +217,12 @@ class MyProfileDialogFragment : DialogFragment() {
 
     private fun bindProfile(profile: MyProfile) {
 
+        currentProfile = profile
+
         txtProfileUsername.text = profile.username
         txtProfileLevel.text = "Nivel ${profile.level}"
         txtProfileXp.text = "${profile.xp} XP"
+        txtProfileCoins.text = profile.money.toString()
 
         txtProfileBlitzElo.text = profile.ratings.blitz.toString()
         txtProfileRapidElo.text = profile.ratings.rapid.toString()
