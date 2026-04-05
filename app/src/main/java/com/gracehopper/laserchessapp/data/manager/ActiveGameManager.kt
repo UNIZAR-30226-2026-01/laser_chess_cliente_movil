@@ -87,6 +87,10 @@ object ActiveGameManager {
             "Move" -> {
                 onMessageReceivedCallback?.invoke(serverMsg.Content, serverMsg.Extra)
             }
+
+            "End" -> {
+                onMessageReceivedCallback?.invoke(serverMsg.Content, serverMsg.Extra)
+            }
         }
     }
 

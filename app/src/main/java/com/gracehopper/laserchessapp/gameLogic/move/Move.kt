@@ -5,5 +5,5 @@ data class Move(
     val from: String,           // Casilla de origen
     val to: String?,            // Casilla destino (en caso de traslación)
     val destroyed: String?,     // Casilla en la que una pieza ha sido destruida
-    val timer: Int?             // Timer en ms
+    val timer: Double?             // Timer en ms
 )
