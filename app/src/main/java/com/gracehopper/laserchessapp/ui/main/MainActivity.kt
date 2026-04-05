@@ -233,6 +233,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun openCustomizeFragment() {
+        viewPager2.currentItem = 1
+    }
+
     // Destructor
     override fun onDestroy(){
         super.onDestroy()

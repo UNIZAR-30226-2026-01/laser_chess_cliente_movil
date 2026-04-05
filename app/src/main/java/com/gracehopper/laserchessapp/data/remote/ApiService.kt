@@ -4,7 +4,7 @@ import com.gracehopper.laserchessapp.data.model.auth.RegisterResponse
 import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
 import com.gracehopper.laserchessapp.data.model.auth.LoginResponse
 import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
-import com.gracehopper.laserchessapp.data.model.auth.UpdateAccountRequest
+import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
 import com.gracehopper.laserchessapp.data.model.ranking.AllRatingsResponse
 import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
@@ -40,11 +40,11 @@ interface ApiService {
     // Endpoint para actualizar información de una cuenta
     // tipo devuelto es registerResponse? REVISAR
     @POST("api/account/update")
-    fun updateAccount(@Body request: UpdateAccountRequest): Call<RegisterResponse>
+    fun updateMyAccount(@Body request: UpdateAccountRequest): Call<MyAccountResponse>
 
     // Endpoint para eliminar una cuenta
     @DELETE("api/account/delete/")
-    fun deleteAccount(): Call<Unit>
+    fun deleteMyAccount(): Call<Unit>
 
     // ratings
 
