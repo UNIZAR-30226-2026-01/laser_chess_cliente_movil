@@ -154,7 +154,7 @@ class UserRepository(private val apiService: ApiService) {
 
     fun updateMyProfile(request: UpdateAccountRequest,
                         onSuccess: (MyProfile) -> Unit,
-                        onError: () -> Unit) {
+                        onError: (Int?) -> Unit) {
 
         apiService.updateMyAccount(request).enqueue(
             object : Callback<MyAccountResponse> {
@@ -166,7 +166,7 @@ class UserRepository(private val apiService: ApiService) {
 
                     val myAccount = response.body()
                     if (!response.isSuccessful || myAccount == null) {
-                        onError()
+                        onError(response.code())
                         return
                     }
 
@@ -214,7 +214,7 @@ class UserRepository(private val apiService: ApiService) {
                             onSuccess(profile)
                         },
                         onError = {
-                            onError()
+                            onError(null)
                         }
                     )
 
@@ -222,7 +222,7 @@ class UserRepository(private val apiService: ApiService) {
 
                 override fun onFailure(call: Call<MyAccountResponse?>,
                                        t: Throwable) {
-                    onError()
+                    onError(null)
                 }
 
             }

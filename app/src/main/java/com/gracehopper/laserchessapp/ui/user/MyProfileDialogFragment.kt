@@ -172,18 +172,38 @@ class MyProfileDialogFragment : DialogFragment() {
                     onSuccess = { profile ->
                         CurrentUserManager.setMyProfile(profile)
                         bindProfile(profile)
-                    },
-                    onError = {
                         Toast.makeText(requireContext(),
-                            "Error al actualizar tu username",
-                            Toast.LENGTH_SHORT).show()
+                        "Username actualizado",
+                        Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    },
+                    onError = { code ->
+                        when (code) {
+                            409 -> {
+                                Toast.makeText(requireContext(),
+                                    "El username ya está en uso",
+                                    Toast.LENGTH_SHORT).show()
+                            }
+                            400 -> {
+                                Toast.makeText(requireContext(),
+                                    "El username no es válido",
+                                    Toast.LENGTH_SHORT).show()
+                            }
+                            null -> {
+                                Toast.makeText(requireContext(),
+                                    "Error de conexión al actualizar tu username",
+                                    Toast.LENGTH_SHORT).show()
+                            }
+                            else -> {
+                                Toast.makeText(requireContext(),
+                                    "Error al actualizar tu username",
+                                    Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 )
 
-                Toast.makeText(requireContext(),
-                    "Username actualizado",
-                    Toast.LENGTH_SHORT).show()
-                dialog.dismiss()
+
 
             }
 
