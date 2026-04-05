@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_modal_border"
+        android:padding="24dp">
+
+
+        <TextView
+            android:id="@+id/textResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="VICTORIA"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/textCause"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Victoria por láser"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="20dp"/>
+
+
+        <ImageView
+            android:id="@+id/imageResult"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_tablero_prov"
+            android:layout_marginBottom="24dp"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/buttonRematch"
+                android:layout_width="140dp"
+                android:layout_height="50dp"
+                android:text="Revancha"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:background="#000000"
+                android:layout_marginEnd="20dp"/>
+
+            <Button
+                android:id="@+id/buttonExit"
+                android:layout_width="140dp"
+                android:layout_height="50dp"
+                android:text="Salir"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:background="#000000"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

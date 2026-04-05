@@ -26,6 +26,7 @@ import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
 import android.os.Handler
 import android.os.Looper
+import androidx.activity.OnBackPressedCallback
 
 
 class GameActivity : AppCompatActivity() {
@@ -45,11 +46,19 @@ class GameActivity : AppCompatActivity() {
     private var clearTrigger by mutableIntStateOf(0)            // Trigger para avisar a la UI de limpiar selección
     private var selectedPos: Pair<Int, Int>? = null             // Posición de la pieza
     private lateinit var controls : LinearLayout
+    lateinit var backCallback: OnBackPressedCallback
     var laserPath by mutableStateOf<List<Pair<Int, Int>>>(emptyList())
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        backCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Bloqueamos el que se pueda salir con el boton de atrás
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, backCallback)
 
         val controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
         controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE)
@@ -85,14 +94,15 @@ class GameActivity : AppCompatActivity() {
             onMessageReceived = { content, extra ->
                 runOnUiThread {
                     if (content == "P1_WINS" || content == "P2_WINS") {
-                        //showGameEndDialog(content, extra)
+                        val dialog = GameResultDialogFragment(content, extra)
+                        dialog.show(supportFragmentManager, "GameResult")
                     } else {
                         applyServerMove(content, extra)
                     }
                 }
             },
             onClosed = {
-                runOnUiThread { finish() }
+                Log.d("WS", "WebSocket cerrado")
             },
             onError = {
                 runOnUiThread { finish() }
