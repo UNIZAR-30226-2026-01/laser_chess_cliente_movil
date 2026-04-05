@@ -38,7 +38,6 @@ interface ApiService {
     fun getAccount(@Path("id") id: Long): Call<AccountResponse>
 
     // Endpoint para actualizar información de una cuenta
-    // tipo devuelto es registerResponse? REVISAR
     @POST("api/account/update")
     fun updateMyAccount(@Body request: UpdateAccountRequest): Call<MyAccountResponse>
 

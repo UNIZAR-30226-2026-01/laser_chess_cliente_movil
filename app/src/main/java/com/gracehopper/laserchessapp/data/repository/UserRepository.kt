@@ -1,9 +1,11 @@
 package com.gracehopper.laserchessapp.data.repository
 
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.ranking.AllRatingsResponse
 import com.gracehopper.laserchessapp.data.model.user.AccountResponse
 import com.gracehopper.laserchessapp.data.model.user.MyAccountResponse
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
+import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.model.user.UserRatings
 import com.gracehopper.laserchessapp.data.remote.ApiService
@@ -123,6 +125,7 @@ class UserRepository(private val apiService: ApiService) {
 
         apiService.getRatings(userId).enqueue(
             object : Callback<AllRatingsResponse> {
+
                 override fun onResponse(
                     call: Call<AllRatingsResponse>,
                     response: Response<AllRatingsResponse>
@@ -149,8 +152,82 @@ class UserRepository(private val apiService: ApiService) {
 
     }
 
+    fun updateMyProfile(request: UpdateAccountRequest,
+                        onSuccess: (MyProfile) -> Unit,
+                        onError: () -> Unit) {
+
+        apiService.updateMyAccount(request).enqueue(
+            object : Callback<MyAccountResponse> {
 
 
+                override fun onResponse(
+                    call: Call<MyAccountResponse>,
+                    response: Response<MyAccountResponse>) {
 
+                    val myAccount = response.body()
+                    if (!response.isSuccessful || myAccount == null) {
+                        onError()
+                        return
+                    }
+
+                    val currentRatings = CurrentUserManager.getMyCurrentProfile()?.ratings
+
+                    // si he podido recuperar los ratings del usuario
+                    if (currentRatings != null) {
+
+                        val profile = MyProfile(
+                            id = myAccount.accountId,
+                            mail = myAccount.mail,
+                            username = myAccount.username,
+                            avatar = myAccount.avatar,
+                            level = myAccount.level,
+                            xp = myAccount.xp,
+                            money = myAccount.money,
+                            boardSkin = myAccount.boardSkin,
+                            pieceSkin = myAccount.pieceSkin,
+                            winAnimation = myAccount.winAnimation,
+                            ratings = currentRatings
+                        )
+
+                        onSuccess(profile)
+                        return
+
+                    }
+
+                    // si no he podido recuperarlos, vuelvo a solicitarlos
+                    getUserRatings(
+                        userId = myAccount.accountId,
+                        onSuccess = { ratings ->
+                            val profile = MyProfile(
+                                id = myAccount.accountId,
+                                mail = myAccount.mail,
+                                username = myAccount.username,
+                                avatar = myAccount.avatar,
+                                level = myAccount.level,
+                                xp = myAccount.xp,
+                                money = myAccount.money,
+                                boardSkin = myAccount.boardSkin,
+                                pieceSkin = myAccount.pieceSkin,
+                                winAnimation = myAccount.winAnimation,
+                                ratings = ratings
+                            )
+                            onSuccess(profile)
+                        },
+                        onError = {
+                            onError()
+                        }
+                    )
+
+                }
+
+                override fun onFailure(call: Call<MyAccountResponse?>,
+                                       t: Throwable) {
+                    onError()
+                }
+
+            }
+        )
+
+    }
 
 }

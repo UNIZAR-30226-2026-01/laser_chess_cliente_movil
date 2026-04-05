@@ -15,6 +15,7 @@ import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
+import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.main.MainActivity
@@ -111,7 +112,7 @@ class MyProfileDialogFragment : DialogFragment() {
     }
 
     private fun openEditUsername() {
-        // TODO: abrir diálogo para editar username
+
         val editText = EditText(requireContext()).apply {
             setText(currentProfile?.username.orEmpty())
             setSelection(text.length)
@@ -166,14 +167,24 @@ class MyProfileDialogFragment : DialogFragment() {
 
             else -> {
 
-                // TODO: llamada para actualizar username
-                // en ella, actualizar CurrentProfile, CurrentUserManager.setMyProfile(updatedProfile),
-                // y bindProfile(updatedProfile)
+                userRepository.updateMyProfile(
+                    request = UpdateAccountRequest(username = newUsername),
+                    onSuccess = { profile ->
+                        CurrentUserManager.setMyProfile(profile)
+                        bindProfile(profile)
+                    },
+                    onError = {
+                        Toast.makeText(requireContext(),
+                            "Error al actualizar tu username",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                )
 
                 Toast.makeText(requireContext(),
                     "Username actualizado",
                     Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
+
             }
 
         }
