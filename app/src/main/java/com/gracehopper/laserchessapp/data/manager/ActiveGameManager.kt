@@ -91,6 +91,10 @@ object ActiveGameManager {
             "End" -> {
                 onMessageReceivedCallback?.invoke(serverMsg.Content, serverMsg.Extra)
             }
+
+            "EOC" -> {
+                closeConnection()
+            }
         }
     }
 
