@@ -8,7 +8,7 @@ object MoveParser {
         var from = ""
         var to: String? = null
         var destroyed: String? = null
-        var timer: Int? = null
+        var timer: Double? = null
 
         var msgMove = moveStr
 
@@ -16,7 +16,7 @@ object MoveParser {
         // Timer
         if (moveStr.contains("%{")) {
             val timerStr = moveStr.substringAfter("%{").substringBefore("}")
-            timer = timerStr.toInt()
+            timer = timerStr.toDouble()
             msgMove = moveStr.substringBefore("%")
         }
 
