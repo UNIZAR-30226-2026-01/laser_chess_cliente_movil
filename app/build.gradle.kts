@@ -60,6 +60,7 @@ dependencies {
 
     // Gson
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.material)
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:5.12.0")
