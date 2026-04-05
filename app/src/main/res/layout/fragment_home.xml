@@ -83,7 +83,7 @@
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintWidth_percent="0.6"
-        android:src="@drawable/ic_tablero_prov"
+        android:src="@drawable/tablero_ace"
         android:contentDescription="@string/game_board"
         android:scaleType="fitCenter"
         app:layout_constraintHorizontal_chainStyle="packed"
