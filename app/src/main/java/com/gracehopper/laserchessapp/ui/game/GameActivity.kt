@@ -82,8 +82,14 @@ class GameActivity : AppCompatActivity() {
         }
 
         ActiveGameManager.setCallbacks(
-            onMessageReceived = { moveStr, laserPathStr ->
-                runOnUiThread { applyServerMove(moveStr, laserPathStr) }
+            onMessageReceived = { content, extra ->
+                runOnUiThread {
+                    if (content == "P1_WINS" || content == "P2_WINS") {
+                        //showGameEndDialog(content, extra)
+                    } else {
+                        applyServerMove(content, extra)
+                    }
+                }
             },
             onClosed = {
                 runOnUiThread { finish() }
