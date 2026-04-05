@@ -51,7 +51,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_gravity="top|end"
-                    android:background="@drawable/bg_circle_black"
+                    android:background="@drawable/bg_box_border"
                     android:contentDescription="@string/edit_avatar"
                     android:padding="5dp"
                     android:src="@drawable/ic_edit" />
@@ -88,7 +88,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginStart="8dp"
-                        android:background="@drawable/bg_circle_black"
+                        android:background="@drawable/bg_box_border"
                         android:contentDescription="@string/edit_username"
                         android:padding="5dp"
                         android:src="@drawable/ic_edit" />
@@ -148,7 +148,7 @@
                 android:id="@+id/txtMyProfileCoins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="123"
+                android:text=""
                 android:textColor="@android:color/black"
                 android:textSize="22sp"
                 android:textStyle="bold" />
