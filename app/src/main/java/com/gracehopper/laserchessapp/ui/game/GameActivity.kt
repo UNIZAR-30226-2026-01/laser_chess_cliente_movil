@@ -46,8 +46,11 @@ class GameActivity : AppCompatActivity() {
     private var clearTrigger by mutableIntStateOf(0)            // Trigger para avisar a la UI de limpiar selección
     private var selectedPos: Pair<Int, Int>? = null             // Posición de la pieza
     private lateinit var controls : LinearLayout
+    private var pendingGameEnd: Pair<String, String?>? = null
+    private var gameEnded = false
     lateinit var backCallback: OnBackPressedCallback
     var laserPath by mutableStateOf<List<Pair<Int, Int>>>(emptyList())
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,11 +96,14 @@ class GameActivity : AppCompatActivity() {
         ActiveGameManager.setCallbacks(
             onMessageReceived = { content, extra ->
                 runOnUiThread {
-                    if (content == "P1_WINS" || content == "P2_WINS") {
-                        val dialog = GameResultDialogFragment(content, extra)
-                        dialog.show(supportFragmentManager, "GameResult")
-                    } else {
-                        applyServerMove(content, extra)
+                    when (content) {
+                        "P1_WINS", "P2_WINS" -> {
+                            pendingGameEnd = Pair(content, extra)
+                            gameEnded = true
+                        }
+                        else -> {
+                            applyServerMove(content, extra)
+                        }
                     }
                 }
             },
@@ -105,7 +111,11 @@ class GameActivity : AppCompatActivity() {
                 Log.d("WS", "WebSocket cerrado")
             },
             onError = {
-                runOnUiThread { finish() }
+                runOnUiThread {
+                    if (!gameEnded) {
+                        finish()
+                    }
+                }
             }
         )
 
@@ -274,6 +284,21 @@ class GameActivity : AppCompatActivity() {
 
             controls.visibility = View.GONE
             clearTrigger++
+
+            if (gameEnded && pendingGameEnd != null) {
+                if (!isFinishing && !isDestroyed &&
+                    supportFragmentManager.findFragmentByTag("GameResult") == null) {
+
+                    val (winner, cause) = pendingGameEnd!!
+                    backCallback.isEnabled = false
+
+                    val dialog = GameResultDialogFragment(winner, cause)
+                    dialog.show(supportFragmentManager, "GameResult")
+                }
+
+                pendingGameEnd = null
+                gameEnded = false
+            }
         }, 1000)
     }
 }
