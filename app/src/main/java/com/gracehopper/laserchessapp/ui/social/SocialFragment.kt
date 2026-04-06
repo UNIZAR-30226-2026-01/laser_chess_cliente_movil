@@ -250,7 +250,7 @@ class SocialFragment : Fragment() {
         val buttonCloseDialog = dialogView.findViewById<ImageButton>(R.id.buttonCloseDialog)
         val textInvitationLink = dialogView.findViewById<TextView>(R.id.textInvitationLink)
 
-        val invitationLink = "https://www.reddit.com/r/adventuretime/comments/1g9hv45/i_love_adventure_time_so_much_i_cant_even_express/?tl=pt-br"
+        val invitationLink = "https://laserchess.com/invite/User"
 
         textInvitationLink.text = invitationLink
 
