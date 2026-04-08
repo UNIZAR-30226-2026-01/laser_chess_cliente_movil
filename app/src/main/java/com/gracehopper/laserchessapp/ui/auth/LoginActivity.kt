@@ -165,6 +165,17 @@ class LoginActivity : AppCompatActivity() {
                 return
             }
 
+            LoginValidationResult.LongPassword -> {
+                loginPassword.error = "Máximo 50 caracteres"
+                loginPassword.requestFocus()
+                Toast.makeText(
+                    this,
+                    "La contraseña debe tener como máximo 50 caracteres",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return
+            }
+
             LoginValidationResult.Valid -> Unit
 
         }
@@ -232,8 +243,19 @@ class LoginActivity : AppCompatActivity() {
 
         when (RegisterValidator.validate(username, mail, password, confirmPassword)) {
             RegisterValidationResult.EmptyUsername -> {
-                registerUsername.error = "Introduce un nombre de usuario"
+                registerUsername.error = "Introduce un username"
                 registerUsername.requestFocus()
+                return
+            }
+
+            RegisterValidationResult.LongUsername -> {
+                registerUsername.error = "Máximo 50 caracteres"
+                registerUsername.requestFocus()
+                Toast.makeText(
+                    this,
+                    "El username debe tener máximo 50 caracteres",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return
             }
 
@@ -267,6 +289,17 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(
                     this,
                     "La contraseña debe tener al menos 6 caracteres",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return
+            }
+
+            RegisterValidationResult.LongPassword -> {
+                registerPassword.error = "Máximo 50 caracteres"
+                registerPassword.requestFocus()
+                Toast.makeText(
+                    this,
+                    "La contraseña debe tener máximo 50 caracteres",
                     Toast.LENGTH_SHORT
                 ).show()
                 return

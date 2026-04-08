@@ -18,6 +18,7 @@ object LoginValidator {
             credential.isEmpty() -> LoginValidationResult.EmptyCredential
             password.isEmpty() -> LoginValidationResult.EmptyPassword
             password.length < 6 -> LoginValidationResult.ShortPassword
+            password.length > 50 -> LoginValidationResult.LongPassword
             else -> LoginValidationResult.Valid
         }
 
@@ -34,5 +35,6 @@ sealed class LoginValidationResult {
     data object EmptyCredential : LoginValidationResult()
     data object EmptyPassword : LoginValidationResult()
     data object ShortPassword : LoginValidationResult()
+    data object LongPassword: LoginValidationResult()
 
 }
