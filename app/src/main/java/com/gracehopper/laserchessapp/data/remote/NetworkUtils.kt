@@ -11,23 +11,27 @@ import java.net.CookieManager
 import java.net.CookiePolicy
 
 object NetworkUtils {
-    // Para el emulador de Android creo que 10.0.2.2 pero habra q cambiarlo
+    // Para el emulador de Android, 10.0.2.2 pero habra q cambiarlo
     private const val BASE_URL = "http://10.0.2.2:8080/"
     private var apiService: ApiService? = null
-    private var client: OkHttpClient? = null
+    private var okHttpClient: OkHttpClient? = null
+    private var refreshClient: OkHttpClient? = null
+
+    private val cookieManager: CookieManager by lazy {
+        CookieManager().apply {
+            setCookiePolicy(CookiePolicy.ACCEPT_ALL)
+        }
+    }
 
     fun getOkHttpClient(): OkHttpClient {
-        if (client != null) return client!!
+
+        if (okHttpClient != null) return okHttpClient!!
 
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
-        val cookieManager = CookieManager().apply {
-            setCookiePolicy(CookiePolicy.ACCEPT_ALL)
-        }
-
-        client = OkHttpClient.Builder()
+        okHttpClient = OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor { chain ->
                 val token = TokenManager.getAccessToken()
@@ -39,52 +43,49 @@ object NetworkUtils {
 
                 chain.proceed(requestBuilder.build())
             }
+            .authenticator(TokenAuthenticator())
             .cookieJar(JavaNetCookieJar(cookieManager))
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(0, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
 
-        return client!!
+        return okHttpClient!!
     }
 
+    fun getRefreshClient(): OkHttpClient {
 
-    fun getApiService(): ApiService {
-        if (apiService != null) return apiService!!
+        if (refreshClient != null) return refreshClient!!
 
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
-        // manejar cookies automáticamente
-        val cookieManager = CookieManager().apply {
-            setCookiePolicy(CookiePolicy.ACCEPT_ALL)
-        }
-
-        val client = OkHttpClient.Builder()
+        refreshClient = OkHttpClient.Builder()
             .addInterceptor(logging)
-            .addInterceptor { chain ->
-                val token = TokenManager.getAccessToken()
-                val requestBuilder = chain.request().newBuilder()
-
-                if (!token.isNullOrEmpty()) {
-                    requestBuilder.addHeader("Authorization", "Bearer $token")
-                }
-
-                chain.proceed(requestBuilder.build())
-            }
             .cookieJar(JavaNetCookieJar(cookieManager))
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
 
+        return refreshClient!!
+
+    }
+
+    fun getApiService(): ApiService {
+
+        if (apiService != null) return apiService!!
+
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .client(client)
+            .client(getOkHttpClient())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         apiService = retrofit.create(ApiService::class.java)
         return apiService!!
+
     }
+
 }

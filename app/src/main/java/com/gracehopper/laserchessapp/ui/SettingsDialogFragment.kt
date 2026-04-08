@@ -222,8 +222,8 @@ class SettingsDialogFragment : DialogFragment() {
         // limpio perfil en memoria
         CurrentUserManager.clearMyProfile()
 
-        // cerrar websockets si hay
-        ActiveGameManager.disconnect()
+        // cerrar websockets si hay, hace falta??
+        // ActiveGameManager.disconnect()
 
         // ir a login y limpiar backstack
         val intent = Intent(requireContext(), LoginActivity::class.java).apply {

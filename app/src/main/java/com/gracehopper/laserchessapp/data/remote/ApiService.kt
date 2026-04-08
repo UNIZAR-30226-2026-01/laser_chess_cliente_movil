@@ -30,6 +30,9 @@ interface ApiService {
     @POST("register")
     fun register(@Body request: RegisterRequest): Call<RegisterResponse>
 
+    @POST("refresh")
+    fun refreshToken(): Call<LoginResponse>
+
     // Endpoint para obtener información de una cuenta
     @GET("api/account")
     fun getMyAccount(): Call<MyAccountResponse>
