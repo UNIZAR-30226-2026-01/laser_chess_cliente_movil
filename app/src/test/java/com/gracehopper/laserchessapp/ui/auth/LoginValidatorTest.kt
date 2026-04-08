@@ -33,7 +33,7 @@ class LoginValidatorTest {
     }
 
     /**
-     * TEST 3: PASSWORD CORTO
+     * TEST 3: PASSWORD CORTA
      *
      * Comprueba:
      * - password corto -> ShortPassword
@@ -45,7 +45,20 @@ class LoginValidatorTest {
     }
 
     /**
-     * TEST 4: CREDENCIALES VÁLIDAS
+     * TEST 4: PASSWORD LARGA
+     *
+     * Comprueba:
+     * - password largo -> LongPassword
+     */
+    @Test
+    fun login_validate_password_larga_error() {
+        val result = LoginValidator.validate("username",
+            "longpassword345678901234567890123456789012345678901")
+        assertEquals(LoginValidationResult.LongPassword, result)
+    }
+
+    /**
+     * TEST 5: CREDENCIALES VÁLIDAS
      *
      * Comprueba:
      * - credenciales válidas -> Valid

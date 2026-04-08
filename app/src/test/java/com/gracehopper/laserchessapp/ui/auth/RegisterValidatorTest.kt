@@ -22,7 +22,22 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 2: MAIL VACÍO
+     * TEST 2: USERNAME LARGO
+     *
+     * Comprueba:
+     * - username largo -> LongUsername
+     */
+    @Test
+    fun register_validate_username_largo_error() {
+        val result = RegisterValidator.validate(
+            "username9012345678901234567890123456789012345678901",
+            "mail@test.tst", "password", "password")
+        assertEquals(RegisterValidationResult.LongUsername, result)
+    }
+
+
+    /**
+     * TEST 3: MAIL VACÍO
      *
      * Comprueba:
      * - mail vacío -> EmptyMail
@@ -35,7 +50,7 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 3: MAIL INVÁLIDO
+     * TEST 4: MAIL INVÁLIDO
      *
      * Comprueba:
      * - mail inválido -> InvalidMail
@@ -48,7 +63,7 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 4: PASSWORD VACÍA
+     * TEST 5: PASSWORD VACÍA
      *
      * Comprueba:
      * - password vacío -> EmptyPassword
@@ -61,7 +76,7 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 5: PASSWORD CORTA
+     * TEST 6: PASSWORD CORTA
      *
      * Comprueba:
      * - password corta -> ShortPassword
@@ -74,7 +89,21 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 6: CONFIRMACIÓN DE PASSWORD VACÍA
+     * TEST 7: PASSWORD LARGA
+     *
+     * Comprueba:
+     * - password larga -> LongPassword
+     */
+    @Test
+    fun register_validate_password_larga_error() {
+        val result = RegisterValidator.validate("username", "mail@test.tst",
+            "longpassword345678901234567890123456789012345678901",
+            "longpassword345678901234567890123456789012345678901")
+        assertEquals(RegisterValidationResult.LongPassword, result)
+    }
+
+    /**
+     * TEST 8: CONFIRMACIÓN DE PASSWORD VACÍA
      *
      * Comprueba:
      * - confirmación de password vacía -> EmptyConfirmPassword
@@ -87,7 +116,7 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 7: PASSWORD Y CONFIRMACIÓN DE PASSWORD NO COINCIDEN
+     * TEST 9: PASSWORD Y CONFIRMACIÓN DE PASSWORD NO COINCIDEN
      *
      * Comprueba:
      * - password y confirmación de password no coinciden -> PasswordsMismatch
@@ -100,7 +129,7 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 8: CREDENCIALES VÁLIDAS
+     * TEST 10: CREDENCIALES VÁLIDAS
      *
      * Comprueba:
      * - credenciales válidas -> Valid

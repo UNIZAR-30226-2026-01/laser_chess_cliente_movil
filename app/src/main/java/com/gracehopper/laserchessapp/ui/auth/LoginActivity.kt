@@ -242,6 +242,7 @@ class LoginActivity : AppCompatActivity() {
         val confirmPassword = registerConfirmPassword.text.toString().trim()
 
         when (RegisterValidator.validate(username, mail, password, confirmPassword)) {
+
             RegisterValidationResult.EmptyUsername -> {
                 registerUsername.error = "Introduce un username"
                 registerUsername.requestFocus()
@@ -277,12 +278,6 @@ class LoginActivity : AppCompatActivity() {
                 return
             }
 
-            RegisterValidationResult.EmptyConfirmPassword -> {
-                registerConfirmPassword.error = "Confirma tu contraseña"
-                registerConfirmPassword.requestFocus()
-                return
-            }
-
             RegisterValidationResult.ShortPassword -> {
                 registerPassword.error = "Mínimo 6 caracteres"
                 registerPassword.requestFocus()
@@ -302,6 +297,12 @@ class LoginActivity : AppCompatActivity() {
                     "La contraseña debe tener máximo 50 caracteres",
                     Toast.LENGTH_SHORT
                 ).show()
+                return
+            }
+
+            RegisterValidationResult.EmptyConfirmPassword -> {
+                registerConfirmPassword.error = "Confirma tu contraseña"
+                registerConfirmPassword.requestFocus()
                 return
             }
 
