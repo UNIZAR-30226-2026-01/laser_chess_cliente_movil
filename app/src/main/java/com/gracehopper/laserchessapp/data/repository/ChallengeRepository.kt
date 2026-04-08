@@ -1,14 +1,13 @@
 package com.gracehopper.laserchessapp.data.repository
 
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
+import com.gracehopper.laserchessapp.data.remote.ApiService
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ChallengeRepository {
-
-    private val apiService = NetworkUtils.getApiService()
+class ChallengeRepository(private val apiService: ApiService) {
 
     fun getPendingChallenges(onSuccess: (List<PendingChallengeResponse>) -> Unit,
                              onError: (Int?) -> Unit) {

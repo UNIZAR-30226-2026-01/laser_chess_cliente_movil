@@ -22,8 +22,14 @@ class HomeFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        val btnSettings = view.findViewById<ImageButton>(R.id.btnSettings)
         val btnPlay = view.findViewById<Button>(R.id.btnPlay)
         val btnNotification = view.findViewById<ImageButton>(R.id.btnNotification)
+
+        btnSettings.setOnClickListener {
+            val dialog = SettingsDialogFragment()
+            dialog.show(parentFragmentManager, "SettingsDialog")
+        }
 
         btnPlay.setOnClickListener {
             val intent = Intent(requireContext(), GameActivity::class.java)

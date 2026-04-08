@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">LaserChessApp</string>
-    <string name="settings">Settings</string>
+    <string name="settings">Ajustes</string>
     <string name="notifications">Notificaciones</string>
     <string name="timer">Timer</string>
     <string name="game_board">Game Board</string>
@@ -12,6 +12,8 @@
     <string name="elo">ELO</string>
     <string name="coin">Coin</string>
     <string name="title_activity_game">GameActivity</string>
+
+    <string name="personal_data">Datos personales</string>
 
     <string name="login">Iniciar sesión</string>
     <string name="credential">Username/E-mail</string>
@@ -73,5 +75,11 @@
     <string name="edit_avatar">Editar avatar</string>
     <string name="edit_username">Editar nombre de usuario</string>
     <string name="edit_equipped">Editar equipo</string>
+
+    <string name="change_password">¿Deseas cambiar tu contraseña?</string>
+    <string name="eliminate_account">¿Deseas eliminar tu cuenta?</string>
+    <string name="music">Música</string>
+    <string name="sound_effects">Efectos de sonido</string>
+    <string name="logout">Cerrar sesión</string>
 
 </resources>

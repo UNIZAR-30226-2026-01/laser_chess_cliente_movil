@@ -1,6 +1,5 @@
 package com.gracehopper.laserchessapp.ui.notifications
 
-import android.R
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -14,8 +13,10 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
+import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.ChallengeRepository
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 
@@ -24,16 +25,17 @@ import com.gracehopper.laserchessapp.ui.game.GameActivity
  */
 class NotificationsDialogFragment : DialogFragment() {
 
+    private lateinit var challengeRepository: ChallengeRepository
     private lateinit var buttonClose: ImageButton
     private lateinit var recyclerChallenges: RecyclerView
     private lateinit var textEmptyState: TextView
 
     private lateinit var adapter: PendingChallengesAdapter
 
-    private val challengeRepository = ChallengeRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        challengeRepository = ChallengeRepository(NetworkUtils.getApiService())
         isCancelable = true
     }
 
@@ -42,7 +44,8 @@ class NotificationsDialogFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(com.gracehopper.laserchessapp.R.layout.dialog_notifications, container, false)
+        return inflater.inflate(R.layout.dialog_notifications,
+            container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
