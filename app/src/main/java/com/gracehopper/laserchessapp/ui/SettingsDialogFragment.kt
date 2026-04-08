@@ -1,6 +1,7 @@
 package com.gracehopper.laserchessapp.ui
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,9 +14,12 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
+import com.gracehopper.laserchessapp.ui.auth.LoginActivity
+import com.gracehopper.laserchessapp.utils.TokenManager
 
 
 /**
@@ -168,6 +172,35 @@ class SettingsDialogFragment : DialogFragment() {
 
     private fun openEliminateAccountDialog() {
         // TODO abrir diálogo de eliminar cuenta
+        /**
+         * Llamada a repo para eliminar cuenta
+         * userRepository.deleteMyAccount(
+         *                     onSuccess = {
+         *                         CurrentUserManager.clearMyProfile()
+         *                         TokenManager.clear()
+         *                         // ir a login
+         *                     },
+         *                     onError = { code ->
+         *                         when(code) {
+         *                             401 -> {
+         *                                 Toast.makeText(requireContext(),
+         *                                     "Sesión no válida",
+         *                                     Toast.LENGTH_SHORT).show()
+         *                             }
+         *                             null -> {
+         *                                 Toast.makeText(requireContext(),
+         *                                     "Error de conexión",
+         *                                     Toast.LENGTH_SHORT).show()
+         *                             }
+         *                             else -> {
+         *                                 Toast.makeText(requireContext(),
+         *                                     "Error al cerrar sesión",
+         *                                     Toast.LENGTH_SHORT).show()
+         *                             }
+         *                         }
+         *                     }
+         *                 )
+         */
     }
 
     private fun openLogoutDialog() {
@@ -175,10 +208,30 @@ class SettingsDialogFragment : DialogFragment() {
             .setTitle("Cerrar sesión")
             .setMessage("¿Estás seguro de que quieres cerrar sesión?")
             .setPositiveButton("Sí") { _, _ ->
-                userRepository.deleteMyAccount()
+                logout()
             }
             .setNegativeButton("Cancelar", null)
             .show()
+    }
+
+    private fun logout() {
+
+        // limpio tokens
+        TokenManager.clear()
+
+        // limpio perfil en memoria
+        CurrentUserManager.clearMyProfile()
+
+        // cerrar websockets si hay
+        ActiveGameManager.disconnect()
+
+        // ir a login y limpiar backstack
+        val intent = Intent(requireContext(), LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        context.startActivity(intent)
+
     }
 
     override fun onStart() {

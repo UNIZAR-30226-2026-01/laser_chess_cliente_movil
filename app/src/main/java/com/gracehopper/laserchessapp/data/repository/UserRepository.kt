@@ -230,4 +230,33 @@ class UserRepository(private val apiService: ApiService) {
 
     }
 
+    fun deleteMyAccount(onSuccess: () -> Unit,
+                     onError: (Int?) -> Unit) {
+
+        apiService.deleteMyAccount().enqueue(
+            object : Callback<Unit> {
+
+                override fun onResponse(
+                    call: Call<Unit>,
+                    response: Response<Unit>
+                ) {
+
+                    if (!response.isSuccessful) {
+                        onError(response.code())
+                        return
+                    }
+
+                    onSuccess()
+
+                }
+
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                    onError(null)
+                }
+
+            }
+        )
+
+    }
+
 }
