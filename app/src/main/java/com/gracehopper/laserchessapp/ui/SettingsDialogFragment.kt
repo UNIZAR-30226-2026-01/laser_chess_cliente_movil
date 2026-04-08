@@ -20,6 +20,7 @@ import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.auth.LoginActivity
 import com.gracehopper.laserchessapp.utils.TokenManager
+import com.gracehopper.laserchessapp.utils.redirectToLogin
 
 
 /**
@@ -226,17 +227,13 @@ class SettingsDialogFragment : DialogFragment() {
         // ActiveGameManager.disconnect()
 
         // ir a login y limpiar backstack
-        val intent = Intent(requireContext(), LoginActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-
-        context.startActivity(intent)
+        redirectToLogin(requireContext())
 
     }
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent))
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
     }
 
     companion object {

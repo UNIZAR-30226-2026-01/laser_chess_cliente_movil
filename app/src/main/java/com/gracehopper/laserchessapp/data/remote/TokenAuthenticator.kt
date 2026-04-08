@@ -11,18 +11,28 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class TokenAuthenticator : Authenticator {
 
+    private val refreshApiService: ApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(NetworkUtils.BASE_URL)
+            .client(NetworkUtils.getRefreshClient())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiService::class.java)
+    }
+
     override fun authenticate(route: Route?, response: Response): Request? {
+
+        val currentToken = TokenManager.getAccessToken()
+        if (currentToken.isNullOrEmpty()) { return null }
 
         // para evitar bucles infinitos si ya hemos reintentado varias veces
         if (responseCount(response) >= 2) {
-            TokenManager.clear()
-            CurrentUserManager.clearMyProfile()
+            clearSession()
             return null
         }
 
         val newAccessToken = refreshAccessToken() ?: run {
-            TokenManager.clear()
-            CurrentUserManager.clearMyProfile()
+            clearSession()
             return null
         }
 
@@ -33,17 +43,16 @@ class TokenAuthenticator : Authenticator {
             .build()
     }
 
+    private fun clearSession() {
+        TokenManager.clear()
+        CurrentUserManager.expireSession()
+    }
+
     private fun refreshAccessToken(): String? {
 
         return try {
-            val retrofit = Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/")
-                .client(NetworkUtils.getRefreshClient())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
 
-            val apiService = retrofit.create(ApiService::class.java)
-            val refreshResponse = apiService.refreshToken().execute()
+            val refreshResponse = refreshApiService.refreshToken().execute()
 
             if (!refreshResponse.isSuccessful) {
                 null

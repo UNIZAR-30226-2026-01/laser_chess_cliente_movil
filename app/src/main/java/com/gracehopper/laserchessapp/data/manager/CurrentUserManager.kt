@@ -12,6 +12,9 @@ object CurrentUserManager {
     private val _myProfile = MutableLiveData<MyProfile?>()
     val myProfile: LiveData<MyProfile?> = _myProfile
 
+    private val _sessionExpired = MutableLiveData(false)
+    val sessionExpired: LiveData<Boolean> = _sessionExpired
+
     /**
      * Establece el perfil actual del usuario.
      *
@@ -19,6 +22,7 @@ object CurrentUserManager {
      */
     fun setMyProfile(profile: MyProfile) {
         _myProfile.postValue(profile)
+        _sessionExpired.postValue(false)
     }
 
     /**
@@ -26,6 +30,21 @@ object CurrentUserManager {
      */
     fun clearMyProfile() {
         _myProfile.postValue(null)
+    }
+
+    /**
+     * Expira la sesión del usuario.
+     */
+    fun expireSession() {
+        _myProfile.postValue(null)
+        _sessionExpired.postValue(true)
+    }
+
+    /**
+     * Resetea la flag de expiración de sesión.
+     */
+    fun resetSessionExpiredFlag() {
+        _sessionExpired.postValue(false)
     }
 
     /**

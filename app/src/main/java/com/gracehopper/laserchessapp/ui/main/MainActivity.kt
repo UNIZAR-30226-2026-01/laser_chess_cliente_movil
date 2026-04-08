@@ -25,6 +25,8 @@ import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragmen
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 import com.gracehopper.laserchessapp.utils.ChallengeNotificationHelper
+import com.gracehopper.laserchessapp.utils.TokenManager
+import com.gracehopper.laserchessapp.utils.redirectToLogin
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,8 +63,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        observeSessionState()
 
         // crear canal al arrancar la app
         ChallengeNotificationHelper.createChannels(this)
@@ -87,6 +92,20 @@ class MainActivity : AppCompatActivity() {
         isMyProfileLoaded()
         setupProfileCard()
 
+    }
+
+    private fun observeSessionState() {
+        CurrentUserManager.sessionExpired.observe(this) { expired ->
+            if (expired) {
+                Toast.makeText(
+                    this,
+                    "Tu sesión ha caducado. Vuelve a iniciar sesión",
+                    Toast.LENGTH_SHORT
+                ).show()
+                redirectToLogin(this)
+                finish()
+            }
+        }
     }
 
     /**

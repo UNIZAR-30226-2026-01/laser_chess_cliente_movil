@@ -40,7 +40,7 @@ class UserRepository(private val apiService: ApiService) {
                     }
 
                     getUserRatings(
-                        userId = TokenManager.getUserId(),
+                        userId = myAccount.accountId,
                         onSuccess = { ratings ->
                             val profile = MyProfile(
                                 id = myAccount.accountId,

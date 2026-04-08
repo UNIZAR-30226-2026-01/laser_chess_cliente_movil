@@ -12,7 +12,7 @@ import java.net.CookiePolicy
 
 object NetworkUtils {
     // Para el emulador de Android, 10.0.2.2 pero habra q cambiarlo
-    private const val BASE_URL = "http://10.0.2.2:8080/"
+    const val BASE_URL = "http://10.0.2.2:8080/"
     private var apiService: ApiService? = null
     private var okHttpClient: OkHttpClient? = null
     private var refreshClient: OkHttpClient? = null
@@ -22,6 +22,8 @@ object NetworkUtils {
             setCookiePolicy(CookiePolicy.ACCEPT_ALL)
         }
     }
+
+    private val tokenAuthenticator by lazy { TokenAuthenticator() }
 
     fun getOkHttpClient(): OkHttpClient {
 
@@ -43,10 +45,10 @@ object NetworkUtils {
 
                 chain.proceed(requestBuilder.build())
             }
-            .authenticator(TokenAuthenticator())
+            .authenticator(tokenAuthenticator)
             .cookieJar(JavaNetCookieJar(cookieManager))
             .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(0, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
 
