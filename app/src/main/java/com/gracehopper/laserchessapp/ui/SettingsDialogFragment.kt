@@ -4,11 +4,15 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
@@ -66,12 +70,13 @@ class SettingsDialogFragment : DialogFragment() {
 
     private fun bindViews(view: View) {
 
-        buttonClose = view.findViewById(R.id.buttonCloseNotifications)
+        buttonClose = view.findViewById(R.id.buttonCloseSettingsDialog)
         txtEmail = view.findViewById(R.id.txtEmailSettings)
         txtChangePassword = view.findViewById(R.id.txtChangePassword)
         txtEliminateAccount = view.findViewById(R.id.txtEliminateAccount)
         checkMusic = view.findViewById(R.id.checkMusic)
         checkSoundEffects = view.findViewById(R.id.checkSoundEffects)
+        checkNotifications = view.findViewById(R.id.checkNotifications)
         buttonLogout = view.findViewById(R.id.buttonLogout)
 
     }
@@ -122,10 +127,6 @@ class SettingsDialogFragment : DialogFragment() {
 
         txtChangePassword.setOnClickListener {
             openChangePasswordDialog()
-            Toast.makeText(requireContext(),
-                "Cambiar contraseña",
-                Toast.LENGTH_SHORT
-            ).show()
         }
 
         txtEliminateAccount.setOnClickListener {
@@ -168,40 +169,190 @@ class SettingsDialogFragment : DialogFragment() {
     }
 
     private fun openChangePasswordDialog() {
-        // TODO abrir diálogo de cambiar contraseña
+        // AlertDialog temporal para salir del paso
+        // TODO Dialog en nueva pantalla de change password
+
+        val container = LinearLayout(requireContext()).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(50, 20, 50, 10)
+        }
+
+        val editCurrentPassword = EditText(requireContext()).apply {
+            hint = "Contraseña actual"
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            transformationMethod = PasswordTransformationMethod.getInstance()
+        }
+
+        val editNewPassword = EditText(requireContext()).apply {
+            hint = "Nueva contraseña"
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            transformationMethod = PasswordTransformationMethod.getInstance()
+        }
+
+        val editRepeatPassword = EditText(requireContext()).apply {
+            hint = "Repite la nueva contraseña"
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            transformationMethod = PasswordTransformationMethod.getInstance()
+        }
+
+        container.addView(editCurrentPassword)
+        container.addView(editNewPassword)
+        container.addView(editRepeatPassword)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("Cambiar contraseña")
+            .setMessage("Introduce tu contraseña actual y la nueva.")
+            .setView(container)
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Guardar", null)
+            .create()
+
+        dialog.setOnShowListener {
+            val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+            positiveButton.setOnClickListener {
+                val currentPassword = editCurrentPassword.text.toString().trim()
+                val newPassword = editNewPassword.text.toString().trim()
+                val repeatPassword = editRepeatPassword.text.toString().trim()
+
+                validateAndSavePassword(
+                    currentPassword = currentPassword,
+                    newPassword = newPassword,
+                    repeatPassword = repeatPassword,
+                    dialog = dialog
+                )
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun validateAndSavePassword(currentPassword: String,
+                                         newPassword: String,
+                                         repeatPassword: String,
+                                         dialog: AlertDialog) {
+
+        when {
+            currentPassword.isBlank() -> {
+                Toast.makeText(requireContext(),
+                    "Contraseña actual vacía",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            newPassword.isBlank() -> {
+                Toast.makeText(requireContext(),
+                    "Nueva contraseña vacía",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            newPassword.length < 6 -> {
+                Toast.makeText(requireContext(),
+                    "La contraseña debe tener al menos 6 caracteres",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            newPassword.length > 50 -> {
+                Toast.makeText(requireContext(),
+                    "La contraseña no puede tener más de 50 caracteres",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            repeatPassword.isBlank() -> {
+                Toast.makeText(requireContext(),
+                    "Repite la contraseña nueva",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            newPassword != repeatPassword -> {
+                Toast.makeText(requireContext(),
+                    "Las contraseñas no coinciden",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            currentPassword == newPassword -> {
+                Toast.makeText(requireContext(),
+                    "La nueva contraseña debe ser distinta a la actual",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            else -> {
+                saveNewPassword(
+                    currentPassword = currentPassword,
+                    newPassword = newPassword,
+                    dialog = dialog
+                )
+            }
+
+        }
+
+    }
+
+    private fun saveNewPassword(currentPassword: String,
+                                 newPassword: String,
+                                 dialog: AlertDialog) {
+
+        // llamada a repository para cambiar contraseña
+        Toast.makeText(requireContext(),
+            "Cuando funke, aquí actualizará pass",
+            Toast.LENGTH_SHORT
+        ).show()
+        dialog.dismiss()
+
     }
 
     private fun openEliminateAccountDialog() {
-        // TODO abrir diálogo de eliminar cuenta
-        /**
-         * Llamada a repo para eliminar cuenta
-         * userRepository.deleteMyAccount(
-         *                     onSuccess = {
-         *                         CurrentUserManager.clearMyProfile()
-         *                         TokenManager.clear()
-         *                         // ir a login
-         *                     },
-         *                     onError = { code ->
-         *                         when(code) {
-         *                             401 -> {
-         *                                 Toast.makeText(requireContext(),
-         *                                     "Sesión no válida",
-         *                                     Toast.LENGTH_SHORT).show()
-         *                             }
-         *                             null -> {
-         *                                 Toast.makeText(requireContext(),
-         *                                     "Error de conexión",
-         *                                     Toast.LENGTH_SHORT).show()
-         *                             }
-         *                             else -> {
-         *                                 Toast.makeText(requireContext(),
-         *                                     "Error al cerrar sesión",
-         *                                     Toast.LENGTH_SHORT).show()
-         *                             }
-         *                         }
-         *                     }
-         *                 )
-         */
+        AlertDialog.Builder(requireContext())
+            .setTitle("Eliminar cuenta")
+            .setMessage("¿Estás seguro de que quieres eliminar tu cuenta?\n"
+                        + "Esta acción no se puede deshacer")
+            .setPositiveButton("Sí") { _, _ ->
+
+                userRepository.deleteMyAccount(
+                    onSuccess = {
+                        CurrentUserManager.clearMyProfile()
+                        TokenManager.clear()
+                        // ir a login
+                    },
+                    onError = { code ->
+                        when (code) {
+                            401 -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Cuenta no válida",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            null -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Error de conexión",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            else -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Error al eliminar cuenta",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                )
+
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+
     }
 
     private fun openLogoutDialog() {

@@ -31,6 +31,22 @@ class TokenAuthenticator : Authenticator {
             return null
         }
 
+        // si otra request ya ha refrescado, reutilizarlo
+        val requestToken = response.request.header("Authorization")
+            ?.removePrefix("Bearer ")
+            ?.trim()
+
+        val latestToken = TokenManager.getAccessToken()
+        if (!latestToken.isNullOrEmpty() &&
+                requestToken != null &&
+                requestToken != latestToken) {
+
+            return response.request.newBuilder()
+                .header("Authorization", "Bearer $latestToken")
+                .build()
+
+        }
+
         val newAccessToken = refreshAccessToken() ?: run {
             clearSession()
             return null
