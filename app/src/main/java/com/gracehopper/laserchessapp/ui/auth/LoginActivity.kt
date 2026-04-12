@@ -17,6 +17,7 @@ import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.AuthRepository
 import com.gracehopper.laserchessapp.ui.main.MainActivity
 import com.gracehopper.laserchessapp.utils.TokenManager
+import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
 
 /**
  * Actividad de inicio de sesión.
@@ -256,11 +257,11 @@ class LoginActivity : AppCompatActivity() {
             }
 
             RegisterValidationResult.LongUsername -> {
-                registerUsername.error = "Máximo 50 caracteres"
+                registerUsername.error = "Máximo ${UsernameValidator.MAX_LENGTH} caracteres"
                 registerUsername.requestFocus()
                 Toast.makeText(
                     this,
-                    "El username debe tener máximo 50 caracteres",
+                    "El username debe tener máximo ${UsernameValidator.MAX_LENGTH} caracteres",
                     Toast.LENGTH_SHORT
                 ).show()
                 return

@@ -21,6 +21,8 @@ import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.main.MainActivity
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
+import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
+import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
 
 /**
  * DialogFragment que muestra el perfil del usuario loggeado.
@@ -151,21 +153,34 @@ class MyProfileDialogFragment : DialogFragment() {
 
         val currentUsername = currentProfile?.username.orEmpty()
 
-        when {
+        when (UsernameValidator.validate(newUsername)) {
 
-            newUsername.isBlank() -> {
+            UsernameValidationResult.EmptyUsername -> {
                 Toast.makeText(requireContext(),
                     "El username no puede estar vacío",
                     Toast.LENGTH_SHORT).show()
             }
 
-            newUsername == currentUsername -> {
+            UsernameValidationResult.LongUsername -> {
                 Toast.makeText(requireContext(),
-                    "El nuevo username debe ser distinto al actual",
+                    "Máximo ${UsernameValidator.MAX_LENGTH} caracteres",
                     Toast.LENGTH_SHORT).show()
             }
 
-            else -> {
+            UsernameValidationResult.InvalidUsername -> {
+                Toast.makeText(requireContext(),
+                    "El username no puede contener espacios en blanco",
+                    Toast.LENGTH_SHORT).show()
+            }
+
+            UsernameValidationResult.Valid -> {
+
+                if (newUsername == currentUsername) {
+                    Toast.makeText(requireContext(),
+                        "El nuevo username debe ser distinto al actual",
+                        Toast.LENGTH_SHORT).show()
+                    return
+                }
 
                 userRepository.updateMyProfile(
                     request = UpdateAccountRequest(username = newUsername),
@@ -202,8 +217,6 @@ class MyProfileDialogFragment : DialogFragment() {
                         }
                     }
                 )
-
-
 
             }
 
