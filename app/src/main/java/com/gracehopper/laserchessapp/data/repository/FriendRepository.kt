@@ -39,7 +39,6 @@ class FriendRepository(private val apiService: ApiService) {
             }
 
             override fun onFailure(call: Call<List<FriendSummary>>, t: Throwable) {
-                android.util.Log.e("FriendRepository", "Network failure", t)
                 onError(null)
             }
         })

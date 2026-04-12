@@ -42,7 +42,7 @@ class AuthRepositoryTest {
         val request = LoginRequest("username", "password")
         val response = LoginResponse("token")
 
-        // cuando se llame a apiSerice.login -> devolver call falso
+        // cuando se llame a apiService.login -> devolver call falso
         `when`(apiService.login(request)).thenReturn(call)
 
         // simulo qu ela API responde correctamente

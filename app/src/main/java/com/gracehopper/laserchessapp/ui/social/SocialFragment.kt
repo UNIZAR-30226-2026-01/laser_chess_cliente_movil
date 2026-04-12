@@ -303,12 +303,18 @@ class SocialFragment : Fragment() {
             loadFriends()
         }, onError = { errorCode ->
             when (errorCode) {
-                400 -> Toast.makeText(requireContext(), "Solicitud inválida", Toast.LENGTH_SHORT).show()
-                401 -> Toast.makeText(requireContext(), "No autorizado", Toast.LENGTH_SHORT).show()
-                404 -> Toast.makeText(requireContext(), "Usuario no encontrado", Toast.LENGTH_SHORT).show()
-                409 -> Toast.makeText(requireContext(), "Ya existe una amistad o solicitud", Toast.LENGTH_SHORT).show()
-                null -> Toast.makeText(requireContext(), "Error de conexión", Toast.LENGTH_SHORT).show()
-                else -> Toast.makeText(requireContext(), "Error: $errorCode", Toast.LENGTH_SHORT).show()
+                400 -> Toast.makeText(requireContext(),
+                    "Solicitud inválida", Toast.LENGTH_SHORT).show()
+                401 -> Toast.makeText(requireContext(),
+                    "No autorizado", Toast.LENGTH_SHORT).show()
+                404 -> Toast.makeText(requireContext(),
+                    "Usuario no encontrado", Toast.LENGTH_SHORT).show()
+                409 -> Toast.makeText(requireContext(),
+                    "Ya existe una amistad o solicitud", Toast.LENGTH_SHORT).show()
+                null -> Toast.makeText(requireContext(),
+                    "Error de conexión", Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(requireContext(),
+                    "Error: $errorCode", Toast.LENGTH_SHORT).show()
             }
         })
     }
