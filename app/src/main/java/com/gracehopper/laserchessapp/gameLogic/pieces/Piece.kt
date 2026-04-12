@@ -8,8 +8,7 @@ import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 
 class Piece(
-    val isRed: Boolean,
-    val type: PieceType
+    val isRed: Boolean, val type: PieceType
 ) {
 
     var rotation by mutableIntStateOf(0)
@@ -17,6 +16,25 @@ class Piece(
     fun canRotate(): Boolean {
         return type != PieceType.KING
     }
+
+    fun canRotateLeft(isRedPlayer: Boolean): Boolean {
+        if (type != PieceType.LASER) return true
+
+        var visualRot = ((rotation % 360) + 360) % 360
+        if (isRedPlayer) visualRot = (visualRot + 180) % 360
+
+        return visualRot == 90
+    }
+
+    fun canRotateRight(isRedPlayer: Boolean): Boolean {
+        if (type != PieceType.LASER) return true
+
+        var visualRot = ((rotation % 360) + 360) % 360
+        if (isRedPlayer) visualRot = (visualRot + 180) % 360
+
+        return visualRot == 0
+    }
+
     fun rotateLeft() {
         if (canRotate()) {
             rotation -= 90
@@ -29,11 +47,11 @@ class Piece(
         }
     }
 
-     fun getImageRes(imInternalRed: Boolean): Int {
+    fun getImageRes(imInternalRed: Boolean): Int {
 
-         val isMyPiece = (this.isRed == imInternalRed)
+        val isMyPiece = (this.isRed == imInternalRed)
 
-        return when(type) {
+        return when (type) {
             PieceType.KING -> if (isMyPiece) R.drawable.blue_king else R.drawable.red_king
             PieceType.DEFENDER -> if (isMyPiece) R.drawable.blue_shield else R.drawable.red_shield
             PieceType.DEFLECTOR -> if (isMyPiece) R.drawable.blue_deflector else R.drawable.red_deflector
@@ -43,9 +61,7 @@ class Piece(
     }
 
     fun getValidMoves(
-        row: Int,
-        col: Int,
-        board: Board
+        row: Int, col: Int, board: Board
     ): List<Pair<Int, Int>> {
 
         if (type == PieceType.LASER) return emptyList()
@@ -63,35 +79,35 @@ class Piece(
             Pair(1, 1)
         )
 
-            for ((dcx, dry) in directions) {
+        for ((dcx, dry) in directions) {
 
-                val newCol = col + dcx
-                val newRow = row + dry
+            val newCol = col + dcx
+            val newRow = row + dry
 
-                if (newRow in 0 until board.rows && newCol in 0 until board.cols) {
+            if (newRow in 0 until board.rows && newCol in 0 until board.cols) {
 
-                    if (board.isForbiddenCell(newRow, newCol, this.isRed)) continue
+                if (board.isForbiddenCell(newRow, newCol, this.isRed)) continue
 
-                    val target = board.getPiece(newRow, newCol)
+                val target = board.getPiece(newRow, newCol)
 
-                    if (target == null) {
-                        moves.add(Pair(newRow, newCol))
+                if (target == null) {
+                    moves.add(Pair(newRow, newCol))
 
-                    } else if (type == PieceType.SWITCHER && target.type != PieceType.SWITCHER && target.type != PieceType.KING) {
-                        val imRed = GameActivity.imInternalRed
+                } else if (type == PieceType.SWITCHER && target.type != PieceType.SWITCHER && target.type != PieceType.KING) {
+                    val imRed = GameActivity.imInternalRed
 
-                        if (target.isRed != imRed) {
-                            val enemyForbidden = board.isForbiddenCell(row, col, target.isRed)
-                            if (!enemyForbidden) {
-                                moves.add(Pair(newRow, newCol))
-                            }
-                        } else {
+                    if (target.isRed != imRed) {
+                        val enemyForbidden = board.isForbiddenCell(row, col, target.isRed)
+                        if (!enemyForbidden) {
                             moves.add(Pair(newRow, newCol))
                         }
+                    } else {
+                        moves.add(Pair(newRow, newCol))
                     }
                 }
             }
-
-            return moves
         }
+
+        return moves
     }
+}

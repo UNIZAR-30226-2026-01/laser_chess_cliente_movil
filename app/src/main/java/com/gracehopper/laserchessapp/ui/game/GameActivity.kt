@@ -26,6 +26,7 @@ import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 
 
@@ -45,12 +46,11 @@ class GameActivity : AppCompatActivity() {
     private lateinit var boardM: Board          // Modelo lógico del tablero
     private var clearTrigger by mutableIntStateOf(0)            // Trigger para avisar a la UI de limpiar selección
     private var selectedPos: Pair<Int, Int>? = null             // Posición de la pieza
-    private lateinit var controls : LinearLayout
+    private lateinit var controls: LinearLayout
     private var pendingGameEnd: Pair<String, String?>? = null
     private var gameEnded = false
     lateinit var backCallback: OnBackPressedCallback
     var laserPath by mutableStateOf<List<Pair<Int, Int>>>(emptyList())
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,6 +101,7 @@ class GameActivity : AppCompatActivity() {
                             pendingGameEnd = Pair(content, extra)
                             gameEnded = true
                         }
+
                         else -> {
                             applyServerMove(content, extra)
                         }
@@ -110,9 +111,12 @@ class GameActivity : AppCompatActivity() {
             onClosed = {
                 Log.d("WS", "WebSocket cerrado")
             },
-            onError = {
+            onError = { error ->
                 runOnUiThread {
+                    Log.e("WS", "Error: $error")
+
                     if (!gameEnded) {
+                        Toast.makeText(this, "Error de conexión", Toast.LENGTH_SHORT).show()
                         finish()
                     }
                 }
@@ -125,20 +129,30 @@ class GameActivity : AppCompatActivity() {
                 board = boardM,
                 isRedPlayer = imInternalRed,
                 isMyTurn = isMyTurn,
-                onPieceSelected = { pos ->          // Al seleccionar una pieza
+                onPieceSelected = { pos ->
                     selectedPos = pos
 
                     if (pos != null) {
                         val (r, c) = pos
                         val piece = boardM.getPiece(r, c)
 
-                        controls.visibility =
-                            if (piece != null && piece.canRotate()) View.VISIBLE
-                            else View.GONE
-                    } else {
-                            View.GONE
+                        if (piece != null && piece.canRotate()) {
+                            controls.visibility = View.VISIBLE
+
+                            btnLeft.visibility =
+                                if (piece.canRotateLeft(imInternalRed)) View.VISIBLE else View.GONE
+
+                            btnRight.visibility =
+                                if (piece.canRotateRight(imInternalRed)) View.VISIBLE else View.GONE
+
+                        } else {
+                            controls.visibility = View.GONE
                         }
-                    }, // Aparecen ctrls de rot
+
+                    } else {
+                        controls.visibility = View.GONE
+                    }
+                },
                 onMove = { from, to -> movePiece(from, to) },
                 clearSelectionTrigger = clearTrigger,
                 laserPath = laserPath
@@ -152,11 +166,10 @@ class GameActivity : AppCompatActivity() {
         // Rot. izq.
         btnLeft.setOnClickListener {
             selectedPos?.let { pos ->
-                if (testMode){
+                if (testMode) {
                     val piece = boardM.getPiece(pos.first, pos.second)
                     piece?.rotateLeft()
-                }
-                else {
+                } else {
                     gameRepository.sendRotateLeft(pos)
                     waitingForServerConfirmation = true
                     isMyTurn = false
@@ -224,21 +237,21 @@ class GameActivity : AppCompatActivity() {
     private fun loadTestBoard() {
 
         // ROJAS
-        boardM.setPiece(0,0, Piece(true, PieceType.LASER))
-        boardM.setPiece(1,1, Piece(true, PieceType.KING))
-        boardM.setPiece(2,2, Piece(true, PieceType.DEFLECTOR))
-        boardM.setPiece(3,3, Piece(true, PieceType.DEFENDER))
-        boardM.setPiece(4,4, Piece(true, PieceType.SWITCHER))
+        boardM.setPiece(0, 0, Piece(true, PieceType.LASER))
+        boardM.setPiece(1, 1, Piece(true, PieceType.KING))
+        boardM.setPiece(2, 2, Piece(true, PieceType.DEFLECTOR))
+        boardM.setPiece(3, 3, Piece(true, PieceType.DEFENDER))
+        boardM.setPiece(4, 4, Piece(true, PieceType.SWITCHER))
 
         // AZULES
-        boardM.setPiece(9,7, Piece(false, PieceType.LASER))
-        boardM.setPiece(8,6, Piece(false, PieceType.KING))
-        boardM.setPiece(7,5, Piece(false, PieceType.DEFLECTOR))
-        boardM.setPiece(6,4, Piece(false, PieceType.DEFENDER))
-        boardM.setPiece(5,3, Piece(false, PieceType.SWITCHER))
+        boardM.setPiece(9, 7, Piece(false, PieceType.LASER))
+        boardM.setPiece(8, 6, Piece(false, PieceType.KING))
+        boardM.setPiece(7, 5, Piece(false, PieceType.DEFLECTOR))
+        boardM.setPiece(6, 4, Piece(false, PieceType.DEFENDER))
+        boardM.setPiece(5, 3, Piece(false, PieceType.SWITCHER))
 
-        boardM.getPiece(2,2)?.rotation = 90
-        boardM.getPiece(7,5)?.rotation = 180
+        boardM.getPiece(2, 2)?.rotation = 90
+        boardM.getPiece(7, 5)?.rotation = 180
     }
 
     private fun applyServerMove(moveStr: String, laserPathStr: String?) {
@@ -287,7 +300,8 @@ class GameActivity : AppCompatActivity() {
 
             if (gameEnded && pendingGameEnd != null) {
                 if (!isFinishing && !isDestroyed &&
-                    supportFragmentManager.findFragmentByTag("GameResult") == null) {
+                    supportFragmentManager.findFragmentByTag("GameResult") == null
+                ) {
 
                     val (winner, cause) = pendingGameEnd!!
                     backCallback.isEnabled = false
