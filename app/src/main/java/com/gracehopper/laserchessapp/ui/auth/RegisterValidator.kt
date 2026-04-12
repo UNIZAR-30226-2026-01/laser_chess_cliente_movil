@@ -1,5 +1,7 @@
 package com.gracehopper.laserchessapp.ui.auth
 
+import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
+import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
 import java.util.regex.Pattern
 
 /**
@@ -24,17 +26,22 @@ object RegisterValidator {
     fun validate(username: String, mail: String, password: String, confirmPassword: String)
             : RegisterValidationResult {
 
-        return when {
-            username.isEmpty() -> RegisterValidationResult.EmptyUsername
-            username.length > 50 -> RegisterValidationResult.LongUsername
-            mail.isEmpty() -> RegisterValidationResult.EmptyMail
-            !EMAIL_PATTERN.matcher(mail).matches() -> RegisterValidationResult.InvalidMail
-            password.isEmpty() -> RegisterValidationResult.EmptyPassword
-            confirmPassword.isEmpty() -> RegisterValidationResult.EmptyConfirmPassword
-            password.length < 6 -> RegisterValidationResult.ShortPassword
-            password.length > 50 -> RegisterValidationResult.LongPassword
-            password != confirmPassword -> RegisterValidationResult.PasswordsMismatch
-            else -> RegisterValidationResult.Valid
+        return when (UsernameValidator.validate(username)) {
+            UsernameValidationResult.EmptyUsername -> RegisterValidationResult.EmptyUsername
+            UsernameValidationResult.LongUsername -> RegisterValidationResult.LongUsername
+            UsernameValidationResult.InvalidUsername -> RegisterValidationResult.InvalidUsername
+            UsernameValidationResult.Valid -> {
+                when {
+                    mail.isEmpty() -> RegisterValidationResult.EmptyMail
+                    !EMAIL_PATTERN.matcher(mail).matches() -> RegisterValidationResult.InvalidMail
+                    password.isEmpty() -> RegisterValidationResult.EmptyPassword
+                    confirmPassword.isEmpty() -> RegisterValidationResult.EmptyConfirmPassword
+                    password.length < 6 -> RegisterValidationResult.ShortPassword
+                    password.length > 50 -> RegisterValidationResult.LongPassword
+                    password != confirmPassword -> RegisterValidationResult.PasswordsMismatch
+                    else -> RegisterValidationResult.Valid
+                }
+            }
         }
 
     }
@@ -49,6 +56,7 @@ sealed class RegisterValidationResult {
     data object Valid : RegisterValidationResult()
     data object EmptyUsername : RegisterValidationResult()
     data object LongUsername : RegisterValidationResult()
+    data object InvalidUsername: RegisterValidationResult()
     data object EmptyMail : RegisterValidationResult()
     data object InvalidMail : RegisterValidationResult()
     data object EmptyPassword : RegisterValidationResult()

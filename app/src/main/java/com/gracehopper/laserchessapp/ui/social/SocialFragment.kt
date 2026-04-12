@@ -27,6 +27,8 @@ import com.gracehopper.laserchessapp.databinding.FragmentSocialBinding
 import com.gracehopper.laserchessapp.ui.FriendAdapter
 import com.gracehopper.laserchessapp.ui.InProgressAdapter
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
+import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
+import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
 
 class SocialFragment : Fragment() {
 
@@ -269,13 +271,25 @@ class SocialFragment : Fragment() {
         buttonSendFriendRequest.setOnClickListener {
             val username = editTextUsername.text.toString().trim()
 
-            if (username.isNotEmpty()) {
-                sendFriendRequest(username)
-                dialog.dismiss()
-            } else {
-                Toast.makeText(requireContext(),
-                    "Por favor, introduce un nombre de usuario",
-                    Toast.LENGTH_SHORT).show()
+            when (UsernameValidator.validate(username)) {
+
+                UsernameValidationResult.Valid -> {
+                    sendFriendRequest(username)
+                    dialog.dismiss()
+                }
+
+                UsernameValidationResult.EmptyUsername -> {
+                    editTextUsername.error = "El username no puede estar vacío"
+                }
+
+                UsernameValidationResult.LongUsername -> {
+                    editTextUsername.error = "Máximo ${UsernameValidator.MAX_LENGTH} caracteres"
+                }
+
+                UsernameValidationResult.InvalidUsername -> {
+                    editTextUsername.error = "El username no puede contener espacios en blanco"
+                }
+
             }
         }
 

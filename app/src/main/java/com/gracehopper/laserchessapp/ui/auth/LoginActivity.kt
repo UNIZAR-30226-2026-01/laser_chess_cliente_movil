@@ -148,6 +148,12 @@ class LoginActivity : AppCompatActivity() {
                 return
             }
 
+            LoginValidationResult.InvalidCredential -> {
+                loginCredential.error = "Username/e-mail no debe tener espacios"
+                loginCredential.requestFocus()
+                return
+            }
+
             LoginValidationResult.EmptyPassword -> {
                 loginPassword.error = "Introduce una contraseña"
                 loginPassword.requestFocus()
@@ -257,6 +263,12 @@ class LoginActivity : AppCompatActivity() {
                     "El username debe tener máximo 50 caracteres",
                     Toast.LENGTH_SHORT
                 ).show()
+                return
+            }
+
+            RegisterValidationResult.InvalidUsername -> {
+                registerUsername.error = "El username no puede contener espacios"
+                registerUsername.requestFocus()
                 return
             }
 

@@ -14,8 +14,11 @@ object LoginValidator {
      */
     fun validate(credential: String, password: String): LoginValidationResult {
 
+        val credentialTrimmed = credential.trim()
+
         return when {
-            credential.isEmpty() -> LoginValidationResult.EmptyCredential
+            credentialTrimmed.isEmpty() -> LoginValidationResult.EmptyCredential
+            credentialTrimmed.contains(" ") -> LoginValidationResult.InvalidCredential
             password.isEmpty() -> LoginValidationResult.EmptyPassword
             password.length < 6 -> LoginValidationResult.ShortPassword
             password.length > 50 -> LoginValidationResult.LongPassword
@@ -33,6 +36,7 @@ sealed class LoginValidationResult {
 
     data object Valid : LoginValidationResult()
     data object EmptyCredential : LoginValidationResult()
+    data object InvalidCredential : LoginValidationResult()
     data object EmptyPassword : LoginValidationResult()
     data object ShortPassword : LoginValidationResult()
     data object LongPassword: LoginValidationResult()
