@@ -21,7 +21,19 @@ class LoginValidatorTest {
     }
 
     /**
-     * TEST 2: PASSWORD VACÍA
+     * TEST 2: CREDENCIALES INVÁLIDAS
+     *
+     * Comprueba:
+     * - credenciales inválidas -> InvalidCredential
+     */
+    @Test
+    fun login_validate_credencial_invalida_error() {
+        val result = LoginValidator.validate("invalid credential", "password")
+        assertEquals(LoginValidationResult.InvalidCredential, result)
+    }
+
+    /**
+     * TEST 3: PASSWORD VACÍA
      *
      * Comprueba:
      * - password vacía -> EmptyPassword
@@ -33,7 +45,7 @@ class LoginValidatorTest {
     }
 
     /**
-     * TEST 3: PASSWORD CORTA
+     * TEST 4: PASSWORD CORTA
      *
      * Comprueba:
      * - password corto -> ShortPassword
@@ -45,7 +57,7 @@ class LoginValidatorTest {
     }
 
     /**
-     * TEST 4: PASSWORD LARGA
+     * TEST 5: PASSWORD LARGA
      *
      * Comprueba:
      * - password largo -> LongPassword
@@ -58,7 +70,7 @@ class LoginValidatorTest {
     }
 
     /**
-     * TEST 5: CREDENCIALES VÁLIDAS
+     * TEST 6: CREDENCIALES VÁLIDAS
      *
      * Comprueba:
      * - credenciales válidas -> Valid

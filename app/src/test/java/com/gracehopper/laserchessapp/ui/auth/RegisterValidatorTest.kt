@@ -35,9 +35,21 @@ class RegisterValidatorTest {
         assertEquals(RegisterValidationResult.LongUsername, result)
     }
 
+    /**
+     * TEST 3: USERNAME INVÁLIDO
+     *
+     * Comprueba:
+     * - username inválido -> InvalidUsername
+     */
+    @Test
+    fun register_validate_username_invalido_error() {
+        val result = RegisterValidator.validate("invalid username",
+            "mail@test.tst", "password", "password")
+        assertEquals(RegisterValidationResult.InvalidUsername, result)
+    }
 
     /**
-     * TEST 3: MAIL VACÍO
+     * TEST 4: MAIL VACÍO
      *
      * Comprueba:
      * - mail vacío -> EmptyMail
@@ -50,7 +62,7 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 4: MAIL INVÁLIDO
+     * TEST 5: MAIL INVÁLIDO
      *
      * Comprueba:
      * - mail inválido -> InvalidMail
@@ -63,7 +75,7 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 5: PASSWORD VACÍA
+     * TEST 6: PASSWORD VACÍA
      *
      * Comprueba:
      * - password vacío -> EmptyPassword
@@ -76,7 +88,7 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 6: PASSWORD CORTA
+     * TEST 7: PASSWORD CORTA
      *
      * Comprueba:
      * - password corta -> ShortPassword
@@ -89,7 +101,7 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 7: PASSWORD LARGA
+     * TEST 8: PASSWORD LARGA
      *
      * Comprueba:
      * - password larga -> LongPassword
@@ -103,7 +115,7 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 8: CONFIRMACIÓN DE PASSWORD VACÍA
+     * TEST 9: CONFIRMACIÓN DE PASSWORD VACÍA
      *
      * Comprueba:
      * - confirmación de password vacía -> EmptyConfirmPassword
@@ -116,7 +128,7 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 9: PASSWORD Y CONFIRMACIÓN DE PASSWORD NO COINCIDEN
+     * TEST 10: PASSWORD Y CONFIRMACIÓN DE PASSWORD NO COINCIDEN
      *
      * Comprueba:
      * - password y confirmación de password no coinciden -> PasswordsMismatch
@@ -129,7 +141,7 @@ class RegisterValidatorTest {
     }
 
     /**
-     * TEST 10: CREDENCIALES VÁLIDAS
+     * TEST 11: CREDENCIALES VÁLIDAS
      *
      * Comprueba:
      * - credenciales válidas -> Valid
