@@ -1,8 +1,7 @@
 package com.gracehopper.laserchessapp.ui.auth
 
-import org.junit.Test
 import org.junit.Assert.*
-
+import org.junit.Test
 /**
  * Clase de prueba para el validador de inicio de sesión.
  */
