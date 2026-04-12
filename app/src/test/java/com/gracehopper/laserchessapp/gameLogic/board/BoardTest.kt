@@ -69,4 +69,24 @@ class BoardTest {
 
         assertFalse(result)
     }
+
+    /**
+     * TEST 7: Capturar pieza (simulacion)
+     */
+    @Test
+    fun capture_piece_removes_it_from_board() {
+        val board = Board(10, 8)
+
+        val attacker = Piece(true, PieceType.DEFLECTOR)
+        val victim = Piece(false, PieceType.DEFENDER)
+
+        board.setPiece(5, 4, attacker)
+        board.setPiece(5, 5, victim)
+
+        board.setPiece(5, 5, null)
+
+        val result = board.getPiece(5, 5)
+
+        assertNull(result)
+    }
 }
