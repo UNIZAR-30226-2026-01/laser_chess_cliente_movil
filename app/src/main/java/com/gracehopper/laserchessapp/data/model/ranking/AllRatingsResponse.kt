@@ -12,7 +12,7 @@ import com.google.gson.annotations.SerializedName
  * @property extended Rating de extended
  */
 data class AllRatingsResponse (
-    @SerializedName("user_id") val userId: String,
+    @SerializedName("user_id") val userId: Long,
     @SerializedName("blitz") val blitz: Int,
     @SerializedName("rapid") val rapid: Int,
     @SerializedName("classic") val classic: Int,

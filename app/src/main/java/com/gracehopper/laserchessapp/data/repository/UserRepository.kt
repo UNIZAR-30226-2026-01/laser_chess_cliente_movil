@@ -15,15 +15,18 @@ import retrofit2.Callback
 import retrofit2.Response
 
 /**
- * Repositorio encargado de gestionar
+ * Repositorio encargado de gestionar las operaciones relacionadas con el usuario.
  *
  * Esta clase actúa como un mediador entre la capa de datos remota y el resto
- * de la aplicación, proporcionando métodos para obtener la lista de amigos.
+ * de la aplicación.
  *
  * @property apiService Instancia de la interfaz de Retrofit para realizar las peticiones a la API
  */
 class UserRepository(private val apiService: ApiService) {
 
+    /**
+     * Obtiene el perfil del usuario actual.
+     */
     fun getMyProfile(onSuccess: (MyProfile) -> Unit,
                      onError: () -> Unit) {
 
@@ -72,6 +75,11 @@ class UserRepository(private val apiService: ApiService) {
 
     }
 
+    /**
+     * Obtiene el perfil de un usuario dado su ID.
+     *
+     * @param userId ID del usuario
+     */
     fun getUserProfile(userId: Long,
                        onSuccess: (UserProfile) -> Unit,
                        onError: () -> Unit) {
@@ -119,6 +127,11 @@ class UserRepository(private val apiService: ApiService) {
 
     }
 
+    /**
+     * Obtiene los ratings de un usuario dado su ID.
+     *
+     * @param userId ID del usuario
+     */
     private fun getUserRatings(userId: Long,
                                onSuccess: (UserRatings) -> Unit,
                                onError: () -> Unit) {
@@ -152,6 +165,11 @@ class UserRepository(private val apiService: ApiService) {
 
     }
 
+    /**
+     * Actualiza el perfil del usuario actual.
+     *
+     * @param request Objeto que contiene los datos actualizados del usuario
+     */
     fun updateMyProfile(request: UpdateAccountRequest,
                         onSuccess: (MyProfile) -> Unit,
                         onError: (Int?) -> Unit) {
@@ -230,6 +248,9 @@ class UserRepository(private val apiService: ApiService) {
 
     }
 
+    /**
+     * Elimina la cuenta del usuario actual.
+     */
     fun deleteMyAccount(onSuccess: () -> Unit,
                      onError: (Int?) -> Unit) {
 
