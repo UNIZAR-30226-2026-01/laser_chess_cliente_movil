@@ -1,7 +1,7 @@
 package com.gracehopper.laserchessapp.gameLogic.move
 
 import org.junit.Assert.*
-import kotlin.test.Test
+import org.junit.Test
 
 class MoveParserTest {
 
