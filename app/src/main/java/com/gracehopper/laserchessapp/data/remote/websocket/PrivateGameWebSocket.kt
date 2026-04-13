@@ -14,7 +14,7 @@ import okhttp3.WebSocketListener
 class PrivateGameWebSocket (private val listener: WebSocketListener) {
 
     private var webSocket: WebSocket? = null
-    private val BASE_URL = "ws://10.0.2.2:8080/api/rt/challenge"
+    private val BASE_URL = "ws://172.20.10.12:8080/api/rt/challenge"
 
     /**
      * Crea una nueva solicitud de reto a un usuario específico.

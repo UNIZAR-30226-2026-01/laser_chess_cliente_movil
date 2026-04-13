@@ -8,7 +8,11 @@ import org.junit.Test
 class BoardTest {
 
     /**
-     * TEST 1: Poner pieza y obtenerla
+     * TEST 1: SET AND GET PIECE
+     *
+     * Comprueba:
+     * - se coloca una pieza en el tablero
+     * -> se obtiene correctamente en la misma posición
      */
     @Test
     fun set_and_get_piece() {
@@ -23,7 +27,11 @@ class BoardTest {
     }
 
     /**
-     * TEST 2: Obtener celda vacía da null
+     * TEST 2: GET EMPTY CELL
+     *
+     * Comprueba:
+     * - la celda no contiene pieza
+     * -> devuelve null
      */
     @Test
     fun get_empty_cell_returns_null() {
@@ -35,7 +43,11 @@ class BoardTest {
     }
 
     /**
-     * TEST 4: Celda prohibida roja
+     * TEST 3: FORBIDDEN CELL RED
+     *
+     * Comprueba:
+     * - la celda es prohibida para piezas rojas
+     * -> devuelve true
      */
     @Test
     fun forbidden_cell_red_piece() {
@@ -47,7 +59,11 @@ class BoardTest {
     }
 
     /**
-     * TEST 5: Celda prohibida azul
+     * TEST 4: FORBIDDEN CELL BLUE
+     *
+     * Comprueba:
+     * - la celda es prohibida para piezas azules
+     * -> devuelve true
      */
     @Test
     fun forbidden_cell_blue_piece() {
@@ -59,7 +75,11 @@ class BoardTest {
     }
 
     /**
-     * TEST 6: Celda permitida
+     * TEST 5: ALLOWED CELL
+     *
+     * Comprueba:
+     * - la celda no es prohibida
+     * -> devuelve false
      */
     @Test
     fun allowed_cell() {
@@ -71,7 +91,11 @@ class BoardTest {
     }
 
     /**
-     * TEST 7: Capturar pieza (simulacion)
+     * TEST 6: CAPTURE PIECE
+     *
+     * Comprueba:
+     * - una pieza es eliminada del tablero
+     * -> la celda queda vacía (null)
      */
     @Test
     fun capture_piece_removes_it_from_board() {

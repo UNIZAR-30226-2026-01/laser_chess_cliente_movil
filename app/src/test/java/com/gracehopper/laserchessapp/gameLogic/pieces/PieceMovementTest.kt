@@ -7,7 +7,11 @@ import org.junit.Test
 class PieceMovementTest {
 
     /**
-     * TEST 1: Pieza se puede moverse totalmente
+     * TEST 1: ALL MOVES AVAILABLE
+     *
+     * Comprueba:
+     * - la pieza está en el centro
+     * -> tiene todos los movimientos posibles
      */
     @Test
     fun piece_all_movements_possible() {
@@ -22,7 +26,11 @@ class PieceMovementTest {
     }
 
     /**
-     * TEST 2: Pieza en una esquina tiene menos movimientos
+     * TEST 2: CORNER MOVES LIMITED
+     *
+     * Comprueba:
+     * - la pieza está en una esquina
+     * -> tiene menos movimientos disponibles
      */
     @Test
     fun piece_movements_in_corner() {
@@ -37,7 +45,11 @@ class PieceMovementTest {
     }
 
     /**
-     * TEST 3: Laser no se puede mover
+     * TEST 3: LASER CANNOT MOVE
+     *
+     * Comprueba:
+     * - la pieza es un láser
+     * -> no tiene movimientos disponibles
      */
     @Test
     fun laser_dont_move() {
@@ -52,7 +64,11 @@ class PieceMovementTest {
     }
 
     /**
-     * TEST 4: Pieza que no sea switcher no puede permutar con otra
+     * TEST 4: NORMAL PIECE NO PERMUTE
+     *
+     * Comprueba:
+     * - una pieza normal intenta intercambiarse
+     * -> el movimiento no está permitido
      */
     @Test
     fun normal_piece_cant_permute() {
@@ -70,7 +86,11 @@ class PieceMovementTest {
     }
 
     /**
-     * TEST 5: Switcher permuta
+     * TEST 5: SWITCHER PERMUTE
+     *
+     * Comprueba:
+     * - una pieza switcher intenta intercambiarse
+     * -> el movimiento está permitido
      */
     @Test
     fun switcher_permute() {
@@ -88,7 +108,11 @@ class PieceMovementTest {
     }
 
     /**
-     * TEST 6: Una pieza no se puede salir del tablero
+     * TEST 6: NO OUT OF BOUNDS
+     *
+     * Comprueba:
+     * - la pieza está en el borde
+     * -> ningún movimiento sale del tablero
      */
     @Test
     fun dont_get_out() {

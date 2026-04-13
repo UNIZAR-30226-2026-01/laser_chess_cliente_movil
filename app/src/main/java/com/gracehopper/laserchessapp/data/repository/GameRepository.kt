@@ -5,14 +5,16 @@ import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.remote.websocket.ClientSocketMessage
 import com.gracehopper.laserchessapp.gameLogic.move.CoordsConverter
 
-class GameRepository {
+class GameRepository(
+    private val sender: (String) -> Unit = { ActiveGameManager.sendGameMessage(it) }
+) {
 
     private val gson = Gson()
 
     fun sendMessage(type: String, content: String) {
         val message = ClientSocketMessage(type, content)
         val json = gson.toJson(message)
-        ActiveGameManager.sendGameMessage(json)
+        sender(json)
     }
 
     fun sendMove(from: Pair<Int, Int>, to: Pair<Int, Int>) {

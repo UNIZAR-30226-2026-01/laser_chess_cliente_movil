@@ -6,7 +6,11 @@ import org.junit.Test
 class LaserUtilsTest {
 
     /**
-     * Test 1: Laser vertical
+     * TEST 1: LASER VERTICAL
+     *
+     * Comprueba:
+     * - el láser se mueve verticalmente
+     * -> se genera el camino correcto
      */
     @Test
     fun laser_vertical_line() {
@@ -22,7 +26,11 @@ class LaserUtilsTest {
     }
 
     /**
-     * Test 2: Laser horizontal
+     * TEST 2: LASER HORIZONTAL
+     *
+     * Comprueba:
+     * - el láser se mueve horizontalmente
+     * -> se genera el camino correcto
      */
     @Test
     fun laser_horizontal_line() {
@@ -38,25 +46,33 @@ class LaserUtilsTest {
     }
 
     /**
-     * Test 3: Laser con giro
+     * TEST 3: LASER WITH TURN
+     *
+     * Comprueba:
+     * - el láser cambia de dirección
+     * -> se genera el camino completo correctamente
      */
     @Test
     fun laser_with_turn() {
         val path = LaserUtils.parseLaserPath("a1,a3,c3")
 
         val expected = listOf(
-            Pair(0,0),
-            Pair(0,1),
-            Pair(0,2),
-            Pair(1,2),
-            Pair(2,2)
+            Pair(0, 0),
+            Pair(0, 1),
+            Pair(0, 2),
+            Pair(1, 2),
+            Pair(2, 2)
         )
 
         assertEquals(expected, path)
     }
 
     /**
-     * Test 4: Laser vacío
+     * TEST 4: EMPTY PATH
+     *
+     * Comprueba:
+     * - el path es null o vacío
+     * -> devuelve lista vacía
      */
     @Test
     fun laser_empty_path() {

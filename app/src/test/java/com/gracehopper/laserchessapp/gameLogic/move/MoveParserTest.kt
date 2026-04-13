@@ -6,7 +6,11 @@ import org.junit.Test
 class MoveParserTest {
 
     /**
-     * TEST 1: Parsear movimiento simple
+     * TEST 1: PARSE SIMPLE MOVE
+     *
+     * Comprueba:
+     * - se parsea un movimiento de traslación
+     * -> los campos se asignan correctamente
      */
     @Test
     fun parseMove_simple_traslation() {
@@ -20,7 +24,11 @@ class MoveParserTest {
     }
 
     /**
-     * TEST 2: Parsear rotacion derecha
+     * TEST 2: PARSE ROTATE RIGHT
+     *
+     * Comprueba:
+     * - se parsea una rotación derecha
+     * -> type y from son correctos
      */
     @Test
     fun parseMove_right_rotation() {
@@ -33,7 +41,11 @@ class MoveParserTest {
     }
 
     /**
-     * TEST 3: Parsear movimiento con timer
+     * TEST 3: PARSE WITH TIMER
+     *
+     * Comprueba:
+     * - el movimiento incluye timer
+     * -> el valor se parsea correctamente
      */
     @Test
     fun parseMove_with_timer() {
@@ -46,7 +58,11 @@ class MoveParserTest {
     }
 
     /**
-     * TEST 4: Parsear movimiento completo
+     * TEST 4: PARSE COMPLETE MOVE
+     *
+     * Comprueba:
+     * - el movimiento incluye destino, captura y timer
+     * -> todos los campos se asignan correctamente
      */
     @Test
     fun parseMove_complete() {
@@ -60,7 +76,11 @@ class MoveParserTest {
     }
 
     /**
-     * TEST 5: Parsear movimiento con captura
+     * TEST 5: PARSE WITH CAPTURE
+     *
+     * Comprueba:
+     * - el movimiento incluye captura
+     * -> destroyed se asigna correctamente
      */
     @Test
     fun parseMove_with_capture_sets_destroyed() {
