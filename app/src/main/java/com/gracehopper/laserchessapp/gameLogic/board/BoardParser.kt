@@ -3,8 +3,18 @@ package com.gracehopper.laserchessapp.gameLogic.board
 import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
 
+/**
+ * Objeto encargado de convertir un tablero en formato CSV
+ * en el modelo interno de Board con objetos Piece.
+ */
 object BoardParser {
 
+    /**
+     * Convierte un CSV en un tablero funcional.
+     *
+     * @param board Tablero donde se insertarán las piezas
+     * @param csv Representación del tablero en formato CSV
+     */
     fun boadFromCSV(board: Board, csv: String) {
         val csvRows = csv.split("\n")
 
@@ -17,7 +27,11 @@ object BoardParser {
                 if (cell.isNotEmpty()) {
                     val piece = parsePieceFromCode(cell)
 
-                    // Transformación de coordenadas a vertical
+                    /**
+                     * Transformación de coordenadas:
+                     * - El CSV viene en formato horizontal (fila-columna)
+                     * - Se transforma a coordenadas internas del tablero (orientación vertical)
+                     */
                     val boardRow = c
                     val boardCol = board.cols - 1 - r
 
@@ -27,6 +41,17 @@ object BoardParser {
         }
     }
 
+    /**
+     * Convierte un código de pieza en un objeto Piece.
+     *
+     * Formato del código:
+     * - 1º char: tipo de pieza (L, K, S, D, E)
+     * - 2º char: equipo/color (R = rojo, A = azul)
+     * - 3º char (opcional): orientación (U, R, D, L)
+     *
+     * @param code Código de la pieza
+     * @return Objeto Piece configurado
+     */
     private fun parsePieceFromCode(code: String): Piece {
 
         val pieceChar = code[0]         // L K S D E
@@ -35,6 +60,9 @@ object BoardParser {
 
         val isRed = teamChar == 'R'
 
+        /**
+         * Determinar tipo de pieza
+         */
         val type = when (pieceChar) {
             'L' -> PieceType.LASER
             'K' -> PieceType.KING
@@ -48,6 +76,10 @@ object BoardParser {
 
         val piece = Piece(isRed, type)
 
+        /**
+         * Asignar rotación según orientación:
+         * U = arriba, R = derecha, D = abajo, L = izquierda
+         */
         when (orientationChar) {
             'U' -> piece.rotation = 270
             'R' -> piece.rotation = 0

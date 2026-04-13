@@ -11,7 +11,7 @@ import okhttp3.WebSocketListener
  * - envía mensajes
  * - lo cierra
  */
-class PrivateGameWebSocket (private val listener: WebSocketListener) {
+class PrivateGameWebSocket(private val listener: WebSocketListener) {
 
     private var webSocket: WebSocket? = null
     private val BASE_URL = "ws://10.0.2.2:8080/api/rt/challenge"
@@ -24,8 +24,10 @@ class PrivateGameWebSocket (private val listener: WebSocketListener) {
      * @param startingTime Tiempo inicial del juego
      * @param timeIncrement Incremento de tiempo
      */
-    fun createChallenge(username: String, board: Int,
-                        startingTime: Int, timeIncrement: Int) {
+    fun createChallenge(
+        username: String, board: Int,
+        startingTime: Int, timeIncrement: Int
+    ) {
 
         val url =
             "$BASE_URL?username=$username&board=$board&starting_time=$startingTime&time_increment=$timeIncrement"

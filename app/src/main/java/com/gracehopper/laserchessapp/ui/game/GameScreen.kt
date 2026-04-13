@@ -18,43 +18,66 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 
+/**
+ * Composable que representa el tablero de juego.
+ *
+ * Se encarga de:
+ * - Dibujar el tablero y las piezas
+ * - Gestionar la interacción del usuario (selección y movimiento)
+ * - Mostrar movimientos válidos
+ * - Renderizar la trayectoria del láser
+ */
 @Composable
 
-fun GameScreen (
+fun GameScreen(
     board: Board,
     isRedPlayer: Boolean,
     isMyTurn: Boolean,
     onPieceSelected: (Pair<Int, Int>?) -> Unit,
     onMove: (Pair<Int, Int>, Pair<Int, Int>) -> Unit,
     clearSelectionTrigger: Int,
-    laserPath: List<Pair<Int, Int>>){
+    laserPath: List<Pair<Int, Int>>
+) {
     var highlightedMoves by remember { mutableStateOf<List<Pair<Int, Int>>>(emptyList()) }
     var selectedPos by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
     val recomposeTrigger = clearSelectionTrigger
 
+    /**
+     * Limpiar selección cuando cambia el trigger
+     */
     LaunchedEffect(clearSelectionTrigger) {             // Limpiar cuando se active el trigger
         selectedPos = null
         highlightedMoves = emptyList()
     }
 
-    val letters = listOf<Char>('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
-    val numbers = listOf<Int>(1, 2, 3, 4, 5, 6, 7, 8)
+    /**
+     * Etiquetas del tablero
+     */
+    val letters = listOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
+    val numbers = listOf(1, 2, 3, 4, 5, 6, 7, 8)
 
+    /**
+     * Orientación según jugador
+     */
     val rowRange = if (isRedPlayer) (0 until 10) else (9 downTo 0)
-    val colRange = if(isRedPlayer) (0 until 8) else (7 downTo 0)
+    val colRange = if (isRedPlayer) (0 until 8) else (7 downTo 0)
 
     val visibleLetters = if (isRedPlayer) letters else letters.reversed()
     val visibleNumbers = if (isRedPlayer) numbers else numbers.reversed()
 
     Column {
 
-        // Numeros de celda arriba (contorno)
+        /**
+         * Números superiores
+         */
         Row {
             Spacer(modifier = Modifier.weight(1f))
             for (num in visibleNumbers) {
                 Box(
-                    modifier = Modifier.weight(1f).aspectRatio(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(1f),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(text = num.toString())
@@ -63,12 +86,19 @@ fun GameScreen (
         }
 
 
+        /**
+         * Render del tablero
+         */
         for ((rowIdx, row) in rowRange.withIndex()) {
             Row {
 
-                // Letras del contorno
+                /**
+                 * Letras laterales
+                 */
                 Box(
-                    modifier = Modifier.weight(1f).aspectRatio(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .aspectRatio(1f),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(text = visibleLetters[rowIdx].toString())
@@ -79,34 +109,49 @@ fun GameScreen (
                         val piece by remember(board, row, col, recomposeTrigger) {
                             derivedStateOf { board.getPiece(row, col) }
                         }
-                        val isHighlighted = highlightedMoves.contains(Pair(row,col))
+                        val isHighlighted = highlightedMoves.contains(Pair(row, col))
 
-                        // Casilla
+                        /**
+                         * Casilla del tablero
+                         */
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .aspectRatio(1f)
                                 .background(getCellColor(row, col, isRedPlayer))
                                 .border(1.dp, Color.Black)
-                                .clickable{
+                                .clickable {
                                     val selected = selectedPos
                                     val clickedPiece = board.getPiece(row, col)
 
-                                    if (selected == null) {             // Primer click
+                                    /**
+                                     * Primer click → seleccionar pieza
+                                     */
+                                    if (selected == null) {
                                         if (clickedPiece != null && clickedPiece.isRed == isRedPlayer && isMyTurn) {
                                             selectedPos = Pair(row, col)
-                                            highlightedMoves = clickedPiece.getValidMoves(row, col, board)
+                                            highlightedMoves =
+                                                clickedPiece.getValidMoves(row, col, board)
 
                                             onPieceSelected(selectedPos)
                                         }
 
-                                    } else {            // Segundo click (mover pieza)
+                                    /**
+                                     * Segundo click → intentar mover
+                                     */
+                                    } else {
                                         val (r2, c2) = selected
                                         val selectedPiece = board.getPiece(r2, c2)
 
                                         if (selectedPiece != null) {
 
-                                            if (highlightedMoves.contains(Pair(row, col)) && selectedPiece.isRed == isRedPlayer && isMyTurn) {            // mov. valido
+                                            if (highlightedMoves.contains(
+                                                    Pair(
+                                                        row,
+                                                        col
+                                                    )
+                                                ) && selectedPiece.isRed == isRedPlayer && isMyTurn
+                                            ) {            // mov. valido
 
                                                 onMove(Pair(r2, c2), Pair(row, col))
                                             }
@@ -118,6 +163,10 @@ fun GameScreen (
                                     }
                                 }, contentAlignment = Alignment.Center
                         ) {
+
+                            /**
+                             * Dibujar pieza
+                             */
                             piece?.let { p ->
                                 key(p) {
                                     val visualRotation =
@@ -140,7 +189,10 @@ fun GameScreen (
                                 }
                             }
 
-                            if (isHighlighted) {            // casilla de movimiento posible
+                            /**
+                             * Indicador de movimiento válido
+                             */
+                            if (isHighlighted) {
                                 Box(
                                     modifier = Modifier
                                         .size(16.dp)
@@ -148,7 +200,10 @@ fun GameScreen (
                                 )
                             }
 
-                            val isLaser = laserPath.contains(Pair(row,col))
+                            /**
+                             * Trayectoria del láser
+                             */
+                            val isLaser = laserPath.contains(Pair(row, col))
                             if (isLaser) {
                                 Box(
                                     modifier = Modifier

@@ -29,8 +29,20 @@ import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 import com.gracehopper.laserchessapp.utils.ChallengeNotificationHelper
 
+/**
+ * Activity principal de la aplicación.
+ *
+ * Se encarga de:
+ * - Gestionar la navegación entre pantallas mediante ViewPager
+ * - Mostrar información del perfil del usuario
+ * - Gestionar notificaciones
+ * - Inicializar datos del usuario
+ */
 class MainActivity : AppCompatActivity() {
 
+    /**
+     * Repositorio para obtener datos del usuario desde el backend
+     */
     private val repository by lazy {
         UserRepository(NetworkUtils.getApiService())
     }
@@ -38,6 +50,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPager2: ViewPager2
     private lateinit var navBtns: List<ImageButton>
 
+    // Elementos del perfil
     private lateinit var imgProfileAvatar: ImageView
     private lateinit var txtProfileUsername: TextView
     private lateinit var txtProfileLevel: TextView
@@ -46,15 +59,21 @@ class MainActivity : AppCompatActivity() {
     private lateinit var profileCardContainer: View
 
 
-    // Launcher para solicitar permiso de notificaciones
+    /**
+     * Launcher para solicitar permiso de notificaciones
+     */
     private val requestNotificationPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            granted ->
-                Toast.makeText(this,
-                    "Permiso de notificaciones ${if (granted) "concedido" else "denegado"}",
-                    Toast.LENGTH_SHORT).show()
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+            Toast.makeText(
+                this,
+                "Permiso de notificaciones ${if (granted) "concedido" else "denegado"}",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
+    /**
+     * Callback al cambiar de página en el ViewPager
+     */
     private val cambioPaginaCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             updateButtonSelection(position)
@@ -65,6 +84,9 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
+        /**
+         * Pantalla completa
+         */
         val controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
         controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE)
         controller.hide(WindowInsetsCompat.Type.systemBars())
@@ -106,7 +128,8 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
 
         // si ya se ha concedido el permiso no es necesario solicitarlo
-        val alreadyGranted = ContextCompat.checkSelfPermission(this,
+        val alreadyGranted = ContextCompat.checkSelfPermission(
+            this,
             Manifest.permission.POST_NOTIFICATIONS
         ) == PackageManager.PERMISSION_GRANTED
 
@@ -116,6 +139,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Configura la barra de navegación inferior
+     */
     private fun setupBarraNav() {
 
         navBtns = listOf(
@@ -133,12 +159,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Actualiza el botón seleccionado en la barra de navegación
+     */
     private fun updateButtonSelection(index: Int) {
         navBtns.forEach {
-            it.isSelected = false }
+            it.isSelected = false
+        }
         navBtns[index].isSelected = true
     }
 
+    /**
+     * Maneja intent de notificaciones (abrir diálogo)
+     */
     private fun handleNotificationIntent(intent: Intent?) {
 
         val openNotifications =
@@ -164,6 +197,9 @@ class MainActivity : AppCompatActivity() {
         handleNotificationIntent(intent)
     }
 
+    /**
+     * Inicializa las vistas del perfil
+     */
     private fun initViews() {
 
         imgProfileAvatar = findViewById(R.id.imgMyProfileAvatar)
@@ -175,6 +211,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Observa cambios en el perfil del usuario
+     */
     private fun observeCurrentUserProfile() {
 
         CurrentUserManager.myProfile.observe(this) { profile ->
@@ -185,25 +224,33 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Carga el perfil si no está en memoria
+     */
     private fun isMyProfileLoaded() {
 
         if (CurrentUserManager.isProfileLoaded()) return
 
         repository.getMyProfile(
             onSuccess = { profile ->
-            CurrentUserManager.setMyProfile(profile)
+                CurrentUserManager.setMyProfile(profile)
             },
             onError = {
                 runOnUiThread {
-                    Toast.makeText(this,
+                    Toast.makeText(
+                        this,
                         "No se pudo cargar tu perfil",
-                        Toast.LENGTH_SHORT).show()
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         )
 
     }
 
+    /**
+     * Actualiza la UI del perfil
+     */
     private fun updateProfileCard(profile: MyProfile) {
 
         txtProfileUsername.text = profile.username
@@ -215,6 +262,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Configura el click del perfil
+     */
     private fun setupProfileCard() {
 
         profileCardContainer.setOnClickListener {
@@ -233,9 +283,11 @@ class MainActivity : AppCompatActivity() {
                 CurrentUserManager.setMyProfile(profile)
             },
             onError = {
-                Toast.makeText(this,
+                Toast.makeText(
+                    this,
                     "No se puedo actualizar tu perfil",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         )
 
@@ -246,7 +298,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Destructor
-    override fun onDestroy(){
+    override fun onDestroy() {
         super.onDestroy()
         viewPager2.unregisterOnPageChangeCallback(cambioPaginaCallback)
     }

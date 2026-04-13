@@ -4,7 +4,7 @@ object CoordsConverter {
 
     fun notationToPosition(pos: String): Pair<Int, Int> {
         val row = pos[0] - 'a'                  // a-j -> 0-9
-        val col = pos[1].digitToInt()-1      // 0-7
+        val col = pos[1].digitToInt() - 1      // 0-7
         return Pair(row, col)
     }
 
