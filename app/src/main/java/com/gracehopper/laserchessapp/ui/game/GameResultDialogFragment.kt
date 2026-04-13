@@ -13,7 +13,15 @@ import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.ui.main.MainActivity
 
-class GameResultDialogFragment (
+/**
+ * Fragmento de diálogo que muestra el resultado de la partida.
+ *
+ * Se encarga de:
+ * - Mostrar si el jugador ha ganado o perdido
+ * - Indicar la causa de la victoria
+ * - Permitir salir de la partida o futura revancha
+ */
+class GameResultDialogFragment(
     private val winner: String,
     private val cause: String?
 ) : DialogFragment() {
@@ -25,6 +33,10 @@ class GameResultDialogFragment (
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        /**
+         * El diálogo no se puede cancelar (obligatorio interactuar)
+         */
         isCancelable = false
         setStyle(STYLE_NO_TITLE, android.R.style.Theme_Translucent_NoTitleBar)
     }
@@ -45,11 +57,17 @@ class GameResultDialogFragment (
 
         val iAmRed = GameActivity.imInternalRed
 
+        /**
+         * Determinar resultado desde la perspectiva del jugador
+         */
         val resultText = when (winner) {
             "P1_WINS" -> if (iAmRed) "VICTORIA" else "DERROTA"
             else -> if (iAmRed) "DERROTA" else "VICTORIA"
         }
 
+        /**
+         * Determinar causa de la victoria
+         */
         val causeText = when (cause) {
             "LASER" -> "Victoria por láser"
             "TIME" -> "Victoria por tiempo"
@@ -59,10 +77,16 @@ class GameResultDialogFragment (
         textResult.text = resultText
         textCause.text = causeText
 
+        /**
+         * Botón de revancha (pendiente de implementar)
+         */
         buttonRematch.setOnClickListener {
             //TODO: Revancha
         }
 
+        /**
+         * Salir de la partida y volver al menú principal
+         */
         buttonExit.setOnClickListener {
             ActiveGameManager.closeConnection()
             ActiveGameManager.resetAll()
@@ -76,6 +100,9 @@ class GameResultDialogFragment (
     override fun onStart() {
         super.onStart()
 
+        /**
+         * Configuración visual del diálogo
+         */
         dialog?.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)
             setDimAmount(0.6f)

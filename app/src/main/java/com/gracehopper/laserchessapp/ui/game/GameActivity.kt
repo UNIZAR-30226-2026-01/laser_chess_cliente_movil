@@ -30,10 +30,28 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 
 
+/**
+ * Activity principal de la partida.
+ *
+ * Se encarga de:
+ * - Inicializar el tablero
+ * - Gestionar la interacción del usuario
+ * - Comunicarse con el backend
+ * - Aplicar movimientos recibidos
+ * - Mostrar el láser y resultados de partida
+ */
 class GameActivity : AppCompatActivity() {
 
     companion object {
+
+        /**
+         * Indica si el jugador interno es rojo.
+         */
         var imInternalRed: Boolean = true
+
+        /**
+         * Indica si es el turno del jugador actual.
+         */
         var isMyTurn by mutableStateOf(true)
     }
 
@@ -44,25 +62,35 @@ class GameActivity : AppCompatActivity() {
     private val rows = 10
     private val cols = 8
     private lateinit var boardM: Board          // Modelo lógico del tablero
-    private var clearTrigger by mutableIntStateOf(0)            // Trigger para avisar a la UI de limpiar selección
-    private var selectedPos: Pair<Int, Int>? = null             // Posición de la pieza
+    private var clearTrigger by mutableIntStateOf(0)    // Trigger para limpiar selección en UI
+    private var selectedPos: Pair<Int, Int>? = null             // Posición seleccionada
     private lateinit var controls: LinearLayout
     private var pendingGameEnd: Pair<String, String?>? = null
     private var gameEnded = false
     lateinit var backCallback: OnBackPressedCallback
+
+    /**
+     * Trayectoria actual del láser para renderizar en UI.
+     */
     var laserPath by mutableStateOf<List<Pair<Int, Int>>>(emptyList())
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        /**
+         * Bloquear botón atrás durante la partida
+         */
         backCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // Bloqueamos el que se pueda salir con el boton de atrás
+                // No se permite salir con botón atrás
             }
         }
         onBackPressedDispatcher.addCallback(this, backCallback)
 
+        /**
+         * Ocultar barras del sistema (pantalla completa)
+         */
         val controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
         controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE)
         controller.hide(WindowInsetsCompat.Type.systemBars())
@@ -79,6 +107,9 @@ class GameActivity : AppCompatActivity() {
 
         boardM = Board(rows, cols)
 
+        /**
+         * Inicializar jugador y turno
+         */
         imInternalRed = ActiveGameManager.imRedPlayer
         isMyTurn = imInternalRed
         Log.d("PLAYER", "Soy rojo interno: $imInternalRed")
@@ -93,15 +124,24 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
+        /**
+         * Callbacks del WebSocket
+         */
         ActiveGameManager.setCallbacks(
             onMessageReceived = { content, extra ->
                 runOnUiThread {
+                    /**
+                     * Fin de partida
+                     */
                     when (content) {
                         "P1_WINS", "P2_WINS" -> {
                             pendingGameEnd = Pair(content, extra)
                             gameEnded = true
                         }
 
+                        /**
+                         * Movimiento normal
+                         */
                         else -> {
                             applyServerMove(content, extra)
                         }
@@ -123,12 +163,17 @@ class GameActivity : AppCompatActivity() {
             }
         )
 
-        // UI
+        /**
+         * UI Compose
+         */
         board.setContent {
             GameScreen(
                 board = boardM,
                 isRedPlayer = imInternalRed,
                 isMyTurn = isMyTurn,
+                /**
+                 * Selección de pieza
+                 */
                 onPieceSelected = { pos ->
                     selectedPos = pos
 
@@ -159,11 +204,16 @@ class GameActivity : AppCompatActivity() {
             )
         }
 
+        /**
+         * Salir de la partida
+         */
         btnExit.setOnClickListener {
             finish()
         }
 
-        // Rot. izq.
+        /**
+         * Rotación izquierda
+         */
         btnLeft.setOnClickListener {
             selectedPos?.let { pos ->
                 if (testMode) {
@@ -181,7 +231,9 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        // Rot. der.
+        /**
+         * Rotación derecha
+         */
         btnRight.setOnClickListener {
             selectedPos?.let { pos ->
 
@@ -204,10 +256,17 @@ class GameActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+
+        /**
+         * Limpiar callbacks al destruir la activity
+         */
         ActiveGameManager.clearCallbacks()
     }
 
 
+    /**
+     * Gestiona el movimiento de una pieza.
+     */
     private fun movePiece(from: Pair<Int, Int>, to: Pair<Int, Int>) {
 
         if (testMode) {
@@ -254,6 +313,9 @@ class GameActivity : AppCompatActivity() {
         boardM.getPiece(7, 5)?.rotation = 180
     }
 
+    /**
+     * Aplica un movimiento recibido del servidor.
+     */
     private fun applyServerMove(moveStr: String, laserPathStr: String?) {
         val move = MoveParser.parseMove(moveStr)
 
@@ -261,6 +323,10 @@ class GameActivity : AppCompatActivity() {
         val piece = boardM.getPiece(fromPos.first, fromPos.second)
 
         when (move.type) {
+
+            /**
+             * Traslación
+             */
             'T' -> {
                 val toPos = CoordsConverter.notationToPosition(move.to!!)
                 val pieceTo = boardM.getPiece(toPos.first, toPos.second)
@@ -269,6 +335,9 @@ class GameActivity : AppCompatActivity() {
                 boardM.setPiece(fromPos.first, fromPos.second, pieceTo)
             }
 
+            /**
+             * Rotaciones
+             */
             'R' -> {
                 piece?.rotateRight()
             }
@@ -278,10 +347,20 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
+        /**
+         * Mostrar trayectoria del láser
+         */
         laserPath = LaserUtils.parseLaserPath(laserPathStr)
         Log.d("LASER", "Laser path board coords: $laserPath")
 
+        /**
+         * Aplicar efectos tras 1 segundo (animación)
+         */
         Handler(Looper.getMainLooper()).postDelayed({
+
+            /**
+             * Eliminar pieza destruida
+             */
             move.destroyed?.let {
                 val destroyedPos = CoordsConverter.notationToPosition(it)
                 boardM.setPiece(destroyedPos.first, destroyedPos.second, null)
@@ -289,6 +368,9 @@ class GameActivity : AppCompatActivity() {
 
             laserPath = emptyList()
 
+            /**
+             * Gestión de turnos
+             */
             if (waitingForServerConfirmation) {
                 waitingForServerConfirmation = false
             } else {
@@ -298,6 +380,9 @@ class GameActivity : AppCompatActivity() {
             controls.visibility = View.GONE
             clearTrigger++
 
+            /**
+             * Mostrar resultado de partida
+             */
             if (gameEnded && pendingGameEnd != null) {
                 if (!isFinishing && !isDestroyed &&
                     supportFragmentManager.findFragmentByTag("GameResult") == null
@@ -315,4 +400,6 @@ class GameActivity : AppCompatActivity() {
             }
         }, 1000)
     }
+
+
 }

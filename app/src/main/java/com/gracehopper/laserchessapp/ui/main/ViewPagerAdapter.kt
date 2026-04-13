@@ -14,7 +14,10 @@ class ViewPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activi
     override fun getItemCount(): Int {
         return 5
     }
-
+    
+    /**
+     * Devuelve el fragmento correspondiente a cada pestaña
+     */
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> ShopFragment()
