@@ -26,8 +26,10 @@ import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
 import android.os.Handler
 import android.os.Looper
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 
 
 /**
@@ -97,6 +99,17 @@ class GameActivity : AppCompatActivity() {
 
 
         setContentView(R.layout.activity_game)
+
+        val namePlayer = findViewById<TextView>(R.id.namePlayer)
+        val nameEnemy = findViewById<TextView>(R.id.nameEnemy)
+
+    // Usuario actual
+        val myProfile = CurrentUserManager.getMyCurrentProfile()
+        namePlayer.text = myProfile?.username ?: "Tú"
+
+    // Rival
+        val opponent = ActiveGameManager.currentOpponentUsername
+        nameEnemy.text = opponent ?: "Rival"
 
         val board = findViewById<ComposeView>(R.id.board)
         controls = findViewById<LinearLayout>(R.id.rotationButtons)
