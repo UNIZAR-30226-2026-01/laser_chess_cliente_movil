@@ -19,23 +19,28 @@ object MoveParser {
      * @return Objeto Move parseado
      */
     fun parseMove(moveStr: String): Move {
-        val type = moveStr[0]           // T, R, L
+        val clean = moveStr.removeSuffix(";")
+        val parts = clean.split("%")
+
+        val movePart = parts[0]
+        val laserPart = parts[1]
+        val timerPart = parts[2]
+
+        val type = movePart[0]
 
         var from: String
         var to: String? = null
         var destroyed: String? = null
-        var timer: Double? = null
 
-        var msgMove = moveStr
+        var msgMove = movePart
 
         /**
-         * Extraer timer(%{...})
+         * Timer
          */
-        if (moveStr.contains("%{")) {
-            val timerStr = moveStr.substringAfter("%{").substringBefore("}")
-            timer = timerStr.toDouble()
-            msgMove = moveStr.substringBefore("%")
-        }
+        val timer = timerPart
+            .substringAfter("{")
+            .substringBefore("}")
+            .toDouble()
 
         /**
          * Extraer captura (x...)
@@ -51,12 +56,12 @@ object MoveParser {
          * - Rotación: solo tiene origen
          */
         if (msgMove.contains(":")) {
-            from = msgMove.substringAfter("T").substringBefore(":")
+            from = msgMove.substringAfter(type).substringBefore(":")
             to = msgMove.substringAfter(":")
         } else {
-            from = msgMove.substring(1)             // Despues de la R o L
+            from = msgMove.substring(1)
         }
 
-        return Move(type, from, to, destroyed, timer)
+        return Move(type, from, to, destroyed,laserPart, timer)
     }
 }

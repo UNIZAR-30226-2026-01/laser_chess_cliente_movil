@@ -23,7 +23,9 @@ class TokenAuthenticator : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
 
         val currentToken = TokenManager.getAccessToken()
-        if (currentToken.isNullOrEmpty()) { return null }
+        if (currentToken.isNullOrEmpty()) {
+            return null
+        }
 
         // para evitar bucles infinitos si ya hemos reintentado varias veces
         if (responseCount(response) >= 2) {
@@ -38,8 +40,9 @@ class TokenAuthenticator : Authenticator {
 
         val latestToken = TokenManager.getAccessToken()
         if (!latestToken.isNullOrEmpty() &&
-                requestToken != null &&
-                requestToken != latestToken) {
+            requestToken != null &&
+            requestToken != latestToken
+        ) {
 
             return response.request.newBuilder()
                 .header("Authorization", "Bearer $latestToken")

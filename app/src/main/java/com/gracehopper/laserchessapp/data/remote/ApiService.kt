@@ -78,6 +78,7 @@ interface ApiService {
 
     @GET("api/friendship/pending/count")
     fun getNumReceivedFriendshipRequests(): Call<ReceivedRequestsResponse>
+
     @GET("api/friendship/sent")
     fun getSentFriendshipRequests(): Call<List<FriendSummary>>
 

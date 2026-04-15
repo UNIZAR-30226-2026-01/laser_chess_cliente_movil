@@ -143,7 +143,7 @@ class GameActivity : AppCompatActivity() {
                          * Movimiento normal
                          */
                         else -> {
-                            applyServerMove(content, extra)
+                            applyServerMove(content)
                         }
                     }
                 }
@@ -316,7 +316,7 @@ class GameActivity : AppCompatActivity() {
     /**
      * Aplica un movimiento recibido del servidor.
      */
-    private fun applyServerMove(moveStr: String, laserPathStr: String?) {
+    private fun applyServerMove(moveStr: String) {
         val move = MoveParser.parseMove(moveStr)
 
         val fromPos = CoordsConverter.notationToPosition(move.from)
@@ -350,7 +350,7 @@ class GameActivity : AppCompatActivity() {
         /**
          * Mostrar trayectoria del láser
          */
-        laserPath = LaserUtils.parseLaserPath(laserPathStr)
+        laserPath = LaserUtils.parseLaserPath(move.laserPath)
         Log.d("LASER", "Laser path board coords: $laserPath")
 
         /**
