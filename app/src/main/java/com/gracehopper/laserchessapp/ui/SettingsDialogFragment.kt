@@ -298,7 +298,7 @@ class SettingsDialogFragment : DialogFragment() {
                                  newPassword: String,
                                  dialog: AlertDialog) {
 
-        // llamada a repository para cambiar contraseña
+        // TODO llamada a repository para cambiar contraseña
         Toast.makeText(requireContext(),
             "Cuando funke, aquí actualizará pass",
             Toast.LENGTH_SHORT
@@ -356,6 +356,7 @@ class SettingsDialogFragment : DialogFragment() {
     }
 
     private fun openLogoutDialog() {
+        // TODO: Añadir llamada a backend para cierre de sesión
         AlertDialog.Builder(requireContext())
             .setTitle("Cerrar sesión")
             .setMessage("¿Estás seguro de que quieres cerrar sesión?")

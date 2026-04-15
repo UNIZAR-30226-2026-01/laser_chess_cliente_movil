@@ -21,13 +21,14 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
+import com.gracehopper.laserchessapp.data.manager.SseManager
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
-import com.gracehopper.laserchessapp.utils.ChallengeNotificationHelper
+import com.gracehopper.laserchessapp.utils.AppNotificationHelper
 
 /**
  * Activity principal de la aplicación.
@@ -47,8 +48,33 @@ class MainActivity : AppCompatActivity() {
         UserRepository(NetworkUtils.getApiService())
     }
 
+    /**
+     * Manager de eventos SSE (Server-Sent Events)
+     */
+    private val sseManager = SseManager(
+        onChallengeReceived = { challengerUsername ->
+            runOnUiThread {
+                AppNotificationHelper.showChallengeNotification(
+                    applicationContext,
+                    challengerUsername
+                )
+            }
+        },
+        onFriendRequestReceived = { requestUsername ->
+            runOnUiThread {
+                AppNotificationHelper.showFriendRequestNotification(
+                    applicationContext,
+                    requestUsername
+                )
+            }
+        },
+        onError = {
+            // error en SSE
+        }
+    )
+
     private lateinit var viewPager2: ViewPager2
-    private lateinit var navBtns: List<ImageButton>
+    private lateinit var navButtons: List<ImageButton>
 
     // Elementos del perfil
     private lateinit var imgProfileAvatar: ImageView
@@ -74,7 +100,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * Callback al cambiar de página en el ViewPager
      */
-    private val cambioPaginaCallback = object : ViewPager2.OnPageChangeCallback() {
+    private val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             updateButtonSelection(position)
         }
@@ -84,43 +110,64 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        /**
-         * Pantalla completa
-         */
-        val controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
-        controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE)
+        // Pantalla completa
+        val controller = WindowCompat.getInsetsController(window, window.decorView)
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         controller.hide(WindowInsetsCompat.Type.systemBars())
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
         // crear canal al arrancar la app
-        ChallengeNotificationHelper.createChannels(this)
+        AppNotificationHelper.createChannels(this)
         requestNotificationPermissionIfNeeded()
 
         viewPager2 = findViewById(R.id.viewPager2)
         viewPager2.adapter = ViewPagerAdapter(this)
 
         // registramos el callback de cambiar de pagina
-        viewPager2.registerOnPageChangeCallback(cambioPaginaCallback)
+        viewPager2.registerOnPageChangeCallback(pageChangeCallback)
 
-        setupBarraNav()
+        setupBottomNavigation()
 
         // Home por defecto
         viewPager2.setCurrentItem(2, false)
         updateButtonSelection(2)
 
-        handleNotificationIntent(intent)
-
         initViews()
         observeCurrentUserProfile()
-        isMyProfileLoaded()
+        loadMyProfileIfNeeded()
         setupProfileCard()
+
+        handleNotificationIntent(intent)
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        sseManager.connect()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        sseManager.disconnect()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleNotificationIntent(intent)
+    }
+
+    // Destructor
+    override fun onDestroy() {
+        super.onDestroy()
+        viewPager2.unregisterOnPageChangeCallback(pageChangeCallback)
+    }
+
     /**
-     * Método que solicita el permiso de notificaciones si es necesario
+     * Solicita el permiso de notificaciones si es necesario
      */
     private fun requestNotificationPermissionIfNeeded() {
 
@@ -142,9 +189,9 @@ class MainActivity : AppCompatActivity() {
     /**
      * Configura la barra de navegación inferior
      */
-    private fun setupBarraNav() {
+    private fun setupBottomNavigation() {
 
-        navBtns = listOf(
+        navButtons = listOf(
             findViewById(R.id.btnShop),
             findViewById(R.id.btnCustomize),
             findViewById(R.id.btnHome),
@@ -152,7 +199,7 @@ class MainActivity : AppCompatActivity() {
             findViewById(R.id.btnRanking)
         )
 
-        navBtns.forEachIndexed { index, button ->
+        navButtons.forEachIndexed { index, button ->
             button.setOnClickListener {
                 viewPager2.currentItem = index
             }
@@ -163,10 +210,10 @@ class MainActivity : AppCompatActivity() {
      * Actualiza el botón seleccionado en la barra de navegación
      */
     private fun updateButtonSelection(index: Int) {
-        navBtns.forEach {
+        navButtons.forEach {
             it.isSelected = false
         }
-        navBtns[index].isSelected = true
+        navButtons[index].isSelected = true
     }
 
     /**
@@ -174,12 +221,16 @@ class MainActivity : AppCompatActivity() {
      */
     private fun handleNotificationIntent(intent: Intent?) {
 
-        val openNotifications =
-            intent?.getBooleanExtra("open_notifications_dialog", false) == true
+        when (intent?.getStringExtra("notification_type")) {
+            "challenge" -> {
+                openNotificationsDialog()
+                intent.removeExtra("notification_type")
+            }
 
-        if (openNotifications) {
-            openNotificationsDialog()
-            intent?.removeExtra("open_notifications_dialog")
+            "friend_request" -> {
+                openNotificationsDialog()
+                intent.removeExtra("notification_type")
+            }
         }
 
     }
@@ -189,12 +240,6 @@ class MainActivity : AppCompatActivity() {
         if (existing != null) return
 
         NotificationsDialogFragment().show(supportFragmentManager, "NotificationsDialog")
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-        handleNotificationIntent(intent)
     }
 
     /**
@@ -227,7 +272,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * Carga el perfil si no está en memoria
      */
-    private fun isMyProfileLoaded() {
+    private fun loadMyProfileIfNeeded() {
 
         if (CurrentUserManager.isProfileLoaded()) return
 
@@ -276,31 +321,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun refreshMyProfile() {
-
-        repository.getMyProfile(
-            onSuccess = { profile ->
-                CurrentUserManager.setMyProfile(profile)
-            },
-            onError = {
-                Toast.makeText(
-                    this,
-                    "No se puedo actualizar tu perfil",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        )
-
-    }
-
     fun openCustomizeFragment() {
         viewPager2.currentItem = 1
-    }
-
-    // Destructor
-    override fun onDestroy() {
-        super.onDestroy()
-        viewPager2.unregisterOnPageChangeCallback(cambioPaginaCallback)
     }
 
 }
