@@ -30,6 +30,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
+import com.gracehopper.laserchessapp.data.manager.GameTimerManager
+import com.gracehopper.laserchessapp.ui.utils.TimeUtils.formatTime
 
 
 /**
@@ -102,6 +104,8 @@ class GameActivity : AppCompatActivity() {
 
         val namePlayer = findViewById<TextView>(R.id.namePlayer)
         val nameEnemy = findViewById<TextView>(R.id.nameEnemy)
+        val timerPlayer = findViewById<TextView>(R.id.timePlayer)
+        val timerEnemy = findViewById<TextView>(R.id.timeEnemy)
 
     // Usuario actual
         val myProfile = CurrentUserManager.getMyCurrentProfile()
@@ -125,6 +129,25 @@ class GameActivity : AppCompatActivity() {
          */
         imInternalRed = ActiveGameManager.imRedPlayer
         isMyTurn = imInternalRed
+
+        val startingTime = ActiveGameManager.currentStartingTime ?: 300
+
+        GameTimerManager.initTimers(startingTime)
+        GameTimerManager.start()
+        GameTimerManager.setMyTurn(isMyTurn)
+
+        GameTimerManager.myTimer.observe(this) { timer ->
+            timer?.let {
+                timerPlayer.text = formatTime(it.timeLeftMillis)
+            }
+        }
+
+        GameTimerManager.opponentTimer.observe(this) { timer ->
+            timer?.let {
+                timerEnemy.text = formatTime(it.timeLeftMillis)
+            }
+        }
+
         Log.d("PLAYER", "Soy rojo interno: $imInternalRed")
         Log.d("PLAYER", "CSV: ${ActiveGameManager.intialBoardCSV != null}")
 
@@ -236,6 +259,7 @@ class GameActivity : AppCompatActivity() {
                     gameRepository.sendRotateLeft(pos)
                     waitingForServerConfirmation = true
                     isMyTurn = false
+                    GameTimerManager.setMyTurn(false)
                 }
 
                 selectedPos = null
@@ -257,6 +281,7 @@ class GameActivity : AppCompatActivity() {
                     gameRepository.sendRotateRight(pos)
                     waitingForServerConfirmation = true
                     isMyTurn = false
+                    GameTimerManager.setMyTurn(false)
                 }
 
                 selectedPos = null
@@ -274,6 +299,7 @@ class GameActivity : AppCompatActivity() {
          * Limpiar callbacks al destruir la activity
          */
         ActiveGameManager.clearCallbacks()
+        GameTimerManager.stop()
     }
 
 
@@ -300,6 +326,7 @@ class GameActivity : AppCompatActivity() {
             gameRepository.sendMove(from, to)
             waitingForServerConfirmation = true
             isMyTurn = false
+            GameTimerManager.setMyTurn(false)
         }
 
         selectedPos = null
@@ -388,6 +415,7 @@ class GameActivity : AppCompatActivity() {
                 waitingForServerConfirmation = false
             } else {
                 isMyTurn = true
+                GameTimerManager.setMyTurn(isMyTurn)
             }
 
             controls.visibility = View.GONE
