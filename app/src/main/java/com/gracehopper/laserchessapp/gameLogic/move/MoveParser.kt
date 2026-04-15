@@ -40,7 +40,7 @@ object MoveParser {
         val timer = timerPart
             .substringAfter("{")
             .substringBefore("}")
-            .toDouble()
+            .toLong()
 
         /**
          * Extraer captura (x...)

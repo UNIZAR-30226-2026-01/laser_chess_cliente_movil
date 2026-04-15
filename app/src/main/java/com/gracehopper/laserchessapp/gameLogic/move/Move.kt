@@ -12,5 +12,5 @@ data class Move(
     val to: String?,            // Casilla destino (en caso de traslación)
     val destroyed: String?,     // Casilla en la que una pieza ha sido destruida
     val laserPath: String?,     // Ruta del laser
-    val timer: Double?          // Tiempo restante o actualización de timer
+    val timer: Long?          // Tiempo restante o actualización de timer
 )
