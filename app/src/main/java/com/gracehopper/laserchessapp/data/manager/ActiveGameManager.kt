@@ -183,7 +183,7 @@ object ActiveGameManager {
 
         currentOpponentUsername = challengerUsername
         currentBoard = board
-        currentStartingTime = startingTime
+        currentStartingTime = startingTime/1000
         currentTimeIncrement = timeIncrement
         currentState = GameState.CONNECTING
         lastError = null
