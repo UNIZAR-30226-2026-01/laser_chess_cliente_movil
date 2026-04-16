@@ -1,7 +1,6 @@
 package com.gracehopper.laserchessapp.data.manager
 
 import android.util.Log
-import androidx.compose.runtime.clearCompositionErrors
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import okhttp3.Request
 import okhttp3.Response
@@ -25,7 +24,7 @@ class SseManager(
             .url(NetworkUtils.BASE_URL + "api/events")
             .build()
 
-        val client = NetworkUtils.getOkHttpClient()
+        val client = NetworkUtils.getSseClient()
         val factory = EventSources.createFactory(client)
 
         eventSource = factory.newEventSource(request, object : EventSourceListener() {

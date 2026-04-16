@@ -20,6 +20,7 @@ import com.google.android.material.button.MaterialButton
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
+import com.gracehopper.laserchessapp.data.manager.SseManager
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.auth.LoginActivity
@@ -356,7 +357,6 @@ class SettingsDialogFragment : DialogFragment() {
     }
 
     private fun openLogoutDialog() {
-        // TODO: Añadir llamada a backend para cierre de sesión
         AlertDialog.Builder(requireContext())
             .setTitle("Cerrar sesión")
             .setMessage("¿Estás seguro de que quieres cerrar sesión?")
@@ -368,6 +368,7 @@ class SettingsDialogFragment : DialogFragment() {
     }
 
     private fun logout() {
+        // TODO: Añadir llamada a backend para cierre de sesión
 
         // limpio tokens
         TokenManager.clear()
@@ -377,6 +378,7 @@ class SettingsDialogFragment : DialogFragment() {
 
         // cerrar websockets si hay, hace falta??
         // ActiveGameManager.disconnect()
+        // TODO SseManager.disconnect()
 
         // ir a login y limpiar backstack
         redirectToLogin(requireContext())

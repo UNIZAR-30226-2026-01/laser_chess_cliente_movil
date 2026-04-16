@@ -36,7 +36,7 @@ class PrivateGameWebSocket(private val listener: WebSocketListener) {
             .url(url)
             .build()
 
-        val client = NetworkUtils.getOkHttpClient()
+        val client = NetworkUtils.getWebSocketClient()
         webSocket = client.newWebSocket(request, listener)
 
     }

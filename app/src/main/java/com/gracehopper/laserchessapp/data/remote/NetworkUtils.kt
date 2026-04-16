@@ -2,6 +2,7 @@ package com.gracehopper.laserchessapp.data.remote
 
 import com.gracehopper.laserchessapp.utils.TokenManager
 import okhttp3.OkHttpClient
+import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -9,6 +10,7 @@ import java.util.concurrent.TimeUnit
 import okhttp3.JavaNetCookieJar
 import java.net.CookieManager
 import java.net.CookiePolicy
+import java.sql.Time
 
 object NetworkUtils {
     // Para el emulador de Android, 10.0.2.2 pero habra q cambiarlo
@@ -16,6 +18,8 @@ object NetworkUtils {
     private var apiService: ApiService? = null
     private var okHttpClient: OkHttpClient? = null
     private var refreshClient: OkHttpClient? = null
+    private var webSocketClient: OkHttpClient? = null
+    private var sseClient: OkHttpClient? = null
 
     private val cookieManager: CookieManager by lazy {
         CookieManager().apply {
@@ -23,7 +27,24 @@ object NetworkUtils {
         }
     }
 
+    private val cookieJar by lazy {
+        JavaNetCookieJar(cookieManager)
+    }
+
     private val tokenAuthenticator by lazy { TokenAuthenticator() }
+
+    private val authInterceptor by lazy {
+        Interceptor { chain ->
+            val token = TokenManager.getAccessToken()
+            val requestBuilder = chain.request().newBuilder()
+
+            if (!token.isNullOrEmpty()) {
+                requestBuilder.addHeader("Authorization", "Bearer $token")
+            }
+
+            chain.proceed(requestBuilder.build())
+        }
+    }
 
     fun getOkHttpClient(): OkHttpClient {
 
@@ -35,18 +56,9 @@ object NetworkUtils {
 
         okHttpClient = OkHttpClient.Builder()
             .addInterceptor(logging)
-            .addInterceptor { chain ->
-                val token = TokenManager.getAccessToken()
-                val requestBuilder = chain.request().newBuilder()
-
-                if (!token.isNullOrEmpty()) {
-                    requestBuilder.addHeader("Authorization", "Bearer $token")
-                }
-
-                chain.proceed(requestBuilder.build())
-            }
+            .addInterceptor(authInterceptor)
             .authenticator(tokenAuthenticator)
-            .cookieJar(JavaNetCookieJar(cookieManager))
+            .cookieJar(cookieJar)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
@@ -65,13 +77,58 @@ object NetworkUtils {
 
         refreshClient = OkHttpClient.Builder()
             .addInterceptor(logging)
-            .cookieJar(JavaNetCookieJar(cookieManager))
+            .cookieJar(cookieJar)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
 
         return refreshClient!!
+
+    }
+
+    fun getWebSocketClient(): OkHttpClient {
+
+        if (webSocketClient != null) return webSocketClient!!
+
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.HEADERS
+        }
+
+        webSocketClient = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .addInterceptor(authInterceptor)
+            .authenticator(tokenAuthenticator)
+            .cookieJar(cookieJar)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(0, TimeUnit.SECONDS)
+            .writeTimeout(0, TimeUnit.SECONDS)
+            .pingInterval(20, TimeUnit.SECONDS)
+            .build()
+
+        return webSocketClient!!
+
+    }
+
+    fun getSseClient(): OkHttpClient {
+
+        if (sseClient != null) return sseClient!!
+
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.HEADERS
+        }
+
+        sseClient = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .addInterceptor(authInterceptor)
+            .authenticator(tokenAuthenticator)
+            .cookieJar(cookieJar)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(0, TimeUnit.SECONDS)
+            .writeTimeout(0, TimeUnit.SECONDS)
+            .build()
+
+        return sseClient!!
 
     }
 
