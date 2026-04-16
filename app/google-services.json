@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "918260586774",
+    "project_id": "gracehopper-laserchess",
+    "storage_bucket": "gracehopper-laserchess.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918260586774:android:66da6bc376cbfb5400d837",
+        "android_client_info": {
+          "package_name": "com.gracehopper.laserchessapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5WcJT2UDjh51UMEDB7G2woygR5yCjKKg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

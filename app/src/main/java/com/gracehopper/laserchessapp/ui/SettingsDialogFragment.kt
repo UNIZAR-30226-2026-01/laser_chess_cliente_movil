@@ -20,6 +20,7 @@ import com.google.android.material.button.MaterialButton
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
+import com.gracehopper.laserchessapp.data.manager.SseManager
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.auth.LoginActivity
@@ -298,7 +299,7 @@ class SettingsDialogFragment : DialogFragment() {
                                  newPassword: String,
                                  dialog: AlertDialog) {
 
-        // llamada a repository para cambiar contraseña
+        // TODO llamada a repository para cambiar contraseña
         Toast.makeText(requireContext(),
             "Cuando funke, aquí actualizará pass",
             Toast.LENGTH_SHORT
@@ -367,6 +368,7 @@ class SettingsDialogFragment : DialogFragment() {
     }
 
     private fun logout() {
+        // TODO: Añadir llamada a backend para cierre de sesión
 
         // limpio tokens
         TokenManager.clear()
@@ -376,6 +378,7 @@ class SettingsDialogFragment : DialogFragment() {
 
         // cerrar websockets si hay, hace falta??
         // ActiveGameManager.disconnect()
+        // TODO SseManager.disconnect()
 
         // ir a login y limpiar backstack
         redirectToLogin(requireContext())
