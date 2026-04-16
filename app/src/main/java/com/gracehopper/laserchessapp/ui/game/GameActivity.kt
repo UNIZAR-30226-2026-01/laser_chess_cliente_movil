@@ -358,6 +358,29 @@ class GameActivity : AppCompatActivity() {
      */
     private fun applyServerMove(moveStr: String) {
         val move = MoveParser.parseMove(moveStr)
+        val timeFromBackend = move.timer
+
+        val iMoved = waitingForServerConfirmation
+
+        if (iMoved) {
+            GameTimerManager.syncTimers(
+                myTime = timeFromBackend,
+                opponentTime = GameTimerManager.opponentTimer.value?.timeLeftMillis ?: 0
+            )
+        } else {
+            GameTimerManager.syncTimers(
+                myTime = GameTimerManager.myTimer.value?.timeLeftMillis ?: 0,
+                opponentTime = timeFromBackend
+            )
+        }
+
+        if (iMoved) {
+            waitingForServerConfirmation = false
+        }
+
+        isMyTurn = !iMoved
+        GameTimerManager.setMyTurn(isMyTurn)
+
 
         val fromPos = CoordsConverter.notationToPosition(move.from)
         val piece = boardM.getPiece(fromPos.first, fromPos.second)
@@ -407,16 +430,6 @@ class GameActivity : AppCompatActivity() {
             }
 
             laserPath = emptyList()
-
-            /**
-             * Gestión de turnos
-             */
-            if (waitingForServerConfirmation) {
-                waitingForServerConfirmation = false
-            } else {
-                isMyTurn = true
-                GameTimerManager.setMyTurn(isMyTurn)
-            }
 
             controls.visibility = View.GONE
             clearTrigger++
