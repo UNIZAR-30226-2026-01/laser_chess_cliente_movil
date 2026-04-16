@@ -87,23 +87,4 @@ object GameTimerManager {
         _myTimer.value = _myTimer.value?.copy(timeLeftMillis = myTime)
         _opponentTimer.value = _opponentTimer.value?.copy(timeLeftMillis = opponentTime)
     }
-
-    /**
-     * Añade incremento tras jugada
-     */
-    fun addIncrementToMe(incrementSeconds: Int) {
-        _myTimer.value?.let {
-            _myTimer.value = it.copy(
-                timeLeftMillis = it.timeLeftMillis + incrementSeconds * 1000L
-            )
-        }
-    }
-
-    fun addIncrementToOpponent(incrementSeconds: Int) {
-        _opponentTimer.value?.let {
-            _opponentTimer.value = it.copy(
-                timeLeftMillis = it.timeLeftMillis + incrementSeconds * 1000L
-            )
-        }
-    }
 }
