@@ -20,7 +20,7 @@ import com.gracehopper.laserchessapp.ui.user.UserProfileDialogMode
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 
 
-class DialogRequestsFragment : DialogFragment() {
+class RequestsDialogFragment : DialogFragment() {
 
     private val repository by lazy {
         FriendRepository(NetworkUtils.getApiService())

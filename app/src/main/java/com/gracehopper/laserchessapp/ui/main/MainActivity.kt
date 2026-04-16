@@ -26,6 +26,7 @@ import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
+import com.gracehopper.laserchessapp.ui.social.RequestsDialogFragment
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 import com.gracehopper.laserchessapp.utils.AppNotificationHelper
@@ -228,7 +229,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             "friend_request" -> {
-                openNotificationsDialog()
+                openRequestsDialog()
                 intent.removeExtra("notification_type")
             }
         }
@@ -240,6 +241,13 @@ class MainActivity : AppCompatActivity() {
         if (existing != null) return
 
         NotificationsDialogFragment().show(supportFragmentManager, "NotificationsDialog")
+    }
+
+    private fun openRequestsDialog() {
+        val existing = supportFragmentManager.findFragmentByTag("RequestsDialog")
+        if (existing != null) return
+
+        RequestsDialogFragment().show(supportFragmentManager, "RequestsDialog")
     }
 
     /**
