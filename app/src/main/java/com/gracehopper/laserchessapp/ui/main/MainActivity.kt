@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
         sseManager.disconnect()
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
         handleNotificationIntent(intent)

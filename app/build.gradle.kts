@@ -26,10 +26,6 @@ android {
         compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -39,39 +35,53 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
+
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
+    // Material
+    implementation(libs.material)
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
-    // Import the Firebase BoM
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
     implementation("com.google.firebase:firebase-messaging")
 
-    // Retrofit
+    // Retrofit + Gson
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.squareup.okhttp3:okhttp-sse:4.12.0")
+    implementation("com.squareup.okhttp3:okhttp-urlconnection:4.12.0")
 
-    // Gson
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation(libs.material)
+    // Compose
+    implementation(platform("androidx.compose:compose-bom:2026.03.01"))
+    // UI
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    // Material
+    implementation("androidx.compose.material3:material3")
+    // Activity
+    implementation("androidx.activity:activity-compose:1.13.0")
+    // Debug
+    debugImplementation("androidx.compose.ui:ui-tooling")
 
     // Tests unitarios
     testImplementation("junit:junit:4.13.2")
@@ -82,22 +92,4 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    // JavaNetCookieJar
-    implementation("com.squareup.okhttp3:okhttp-urlconnection:4.12.0")
-
-    // Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2024.04.01"))
-
-    // UI
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-
-    // Material
-    implementation("androidx.compose.material3:material3")
-
-    // Activity
-    implementation("androidx.activity:activity-compose:1.8.2")
-
-    // Debug
-    debugImplementation("androidx.compose.ui:ui-tooling")
 }
