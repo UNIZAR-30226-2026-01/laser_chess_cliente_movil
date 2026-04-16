@@ -16,6 +16,14 @@
         android:usesCleartextTraffic="true">
         <!-- temporal para poder hacerlo en local, permite HTTP no seguro -->
 
+        <service
+            android:name=".data.remote.fcm.AppFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".ui.game.GameActivity"
             android:exported="false"
