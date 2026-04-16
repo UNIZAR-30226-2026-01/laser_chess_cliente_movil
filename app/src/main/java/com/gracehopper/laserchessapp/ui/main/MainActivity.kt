@@ -236,6 +236,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Abre el diálogo de notificaciones
+     */
     private fun openNotificationsDialog() {
         val existing = supportFragmentManager.findFragmentByTag("NotificationsDialog")
         if (existing != null) return
@@ -243,6 +246,9 @@ class MainActivity : AppCompatActivity() {
         NotificationsDialogFragment().show(supportFragmentManager, "NotificationsDialog")
     }
 
+    /**
+     * Abre el diálogo de solicitudes de amistad
+     */
     private fun openRequestsDialog() {
         val existing = supportFragmentManager.findFragmentByTag("RequestsDialog")
         if (existing != null) return

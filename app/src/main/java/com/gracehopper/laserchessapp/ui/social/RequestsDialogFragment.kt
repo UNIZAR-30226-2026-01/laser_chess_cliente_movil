@@ -147,8 +147,10 @@ class RequestsDialogFragment : DialogFragment() {
 
                         val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
                         val imageAvatar = itemView.findViewById<ImageView>(R.id.imgRequestAvatar)
-                        val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
-                        val buttonReject = itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
+                        val buttonAccept =
+                            itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
+                        val buttonReject =
+                            itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
 
                         textUsername.text = request.username
                         imageAvatar.setImageResource(AvatarUtils.getAvatarDrawable(request.avatar))
@@ -161,11 +163,15 @@ class RequestsDialogFragment : DialogFragment() {
                         }
 
                         buttonAccept.setOnClickListener {
-                            acceptFriendshipRequest(request.username)
+                            buttonAccept.isEnabled = false
+                            buttonReject.isEnabled = false
+                            acceptFriendshipRequest(request.username, buttonAccept, buttonReject)
                         }
 
                         buttonReject.setOnClickListener {
-                            rejectFriendshipRequest(request.username)
+                            buttonAccept.isEnabled = false
+                            buttonReject.isEnabled = false
+                            rejectFriendshipRequest(request.username, buttonAccept, buttonReject)
                         }
 
                         receivedContainer.addView(itemView)
@@ -174,9 +180,11 @@ class RequestsDialogFragment : DialogFragment() {
             },
             onError = { _ ->
                 emptyReceived.visibility = View.VISIBLE
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     "Error al cargar solicitudes recibidas",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         )
     }
@@ -202,8 +210,10 @@ class RequestsDialogFragment : DialogFragment() {
 
                         val textUsername = itemView.findViewById<TextView>(R.id.textRequestUsername)
                         val imageAvatar = itemView.findViewById<ImageView>(R.id.imgRequestAvatar)
-                        val buttonAccept = itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
-                        val buttonCancel = itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
+                        val buttonAccept =
+                            itemView.findViewById<ImageButton>(R.id.buttonAcceptRequest)
+                        val buttonCancel =
+                            itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
 
                         textUsername.text = request.username
                         imageAvatar.setImageResource(AvatarUtils.getAvatarDrawable(request.avatar))
@@ -216,7 +226,8 @@ class RequestsDialogFragment : DialogFragment() {
                         }
 
                         buttonCancel.setOnClickListener {
-                            cancelSentFriendshipRequest(request.username)
+                            buttonCancel.isEnabled = false
+                            cancelSentFriendshipRequest(request.username, buttonCancel)
                         }
 
                         sentContainer.addView(itemView)
@@ -225,58 +236,111 @@ class RequestsDialogFragment : DialogFragment() {
             },
             onError = { _ ->
                 emptySent.visibility = View.VISIBLE
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     "Error al cargar solicitudes enviadas",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
         )
 
     }
 
-    private fun acceptFriendshipRequest(username: String) {
+    private fun acceptFriendshipRequest(
+        username: String,
+        buttonAccept: ImageButton,
+        buttonReject: ImageButton
+    ) {
 
-        repository.acceptFriendship(username = username,
+        repository.acceptFriendship(
+            username = username,
             onSuccess = {
-                Toast.makeText(requireContext(), "Solicitud aceptada",
-                    Toast.LENGTH_SHORT).show()
-                loadReceivedRequests()
+                if (!isAdded) return@acceptFriendship
+                requireActivity().runOnUiThread {
+                    Toast.makeText(
+                        requireContext(), "Solicitud aceptada",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    loadReceivedRequests()
+                    parentFragmentManager.setFragmentResult("requests_updated", Bundle())
+                }
             },
             onError = { errorCode ->
-                Toast.makeText(requireContext(), "Error al aceptar: $errorCode",
-                    Toast.LENGTH_SHORT).show()
+                if (!isAdded) return@acceptFriendship
+                requireActivity().runOnUiThread {
+                    buttonAccept.isEnabled = true
+                    buttonReject.isEnabled = true
+                    Toast.makeText(
+                        requireContext(), "Error al aceptar: $errorCode",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         )
 
     }
 
-    private fun rejectFriendshipRequest(username: String) {
+    private fun rejectFriendshipRequest(
+        username: String,
+        buttonAccept: ImageButton,
+        buttonReject: ImageButton
+    ) {
 
-        repository.deleteFriendship(username = username,
+        repository.deleteFriendship(
+            username = username,
             onSuccess = {
-                Toast.makeText(requireContext(), "Solicitud rechazada",
-                    Toast.LENGTH_SHORT).show()
-                loadReceivedRequests()
+                if (!isAdded) return@deleteFriendship
+                requireActivity().runOnUiThread {
+                    Toast.makeText(
+                        requireContext(), "Solicitud rechazada",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    loadReceivedRequests()
+                    parentFragmentManager.setFragmentResult("requests_updated", Bundle())
+                }
             },
             onError = { errorCode ->
-                Toast.makeText(requireContext(), "Error al rechazar: $errorCode",
-                    Toast.LENGTH_SHORT).show()
+                if (!isAdded) return@deleteFriendship
+                requireActivity().runOnUiThread {
+                    buttonAccept.isEnabled = true
+                    buttonReject.isEnabled = true
+                    Toast.makeText(
+                        requireContext(), "Error al rechazar: $errorCode",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         )
 
     }
 
-    private fun cancelSentFriendshipRequest(username: String) {
+    private fun cancelSentFriendshipRequest(username: String, buttonCancel: ImageButton) {
 
-        repository.deleteFriendship(username = username,
+        repository.deleteFriendship(
+            username = username,
             onSuccess = {
-                Toast.makeText(requireContext(), "Solicitud cancelada",
-                    Toast.LENGTH_SHORT).show()
-                loadSentRequests()
+                if (!isAdded) return@deleteFriendship
+                requireActivity().runOnUiThread {
+                    Toast.makeText(
+                        requireContext(), "Solicitud cancelada",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    loadSentRequests()
+                }
             },
             onError = { errorCode ->
-                Toast.makeText(requireContext(), "Error al cancelar: $errorCode",
-                    Toast.LENGTH_SHORT).show()
+                if (!isAdded) return@deleteFriendship
+                requireActivity().runOnUiThread {
+                    buttonCancel.isEnabled = true
+                    Toast.makeText(
+                        requireContext(), "Error al cancelar: $errorCode",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         )
 

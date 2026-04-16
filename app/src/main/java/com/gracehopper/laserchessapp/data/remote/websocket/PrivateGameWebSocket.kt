@@ -14,7 +14,8 @@ import okhttp3.WebSocketListener
 class PrivateGameWebSocket(private val listener: WebSocketListener) {
 
     private var webSocket: WebSocket? = null
-    private val BASE_URL = "ws://192.168.0.17:8080/api/rt/challenge"
+    private val BASE_URL = "ws://10.0.2.2:8080/api/rt/challenge"
+        // TODO PORTÁTIL JORGE: "ws://192.168.0.17:8080/api/rt/challenge"
 
     /**
      * Crea una nueva solicitud de reto a un usuario específico.
@@ -41,23 +42,22 @@ class PrivateGameWebSocket(private val listener: WebSocketListener) {
 
     }
 
-    /**
-     * Acepta una solicitud de reto de un usuario específico.
-     *
-     * @param username Nombre de usuario al que se aceptará la solicitud
-     */
-    fun acceptChallenge(username: String) {
-
-        // Construir la URL con el nombre de usuario
-        val url = "$BASE_URL/accept?username=$username"
+    private fun openChallengeReplySocket(action: String, username: String) {
+        val url = "$BASE_URL/$action?username=$username"
 
         val request = Request.Builder()
             .url(url)
             .build()
 
-        val client = NetworkUtils.getOkHttpClient()
-        webSocket = client.newWebSocket(request, listener)
+        webSocket = NetworkUtils.getOkHttpClient().newWebSocket(request, listener)
+    }
 
+    fun acceptChallenge(username: String) {
+        openChallengeReplySocket("accept", username)
+    }
+
+    fun rejectChallenge(username: String) {
+        openChallengeReplySocket("reject", username)
     }
 
     /**
