@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
+import com.gracehopper.laserchessapp.data.model.game.GameEvent
 
 class WaitingGameDialogFragment : DialogFragment() {
 
@@ -41,7 +42,7 @@ class WaitingGameDialogFragment : DialogFragment() {
         textDetails = view.findViewById(R.id.textWaitingDetails)
         buttonCancel = view.findViewById(R.id.buttonCancelChallengeRequest)
 
-        loadMatchInfo()
+        loadGameInfo()
         setupListeners()
         setupCallbacks()
     }
@@ -59,7 +60,7 @@ class WaitingGameDialogFragment : DialogFragment() {
         }
     }
 
-    private fun loadMatchInfo() {
+    private fun loadGameInfo() {
         val opponent = ActiveGameManager.currentOpponentUsername ?: "rival"
         val board = ActiveGameManager.currentBoard ?: 1
         val startingTime = ActiveGameManager.currentStartingTime ?: 300
@@ -88,23 +89,66 @@ class WaitingGameDialogFragment : DialogFragment() {
             onConnected = {
                 // conectados
             },
-            onMessageReceived = { message, extra ->
+            onMessageReceived = { event ->
                 requireActivity().runOnUiThread {
 
-                    // si llega cualquier mensaje,
-                    // asumimos que la partida ya ha empezado
-                    ActiveGameManager.markInGame()
+                    when (event) {
 
-                    Toast.makeText(
-                        requireContext(),
-                        "La partida ha comenzado",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        is GameEvent.ChallengeRejected -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Tu rival ha rechazado la partida",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                    dismiss()
+                            ActiveGameManager.resetAll()
+                            dismiss()
+                        }
 
-                    val intent = Intent(requireContext(), GameActivity::class.java)
-                    startActivity(intent)
+                        is GameEvent.InitialState -> {
+                            ActiveGameManager.markInGame()
+
+                            Toast.makeText(
+                                requireContext(),
+                                "La partida ha comenzado",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            dismiss()
+
+                            val intent = Intent(requireContext(),
+                                GameActivity::class.java)
+                            startActivity(intent)
+                        }
+
+                        is GameEvent.Error -> {
+                            Toast.makeText(
+                                requireContext(),
+                                event.message,
+                                Toast.LENGTH_LONG
+                            ).show()
+
+                            ActiveGameManager.resetAll()
+                            dismiss()
+                        }
+
+                        // Para cierres lógicos enviados por server
+                        is GameEvent.ConnectionClosed -> {
+                            if (isAdded) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "La espera de partida ha finalizado",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                dismiss()
+                            }
+                        }
+
+                        else -> {
+                            // ignorar otros eventos en esta pantalla
+                        }
+
+                    }
 
                 }
             },
@@ -115,9 +159,12 @@ class WaitingGameDialogFragment : DialogFragment() {
                         "Error en la solicitud: $error",
                         Toast.LENGTH_LONG
                     ).show()
+
+                    ActiveGameManager.resetAll()
                     dismiss()
                 }
             },
+            // Para cierre técnico de socket
             onClosed = {
                 requireActivity().runOnUiThread {
                     if (isAdded) {

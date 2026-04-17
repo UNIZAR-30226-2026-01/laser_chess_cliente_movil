@@ -13,8 +13,8 @@ class BoardSelectionFragment : Fragment() {
     private lateinit var recyclerBoards: RecyclerView
     private lateinit var adapter: BoardSelectionAdapter
 
-    private val parentConfigDialog: MatchConfigDialogFragment?
-        get() = parentFragment as? MatchConfigDialogFragment
+    private val parentConfigDialog: GameConfigDialogFragment?
+        get() = parentFragment as? GameConfigDialogFragment
 
     private val boards by lazy {
         listOf(

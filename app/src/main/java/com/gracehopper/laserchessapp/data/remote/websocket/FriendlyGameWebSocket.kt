@@ -11,7 +11,7 @@ import okhttp3.WebSocketListener
  * - envía mensajes
  * - lo cierra
  */
-class PrivateGameWebSocket(private val listener: WebSocketListener) {
+class FriendlyGameWebSocket(private val listener: WebSocketListener) {
 
     private var webSocket: WebSocket? = null
     private val BASE_URL = "ws://10.0.2.2:8080/api/rt/challenge"

@@ -31,6 +31,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.manager.GameTimerManager
+import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.ui.utils.TimeUtils.formatTime
 
 
@@ -164,23 +165,92 @@ class GameActivity : AppCompatActivity() {
          * Callbacks del WebSocket
          */
         ActiveGameManager.setCallbacks(
-            onMessageReceived = { content, extra ->
+            onMessageReceived = { event ->
                 runOnUiThread {
-                    /**
-                     * Fin de partida
-                     */
-                    when (content) {
-                        "P1_WINS", "P2_WINS" -> {
-                            pendingGameEnd = Pair(content, extra)
-                            gameEnded = true
-                        }
+
+                    when (event) {
 
                         /**
                          * Movimiento normal
                          */
-                        else -> {
-                            applyServerMove(content)
+                        is GameEvent.Move -> {
+                            val moveData = event.moveAndTime ?: return@runOnUiThread
+                            applyServerMove(moveData)
                         }
+
+                        /**
+                         * Fin de partida
+                         */
+                        is GameEvent.End -> {
+                            val winner = event.winner ?: return@runOnUiThread
+                            val cause = event.victoryCause ?: return@runOnUiThread
+                            pendingGameEnd = Pair(winner, cause)
+                            gameEnded = true
+                        }
+
+                        // TODO: REVISAR NUEVOS MENSAJES (de aquí para abajo) ----------------------
+
+                        is GameEvent.InitialState -> {
+                            // nos lo cargamos?
+                        }
+
+                        is GameEvent.State -> {
+                            // esto para reconstruir desde log, ns si se hará aquí
+                        }
+
+                        is GameEvent.PauseRequest -> {
+                            // TODO: Diálogo de aceptar/rechazar pausa
+                        }
+
+                        is GameEvent.PauseReject -> {
+                            // TODO: Diálogo de rechazo de pausa ??
+                            Toast.makeText(this,
+                                "Tu solicitud de pausa ha sido rechazada",
+                                Toast.LENGTH_SHORT).show()
+                        }
+
+                        is GameEvent.Paused -> {
+                            // TODO: Diálogo de pausa
+                            Toast.makeText(this,
+                                "La partida ha sido pausada",
+                                Toast.LENGTH_SHORT).show()
+                        }
+
+                        is GameEvent.Error -> {
+                            Log.e("GAME", "Error del servidor: ${event.message}")
+                            Toast.makeText(
+                                this,
+                                event.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        is GameEvent.OpponentDisconnected -> {
+                            // igual quitar el toast, de momento para pruebas lo dejamos
+                            Toast.makeText(
+                                this,
+                                "Tu oponente se ha desconectado",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        is GameEvent.OpponentReconnected -> {
+                            // igual quitar el toast, de momento para pruebas lo dejamos
+                            Toast.makeText(
+                                this,
+                                "Tu oponente se ha reconectado",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        is GameEvent.ConnectionClosed -> {
+                            Log.d("WS", "Conexión cerrada: ${event.reason}")
+                        }
+
+                        else -> {
+                            // ignorar otros eventos
+                        }
+
                     }
                 }
             },
@@ -192,7 +262,9 @@ class GameActivity : AppCompatActivity() {
                     Log.e("WS", "Error: $error")
 
                     if (!gameEnded) {
-                        Toast.makeText(this, "Error de conexión", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this,
+                            "Error de conexión",
+                            Toast.LENGTH_SHORT).show()
                         finish()
                     }
                 }

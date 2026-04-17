@@ -1,9 +1,11 @@
 package com.gracehopper.laserchessapp.data.manager
 
 import com.google.gson.Gson
-import com.gracehopper.laserchessapp.data.remote.websocket.PrivateGameWebSocket
-import com.gracehopper.laserchessapp.data.remote.websocket.PrivateGameWebSocketListener
-import com.gracehopper.laserchessapp.data.remote.websocket.ServerSocketMessage
+import com.gracehopper.laserchessapp.data.model.game.GameEvent
+import com.gracehopper.laserchessapp.data.model.game.GameMessageType
+import com.gracehopper.laserchessapp.data.model.game.WSServerMessage
+import com.gracehopper.laserchessapp.data.remote.websocket.FriendlyGameWebSocket
+import com.gracehopper.laserchessapp.data.remote.websocket.FriendlyGameWebSocketListener
 import com.gracehopper.laserchessapp.utils.TokenManager
 
 /**
@@ -24,7 +26,7 @@ object ActiveGameManager {
         ERROR
     }
 
-    private var privateGameWebSocket: PrivateGameWebSocket? = null
+    private var friendlyGameWebSocket: FriendlyGameWebSocket? = null
 
     var currentOpponentUsername: String? = null
         private set
@@ -51,7 +53,8 @@ object ActiveGameManager {
         private set
 
     private var onConnectedCallback: (() -> Unit)? = null
-    private var onMessageReceivedCallback: ((String, String?) -> Unit)? = null
+    private var onMessageReceivedCallback: ((GameEvent) -> Unit)? = null
+    // Para errores del socket (de conexión, refresh...)
     private var onErrorCallback: ((String) -> Unit)? = null
     private var onClosedCallback: (() -> Unit)? = null
 
@@ -65,7 +68,7 @@ object ActiveGameManager {
      */
     fun setCallbacks(
         onConnected: (() -> Unit)? = null,
-        onMessageReceived: ((String, String?) -> Unit)? = null,
+        onMessageReceived: ((GameEvent) -> Unit)? = null,
         onError: ((String) -> Unit)? = null,
         onClosed: (() -> Unit)? = null
     ) {
@@ -94,46 +97,118 @@ object ActiveGameManager {
      */
     fun handleServerMessage(message: String) {
         val gson = Gson()
-        val serverMsg = gson.fromJson(message, ServerSocketMessage::class.java)
+        val serverMsg = gson.fromJson(message, WSServerMessage::class.java)
 
-        when (serverMsg.Type) {
+        when (serverMsg.type) {
 
             /**
              * Estado inicial de la partida:
              * - Se guarda el tablero inicial
              * - Se determina si el jugador es rojo
              */
-            "InitialState" -> {
-                intialBoardCSV = serverMsg.Content
+            GameMessageType.INITIAL_STATE -> {
+                intialBoardCSV = serverMsg.content
 
-                val redPlayerId = serverMsg.Extra?.toLong()
+                val redPlayerId = serverMsg.extra?.toLongOrNull()
                 val myId = TokenManager.getUserId()
 
                 imRedPlayer = (redPlayerId == myId)
 
-                onMessageReceivedCallback?.invoke("INITIAL_STATE", null)
+                onMessageReceivedCallback?.invoke(GameEvent.InitialState(
+                    boardCsv = intialBoardCSV,
+                    redPlayerId = redPlayerId
+                ))
             }
 
             /**
              * Movimiento de partida
              */
-            "Move" -> {
-                onMessageReceivedCallback?.invoke(serverMsg.Content, serverMsg.Extra)
+            GameMessageType.MOVE -> {
+                onMessageReceivedCallback?.invoke(GameEvent.Move(
+                    moveAndTime = serverMsg.content.orEmpty()))
+            }
+
+            /**
+             * Estado de la partida
+             */
+            GameMessageType.STATE -> {
+                onMessageReceivedCallback?.invoke(GameEvent.State(
+                    log = serverMsg.content.orEmpty()
+                ))
+            }
+
+            /**
+             * Petición de pausa
+             */
+            GameMessageType.PAUSE_REQUEST -> {
+                onMessageReceivedCallback?.invoke(GameEvent.PauseRequest)
+            }
+
+            /**
+             * Rechazo de pausa
+             */
+            GameMessageType.PAUSE_REJECT -> {
+                onMessageReceivedCallback?.invoke(GameEvent.PauseReject)
+            }
+
+            /**
+             * Partida pausada
+             */
+            GameMessageType.PAUSED -> {
+                onMessageReceivedCallback?.invoke(GameEvent.Paused)
             }
 
             /**
              * Fin de partida
              */
-            "End" -> {
-                onMessageReceivedCallback?.invoke(serverMsg.Content, serverMsg.Extra)
+            GameMessageType.END -> {
+                onMessageReceivedCallback?.invoke(GameEvent.End(
+                    winner = serverMsg.content.orEmpty(),
+                    victoryCause = serverMsg.extra.orEmpty()
+                ))
+            }
+
+            /**
+             * Error en el juego
+             */
+            GameMessageType.ERROR -> {
+                onMessageReceivedCallback?.invoke(
+                    GameEvent.Error(serverMsg.content ?: "Error desconocido")
+                )
             }
 
             /**
              * End Of Connection → cerrar conexión
              */
-            "EOC" -> {
+            GameMessageType.EOC -> {
+                if (serverMsg.content == "Challenge rejected") {
+                    onMessageReceivedCallback?.invoke(GameEvent.ChallengeRejected)
+                } else {
+                    onMessageReceivedCallback?.invoke(
+                        GameEvent.ConnectionClosed(serverMsg.content)
+                    )
+                }
                 closeConnection()
             }
+
+            /**
+             * Rival desconectado
+             */
+            GameMessageType.DISCONNECTION -> {
+                onMessageReceivedCallback?.invoke(GameEvent.OpponentDisconnected)
+            }
+
+            /**
+             * Rival reconectado
+             */
+            GameMessageType.RECONNECTION -> {
+                onMessageReceivedCallback?.invoke(GameEvent.OpponentReconnected)
+            }
+
+            else -> {
+                // ignorar
+            }
+
         }
     }
 
@@ -161,8 +236,8 @@ object ActiveGameManager {
             onOpenState = GameState.WAITING_ACCEPTANCE
         )
 
-        privateGameWebSocket = PrivateGameWebSocket(listener)
-        privateGameWebSocket?.createChallenge(
+        friendlyGameWebSocket = FriendlyGameWebSocket(listener)
+        friendlyGameWebSocket?.createChallenge(
             challengedUsername,
             board, startingTime, timeIncrement
         )
@@ -192,8 +267,28 @@ object ActiveGameManager {
             onOpenState = GameState.STARTING_GAME
         )
 
-        privateGameWebSocket = PrivateGameWebSocket(listener)
-        privateGameWebSocket?.acceptChallenge(challengerUsername)
+        friendlyGameWebSocket = FriendlyGameWebSocket(listener)
+        friendlyGameWebSocket?.acceptChallenge(challengerUsername)
+
+    }
+
+    /**
+     * Rechaza un reto recibido.
+     */
+    fun rejectChallenge(challengerUsername: String) {
+
+        resetConnectionOnly()
+
+        currentOpponentUsername = challengerUsername
+        currentState = GameState.CONNECTING
+        lastError = null
+
+        val listener = buildListener(
+            onOpenState = GameState.CLOSED
+        )
+
+        friendlyGameWebSocket = FriendlyGameWebSocket(listener)
+        friendlyGameWebSocket?.rejectChallenge(challengerUsername)
 
     }
 
@@ -201,7 +296,7 @@ object ActiveGameManager {
      * Envía un mensaje de juego al servidor.
      */
     fun sendGameMessage(message: String) {
-        privateGameWebSocket?.sendMessage(message)
+        friendlyGameWebSocket?.sendMessage(message)
     }
 
     /**
@@ -215,8 +310,8 @@ object ActiveGameManager {
      * Cierra la conexión actual.
      */
     fun closeConnection() {
-        privateGameWebSocket?.close()
-        privateGameWebSocket = null
+        friendlyGameWebSocket?.close()
+        friendlyGameWebSocket = null
         currentState = GameState.CLOSED
     }
 
@@ -224,8 +319,8 @@ object ActiveGameManager {
      * Resetea completamente el estado del manager.
      */
     fun resetAll() {
-        privateGameWebSocket?.close()
-        privateGameWebSocket = null
+        friendlyGameWebSocket?.close()
+        friendlyGameWebSocket = null
 
         currentOpponentUsername = null
         currentBoard = null
@@ -241,8 +336,8 @@ object ActiveGameManager {
      * Resetea únicamente la conexión (manteniendo datos de partida).
      */
     private fun resetConnectionOnly() {
-        privateGameWebSocket?.close()
-        privateGameWebSocket = null
+        friendlyGameWebSocket?.close()
+        friendlyGameWebSocket = null
     }
 
     /**
@@ -250,8 +345,8 @@ object ActiveGameManager {
      *
      * @param onOpenState Estado al conectarse
      */
-    private fun buildListener(onOpenState: GameState): PrivateGameWebSocketListener {
-        return PrivateGameWebSocketListener(
+    private fun buildListener(onOpenState: GameState): FriendlyGameWebSocketListener {
+        return FriendlyGameWebSocketListener(
             onConnected = {
                 currentState = onOpenState
                 onConnectedCallback?.invoke()
