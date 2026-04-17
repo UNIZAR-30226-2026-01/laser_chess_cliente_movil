@@ -3,7 +3,7 @@ package com.gracehopper.laserchessapp.ui.main
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.gracehopper.laserchessapp.ui.RankingFragment
+import com.gracehopper.laserchessapp.ui.ranking.RankingFragment
 import com.gracehopper.laserchessapp.ui.HomeFragment
 import com.gracehopper.laserchessapp.ui.CustomizeFragment
 import com.gracehopper.laserchessapp.ui.social.SocialFragment
@@ -24,7 +24,8 @@ class ViewPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activi
             1 -> CustomizeFragment()
             2 -> HomeFragment()
             3 -> SocialFragment()
-            else -> RankingFragment()
+            4 -> RankingFragment()
+            else -> HomeFragment()
         }
     }
 }
