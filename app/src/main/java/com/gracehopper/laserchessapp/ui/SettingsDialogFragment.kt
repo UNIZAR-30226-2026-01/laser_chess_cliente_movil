@@ -20,6 +20,7 @@ import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.repository.AuthRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.utils.redirectToLogin
@@ -31,6 +32,7 @@ import com.gracehopper.laserchessapp.utils.redirectToLogin
 class SettingsDialogFragment : DialogFragment() {
 
     private lateinit var userRepository: UserRepository
+    private lateinit var authRepository: AuthRepository
 
     private lateinit var buttonClose: ImageButton
     private lateinit var txtEmail: TextView
@@ -43,7 +45,9 @@ class SettingsDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        userRepository = UserRepository(NetworkUtils.getApiService())
+        val apiService = NetworkUtils.getApiService()
+        userRepository = UserRepository(apiService)
+        authRepository = AuthRepository(apiService)
         isCancelable = true
     }
 
@@ -405,7 +409,27 @@ class SettingsDialogFragment : DialogFragment() {
     }
 
     private fun logout() {
-        // TODO: Añadir llamada a backend para cierre de sesión
+
+        authRepository.logout(
+
+            onSuccess = {
+                requireActivity().runOnUiThread {
+                    clearSession()
+                }
+            },
+
+            onError = {
+                requireActivity().runOnUiThread {
+                    // aunque falle backend → cerramos sesión igualmente
+                    clearSession()
+                }
+            }
+
+        )
+
+    }
+
+    private fun clearSession() {
 
         // limpio tokens
         TokenManager.clear()

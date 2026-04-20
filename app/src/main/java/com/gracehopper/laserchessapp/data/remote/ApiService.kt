@@ -27,6 +27,9 @@ interface ApiService {
     @POST("login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
 
+    @POST("logout")
+    fun logout(): Call<Unit>
+
     // Endpoint para registrar una nueva cuenta
     @POST("register")
     fun register(@Body request: RegisterRequest): Call<RegisterResponse>
@@ -46,7 +49,7 @@ interface ApiService {
     fun updateMyAccount(@Body request: UpdateAccountRequest): Call<MyAccountResponse>
 
     // Endpoint para eliminar una cuenta
-    @DELETE("api/account/delete/")
+    @DELETE("api/account/delete")
     fun deleteMyAccount(): Call<Unit>
 
     @PUT("api/account/passwd")
