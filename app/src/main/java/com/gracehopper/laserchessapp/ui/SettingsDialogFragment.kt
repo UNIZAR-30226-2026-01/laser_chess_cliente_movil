@@ -1,7 +1,6 @@
 package com.gracehopper.laserchessapp.ui
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
@@ -18,12 +17,10 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import com.gracehopper.laserchessapp.R
-import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
-import com.gracehopper.laserchessapp.data.manager.SseManager
+import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
-import com.gracehopper.laserchessapp.ui.auth.LoginActivity
 import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.utils.redirectToLogin
 
@@ -216,7 +213,7 @@ class SettingsDialogFragment : DialogFragment() {
                 val newPassword = editNewPassword.text.toString().trim()
                 val repeatPassword = editRepeatPassword.text.toString().trim()
 
-                validateAndSavePassword(
+                validateAndChangePassword(
                     currentPassword = currentPassword,
                     newPassword = newPassword,
                     repeatPassword = repeatPassword,
@@ -228,10 +225,10 @@ class SettingsDialogFragment : DialogFragment() {
         dialog.show()
     }
 
-    private fun validateAndSavePassword(currentPassword: String,
-                                         newPassword: String,
-                                         repeatPassword: String,
-                                         dialog: AlertDialog) {
+    private fun validateAndChangePassword(currentPassword: String,
+                                          newPassword: String,
+                                          repeatPassword: String,
+                                          dialog: AlertDialog) {
 
         when {
             currentPassword.isBlank() -> {
@@ -284,7 +281,7 @@ class SettingsDialogFragment : DialogFragment() {
             }
 
             else -> {
-                saveNewPassword(
+                changePassword(
                     currentPassword = currentPassword,
                     newPassword = newPassword,
                     dialog = dialog
@@ -295,15 +292,55 @@ class SettingsDialogFragment : DialogFragment() {
 
     }
 
-    private fun saveNewPassword(currentPassword: String,
-                                 newPassword: String,
-                                 dialog: AlertDialog) {
+    private fun changePassword(currentPassword: String,
+                               newPassword: String,
+                               dialog: AlertDialog) {
 
-        // TODO llamada a repository para cambiar contraseña
-        Toast.makeText(requireContext(),
-            "Cuando funke, aquí actualizará pass",
-            Toast.LENGTH_SHORT
-        ).show()
+        userRepository.changePassword(
+            request = ChangePasswordRequest(currentPassword, newPassword),
+
+            onSuccess = {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(
+                        requireContext(),
+                        "Contraseña actualizada correctamente",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            },
+
+            onError = { code ->
+                requireActivity().runOnUiThread {
+
+                    when (code) {
+
+                        401 -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Contraseña actual incorrecta",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        400 -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Datos inválidos",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        else -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Error al cambiar la contraseña",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+        )
         dialog.dismiss()
 
     }

@@ -3,6 +3,7 @@ package com.gracehopper.laserchessapp.data.repository
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.ranking.AllRatingsResponse
 import com.gracehopper.laserchessapp.data.model.user.AccountResponse
+import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
 import com.gracehopper.laserchessapp.data.model.user.MyAccountResponse
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
@@ -273,6 +274,32 @@ class UserRepository(private val apiService: ApiService) {
 
                 override fun onFailure(call: Call<Unit>, t: Throwable) {
                     onError(null)
+                }
+
+            }
+        )
+
+    }
+
+    fun changePassword(
+        request: ChangePasswordRequest,
+        onSuccess: () -> Unit,
+        onError: (Int) -> Unit
+    ) {
+
+        apiService.changePassword(request).enqueue(
+            object : Callback<Unit> {
+
+                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                    if (response.isSuccessful) {
+                        onSuccess()
+                    } else {
+                        onError(response.code())
+                    }
+                }
+
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                    onError(-1)
                 }
 
             }
