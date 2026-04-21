@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="82dp">
 
     <ImageButton
         android:id="@+id/btnShop"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:padding="2dp"
-        android:background="@drawable/selector_nav_background"
+        android:background="@color/selector_nav_background"
         android:scaleType="centerInside"
         android:src="@drawable/ic_shop"
 
@@ -25,10 +24,9 @@
         android:id="@+id/btnCustomize"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_customize"
+        android:src="@drawable/palette_48px"
         android:scaleType="centerInside"
-        android:padding="2dp"
-        android:background="@drawable/selector_nav_background"
+        android:background="@color/selector_nav_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnShop"
@@ -38,10 +36,9 @@
         android:id="@+id/btnHome"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_home"
+        android:src="@drawable/stadia_controller_48px"
         android:scaleType="centerInside"
-        android:padding="2dp"
-        android:background="@drawable/selector_nav_background"
+        android:background="@color/selector_nav_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnCustomize"
@@ -51,10 +48,9 @@
         android:id="@+id/btnSocial"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_social"
+        android:src="@drawable/group_48px"
         android:scaleType="centerInside"
-        android:padding="2dp"
-        android:background="@drawable/selector_nav_background"
+        android:background="@color/selector_nav_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnHome"
@@ -64,14 +60,68 @@
         android:id="@+id/btnRanking"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_ranking"
+        android:src="@drawable/leaderboard_48px"
         android:scaleType="centerInside"
-        android:padding="2dp"
-        android:background="@drawable/selector_nav_background"
+        android:background="@color/selector_nav_background"
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnSocial"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        android:id="@+id/barShop"
+        android:layout_width="69dp"
+        android:layout_height="4dp"
+        android:layout_marginBottom="6dp"
+        android:background="@color/LCYellow"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/btnShop"
+        app:layout_constraintStart_toStartOf="@id/btnShop" />
+
+    <View
+        android:id="@+id/barCustomize"
+        android:layout_width="69dp"
+        android:layout_height="4dp"
+        android:layout_marginBottom="6dp"
+        android:background="@color/LCBlue"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/btnCustomize"
+        app:layout_constraintStart_toStartOf="@id/btnCustomize" />
+
+    <View
+        android:id="@+id/barHome"
+        android:layout_width="69dp"
+        android:layout_height="4dp"
+        android:layout_marginBottom="6dp"
+        android:background="@color/LCGreen"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/btnHome"
+        app:layout_constraintStart_toStartOf="@id/btnHome" />
+
+    <View
+        android:id="@+id/barSocial"
+        android:layout_width="69dp"
+        android:layout_height="4dp"
+        android:layout_marginBottom="6dp"
+        android:background="@color/LCRed"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/btnSocial"
+        app:layout_constraintStart_toStartOf="@id/btnSocial" />
+
+    <View
+        android:id="@+id/barRanking"
+        android:layout_width="69dp"
+        android:layout_height="4dp"
+        android:layout_marginBottom="6dp"
+        android:background="@color/LCYellow"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/btnRanking"
+        app:layout_constraintStart_toStartOf="@id/btnRanking" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
