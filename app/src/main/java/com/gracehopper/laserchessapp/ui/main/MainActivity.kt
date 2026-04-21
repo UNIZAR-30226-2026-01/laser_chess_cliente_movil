@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var txtProfileXp: TextView
     private lateinit var progressProfileXP: ProgressBar
     private lateinit var profileCardContainer: View
+    private lateinit var txtNumCoins: TextView
 
 
     /**
@@ -253,6 +254,7 @@ class MainActivity : AppCompatActivity() {
         txtProfileXp = findViewById(R.id.txtMyProfileXp)
         progressProfileXP = findViewById(R.id.progressMyProfileXp)
         profileCardContainer = findViewById(R.id.profileCardInclude)
+        txtNumCoins = findViewById(R.id.numCoins)
 
     }
 
@@ -266,7 +268,6 @@ class MainActivity : AppCompatActivity() {
                 updateProfileCard(profile)
             }
         }
-
     }
 
     /**
@@ -304,6 +305,8 @@ class MainActivity : AppCompatActivity() {
         imgProfileAvatar.setImageResource(AvatarUtils.getAvatarDrawable(profile.avatar))
         progressProfileXP.max = 100
         progressProfileXP.progress = profile.xp % 100
+
+        txtNumCoins.text = "${profile.money}"
 
     }
 
