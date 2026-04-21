@@ -12,20 +12,19 @@
     <color name="darker_gray">#666666</color>
 
     <!-- habrá que borrar los colores de arriba cuando tengamos la versión final -->
-
-    <color name="black_bg">#0D0814</color>
-    <color name="s1">#1A122B</color>
-    <color name="s2">#23183D</color>
-    <color name="s3">#3B2865</color>
-    <color name="blue">#2979FF</color>
-    <color name="dark_blue">#1B418A</color>
-    <color name="red">#FF1764</color>
-    <color name="dark_red">#86103C</color>
-    <color name="green">#00E676</color>
-    <color name="yellow">#FFCF00</color>
-    <color name="white">#E1F5FE</color>
-    <color name="grey">#918C9E</color>
-    <color name="purple_accent">#7A55C6</color>
+    <color name="LCBG">#0D0814</color>
+    <color name="S1">#1A122B</color>
+    <color name="S2">#23183D</color>
+    <color name="S3">#3B2865</color>
+    <color name="LCBlue">#2979FF</color>
+    <color name="LCBlue_Darker">#1B418A</color>
+    <color name="LCRed">#FF1764</color>
+    <color name="LCRed_Darker">#86103C</color>
+    <color name="LCGreen">#00E676</color>
+    <color name="LCYellow">#FFCF00</color>
+    <color name="LCWhite">#E1F5FE</color>
+    <color name="LCGray">#918C9E</color>
+    <color name="LCPurple">#7A55C6</color>
 
     <color name="silver">#C0C0C0</color>
     <color name="bronze">#CD7F32</color>

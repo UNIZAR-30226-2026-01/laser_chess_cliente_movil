@@ -43,11 +43,11 @@ class RankingEntryAdapter(private var entries: List<RankingEntry>)
             Log.d("RankingEntryAdapter", "Binding item at position ${entry.position}")
             Log.d("RankingEntryAdapter", "WHOIAM: ${entry.isCurrentUser}")
             val highlightColor = when {
-                entry.isCurrentUser -> R.color.blue
-                entry.position == 1 -> R.color.yellow
+                entry.isCurrentUser -> R.color.LCBlue
+                entry.position == 1 -> R.color.LCYellow
                 entry.position == 2 -> R.color.silver
                 entry.position == 3 -> R.color.bronze
-                else -> R.color.white
+                else -> R.color.LCWhite
             }
 
             textRankingUsername.setTextColor(ContextCompat.getColor(context, highlightColor))
