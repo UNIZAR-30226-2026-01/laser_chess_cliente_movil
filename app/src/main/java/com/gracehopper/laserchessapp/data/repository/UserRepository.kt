@@ -10,7 +10,6 @@ import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.model.user.UserRatings
 import com.gracehopper.laserchessapp.data.remote.ApiService
-import com.gracehopper.laserchessapp.utils.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

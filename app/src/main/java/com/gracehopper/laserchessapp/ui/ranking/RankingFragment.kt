@@ -5,18 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.core.content.ContentProviderCompat.requireContext
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.ranking.RankingEntry
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
+import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.repository.RankingRepository
 import com.gracehopper.laserchessapp.databinding.FragmentRankingBinding
 
 class RankingFragment : Fragment() {
 
     private var _binding: FragmentRankingBinding? = null
     private val binding get() = _binding!!
+
+    private val rankingRepository by lazy {
+        RankingRepository(NetworkUtils.getApiService())
+    }
 
     private lateinit var rankingAdapter: RankingEntryAdapter
 
@@ -37,7 +42,7 @@ class RankingFragment : Fragment() {
 
         setupDropdown()
         setupRecycler()
-        loadFakeRanking(TimeMode.BLITZ)
+        loadRanking(TimeMode.BLITZ)
     }
 
     private fun setupDropdown() {
@@ -53,7 +58,7 @@ class RankingFragment : Fragment() {
 
         binding.dropdownRankingMode.setOnItemClickListener { _, _, position, _ ->
             val selectedMode = rankingModes[position]
-            loadFakeRanking(selectedMode)
+            loadRanking(selectedMode)
         }
     }
 
@@ -68,80 +73,30 @@ class RankingFragment : Fragment() {
 
     }
 
-    private fun loadFakeRanking(mode: TimeMode) {
+    private fun loadRanking(mode: TimeMode) {
 
-        val fakeRanking = when (mode) {
-            TimeMode.BLITZ -> buildFakeRanking(1800)
-            TimeMode.RAPID -> buildFakeRanking(1700)
-            TimeMode.CLASSIC -> buildFakeRanking(1600)
-            TimeMode.EXTENDED -> buildFakeRanking(1500)
-            else -> emptyList()
-        }
+        rankingRepository.getTopRankUsers(
+            eloType = mode,
+            onSuccess = { ranking ->
+                requireActivity().runOnUiThread {
+                    rankingAdapter.updateData(ranking)
+                }
+            },
+            onError = { code ->
+                requireActivity().runOnUiThread {
+                    rankingAdapter.updateData(emptyList())
 
-        rankingAdapter.updateData(fakeRanking)
+                    val message = when(code) {
+                        null -> "Error de conexión al cargar el ranking"
+                        else -> "No se puedo cargar el ranking"
+                    }
 
-    }
-
-    private fun buildFakeRanking(baseElo: Int): List<RankingEntry> {
-        return listOf(
-            RankingEntry(
-                id = 1L,
-                username = "Username",
-                avatar = 1,
-                elo = baseElo + 120,
-                position = 1
-            ),
-            RankingEntry(
-                id = 2L,
-                username = "Username",
-                avatar = 2,
-                elo = baseElo + 90,
-                position = 2
-            ),
-            RankingEntry(
-                id = 3L,
-                username = "Username",
-                avatar = 3,
-                elo = baseElo + 70,
-                position = 3
-            ),
-            RankingEntry(
-                id = 4L,
-                username = "Username",
-                avatar = 4,
-                elo = baseElo + 40,
-                position = 4
-            ),
-            RankingEntry(
-                id = 5L,
-                username = "MiUsername",
-                avatar = 1,
-                elo = baseElo + 15,
-                position = 5,
-                isCurrentUser = true
-            ),
-            RankingEntry(
-                id = 6L,
-                username = "Username",
-                avatar = 2,
-                elo = baseElo,
-                position = 6
-            ),
-            RankingEntry(
-                id = 7L,
-                username = "Username",
-                avatar = 3,
-                elo = baseElo - 25,
-                position = 7
-            ),
-            RankingEntry(
-                id = 8L,
-                username = "Username",
-                avatar = 4,
-                elo = baseElo - 40,
-                position = 8
-            )
+                    Toast.makeText(requireContext(),
+                        message, Toast.LENGTH_SHORT).show()
+                }
+            }
         )
+
     }
 
     override fun onDestroyView() {
