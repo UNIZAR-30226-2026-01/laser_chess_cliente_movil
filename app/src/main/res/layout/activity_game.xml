@@ -25,6 +25,18 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_margin="12dp"/>
 
+        <ImageButton
+            android:id="@+id/btnPause"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/outline_autopause_24"
+            app:layout_constraintWidth_percent="0.06"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="12dp"
+            android:visibility="gone"/>
+
         <ImageView
             android:id="@+id/avatarEnemy"
             android:layout_width="0dp"

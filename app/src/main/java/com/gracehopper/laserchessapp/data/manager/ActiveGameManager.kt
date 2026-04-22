@@ -28,6 +28,9 @@ object ActiveGameManager {
 
     private var friendlyGameWebSocket: FriendlyGameWebSocket? = null
 
+    var isFriendlyGame: Boolean = false
+        private set
+
     var currentOpponentUsername: String? = null
         private set
 
@@ -212,6 +215,12 @@ object ActiveGameManager {
         }
     }
 
+    /**
+     * Establece el tipo de partida.
+     */
+    fun setGameType(isFriendly: Boolean) {
+        isFriendlyGame = isFriendly
+    }
 
     /**
      * Crea un reto contra otro jugador.
@@ -225,6 +234,7 @@ object ActiveGameManager {
 
         resetConnectionOnly()
 
+        setGameType(true)                   // La partida es amistosa
         currentOpponentUsername = challengedUsername
         currentBoard = board
         currentStartingTime = startingTime

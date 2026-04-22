@@ -40,4 +40,8 @@ class GameRepository(
         sendMessage("Pause","")
     }
 
+    fun sendPauseReject() {
+        sendMessage("PauseReject", "")
+    }
+
 }

@@ -29,6 +29,7 @@ import android.os.Looper
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.manager.GameTimerManager
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
@@ -72,6 +73,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var controls: LinearLayout
     private var pendingGameEnd: Pair<String, String?>? = null
     private var gameEnded = false
+    var pauseRequested = false
     lateinit var backCallback: OnBackPressedCallback
 
     /**
@@ -122,6 +124,15 @@ class GameActivity : AppCompatActivity() {
         val btnRight = findViewById<ImageButton>(R.id.btnRotRight)
 
         val btnExit = findViewById<ImageButton>(R.id.btnExit)
+        val btnPause = findViewById<ImageButton>(R.id.btnPause)
+
+        if (ActiveGameManager.isFriendlyGame) {
+            btnPause.visibility = View.VISIBLE
+            btnExit.visibility = View.GONE
+        } else {
+            btnPause.visibility = View.GONE
+            btnExit.visibility = View.VISIBLE
+        }
 
         boardM = Board(rows, cols)
 
@@ -196,17 +207,39 @@ class GameActivity : AppCompatActivity() {
 
                         is GameEvent.PauseRequest -> {
                             // TODO: Diálogo de aceptar/rechazar pausa
+                            val dialog = PauseRequestDialogFragment(
+                                onAccept = {
+                                    gameRepository.sendPause()
+                                },
+                                onReject = {
+                                    gameRepository.sendPauseReject()
+                                }
+                            )
+
+                            dialog.show(supportFragmentManager, "PauseDialog")
                         }
 
                         is GameEvent.PauseReject -> {
                             // TODO: Diálogo de rechazo de pausa ??
-                            Toast.makeText(this,
-                                "Tu solicitud de pausa ha sido rechazada",
-                                Toast.LENGTH_SHORT).show()
+                            if (pauseRequested) {
+                                pauseRequested = false
+
+                                supportFragmentManager.findFragmentByTag("PauseDialog")?.let {
+                                    (it as? DialogFragment)?.dismiss()
+                                }
+
+                                Toast.makeText(
+                                    this,
+                                    "Tu solicitud de pausa ha sido rechazada",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
 
                         is GameEvent.Paused -> {
                             // TODO: Diálogo de pausa
+                            pauseRequested = false
+
                             Toast.makeText(this,
                                 "La partida ha sido pausada",
                                 Toast.LENGTH_SHORT).show()
@@ -313,6 +346,16 @@ class GameActivity : AppCompatActivity() {
          */
         btnExit.setOnClickListener {
             finish()
+        }
+
+        /**
+         * Solicitar pausar la partida
+         */
+        btnPause.setOnClickListener {
+            if (!pauseRequested) {
+                pauseRequested = true
+                gameRepository.sendPause()
+            }
         }
 
         /**
