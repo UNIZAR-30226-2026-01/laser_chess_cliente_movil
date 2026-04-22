@@ -50,16 +50,31 @@
         app:layout_constraintBottom_toBottomOf="@id/imCoin" />
 
     <TextView
-        android:id="@+id/txtMyProfileLevel"
+        android:id="@+id/txtXP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="LVL 24 - 170/300 XP"
-        android:textColor="@color/LCWhite"
+        tools:text="XP"
+        android:textColor="@color/LCGreen"
+        android:layout_marginBottom="4dp"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/progressMyProfileXp"
         app:layout_constraintTop_toBottomOf="@id/imgMyProfileAvatar"/>
+
+    <TextView
+        android:id="@+id/txtMyProfileLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="LVL 24 - 170/300 "
+        android:textColor="@color/LCWhite"
+        android:layout_marginBottom="4dp"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/progressMyProfileXp"
+        app:layout_constraintEnd_toStartOf="@id/txtXP"
+        app:layout_constraintTop_toBottomOf="@id/imgMyProfileAvatar"/>
+
 
     <ProgressBar
         android:id="@+id/progressMyProfileXp"

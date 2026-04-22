@@ -83,7 +83,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var imgProfileAvatar: ImageView
     private lateinit var txtProfileUsername: TextView
     private lateinit var txtProfileLevel: TextView
-    private lateinit var txtProfileXp: TextView
     private lateinit var progressProfileXP: ProgressBar
     private lateinit var profileCardContainer: View
     private lateinit var txtNumCoins: TextView
@@ -303,7 +302,6 @@ class MainActivity : AppCompatActivity() {
         imgProfileAvatar = findViewById(R.id.imgMyProfileAvatar)
         txtProfileUsername = findViewById(R.id.txtMyProfileUsername)
         txtProfileLevel = findViewById(R.id.txtMyProfileLevel)
-        txtProfileXp = findViewById(R.id.txtMyProfileXp)
         progressProfileXP = findViewById(R.id.progressMyProfileXp)
         profileCardContainer = findViewById(R.id.profileCardInclude)
         txtNumCoins = findViewById(R.id.numCoins)
@@ -352,11 +350,12 @@ class MainActivity : AppCompatActivity() {
     private fun updateProfileCard(profile: MyProfile) {
 
         txtProfileUsername.text = profile.username
-        txtProfileLevel.text = "Nivel ${profile.level}"
-        txtProfileXp.text = "${profile.xp} xp"
+        val maxLevelXp = 100
+        val currentXpInLevel = profile.xp % maxLevelXp
+        txtProfileLevel.text = "LVL ${profile.level} · ${currentXpInLevel}/${maxLevelXp} "
         imgProfileAvatar.setImageResource(AvatarUtils.getAvatarDrawable(profile.avatar))
-        progressProfileXP.max = 100
-        progressProfileXP.progress = profile.xp % 100
+        progressProfileXP.max = maxLevelXp
+        progressProfileXP.progress = profile.xp % maxLevelXp
 
         txtNumCoins.text = "${profile.money}"
 

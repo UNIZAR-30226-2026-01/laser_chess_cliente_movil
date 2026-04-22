@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="?attr/selectableItemBackground"
-            android:src="@drawable/inbox_32px"
+            android:src="@drawable/ic_inbox"
             app:tint="@color/LCWhite"
             app:layout_constraintHeight_percent="0.49"
             app:layout_constraintBottom_toBottomOf="parent" />
