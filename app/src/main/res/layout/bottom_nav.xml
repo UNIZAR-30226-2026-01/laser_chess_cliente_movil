@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:background="@color/selector_nav_background"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_shop"
+        android:src="@drawable/shopping_cart_48px"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnCustomize"

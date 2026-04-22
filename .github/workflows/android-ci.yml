@@ -2,7 +2,7 @@ name: Android CI
 
 on:
     push:
-        branches: [ "main", "ainhoa-branch", "jorge-game" ]
+        branches: [ "main", "ainhoa-branch", "jorge-game", "juanjo" ]
 
 jobs:
     build-and-test:
