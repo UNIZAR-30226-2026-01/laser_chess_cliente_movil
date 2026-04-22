@@ -25,6 +25,7 @@ import com.gracehopper.laserchessapp.data.manager.SseManager
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
+import com.gracehopper.laserchessapp.ui.SettingsDialogFragment
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
 import com.gracehopper.laserchessapp.ui.social.RequestsDialogFragment
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
@@ -87,6 +88,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var profileCardContainer: View
     private lateinit var txtNumCoins: TextView
 
+    // Botones extras al lado de perfil
+    private lateinit var btnSettings: ImageButton
+    private lateinit var btnNotifications: ImageButton
+    private lateinit var btnHistory: ImageButton
+
+
 
     /**
      * Launcher para solicitar permiso de notificaciones
@@ -142,9 +149,26 @@ class MainActivity : AppCompatActivity() {
         observeCurrentUserProfile()
         loadMyProfileIfNeeded()
         setupProfileCard()
+        setupAdditionalButtons()
 
         handleNotificationIntent(intent)
 
+    }
+
+    private fun setupAdditionalButtons() {
+        btnSettings = findViewById(R.id.btnSettings)
+        btnNotifications = findViewById(R.id.btnNotifications)
+        btnHistory = findViewById(R.id.btnHistory)
+
+        btnSettings.setOnClickListener {
+            val dialog = SettingsDialogFragment()
+            dialog.show(supportFragmentManager, "SettingsDialog")
+        }
+
+        btnNotifications.setOnClickListener {
+            val dialog = NotificationsDialogFragment()
+            dialog.show(supportFragmentManager, "NotificationsDialog")
+        }
     }
 
     override fun onStart() {

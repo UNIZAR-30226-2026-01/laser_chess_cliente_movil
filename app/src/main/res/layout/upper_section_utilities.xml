@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/topRow"
+    android:layout_width="match_parent"
+    android:layout_height="102dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    >
+
+    <include
+        android:id="@+id/profileCardInclude"
+        layout="@layout/view_profile_card"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rightActionsPanel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/bg_dark_panel"
+        app:layout_constraintStart_toEndOf="@id/profileCardInclude"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnHistory"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/history_32px"
+            app:tint="@color/LCWhite"
+            app:layout_constraintHeight_percent="0.49"
+            app:layout_constraintWidth_percent="0.49"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnSettings"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/settings_48px"
+            app:tint="@color/LCWhite"
+            app:layout_constraintHeight_percent="0.49"
+            app:layout_constraintWidth_percent="0.49"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/LCBG"
+            app:layout_constraintHeight_percent="0.02"
+            app:layout_constraintTop_toBottomOf="@id/btnHistory" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="0dp"
+            android:background="@color/LCBG"
+            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintWidth_percent="0.02"
+            app:layout_constraintEnd_toStartOf="@id/btnSettings"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageButton
+            android:id="@+id/btnNotifications"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/inbox_32px"
+            app:tint="@color/LCWhite"
+            app:layout_constraintHeight_percent="0.49"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
