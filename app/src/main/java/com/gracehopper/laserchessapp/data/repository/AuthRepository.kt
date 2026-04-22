@@ -49,6 +49,28 @@ class AuthRepository (private val apiService: ApiService) {
         })
     }
 
+    fun logout(
+        onSuccess: () -> Unit,
+        onError: () -> Unit
+    ) {
+        apiService.logout().enqueue(
+            object : Callback<Unit> {
+
+                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                    if (response.isSuccessful) {
+                        onSuccess()
+                    } else {
+                        onError()
+                    }
+                }
+
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                    onError()
+                }
+            }
+        )
+    }
+
     /**
      * Realiza una petición para registrar una nueva cuenta de usuario.
      *

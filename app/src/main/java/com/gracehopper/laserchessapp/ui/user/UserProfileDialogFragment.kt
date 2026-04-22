@@ -17,7 +17,7 @@ import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
-import com.gracehopper.laserchessapp.ui.gameConfig.MatchConfigDialogFragment
+import com.gracehopper.laserchessapp.ui.gameConfig.GameConfigDialogFragment
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
@@ -95,7 +95,7 @@ class UserProfileDialogFragment : DialogFragment() {
 
                 buttonPrimaryAction.setOnClickListener {
                     currentUsername?.let { username ->
-                        MatchConfigDialogFragment(username).show(
+                        GameConfigDialogFragment(username).show(
                             parentFragmentManager,
                             "MatchConfigDialog"
                         )

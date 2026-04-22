@@ -13,6 +13,7 @@ import com.gracehopper.laserchessapp.data.model.social.FriendshipStatusResponse
 import com.gracehopper.laserchessapp.data.model.user.AccountResponse
 import com.gracehopper.laserchessapp.data.model.ranking.RatingResponse
 import com.gracehopper.laserchessapp.data.model.social.ReceivedRequestsResponse
+import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
 import com.gracehopper.laserchessapp.data.model.user.MyAccountResponse
 import retrofit2.Call
 import retrofit2.http.*
@@ -25,6 +26,9 @@ interface ApiService {
     // Endpoint para iniciar sesión
     @POST("login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
+
+    @POST("logout")
+    fun logout(): Call<Unit>
 
     // Endpoint para registrar una nueva cuenta
     @POST("register")
@@ -45,8 +49,11 @@ interface ApiService {
     fun updateMyAccount(@Body request: UpdateAccountRequest): Call<MyAccountResponse>
 
     // Endpoint para eliminar una cuenta
-    @DELETE("api/account/delete/")
+    @DELETE("api/account/delete")
     fun deleteMyAccount(): Call<Unit>
+
+    @PUT("api/account/passwd")
+    fun changePassword(@Body request: ChangePasswordRequest): Call<Unit>
 
     // ratings
 

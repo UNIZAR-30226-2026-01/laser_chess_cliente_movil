@@ -2,6 +2,7 @@ package com.gracehopper.laserchessapp.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 //Se necesita para manejar la nueva logica de los tokens
 object TokenManager {
@@ -17,7 +18,7 @@ object TokenManager {
     }
 
     fun saveAccessToken(token: String) {
-        sharedPreferences.edit().putString(KEY_ACCESS_TOKEN, token).apply()
+        sharedPreferences.edit { putString(KEY_ACCESS_TOKEN, token) }
     }
 
     fun getAccessToken(): String? {

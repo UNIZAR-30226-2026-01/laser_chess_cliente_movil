@@ -1,21 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.RankingFragment">
+    android:orientation="vertical"
+    android:background="@color/LCBG"
+    android:padding="16dp">
 
+    <!-- Título -->
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/textRankingTitle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/ranking"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        android:textSize="24sp"
-        android:gravity="center" />
+        android:textColor="@color/LCWhite"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Selector de modo -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutRankingMode"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="@string/time_mode"
+        app:boxBackgroundColor="@color/S1"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxStrokeColor="@color/LCPurple"
+        app:hintTextColor="@color/LCWhite"
+        app:endIconTint="@color/LCWhite">
+
+        <AutoCompleteTextView
+            android:id="@+id/dropdownRankingMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:textColor="@color/LCWhite"
+            android:textSize="16sp"
+            android:paddingVertical="14dp"
+            android:drawablePadding="8dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Cabecera -->
+    <LinearLayout
+        android:id="@+id/layoutRankingHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/S2"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/textHeaderPosition"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:text="#"
+            android:textColor="@color/LCWhite"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/textHeaderUser"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/username"
+            android:textColor="@color/LCWhite"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:paddingStart="8dp" />
+
+        <TextView
+            android:id="@+id/textHeaderElo"
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:text="@string/elo"
+            android:textColor="@color/LCWhite"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- Estado vacío -->
+    <TextView
+        android:id="@+id/textEmptyRanking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No hay datos de ranking disponibles."
+        android:textColor="@color/LCGray"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="24dp" />
+
+    <!-- Lista ranking -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerRanking"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="12dp" />
+
+</LinearLayout>

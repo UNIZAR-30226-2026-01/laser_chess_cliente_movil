@@ -23,8 +23,8 @@ class TimeSettingsFragment : Fragment() {
     private lateinit var editCustomTimeMinutes: EditText
     private lateinit var editCustomIncrementSeconds: EditText
 
-    private val parentConfigDialog: MatchConfigDialogFragment?
-        get() = parentFragment as? MatchConfigDialogFragment
+    private val parentConfigDialog: GameConfigDialogFragment?
+        get() = parentFragment as? GameConfigDialogFragment
 
     private val selectableModes = listOf(
         TimeMode.BLITZ,

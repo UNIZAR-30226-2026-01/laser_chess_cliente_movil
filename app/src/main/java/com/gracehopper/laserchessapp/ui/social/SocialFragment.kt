@@ -238,7 +238,7 @@ class SocialFragment : Fragment() {
             showAddFriendDialog()
         }
         binding.cardSolicitudes.setOnClickListener {
-            DialogRequestsFragment().show(parentFragmentManager, "DialogRequests")
+            RequestsDialogFragment().show(parentFragmentManager, "DialogRequests")
         }
     }
 

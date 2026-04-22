@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
+import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.ChallengeRepository
@@ -72,12 +73,7 @@ class NotificationsDialogFragment : DialogFragment() {
                 acceptChallenge(challenge)
             },
             onRejectClicked = { challenge ->
-                // TODO Rechazar solicitud de partida amistosa
-                Toast.makeText(
-                    requireContext(),
-                    "Rechazar reto de ${challenge.challengerUsername}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                rejectChallenge(challenge)
             }
         )
 
@@ -133,20 +129,54 @@ class NotificationsDialogFragment : DialogFragment() {
                         Toast.LENGTH_SHORT).show()
                 }
             },
-            onMessageReceived = { message, extra ->
+            onMessageReceived = { event ->
                 requireActivity().runOnUiThread {
 
-                    if (message == "INITIAL_STATE") {
-                        ActiveGameManager.markInGame()
+                    when (event) {
 
-                        Toast.makeText(requireContext(),
-                            "La partida ha comenzado",
-                            Toast.LENGTH_SHORT).show()
+                        is GameEvent.InitialState -> {
 
-                        dismiss()
+                            ActiveGameManager.markInGame()
 
-                        val intent = Intent(requireContext(), GameActivity::class.java)
-                        startActivity(intent)
+                            Toast.makeText(requireContext(),
+                                "La partida ha comenzado",
+                                Toast.LENGTH_SHORT).show()
+
+                            dismiss()
+
+                            val intent = Intent(requireContext(), GameActivity::class.java)
+                            startActivity(intent)
+
+                        }
+
+                        is GameEvent.Error -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Error al aceptar reto: ${event.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            ActiveGameManager.resetAll()
+                        }
+
+                        GameEvent.ChallengeRejected -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "El reto ya no está disponible",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            ActiveGameManager.resetAll()
+                            loadPendingChallenges()
+                        }
+
+                        is GameEvent.ConnectionClosed -> {
+                            loadPendingChallenges()
+                        }
+
+                        else -> {
+                            // ignorar otros eventos
+                        }
                     }
                 }
             },
@@ -169,6 +199,67 @@ class NotificationsDialogFragment : DialogFragment() {
             startingTime = challenge.startingTime,
             timeIncrement = challenge.timeIncrement
         )
+
+    }
+
+    private fun rejectChallenge(challenge: PendingChallengeResponse) {
+
+        ActiveGameManager.setCallbacks(
+            onConnected = {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(),
+                        "Reto rechazado",
+                        Toast.LENGTH_SHORT).show()
+                }
+            },
+            onMessageReceived = { event ->
+                requireActivity().runOnUiThread {
+
+                    when (event) {
+
+                        is GameEvent.ChallengeRejected -> {
+                            Toast.makeText(requireContext(),
+                                "Reto rechazado",
+                                Toast.LENGTH_SHORT).show()
+
+                            ActiveGameManager.resetAll()
+                            loadPendingChallenges()
+                        }
+
+                        is GameEvent.Error -> {
+                            Toast.makeText(requireContext(),
+                                "Error al rechazar reto: ${event.message}",
+                                Toast.LENGTH_SHORT).show()
+
+                            ActiveGameManager.resetAll()
+                        }
+
+                        is GameEvent.ConnectionClosed -> {
+                            loadPendingChallenges()
+                        }
+
+                        else -> {
+                            // ignorar otros eventos
+                        }
+
+                    }
+                }
+            },
+            onError = { error ->
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(),
+                        "Error al rechazar reto: $error",
+                        Toast.LENGTH_SHORT).show()
+                }
+            },
+            onClosed = {
+                requireActivity().runOnUiThread {
+                    loadPendingChallenges()
+                }
+            }
+        )
+
+        ActiveGameManager.rejectChallenge(challengerUsername = challenge.challengerUsername)
 
     }
 

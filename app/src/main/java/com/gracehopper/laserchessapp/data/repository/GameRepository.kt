@@ -2,9 +2,12 @@ package com.gracehopper.laserchessapp.data.repository
 
 import com.google.gson.Gson
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
-import com.gracehopper.laserchessapp.data.remote.websocket.ClientSocketMessage
+import com.gracehopper.laserchessapp.data.model.game.WSClientMessage
 import com.gracehopper.laserchessapp.gameLogic.move.CoordsConverter
 
+/**
+ * Repositorio de comunicación con el backend para la partida.
+ */
 class GameRepository(
     private val sender: (String) -> Unit = { ActiveGameManager.sendGameMessage(it) }
 ) {
@@ -12,7 +15,7 @@ class GameRepository(
     private val gson = Gson()
 
     fun sendMessage(type: String, content: String) {
-        val message = ClientSocketMessage(type, content)
+        val message = WSClientMessage(type, content)
         val json = gson.toJson(message)
         sender(json)
     }

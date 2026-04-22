@@ -602,4 +602,6 @@ class UserRepositoryTest {
 
     }
 
+    // TODO: changePassword tests
+
 }

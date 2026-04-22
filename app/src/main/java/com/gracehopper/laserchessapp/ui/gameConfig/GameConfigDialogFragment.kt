@@ -6,15 +6,17 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.viewpager2.widget.ViewPager2
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.model.game.GameConfig
+import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
 import com.gracehopper.laserchessapp.ui.game.WaitingGameDialogFragment
 
-class MatchConfigDialogFragment(
+class GameConfigDialogFragment(
     private val challengedUsername: String
 ) : DialogFragment() {
 
@@ -24,7 +26,7 @@ class MatchConfigDialogFragment(
     private lateinit var buttonNext: Button
     private lateinit var buttonConfirm: Button
 
-    private lateinit var pagerAdapter: MatchConfigPagerAdapter
+    private lateinit var pagerAdapter: GameConfigPagerAdapter
 
     private val gameConfig = GameConfig()
 
@@ -49,7 +51,7 @@ class MatchConfigDialogFragment(
         buttonNext = view.findViewById(R.id.buttonNextStep)
         buttonConfirm = view.findViewById(R.id.buttonConfirmMatchConfig)
 
-        pagerAdapter = MatchConfigPagerAdapter(this)
+        pagerAdapter = GameConfigPagerAdapter(this)
         viewPager.adapter = pagerAdapter
 
         setupListeners()
@@ -114,13 +116,35 @@ class MatchConfigDialogFragment(
                         )
                     }
                 },
-                onError = { error ->
+                onMessageReceived = { event ->
                     requireActivity().runOnUiThread {
-                        // aquí tu toast si quieres
+                        when (event) {
+
+                            is GameEvent.Error -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    event.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                ActiveGameManager.resetAll()
+                            }
+
+                            else -> {
+                                // ignorar el resto, no hace falta gestionarlos
+                            }
+                        }
                     }
                 },
-                onMessageReceived = { message, extra ->
+                onError = { error ->
                     requireActivity().runOnUiThread {
+                        Toast.makeText(
+                            requireContext(),
+                            "Error al solicitar partida: $error",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        ActiveGameManager.resetAll()
                     }
                 },
                 onClosed = {}
