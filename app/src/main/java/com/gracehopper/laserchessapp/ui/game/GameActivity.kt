@@ -190,10 +190,6 @@ class GameActivity : AppCompatActivity() {
 
                         // TODO: REVISAR NUEVOS MENSAJES (de aquí para abajo) ----------------------
 
-                        is GameEvent.InitialState -> {
-                            // nos lo cargamos?
-                        }
-
                         is GameEvent.State -> {
                             // esto para reconstruir desde log, ns si se hará aquí
                         }
