@@ -75,6 +75,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewPager2: ViewPager2
     private lateinit var navButtons: List<ImageButton>
+    private lateinit var navBars: List<View>
 
     // Elementos del perfil
     private lateinit var imgProfileAvatar: ImageView
@@ -199,6 +200,14 @@ class MainActivity : AppCompatActivity() {
             findViewById(R.id.btnRanking)
         )
 
+        navBars = listOf(
+            findViewById(R.id.barShop),
+            findViewById(R.id.barCustomize),
+            findViewById(R.id.barHome),
+            findViewById(R.id.barSocial),
+            findViewById(R.id.barRanking)
+        )
+
         navButtons.forEachIndexed { index, button ->
             button.setOnClickListener {
                 viewPager2.currentItem = index
@@ -213,7 +222,12 @@ class MainActivity : AppCompatActivity() {
         navButtons.forEach {
             it.isSelected = false
         }
+        navBars.forEach {
+            it.visibility = View.INVISIBLE
+        }
         navButtons[index].isSelected = true
+        navBars[index].visibility = View.VISIBLE
+
     }
 
     /**
