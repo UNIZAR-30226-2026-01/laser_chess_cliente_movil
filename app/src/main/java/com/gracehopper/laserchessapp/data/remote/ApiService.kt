@@ -7,6 +7,7 @@ import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
 import com.gracehopper.laserchessapp.data.model.ranking.AllRatingsResponse
+import com.gracehopper.laserchessapp.data.model.ranking.RankingEntryResponse
 import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.model.social.FriendshipStatusResponse
@@ -15,6 +16,8 @@ import com.gracehopper.laserchessapp.data.model.ranking.RatingResponse
 import com.gracehopper.laserchessapp.data.model.social.ReceivedRequestsResponse
 import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
 import com.gracehopper.laserchessapp.data.model.user.MyAccountResponse
+import com.gracehopper.laserchessapp.data.model.user.TimeMode
+import com.gracehopper.laserchessapp.data.model.user.XPInfoResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -23,39 +26,41 @@ import retrofit2.http.*
  */
 interface ApiService {
 
-    // Endpoint para iniciar sesión
+    // Endpoints de AUTH
     @POST("login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
 
     @POST("logout")
     fun logout(): Call<Unit>
 
-    // Endpoint para registrar una nueva cuenta
     @POST("register")
     fun register(@Body request: RegisterRequest): Call<RegisterResponse>
 
     @POST("refresh")
     fun refreshToken(): Call<LoginResponse>
 
-    // Endpoint para obtener información de una cuenta
+
+    // Endpoints de ACCOUNT
     @GET("api/account")
     fun getMyAccount(): Call<MyAccountResponse>
 
     @GET("api/account/{id}")
     fun getAccount(@Path("id") id: Long): Call<AccountResponse>
 
-    // Endpoint para actualizar información de una cuenta
+    @GET("api/account/xp")
+    fun getXPInfo(): Call<XPInfoResponse>
+
     @POST("api/account/update")
     fun updateMyAccount(@Body request: UpdateAccountRequest): Call<MyAccountResponse>
 
-    // Endpoint para eliminar una cuenta
     @DELETE("api/account/delete")
     fun deleteMyAccount(): Call<Unit>
 
     @PUT("api/account/passwd")
     fun changePassword(@Body request: ChangePasswordRequest): Call<Unit>
 
-    // ratings
+
+    // Endpoints de RATINGS
 
     @GET("api/rating/{userID}")
     fun getRatings(@Path("userID") userId: Long): Call<AllRatingsResponse>
@@ -72,13 +77,23 @@ interface ApiService {
     @GET("api/rating/{userID}/extended")
     fun getExtendedElo(@Path("userID") userId: Long): Call<RatingResponse>
 
-    // friendship
+    @GET("api/rating/ranking/{eloType}/{id}")
+    fun getRankById(
+        @Path("eloType") eloType: String,
+        @Path("id") userId: Long
+    ): Call<Long>
+
+    @GET("api/rating/top/{eloType}")
+    fun getTopRankUsers(
+        @Path("eloType") eloType: String
+    ): Call<List<RankingEntryResponse>>
+
+    // Endpoints de FRIENDSHIPS
     @GET("api/friendship")
     fun getFriendships(): Call<List<FriendSummary>>
 
     @POST("api/friendship")
     fun addFriend(@Body request: CreateFriendshipRequest): Call<Unit>
-
 
     @GET("api/friendship/pending")
     fun getReceivedFriendshipRequests(): Call<List<FriendSummary>>
@@ -99,7 +114,7 @@ interface ApiService {
     fun deleteFriendship(@Path("user2Username") username: String): Call<Unit>
 
 
-    // para ver retos de amistosas
+    // Endpoint de CHALLENGE
     @GET("api/rt/challenges")
     fun getPendingChallenges(): Call<List<PendingChallengeResponse>>
 
