@@ -391,7 +391,7 @@ class GameActivity : AppCompatActivity() {
                 boardM.setPiece(r1, c1, null)
             }
         } else {
-            gameRepository.sendMove(from, to)
+                gameRepository.sendMove(from, to)
             waitingForServerConfirmation = true
             isMyTurn = false
             GameTimerManager.setMyTurn(false)

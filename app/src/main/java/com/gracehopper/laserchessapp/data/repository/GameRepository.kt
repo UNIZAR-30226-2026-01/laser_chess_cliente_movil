@@ -36,4 +36,8 @@ class GameRepository(
         sendMessage("Move", "L$notation")
     }
 
+    fun sendPause() {
+        sendMessage("Pause","")
+    }
+
 }
