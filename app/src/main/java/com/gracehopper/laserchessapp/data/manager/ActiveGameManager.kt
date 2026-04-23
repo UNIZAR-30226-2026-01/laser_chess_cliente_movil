@@ -266,6 +266,7 @@ object ActiveGameManager {
 
         resetConnectionOnly()
 
+        setGameType(true)                   // La partida es amistosa
         currentOpponentUsername = challengerUsername
         currentBoard = board
         currentStartingTime = startingTime/1000

@@ -73,6 +73,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var controls: LinearLayout
     private var pendingGameEnd: Pair<String, String?>? = null
     private var gameEnded = false
+    private var pauseDialog: DialogFragment? = null
     var pauseRequested = false
     lateinit var backCallback: OnBackPressedCallback
 
@@ -221,24 +222,38 @@ class GameActivity : AppCompatActivity() {
 
                         is GameEvent.PauseReject -> {
                             // TODO: Diálogo de rechazo de pausa ??
+                            pauseDialog?.dismiss()
+                            pauseDialog = null
+
+                            supportFragmentManager.findFragmentByTag("PauseDialog")?.let {
+                                (it as? DialogFragment)?.dismiss()
+                            }
+
                             if (pauseRequested) {
-                                pauseRequested = false
-
-                                supportFragmentManager.findFragmentByTag("PauseDialog")?.let {
-                                    (it as? DialogFragment)?.dismiss()
-                                }
-
                                 Toast.makeText(
                                     this,
                                     "Tu solicitud de pausa ha sido rechazada",
                                     Toast.LENGTH_SHORT
                                 ).show()
+                            } else {
+                                Toast.makeText(
+                                    this,
+                                    "El rival ha cancelado la solicitud de pausa",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
+
+                            pauseRequested = false
                         }
 
                         is GameEvent.Paused -> {
                             // TODO: Diálogo de pausa
                             pauseRequested = false
+
+                            pauseDialog?.dismiss()
+                            pauseDialog = null
+
+                            GameTimerManager.stop()
 
                             Toast.makeText(this,
                                 "La partida ha sido pausada",
@@ -353,8 +368,25 @@ class GameActivity : AppCompatActivity() {
          */
         btnPause.setOnClickListener {
             if (!pauseRequested) {
+                // pedir pausa
                 pauseRequested = true
                 gameRepository.sendPause()
+
+                pauseDialog = PauseWaitingDialogFragment(
+                    onCancel = {
+                        pauseRequested = false
+                        gameRepository.sendPauseReject()
+                    }
+                )
+
+                pauseDialog?.show(supportFragmentManager, "PauseWaitingDialog")
+            } else {
+                // cancelar solicitud de pausa
+                pauseRequested = false
+                gameRepository.sendPauseReject()
+
+                pauseDialog?.dismiss()
+                pauseDialog = null
             }
         }
 

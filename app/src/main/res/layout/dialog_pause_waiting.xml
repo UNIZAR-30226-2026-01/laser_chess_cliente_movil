@@ -8,7 +8,6 @@
     android:background="@android:color/transparent">
 
     <LinearLayout
-        android:id="@+id/container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -22,39 +21,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- TEXTO -->
         <TextView
-            android:id="@+id/textPauseRequest"
+            android:id="@+id/textWaiting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tu rival quiere pausar partida"
+            android:text="Esperando respuesta..."
             android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginEnd="12dp"
-            android:gravity="center_vertical"/>
+            android:layout_marginEnd="12dp"/>
 
-        <!-- ACEPTAR -->
         <ImageButton
-            android:id="@+id/btnAcceptPause"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="8dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/outline_check_24"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Aceptar"/>
-
-        <!-- RECHAZAR -->
-        <ImageButton
-            android:id="@+id/btnRejectPause"
+            android:id="@+id/btnCancelPause"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:padding="8dp"
             android:scaleType="centerInside"
             android:src="@drawable/baseline_close_24"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Rechazar"/>
-
+            android:background="?attr/selectableItemBackgroundBorderless"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

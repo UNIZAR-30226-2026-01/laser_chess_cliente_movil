@@ -9,36 +9,24 @@ import android.widget.ImageButton
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 
-class PauseRequestDialogFragment (
-    private val onAccept: () -> Unit,
-    private val onReject: () -> Unit
+class PauseWaitingDialogFragment (
+    private val onCancel: () -> Unit
 ) : DialogFragment() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_TITLE, android.R.style.Theme_Translucent_NoTitleBar)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.dialog_pause_request, container, false)
+        return inflater.inflate(R.layout.dialog_pause_waiting, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val btnAccept = view.findViewById<ImageButton>(R.id.btnAcceptPause)
-        val btnReject = view.findViewById<ImageButton>(R.id.btnRejectPause)
+        val btnCancel = view.findViewById<ImageButton>(R.id.btnCancelPause)
 
-        btnAccept.setOnClickListener {
-            onAccept()
-            dismiss()
-        }
-
-        btnReject.setOnClickListener {
-            onReject()
+        btnCancel.setOnClickListener {
+            onCancel()
             dismiss()
         }
     }
