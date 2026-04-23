@@ -36,6 +36,7 @@
         android:orientation="vertical"
         android:padding="24dp"
         android:background="@android:color/white"
+        android:textColor="@android:color/black"
         android:visibility="gone"
         android:elevation="8dp"
         android:layout_margin="32dp"
@@ -58,9 +59,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/credential"
+            android:textColorHint="@android:color/darker_gray"
             android:inputType="textNoSuggestions"
             android:padding="12dp"
             android:layout_marginBottom="16dp"
+            android:textColor="@android:color/black"
             android:background="@android:drawable/editbox_background"/>
 
         <EditText
@@ -68,9 +71,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
+            android:textColorHint="@android:color/darker_gray"
             android:inputType="textPassword"
             android:padding="12dp"
             android:layout_marginBottom="24dp"
+            android:textColor="@android:color/black"
             android:background="@android:drawable/editbox_background"/>
 
         <Button
@@ -79,6 +84,7 @@
             android:layout_height="wrap_content"
             android:text="@string/continueText"
             android:textSize="16sp"
+            android:textColor="@android:color/black"
             android:backgroundTint="@color/turquoise"/>
 
         <LinearLayout
@@ -124,6 +130,7 @@
         android:visibility="gone"
         android:elevation="8dp"
         android:layout_margin="32dp"
+        android:textColor="@android:color/black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -143,7 +150,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/username"
+        android:textColorHint="@android:color/darker_gray"
         android:inputType="textNoSuggestions"
+        android:textColor="@android:color/black"
         android:padding="12dp"
         android:layout_marginBottom="16dp"
         android:background="@android:drawable/editbox_background"/>
@@ -153,7 +162,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/email"
+        android:textColorHint="@android:color/darker_gray"
         android:inputType="textEmailAddress"
+        android:textColor="@android:color/black"
         android:padding="12dp"
         android:layout_marginBottom="16dp"
         android:background="@android:drawable/editbox_background"/>
@@ -163,7 +174,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/password"
+        android:textColorHint="@android:color/darker_gray"
         android:inputType="textPassword"
+        android:textColor="@android:color/black"
         android:padding="12dp"
         android:layout_marginBottom="16dp"
         android:background="@android:drawable/editbox_background"/>
@@ -173,7 +186,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/confirm_password"
+        android:textColorHint="@android:color/darker_gray"
         android:inputType="textPassword"
+        android:textColor="@android:color/black"
         android:padding="12dp"
         android:layout_marginBottom="24dp"
         android:background="@android:drawable/editbox_background"/>
@@ -184,6 +199,7 @@
         android:layout_height="wrap_content"
         android:text="@string/register"
         android:textSize="16sp"
+        android:textColor="@android:color/black"
         android:backgroundTint="@color/turquoise"/>
 
         <!-- Para que los textos de ¿? esten juntos y solo sea clicable el segundo-->
