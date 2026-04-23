@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 
@@ -13,11 +16,6 @@ class PauseRequestDialogFragment (
     private val onAccept: () -> Unit,
     private val onReject: () -> Unit
 ) : DialogFragment() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(STYLE_NO_TITLE, android.R.style.Theme_Translucent_NoTitleBar)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +43,15 @@ class PauseRequestDialogFragment (
 
     override fun onStart() {
         super.onStart()
+
+        val controller = WindowCompat.getInsetsController(
+            requireActivity().window,
+            requireActivity().window.decorView
+        )
+
+        controller?.hide(WindowInsetsCompat.Type.systemBars())
+        controller?.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
         dialog?.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)

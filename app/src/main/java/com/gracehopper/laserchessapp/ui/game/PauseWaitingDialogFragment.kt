@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 
@@ -33,6 +36,15 @@ class PauseWaitingDialogFragment (
 
     override fun onStart() {
         super.onStart()
+
+        val controller = WindowCompat.getInsetsController(
+            requireActivity().window,
+            requireActivity().window.decorView
+        )
+
+        controller?.hide(WindowInsetsCompat.Type.systemBars())
+        controller?.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
         dialog?.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)
