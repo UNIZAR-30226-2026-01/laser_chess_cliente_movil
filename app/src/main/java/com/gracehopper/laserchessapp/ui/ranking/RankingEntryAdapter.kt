@@ -30,6 +30,7 @@ class RankingEntryAdapter(private var entries: List<RankingEntry>)
 
     override fun onBindViewHolder(holder: RankingEntryViewHolder, position: Int) {
         val entry = entries[position]
+
         val context = holder.itemView.context
 
         with(holder.binding) {
@@ -40,8 +41,6 @@ class RankingEntryAdapter(private var entries: List<RankingEntry>)
                 AvatarUtils.getAvatarDrawable(entry.avatar)
             )
 
-            Log.d("RankingEntryAdapter", "Binding item at position ${entry.position}")
-            Log.d("RankingEntryAdapter", "WHOIAM: ${entry.isCurrentUser}")
             val highlightColor = when {
                 entry.isCurrentUser -> R.color.LCBlue
                 entry.position == 1 -> R.color.LCYellow

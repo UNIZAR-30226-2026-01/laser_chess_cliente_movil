@@ -333,6 +333,13 @@ class SocialFragment : Fragment() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        loadFriends()
+        loadNumReceivedRequests()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

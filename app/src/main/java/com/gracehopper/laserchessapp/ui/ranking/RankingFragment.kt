@@ -28,6 +28,8 @@ class RankingFragment : Fragment() {
     private val rankingModes = TimeMode.entries
         .filter { it != TimeMode.CUSTOM }
 
+    private var selectedMode: TimeMode = TimeMode.BLITZ
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,7 +44,7 @@ class RankingFragment : Fragment() {
 
         setupDropdown()
         setupRecycler()
-        loadRanking(TimeMode.BLITZ)
+        loadRanking(selectedMode)
     }
 
     private fun setupDropdown() {
@@ -57,7 +59,7 @@ class RankingFragment : Fragment() {
         binding.dropdownRankingMode.setText(rankingModes.first().name, false)
 
         binding.dropdownRankingMode.setOnItemClickListener { _, _, position, _ ->
-            val selectedMode = rankingModes[position]
+            selectedMode = rankingModes[position]
             loadRanking(selectedMode)
         }
     }
@@ -97,6 +99,11 @@ class RankingFragment : Fragment() {
             }
         )
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadRanking(selectedMode)
     }
 
     override fun onDestroyView() {
