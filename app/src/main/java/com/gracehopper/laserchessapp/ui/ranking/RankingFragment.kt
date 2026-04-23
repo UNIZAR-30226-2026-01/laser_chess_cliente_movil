@@ -44,6 +44,7 @@ class RankingFragment : Fragment() {
 
         setupDropdown()
         setupRecycler()
+        loadRanking(selectedMode)
     }
 
     private fun setupDropdown() {
