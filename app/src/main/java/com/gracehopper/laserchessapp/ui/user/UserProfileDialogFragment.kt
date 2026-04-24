@@ -234,7 +234,6 @@ class UserProfileDialogFragment : DialogFragment() {
                     "Solicitud enviada a $username",
                     Toast.LENGTH_SHORT
                 ).show()
-
                 parentFragmentManager.setFragmentResult("requests_updated", Bundle())
                 dismiss()
             }, onError = { errorCode ->

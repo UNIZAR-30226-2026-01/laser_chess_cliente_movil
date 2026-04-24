@@ -55,8 +55,7 @@ class RequestsDialogFragment : DialogFragment() {
             "requests_updated",
             this
         ) { _, _ ->
-            loadReceivedRequests()
-            loadSentRequests()
+            reloadRequests()
         }
 
         setupListeners(dialog)
@@ -125,6 +124,11 @@ class RequestsDialogFragment : DialogFragment() {
             sentTab.setBackgroundResource(R.drawable.bg_tab_selected)
         }
 
+    }
+
+    private fun reloadRequests() {
+        loadReceivedRequests()
+        loadSentRequests()
     }
 
     private fun loadReceivedRequests() {
@@ -263,8 +267,7 @@ class RequestsDialogFragment : DialogFragment() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    loadReceivedRequests()
-                    parentFragmentManager.setFragmentResult("requests_updated", Bundle())
+                    reloadRequests()
                 }
             },
             onError = { errorCode ->
@@ -298,8 +301,7 @@ class RequestsDialogFragment : DialogFragment() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    loadReceivedRequests()
-                    parentFragmentManager.setFragmentResult("requests_updated", Bundle())
+                    reloadRequests()
                 }
             },
             onError = { errorCode ->
@@ -329,7 +331,7 @@ class RequestsDialogFragment : DialogFragment() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    loadSentRequests()
+                    reloadRequests()
                 }
             },
             onError = { errorCode ->
