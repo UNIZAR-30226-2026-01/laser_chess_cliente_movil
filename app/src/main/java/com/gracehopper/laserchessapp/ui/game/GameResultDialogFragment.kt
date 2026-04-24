@@ -71,7 +71,7 @@ class GameResultDialogFragment(
         val causeText = when (cause) {
             "LASER" -> "Victoria por láser"
             "TIME" -> "Victoria por tiempo"
-            else -> ""
+            else -> "Victoria por desconexión del rival"
         }
 
         textResult.text = resultText

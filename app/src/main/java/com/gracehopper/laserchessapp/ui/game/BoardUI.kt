@@ -106,9 +106,7 @@ fun GameScreen(
 
                 for (col in colRange) {
                     key(row, col) {
-                        val piece by remember(board, row, col, recomposeTrigger) {
-                            derivedStateOf { board.getPiece(row, col) }
-                        }
+                        val piece = board.getPiece(row, col)
                         val isHighlighted = highlightedMoves.contains(Pair(row, col))
 
                         /**

@@ -27,6 +27,7 @@ object ActiveGameManager {
     }
 
     private var friendlyGameWebSocket: FriendlyGameWebSocket? = null
+    private var isReconnecting = false
 
     var isFriendlyGame: Boolean = false
         private set
@@ -42,6 +43,14 @@ object ActiveGameManager {
 
     var currentTimeIncrement: Int? = null
         private set
+    var reconnectingOpponentId: Long? = null
+        private set
+
+    var pendingStateLog: String? = null
+        private set
+
+    private var reconnectGotInitialState = false
+    private var reconnectGotState = false
 
     var intialBoardCSV: String? = null
         private set
@@ -117,10 +126,19 @@ object ActiveGameManager {
 
                 imRedPlayer = (redPlayerId == myId)
 
-                onMessageReceivedCallback?.invoke(GameEvent.InitialState(
-                    boardCsv = intialBoardCSV,
-                    redPlayerId = redPlayerId
-                ))
+                if (onMessageReceivedCallback != null) {
+                    // Partida en curso normal (GameActivity ya escucha)
+
+                    onMessageReceivedCallback?.invoke(
+                        GameEvent.InitialState(
+                            boardCsv = intialBoardCSV,
+                            redPlayerId = redPlayerId
+                        )
+                    )
+                } else {
+                    reconnectGotInitialState = true
+                    dispatchReconnectIfReady()
+                }
             }
 
             /**
@@ -135,9 +153,14 @@ object ActiveGameManager {
              * Estado de la partida
              */
             GameMessageType.STATE -> {
-                onMessageReceivedCallback?.invoke(GameEvent.State(
-                    log = serverMsg.content.orEmpty()
-                ))
+                val log = serverMsg.content.orEmpty()
+                if (onMessageReceivedCallback != null) {
+                    onMessageReceivedCallback?.invoke(GameEvent.State(log = log))
+                } else {
+                    pendingStateLog = log
+                    reconnectGotState = true
+                    dispatchReconnectIfReady()
+                }
             }
 
             /**
@@ -205,7 +228,17 @@ object ActiveGameManager {
              * Rival reconectado
              */
             GameMessageType.RECONNECTION -> {
-                onMessageReceivedCallback?.invoke(GameEvent.OpponentReconnected)
+                // Si el mensaje trae extra, es nuestra propia reconexión:
+                // content = ID del rival, extra = nuestro tiempo restante en ms
+                val myTimeMs = serverMsg.extra?.toLongOrNull()
+                if (myTimeMs != null) {
+                    // Convertir ms a segundos para currentStartingTime
+                    currentStartingTime = (myTimeMs / 1000).toInt()
+
+                    reconnectingOpponentId = serverMsg.content?.toLongOrNull()
+                } else {
+                    onMessageReceivedCallback?.invoke(GameEvent.OpponentReconnected)
+                }
             }
 
             else -> {
@@ -327,6 +360,40 @@ object ActiveGameManager {
     }
 
     /**
+     * Navega a GameActivity solo cuando han llegado AMBOS mensajes de reconexión
+     * (InitialState y State), sin importar el orden en que lleguen.
+     */
+    private fun dispatchReconnectIfReady() {
+        android.util.Log.d("RECONNECT", "dispatchReconnectIfReady: gotInitial=$reconnectGotInitialState gotState=$reconnectGotState pendingLog='$pendingStateLog' csv=${intialBoardCSV != null}")
+        if (reconnectGotInitialState && reconnectGotState) {
+            android.util.Log.d("RECONNECT", "Ambos recibidos → navegando a GameActivity")
+            onMessageReceivedCallback?.invoke(
+                GameEvent.State(log = pendingStateLog.orEmpty())
+            )
+        }
+    }
+
+    fun reconnectGame() {
+
+        resetConnectionOnly()
+
+        isReconnecting = true
+        reconnectGotInitialState = false
+        reconnectGotState = false
+        pendingStateLog = null
+
+        val listener = buildListener(
+            onOpenState = GameState.CONNECTING
+        )
+
+        friendlyGameWebSocket = FriendlyGameWebSocket(listener)
+
+        val token = TokenManager.getAccessToken() ?: return
+
+        friendlyGameWebSocket?.reconnect(token)
+    }
+
+    /**
      * Resetea completamente el estado del manager.
      */
     fun resetAll() {
@@ -337,6 +404,10 @@ object ActiveGameManager {
         currentBoard = null
         currentStartingTime = null
         currentTimeIncrement = null
+        reconnectingOpponentId = null
+        pendingStateLog = null
+        reconnectGotInitialState = false
+        reconnectGotState = false
         currentState = GameState.INACTIVE
         lastError = null
 
@@ -360,6 +431,9 @@ object ActiveGameManager {
         return FriendlyGameWebSocketListener(
             onConnected = {
                 currentState = onOpenState
+
+                isReconnecting = false
+
                 onConnectedCallback?.invoke()
             },
             onMessageReceived = { message ->

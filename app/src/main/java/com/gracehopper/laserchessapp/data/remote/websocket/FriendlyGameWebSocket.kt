@@ -69,6 +69,18 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
         webSocket?.send(message)
     }
 
+    fun reconnect(token: String) {
+
+        val url = "ws://192.168.0.17:8080/api/rt/reconnect?token=$token"
+
+        val request = Request.Builder()
+            .url(url)
+            .build()
+
+        val client = NetworkUtils.getWebSocketClient()
+        webSocket = client.newWebSocket(request, listener)
+    }
+
     /**
      * Cierra la conexión WebSocket.
      */
