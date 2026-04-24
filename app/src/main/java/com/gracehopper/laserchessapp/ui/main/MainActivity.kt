@@ -352,7 +352,7 @@ class MainActivity : AppCompatActivity() {
         txtProfileUsername.text = profile.username
         val maxLevelXp = 100
         val currentXpInLevel = profile.xp % maxLevelXp
-        txtProfileLevel.text = "LVL ${profile.level} · ${currentXpInLevel}/${maxLevelXp} "
+        txtProfileLevel.text = "LVL ${profile.level} · ${currentXpInLevel}/${maxLevelXp}"
         imgProfileAvatar.setImageResource(AvatarUtils.getAvatarDrawable(profile.avatar))
         progressProfileXP.max = maxLevelXp
         progressProfileXP.progress = profile.xp % maxLevelXp
