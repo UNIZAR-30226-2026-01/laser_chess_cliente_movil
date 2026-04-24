@@ -127,6 +127,7 @@ class RankingFragment : Fragment() {
         }
 
         friendRepository.getFriendshipStatus(
+            myId = myId,
             username = entry.username,
             onSuccess = { status ->
                 requireActivity().runOnUiThread {

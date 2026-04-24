@@ -1,6 +1,5 @@
 package com.gracehopper.laserchessapp.data.repository
 
-import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.model.social.FriendshipStatusResponse
@@ -169,6 +168,7 @@ class FriendRepository(private val apiService: ApiService) {
      * @param username Nombre de usuario del otro usuario
      */
     fun getFriendshipStatus(
+        myId: Long?,
         username: String,
         onSuccess: (UserFriendshipStatus) -> Unit,
         onError: (Int?) -> Unit
@@ -198,7 +198,6 @@ class FriendRepository(private val apiService: ApiService) {
                         return
                     }
 
-                    val myId = CurrentUserManager.getMyCurrentId()
                     if (myId == null) {
                         onError(null)
                         return

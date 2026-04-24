@@ -4,6 +4,7 @@ import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.model.social.FriendshipStatusResponse
 import com.gracehopper.laserchessapp.data.model.social.ReceivedRequestsResponse
+import com.gracehopper.laserchessapp.data.model.user.UserFriendshipStatus
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.*
@@ -655,11 +656,12 @@ class FriendRepositoryTest {
         }.whenever(call).enqueue(any())
 
         var successCalled = false
-        var receivedStatus: FriendshipStatusResponse? = null
+        var receivedStatus: UserFriendshipStatus? = null
         var errorCalled = false
 
         repository.getFriendshipStatus(
-            "username",
+            myId = 1L,
+            username = "username",
             onSuccess = {
                 successCalled = true
                 receivedStatus = it
@@ -671,7 +673,7 @@ class FriendRepositoryTest {
 
         assertTrue(successCalled)
         assertFalse(errorCalled)
-        assertEquals(response, receivedStatus)
+        assertEquals(UserFriendshipStatus.FRIEND, receivedStatus)
 
     }
 
@@ -703,7 +705,8 @@ class FriendRepositoryTest {
         var errorCode: Int? = 999
 
         repository.getFriendshipStatus(
-            "username",
+            myId = 1L,
+            username = "username",
             onSuccess = {
                 successCalled = true
             },
@@ -725,7 +728,7 @@ class FriendRepositoryTest {
      * -> llama a onError(404)
      */
     @Test
-    fun getFriendshipStatus_error_404_onError() {
+    fun getFriendshipStatus_error_404_onSuccess() {
 
         val apiService = mock<ApiService>()
         val call = mock<Call<FriendshipStatusResponse>>()
@@ -741,20 +744,24 @@ class FriendRepositoryTest {
         }.whenever(call).enqueue(any())
 
         var successCalled = false
-        var errorCode: Int? = null
+        var receivedStatus: UserFriendshipStatus? = null
+        var errorCalled = false
 
         repository.getFriendshipStatus(
-            "username",
+            myId = 1L,
+            username = "username",
             onSuccess = {
                 successCalled = true
+                receivedStatus = it
             },
             onError = {
-                errorCode = it
+                errorCalled = true
             }
         )
 
-        assertFalse(successCalled)
-        assertEquals(404, errorCode)
+        assertTrue(successCalled)
+        assertEquals(UserFriendshipStatus.NON_FRIEND, receivedStatus)
+        assertFalse(errorCalled)
 
     }
 
@@ -785,7 +792,8 @@ class FriendRepositoryTest {
         var errorCode: Int? = 999
 
         repository.getFriendshipStatus(
-            "username",
+            myId = 1L,
+            username = "username",
             onSuccess = {
                 successCalled = true
             },
