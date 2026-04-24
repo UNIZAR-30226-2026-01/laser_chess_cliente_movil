@@ -16,7 +16,7 @@ import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
-import com.gracehopper.laserchessapp.ui.user.UserProfileDialogMode
+import com.gracehopper.laserchessapp.data.model.user.UserFriendshipStatus
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 
 
@@ -158,7 +158,7 @@ class RequestsDialogFragment : DialogFragment() {
 
                         itemView.setOnClickListener {
                             UserProfileDialogFragment
-                                .newInstance(request.id, UserProfileDialogMode.RECEIVED_REQUEST)
+                                .newInstance(request.id, UserFriendshipStatus.RECEIVED_REQUEST)
                                 .show(parentFragmentManager, "UserProfileDialog")
                         }
 
@@ -221,7 +221,7 @@ class RequestsDialogFragment : DialogFragment() {
 
                         itemView.setOnClickListener {
                             UserProfileDialogFragment
-                                .newInstance(request.id, UserProfileDialogMode.SENT_REQUEST)
+                                .newInstance(request.id, UserFriendshipStatus.SENT_REQUEST)
                                 .show(parentFragmentManager, "UserProfileDialog")
                         }
 

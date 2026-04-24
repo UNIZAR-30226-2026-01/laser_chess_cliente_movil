@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.model.user.UserFriendshipStatus
 import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
@@ -67,8 +68,8 @@ class UserProfileDialogFragment : DialogFragment() {
         }
 
         val dialogModeName = requireArguments().getString(ARG_DIALOG_MODE)
-        val dialogMode = UserProfileDialogMode.valueOf(
-            dialogModeName ?: UserProfileDialogMode.FRIEND.name
+        val dialogMode = UserFriendshipStatus.valueOf(
+            dialogModeName ?: UserFriendshipStatus.FRIEND.name
         )
 
         setupActionButtons(dialogMode, userId)
@@ -82,11 +83,11 @@ class UserProfileDialogFragment : DialogFragment() {
 
     }
 
-    private fun setupActionButtons(mode: UserProfileDialogMode, userId: Long) {
+    private fun setupActionButtons(mode: UserFriendshipStatus, userId: Long) {
 
         when(mode) {
 
-            UserProfileDialogMode.FRIEND -> {
+            UserFriendshipStatus.FRIEND -> {
                 buttonPrimaryAction.visibility = View.VISIBLE
                 buttonSecondaryAction.visibility = View.VISIBLE
 
@@ -109,7 +110,7 @@ class UserProfileDialogFragment : DialogFragment() {
                 }
             }
 
-            UserProfileDialogMode.RECEIVED_REQUEST -> {
+            UserFriendshipStatus.RECEIVED_REQUEST -> {
                 buttonPrimaryAction.visibility = View.VISIBLE
                 buttonSecondaryAction.visibility = View.VISIBLE
 
@@ -130,7 +131,7 @@ class UserProfileDialogFragment : DialogFragment() {
 
             }
 
-            UserProfileDialogMode.SENT_REQUEST -> {
+            UserFriendshipStatus.SENT_REQUEST -> {
                 buttonPrimaryAction.visibility = View.GONE
                 buttonSecondaryAction.visibility = View.VISIBLE
 
@@ -143,7 +144,7 @@ class UserProfileDialogFragment : DialogFragment() {
                 }
             }
 
-            UserProfileDialogMode.USER -> {
+            UserFriendshipStatus.NON_FRIEND -> {
                 buttonPrimaryAction.visibility = View.VISIBLE
                 buttonSecondaryAction.visibility = View.GONE
 
@@ -151,11 +152,8 @@ class UserProfileDialogFragment : DialogFragment() {
 
                 buttonPrimaryAction.setOnClickListener {
                     currentUsername?.let { username ->
-                        // TODO Enviar solicitud de amistad
+                        sendFriendRequest(username)
                     }
-                    Toast.makeText(requireContext(),
-                        "Solicitando amistad a $userId",
-                        Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -226,6 +224,36 @@ class UserProfileDialogFragment : DialogFragment() {
         imgBoardSkin.setImageResource(ItemUtils.getBoardSkinDrawable(profile.boardSkin))
         imgWinAnimation.setImageResource(ItemUtils.getWinAnimationDrawable(profile.winAnimation))
 
+    }
+
+    private fun sendFriendRequest(username : String) {
+
+        friendRepository.addFriend(username = username,
+            onSuccess = {
+                Toast.makeText(requireContext(),
+                    "Solicitud enviada a $username",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                parentFragmentManager.setFragmentResult("requests_updated", Bundle())
+                dismiss()
+            }, onError = { errorCode ->
+                when (errorCode) {
+                    400 -> Toast.makeText(requireContext(),
+                        "Solicitud inválida", Toast.LENGTH_SHORT).show()
+                    401 -> Toast.makeText(requireContext(),
+                        "No autorizado", Toast.LENGTH_SHORT).show()
+                    404 -> Toast.makeText(requireContext(),
+                        "Usuario no encontrado", Toast.LENGTH_SHORT).show()
+                    409 -> Toast.makeText(requireContext(),
+                        "Ya existe una amistad o solicitud", Toast.LENGTH_SHORT).show()
+                    null -> Toast.makeText(requireContext(),
+                        "Error de conexión", Toast.LENGTH_SHORT).show()
+                    else -> Toast.makeText(requireContext(),
+                        "Error: $errorCode", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
     }
 
     private fun showDeleteFriendConfirmation(username: String) {
@@ -316,7 +344,7 @@ class UserProfileDialogFragment : DialogFragment() {
         private const val ARG_DIALOG_MODE = "dialog_mode"
 
         fun newInstance(friendId: Long,
-                        mode: UserProfileDialogMode = UserProfileDialogMode.FRIEND)
+                        mode: UserFriendshipStatus = UserFriendshipStatus.FRIEND)
                         : UserProfileDialogFragment {
             val fragment = UserProfileDialogFragment()
             val args = Bundle().apply {

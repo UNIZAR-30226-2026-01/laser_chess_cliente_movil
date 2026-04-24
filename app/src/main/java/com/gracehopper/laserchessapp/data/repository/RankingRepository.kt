@@ -69,7 +69,7 @@ class RankingRepository(private val apiService: ApiService) {
                         return
                     }
 
-                    val currentUserId = CurrentUserManager.getMyCurrentProfile()?.id
+                    val currentUserId = CurrentUserManager.getMyCurrentId()
 
                     val rankingEntries = body.mapIndexed { index, entry ->
                         RankingEntry(
