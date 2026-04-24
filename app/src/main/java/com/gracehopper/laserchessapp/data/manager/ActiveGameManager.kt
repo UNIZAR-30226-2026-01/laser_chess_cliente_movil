@@ -367,6 +367,7 @@ object ActiveGameManager {
         android.util.Log.d("RECONNECT", "dispatchReconnectIfReady: gotInitial=$reconnectGotInitialState gotState=$reconnectGotState pendingLog='$pendingStateLog' csv=${intialBoardCSV != null}")
         if (reconnectGotInitialState && reconnectGotState) {
             android.util.Log.d("RECONNECT", "Ambos recibidos → navegando a GameActivity")
+            currentState = GameState.IN_GAME  // marcar en partida ANTES de navegar
             onMessageReceivedCallback?.invoke(
                 GameEvent.State(log = pendingStateLog.orEmpty())
             )
@@ -375,21 +376,24 @@ object ActiveGameManager {
 
     fun reconnectGame() {
 
+        // Si ya hay una reconexión en curso o una partida activa, no hacer nada.
+        if (currentState == GameState.CONNECTING || currentState == GameState.IN_GAME) return
+
         resetConnectionOnly()
 
         isReconnecting = true
         reconnectGotInitialState = false
         reconnectGotState = false
         pendingStateLog = null
+        currentState = GameState.CONNECTING
+
+        val token = TokenManager.getAccessToken() ?: return
 
         val listener = buildListener(
             onOpenState = GameState.CONNECTING
         )
 
         friendlyGameWebSocket = FriendlyGameWebSocket(listener)
-
-        val token = TokenManager.getAccessToken() ?: return
-
         friendlyGameWebSocket?.reconnect(token)
     }
 
@@ -445,7 +449,13 @@ object ActiveGameManager {
                 onErrorCallback?.invoke(error)
             },
             onClosed = {
-                currentState = GameState.CLOSED
+                // Si el cierre ocurre durante una reconexión
+                if (isReconnecting) {
+                    currentState = GameState.INACTIVE
+                    isReconnecting = false
+                } else {
+                    currentState = GameState.CLOSED
+                }
                 onClosedCallback?.invoke()
             }
         )

@@ -506,11 +506,8 @@ class GameActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        /**
-         * Limpiar callbacks al destruir la activity
-         */
-        ActiveGameManager.clearCallbacks()
         GameTimerManager.stop()
+        ActiveGameManager.resetAll()
     }
 
 

@@ -153,7 +153,9 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         sseManager.connect()
 
-        setupGameReconnection()
+        if (ActiveGameManager.currentState == ActiveGameManager.GameState.INACTIVE) {
+            setupGameReconnection()
+        }
     }
 
     override fun onStop() {
@@ -355,13 +357,15 @@ class MainActivity : AppCompatActivity() {
 
                 if (event is GameEvent.State) {
                     runOnUiThread {
-                        startActivity(Intent(this, GameActivity::class.java))
+                        if (!isFinishing) {
+                            startActivity(Intent(this, GameActivity::class.java))
+                        }
                     }
                 }
             },
 
             onError = {
-                // no hacer nada
+                ActiveGameManager.resetAll()
             }
         )
 
