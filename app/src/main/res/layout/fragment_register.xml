@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="@color/S1"
+        android:elevation="8dp"
+        android:layout_margin="32dp"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/registerTitle"
+            android:textSize="@dimen/text_medium_large"
+            android:textColor="@color/LCWhite"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/registerSubtitle"
+            android:textSize="@dimen/text_medium_small"
+            android:textColor="@color/LCGray"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Separador -->
+        <include layout="@layout/separator" />
+
+        <EditText
+            android:id="@+id/editTextRegisterUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/username"
+            android:textColorHint="@android:color/darker_gray"
+            android:inputType="textNoSuggestions"
+            android:textColor="@color/LCWhite"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:textSize="@dimen/text_medium"
+            android:background="@drawable/bg_text_field"/>
+
+        <EditText
+            android:id="@+id/editTextRegisterEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email"
+            android:textColorHint="@android:color/darker_gray"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/LCWhite"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:textSize="@dimen/text_medium"
+            android:background="@drawable/bg_text_field"/>
+
+        <EditText
+            android:id="@+id/editTextRegisterPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            android:textColorHint="@android:color/darker_gray"
+            android:inputType="textPassword"
+            android:textColor="@color/LCWhite"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:textSize="@dimen/text_medium"
+            android:background="@drawable/bg_text_field"/>
+
+        <EditText
+            android:id="@+id/editTextRegisterConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            android:textColorHint="@android:color/darker_gray"
+            android:inputType="textPassword"
+            android:textColor="@color/LCWhite"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp"
+            android:textSize="@dimen/text_medium"
+            android:background="@drawable/bg_text_field"/>
+
+        <!-- Separador -->
+        <include layout="@layout/separator" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonRegisterConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/register"
+            android:textSize="16sp"
+            android:textColor="@color/LCWhite"
+            android:background="@drawable/bg_blue_button"/>
+
+        <!-- Para que los textos de ¿? esten juntos y solo sea clicable el segundo-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yesAccount"
+                android:textSize="@dimen/text_medium_small"
+                android:textColor="@color/LCWhite"/>
+
+            <TextView
+                android:id="@+id/textViewGoToLoginLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/switch_login"
+                android:textSize="@dimen/text_medium_small"
+                android:textColor="#2196F3"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
