@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="24dp"
+    android:paddingHorizontal="16dp"
     android:paddingTop="20dp"
     android:paddingBottom="20dp">
 
@@ -21,7 +21,7 @@
     <LinearLayout
         android:id="@+id/layoutTabs"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +48,7 @@
                 android:gravity="center"
                 android:text="AMIGOS"
                 android:textColor="@color/selector_tab_text_color"
-                android:textSize="@dimen/text_large"
+                android:textSize="@dimen/text_medium"
                 android:textStyle="bold" />
 
             <View
@@ -79,7 +79,7 @@
                 android:gravity="center"
                 android:text="PARTIDAS"
                 android:textColor="@color/selector_tab_text_color"
-                android:textSize="@dimen/text_large"
+                android:textSize="@dimen/text_medium"
                 android:textStyle="bold" />
 
             <View
@@ -129,44 +129,44 @@
         <!-- Solicitudes -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/buttonSolicitudes"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:padding="8dp"
             android:background="@drawable/bg_button"
             android:layout_marginBottom="16dp"
-            android:layout_marginStart="14dp"
+            android:layout_marginStart="16dp"
             android:clipToPadding="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <ImageView
                 android:id="@+id/iconSolicitudes"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:contentDescription="@string/avatar"
                 android:src="@drawable/ic_inbox"
-                app:tint="@color/LCRed"
+                app:tint="@color/LCWhite"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
             <TextView
                 android:id="@+id/txtNumSolicitudes"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:background="@drawable/bg_red_circle"
                 android:text="3"
                 android:visibility="visible"
                 android:textColor="@color/LCWhite"
-                android:textSize="@dimen/text_medium"
+                android:textSize="@dimen/text_medium_small"
                 android:textStyle="bold"
                 android:gravity="center"
 
                 app:layout_constraintTop_toTopOf="@+id/iconSolicitudes"
                 app:layout_constraintEnd_toEndOf="@+id/iconSolicitudes"
 
-                android:translationX="6dp"
-                android:translationY="-6dp" />
+                android:translationX="5dp"
+                android:translationY="-5dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Botón añadir amigo -->
@@ -174,7 +174,7 @@
             android:id="@+id/buttonAddFriend"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="14dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -183,24 +183,25 @@
             <Button
                 android:id="@+id/btnAddFriend"
                 android:layout_width="0dp"
-                android:layout_height="64dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/LCRed"
                 android:insetLeft="0dp"
                 android:insetTop="0dp"
                 android:insetRight="0dp"
                 android:insetBottom="0dp"
-                android:text="AÑADIR"
+                android:text="AGREGAR"
+                android:letterSpacing="0"
 
                 android:textColor="@color/LCWhite"
-                android:textSize="@dimen/text_large"
+                android:textSize="@dimen/text_medium"
                 android:textStyle="bold"
                 app:cornerRadius="12dp"
                 app:icon="@drawable/ic_add_circle"
 
-                app:iconGravity="start"
-                app:iconPadding="0dp"
-                app:iconSize="42dp"
+                app:iconGravity="textStart"
+                app:iconPadding="2dp"
+                app:iconSize="24dp"
                 app:iconTint="@color/LCWhite" />
         </LinearLayout>
 
@@ -213,7 +214,7 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         android:visibility="gone"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/layoutTabs"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -225,7 +226,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="No tienes partidas pausadas"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_medium"
             android:visibility="gone"
             android:layout_marginTop="16dp" />
 
@@ -235,7 +236,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginTop="16dp"
             android:paddingBottom="24dp" />
 
     </LinearLayout>

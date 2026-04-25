@@ -21,7 +21,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.7"
             android:orientation="vertical"
             android:gravity="end"
             android:paddingHorizontal="4dp">
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:text="YO"
                 android:textStyle="bold"
-                android:textSize="@dimen/text_small"
+                android:textSize="@dimen/text_medium_small"
                 android:textColor="@color/LCWhite" />
 
             <TextView
@@ -40,36 +40,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="13:00"
-                android:textSize="@dimen/text_small"
+                android:textSize="@dimen/text_medium_small"
                 android:textColor="@color/LCWhite"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/avatar_1"
-            android:tint="@color/LCWhite"/>
+            app:tint="@color/LCWhite" />
 
         <!-- VS -->
         <ImageView
-            android:id="@+id/textVs"
+            android:id="@+id/IconVs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_versus"
-            android:tint="@color/LCWhite"
-            android:layout_marginHorizontal="14dp" />
+            android:layout_marginHorizontal="14dp"
+            app:tint="@color/LCWhite" />
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/avatar_3"
-            android:tint="@color/LCWhite"/>
+            app:tint="@color/LCWhite" />
 
         <!-- Rival -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
+            android:layout_weight="0.7"
             android:orientation="vertical"
             android:gravity="start"
             android:paddingHorizontal="4dp">
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:text="Usuario"
                 android:textStyle="bold"
-                android:textSize="15sp"
+                android:textSize="@dimen/text_medium_small"
                 android:textColor="@color/LCWhite" />
 
             <TextView
@@ -88,39 +88,42 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="12:00"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_medium_small"
                 android:textColor="@color/LCWhite"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="40dp"
+            android:background="@color/LCWhite"/>
 
         <!-- Info partida -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.7"
             android:orientation="vertical"
-            android:gravity="center"
+            android:gravity="start"
             android:paddingHorizontal="6dp">
-
-            <TextView
-                android:id="@+id/textTimeMode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Modo\ntiempo"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:gravity="center" />
 
             <TextView
                 android:id="@+id/textBoardType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tablero"
-                android:textSize="12sp"
-                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_small"
+                android:textColor="@color/LCWhite"
                 android:gravity="center"
                 android:layout_marginTop="6dp" />
+            <TextView
+                android:id="@+id/textTimeMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Modo\ntiempo"
+                android:textSize="@dimen/text_small"
+                android:textStyle="bold"
+                android:textColor="@color/LCWhite" />
         </LinearLayout>
 
         <!-- Botón RETOMAR -->
@@ -129,7 +132,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_retomar"
-            android:tint="@color/LCWhite"
+            app:tint="@color/LCWhite"
             android:background="@drawable/bg_button"
             />
 
