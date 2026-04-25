@@ -23,7 +23,7 @@
             android:layout_height="32dp"
             android:src="@drawable/ic_avatar"
             android:contentDescription="@string/avatar"
-            android:tint="@color/LCWhite"/>
+            app:tint="@color/LCWhite"/>
 
         <TextView
             android:id="@+id/txtFriendUsername"
