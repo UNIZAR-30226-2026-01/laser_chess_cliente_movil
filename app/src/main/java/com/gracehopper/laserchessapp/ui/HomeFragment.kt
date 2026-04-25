@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
@@ -58,6 +59,29 @@ class HomeFragment : Fragment() {
         includeBoardSelector.setOnClickListener {
 
         }
+    }
+
+    private fun showBottomSheet(titulo: String) {
+        // 1. Creamos la instancia del BottomSheetDialog
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+
+        // 2. Inflamos nuestro diseño XML personalizado
+        val dialogView = layoutInflater.inflate(R.layout.dialog_selector_desplegable, null)
+
+        // 3. Modificamos el título según qué botón hayamos pulsado
+        val txtTitle = dialogView.findViewById<TextView>(R.id.txtDialogTitle)
+        txtTitle.text = titulo
+
+        // 4. (Opcional) Configurar las acciones de las opciones internas
+        val btnOption1 = dialogView.findViewById<Button>(R.id.btnOption1)
+        btnOption1.setOnClickListener {
+            // Aquí guardarías la opción seleccionada y cerrarías el diálogo
+            bottomSheetDialog.dismiss()
+        }
+
+        // 5. Asignamos la vista al diálogo y lo mostramos en pantalla
+        bottomSheetDialog.setContentView(dialogView)
+        bottomSheetDialog.show()
     }
 
 }

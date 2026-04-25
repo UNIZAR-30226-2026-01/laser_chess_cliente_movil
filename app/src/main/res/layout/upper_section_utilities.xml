@@ -81,6 +81,25 @@
             app:layout_constraintHeight_percent="0.49"
             app:layout_constraintBottom_toBottomOf="parent" />
 
+        <TextView
+            android:id="@+id/txtBadgeSolicitudes"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:background="@drawable/bg_red_circle"
+            android:text="2"
+            android:visibility="visible"
+            android:textColor="@color/LCWhite"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold"
+            android:gravity="center"
+
+            app:layout_constraintTop_toTopOf="@+id/btnNotifications"
+            app:layout_constraintBottom_toBottomOf="@+id/btnNotifications"
+
+
+            android:translationX="56dp"
+            android:translationY="-12dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,6 +13,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -206,9 +207,9 @@ class SocialFragment : Fragment() {
     }
 
     private fun setupTabs() {
-        binding.tabSocial.setOnClickListener { selectTab(SocialTab.SOCIAL) }
+        binding.tabFriends.setOnClickListener { selectTab(SocialTab.SOCIAL) }
 
-        binding.tabInProgress.setOnClickListener { selectTab(SocialTab.IN_PROGRESS) }
+        binding.tabPartidas.setOnClickListener { selectTab(SocialTab.IN_PROGRESS) }
     }
 
     private fun selectTab(tab: SocialTab) {
@@ -218,8 +219,12 @@ class SocialFragment : Fragment() {
                 binding.btnAddFriend.visibility = View.VISIBLE
                 binding.layoutInProgressContent.visibility = View.GONE
 
-                binding.tabSocial.setBackgroundResource(R.drawable.bg_tab_selected)
-                binding.tabInProgress.setBackgroundResource(R.drawable.bg_tab_unselected)
+                binding.indicatorFriends.visibility = View.VISIBLE
+                binding.indicatorMatches.visibility = View.GONE
+                binding.txtTabFriends.setTextColor(ContextCompat.getColor(requireContext(), R.color.LCWhite))
+                binding.txtTabMatches.setTextColor(ContextCompat.getColor(requireContext(), R.color.S3))
+                binding.tabFriends.setBackgroundResource(R.color.S3)
+                binding.tabPartidas.setBackgroundResource(R.color.S2)
             }
 
             SocialTab.IN_PROGRESS -> {
@@ -227,8 +232,12 @@ class SocialFragment : Fragment() {
                 binding.btnAddFriend.visibility = View.GONE
                 binding.layoutInProgressContent.visibility = View.VISIBLE
 
-                binding.tabSocial.setBackgroundResource(R.drawable.bg_tab_unselected)
-                binding.tabInProgress.setBackgroundResource(R.drawable.bg_tab_selected)
+                binding.indicatorFriends.visibility = View.GONE
+                binding.indicatorMatches.visibility = View.VISIBLE
+                binding.txtTabFriends.setTextColor(ContextCompat.getColor(requireContext(), R.color.S3))
+                binding.txtTabMatches.setTextColor(ContextCompat.getColor(requireContext(), R.color.LCWhite))
+                binding.tabFriends.setBackgroundResource(R.color.S2)
+                binding.tabPartidas.setBackgroundResource(R.color.S3)
             }
         }
     }
@@ -237,7 +246,7 @@ class SocialFragment : Fragment() {
         binding.btnAddFriend.setOnClickListener {
             showAddFriendDialog()
         }
-        binding.cardSolicitudes.setOnClickListener {
+        binding.buttonSolicitudes.setOnClickListener {
             RequestsDialogFragment().show(parentFragmentManager, "DialogRequests")
         }
     }

@@ -66,7 +66,7 @@
         android:id="@+id/txtMyProfileLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="LVL 24 - 170/300 "
+        tools:text="LVL 24 - 170/300"
         android:textColor="@color/LCWhite"
         android:layout_marginBottom="4dp"
         android:textSize="@dimen/text_small"

@@ -59,7 +59,12 @@
             android:textColor="@color/LCWhite"
             android:textSize="@dimen/text_large"
             android:textStyle="bold"
-            app:cornerRadius="12dp"/>
+            app:cornerRadius="12dp"
+
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"/>
 
         <ImageButton
             android:id="@+id/btnPlayBot"

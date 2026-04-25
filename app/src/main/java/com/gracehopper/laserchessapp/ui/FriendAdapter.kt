@@ -26,7 +26,7 @@ class FriendAdapter (private var friends: List<FriendSummary>,
         holder.binding.apply {
             txtFriendUsername.text = friend.username
             imgFriendAvatar.setImageResource(AvatarUtils.getAvatarDrawable(friend.avatar))
-            txtFriendXp.text = "${friend.level} xp"
+            txtFriendLevel.text = "${friend.level}"
         }
 
         holder.itemView.setOnClickListener { onFriendClick(friend) }
