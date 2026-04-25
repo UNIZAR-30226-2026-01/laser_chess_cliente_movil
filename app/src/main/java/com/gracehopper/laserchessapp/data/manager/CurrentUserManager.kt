@@ -3,6 +3,7 @@ package com.gracehopper.laserchessapp.data.manager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
+import com.gracehopper.laserchessapp.data.model.user.UserRatings
 
 /**
  * Objeto singleton que almacena el perfil actual del usuario.
@@ -54,6 +55,24 @@ object CurrentUserManager {
      */
     fun getMyCurrentProfile(): MyProfile? {
         return _myProfile.value
+    }
+
+    /**
+     * Obtiene el ID del usuario actual.
+     *
+     * @return ID del usuario actual, o null si no se ha establecido
+     */
+    fun getMyCurrentId(): Long? {
+        return _myProfile.value?.id
+    }
+
+    /**
+     * Obtiene los ratings del usuario actual.
+     *
+     * @return Ratings del usuario actual, o null si no se ha establecido
+     */
+    fun getMyCurrentRatings(): UserRatings? {
+        return _myProfile.value?.ratings
     }
 
     /**

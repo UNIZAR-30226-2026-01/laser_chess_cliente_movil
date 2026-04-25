@@ -15,18 +15,22 @@
 
     <string name="personal_data">Datos personales</string>
 
+    <string name="loginTitle">¡Hola de nuevo!</string>
+    <string name="loginSubtitle">Te estábamos esperando</string>
     <string name="login">Iniciar sesión</string>
-    <string name="credential">Username/E-mail</string>
-    <string name="password">Contraseña</string>
+    <string name="credential">name@example.com / username</string>
+    <string name="password">******</string>
     <string name="continueText">Continuar</string>
-    <string name="noAccount">¿No tienes cuenta aún? </string>
-    <string name="switch_register">Regístrate ya</string>
+    <string name="noAccount">¿No tienes una cuenta? Prueba a </string>
+    <string name="switch_register">registrarte</string>
 
+    <string name="registerTitle">Crear una cuenta</string>
+    <string name="registerSubtitle">¡La diversión comienza aquí!</string>
     <string name="register">Registrarse</string>
-    <string name="username">Username</string>
-    <string name="email">E-mail</string>
-    <string name="confirm_password">Confirma tu contraseña</string>
-    <string name="switch_login">¿Ya estás registrado? </string>
+    <string name="username">pepe123</string>
+    <string name="email">pepe@example.com</string>
+    <string name="yesAccount">¿Ya tienes una cuenta?</string>
+    <string name="switch_login">Inicia sesión</string>
 
     <string name="customize">Personalización</string>
     <string name="ranking">Ranking</string>

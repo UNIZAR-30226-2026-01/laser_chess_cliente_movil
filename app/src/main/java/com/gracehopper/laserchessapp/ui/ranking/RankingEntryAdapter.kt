@@ -10,8 +10,10 @@ import com.gracehopper.laserchessapp.data.model.ranking.RankingEntry
 import com.gracehopper.laserchessapp.databinding.ItemRankingEntryBinding
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 
-class RankingEntryAdapter(private var entries: List<RankingEntry>)
-    : RecyclerView.Adapter<RankingEntryAdapter.RankingEntryViewHolder>() {
+class RankingEntryAdapter(
+    private var entries: List<RankingEntry>,
+    private val onUserClicked: (RankingEntry) -> Unit
+) : RecyclerView.Adapter<RankingEntryAdapter.RankingEntryViewHolder>() {
 
     class RankingEntryViewHolder(val binding: ItemRankingEntryBinding)
         : RecyclerView.ViewHolder(binding.root)
@@ -49,8 +51,14 @@ class RankingEntryAdapter(private var entries: List<RankingEntry>)
                 else -> R.color.LCWhite
             }
 
-            textRankingUsername.setTextColor(ContextCompat.getColor(context, highlightColor))
-            textRankingPosition.setTextColor(ContextCompat.getColor(context, highlightColor))
+            val rowColor = ContextCompat.getColor(context, highlightColor)
+            textRankingUsername.setTextColor(rowColor)
+            textRankingPosition.setTextColor(rowColor)
+            textRankingElo.setTextColor(rowColor)
+
+            root.setOnClickListener {
+                onUserClicked(entry)
+            }
         }
     }
 

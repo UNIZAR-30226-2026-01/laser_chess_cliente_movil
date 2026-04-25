@@ -16,7 +16,7 @@ import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
-import com.gracehopper.laserchessapp.ui.user.UserProfileDialogMode
+import com.gracehopper.laserchessapp.data.model.user.UserFriendshipStatus
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 
 
@@ -55,8 +55,7 @@ class RequestsDialogFragment : DialogFragment() {
             "requests_updated",
             this
         ) { _, _ ->
-            loadReceivedRequests()
-            loadSentRequests()
+            reloadRequests()
         }
 
         setupListeners(dialog)
@@ -127,6 +126,11 @@ class RequestsDialogFragment : DialogFragment() {
 
     }
 
+    private fun reloadRequests() {
+        loadReceivedRequests()
+        loadSentRequests()
+    }
+
     private fun loadReceivedRequests() {
 
         receivedContainer.removeAllViews()
@@ -158,7 +162,7 @@ class RequestsDialogFragment : DialogFragment() {
 
                         itemView.setOnClickListener {
                             UserProfileDialogFragment
-                                .newInstance(request.id, UserProfileDialogMode.RECEIVED_REQUEST)
+                                .newInstance(request.id, UserFriendshipStatus.RECEIVED_REQUEST)
                                 .show(parentFragmentManager, "UserProfileDialog")
                         }
 
@@ -221,7 +225,7 @@ class RequestsDialogFragment : DialogFragment() {
 
                         itemView.setOnClickListener {
                             UserProfileDialogFragment
-                                .newInstance(request.id, UserProfileDialogMode.SENT_REQUEST)
+                                .newInstance(request.id, UserFriendshipStatus.SENT_REQUEST)
                                 .show(parentFragmentManager, "UserProfileDialog")
                         }
 
@@ -263,8 +267,7 @@ class RequestsDialogFragment : DialogFragment() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    loadReceivedRequests()
-                    parentFragmentManager.setFragmentResult("requests_updated", Bundle())
+                    reloadRequests()
                 }
             },
             onError = { errorCode ->
@@ -298,8 +301,7 @@ class RequestsDialogFragment : DialogFragment() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    loadReceivedRequests()
-                    parentFragmentManager.setFragmentResult("requests_updated", Bundle())
+                    reloadRequests()
                 }
             },
             onError = { errorCode ->
@@ -329,7 +331,7 @@ class RequestsDialogFragment : DialogFragment() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    loadSentRequests()
+                    reloadRequests()
                 }
             },
             onError = { errorCode ->

@@ -8,16 +8,24 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.ranking.RankingEntry
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.RankingRepository
 import com.gracehopper.laserchessapp.databinding.FragmentRankingBinding
+import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
+import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 
 class RankingFragment : Fragment() {
 
     private var _binding: FragmentRankingBinding? = null
     private val binding get() = _binding!!
+
+    private val friendRepository by lazy {
+        FriendRepository(NetworkUtils.getApiService())
+    }
 
     private val rankingRepository by lazy {
         RankingRepository(NetworkUtils.getApiService())
@@ -66,7 +74,12 @@ class RankingFragment : Fragment() {
 
     private fun setupRecycler() {
 
-        rankingAdapter = RankingEntryAdapter(emptyList())
+        rankingAdapter = RankingEntryAdapter(
+            entries = emptyList(),
+            onUserClicked = { entry ->
+                openUserFromRanking(entry)
+            }
+        )
 
         binding.recyclerRanking.apply {
             adapter = rankingAdapter
@@ -95,6 +108,41 @@ class RankingFragment : Fragment() {
 
                     Toast.makeText(requireContext(),
                         message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+
+    }
+
+    fun openUserFromRanking(entry: RankingEntry) {
+
+        val myId = CurrentUserManager.getMyCurrentId()
+
+        if (entry.id == myId) {
+            MyProfileDialogFragment().show(
+                parentFragmentManager,
+                "MyProfileDialog"
+            )
+            return
+        }
+
+        friendRepository.getFriendshipStatus(
+            myId = myId,
+            username = entry.username,
+            onSuccess = { status ->
+                requireActivity().runOnUiThread {
+                    UserProfileDialogFragment.newInstance(
+                        friendId = entry.id,
+                        mode = status
+                    ).show(parentFragmentManager, "UserProfileDialog")
+                }
+            },
+            onError = {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(),
+                        "No se pudo cargar el estado de amistad",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         )

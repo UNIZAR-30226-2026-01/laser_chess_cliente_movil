@@ -25,8 +25,8 @@ import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var loadingLayout: LinearLayout
-    private lateinit var loginLayout: LinearLayout
-    private lateinit var registerLayout: LinearLayout
+    private lateinit var loginLayout: View
+    private lateinit var registerLayout: View
     private lateinit var loginCredential: EditText
     private lateinit var loginPassword: EditText
     private lateinit var loginButton: Button
@@ -61,7 +61,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        loadingLayout = findViewById(R.id.loadingLayout)
         loginLayout = findViewById(R.id.loginLayout)
         registerLayout = findViewById(R.id.registerLayout)
 

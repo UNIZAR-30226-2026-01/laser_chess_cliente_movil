@@ -188,7 +188,7 @@ class UserRepository(private val apiService: ApiService) {
                         return
                     }
 
-                    val currentRatings = CurrentUserManager.getMyCurrentProfile()?.ratings
+                    val currentRatings = CurrentUserManager.getMyCurrentRatings()
 
                     // si he podido recuperar los ratings del usuario
                     if (currentRatings != null) {
