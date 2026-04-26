@@ -93,5 +93,16 @@ sealed class GameEvent {
      */
     object OpponentReconnected : GameEvent()
 
+    /**
+     * Reconexión del usuario a la partida
+     *
+     * @param opponentId ID del rival
+     * @param remainingTime Tiempo restante en su timer
+     */
+    data class Reconnected(
+        val opponentId: String?,
+        val remainingTime: String?
+    ) : GameEvent()
+
 
 }

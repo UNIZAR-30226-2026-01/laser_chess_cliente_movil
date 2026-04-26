@@ -12,6 +12,8 @@ enum class GameMessageType {
     GET_INITIAL_STATE,
     @SerializedName("Pause")
     PAUSE,
+    @SerializedName("PauseReject")
+    PAUSE_REJECT,
 
     @SerializedName("State")
     STATE,
@@ -21,8 +23,6 @@ enum class GameMessageType {
     INITIAL_STATE,
     @SerializedName("PauseRequest")
     PAUSE_REQUEST,
-    @SerializedName("PauseReject")
-    PAUSE_REJECT,
     @SerializedName("Paused")
     PAUSED,
     @SerializedName("End")

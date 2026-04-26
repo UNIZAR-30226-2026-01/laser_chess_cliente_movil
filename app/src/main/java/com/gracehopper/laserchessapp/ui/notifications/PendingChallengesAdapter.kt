@@ -41,7 +41,7 @@ class PendingChallengesAdapter(
         fun bind(challenge: PendingChallengeResponse) {
             textChallengeTitle.text = "${challenge.challengerUsername} te ha retado a una partida"
             textChallengeDetails.text =
-                "Tablero ${challenge.board} · ${challenge.startingTime}s + ${challenge.timeIncrement}s"
+                "Tablero ${challenge.board} · ${challenge.startingTime/1000}s + ${challenge.timeIncrement}s"
 
             buttonAccept.setOnClickListener {
                 onAcceptClicked(challenge)
