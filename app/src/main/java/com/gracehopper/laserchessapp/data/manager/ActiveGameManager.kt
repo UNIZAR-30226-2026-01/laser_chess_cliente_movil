@@ -51,6 +51,7 @@ object ActiveGameManager {
 
     private var reconnectGotInitialState = false
     private var reconnectGotState = false
+    private var awaitingReconnectMessages = false
 
     var intialBoardCSV: String? = null
         private set
@@ -126,18 +127,18 @@ object ActiveGameManager {
 
                 imRedPlayer = (redPlayerId == myId)
 
-                if (onMessageReceivedCallback != null) {
+                if (awaitingReconnectMessages) {
+                    // Reconexión: guardar y esperar a tener ambos mensajes
+                    reconnectGotInitialState = true
+                    dispatchReconnectIfReady()
+                } else {
                     // Partida en curso normal (GameActivity ya escucha)
-
                     onMessageReceivedCallback?.invoke(
                         GameEvent.InitialState(
                             boardCsv = intialBoardCSV,
                             redPlayerId = redPlayerId
                         )
                     )
-                } else {
-                    reconnectGotInitialState = true
-                    dispatchReconnectIfReady()
                 }
             }
 
@@ -154,12 +155,13 @@ object ActiveGameManager {
              */
             GameMessageType.STATE -> {
                 val log = serverMsg.content.orEmpty()
-                if (onMessageReceivedCallback != null) {
-                    onMessageReceivedCallback?.invoke(GameEvent.State(log = log))
-                } else {
+                if (awaitingReconnectMessages) {
+                    // Reconexión: guardar log y esperar a tener ambos mensajes
                     pendingStateLog = log
                     reconnectGotState = true
                     dispatchReconnectIfReady()
+                } else {
+                    onMessageReceivedCallback?.invoke(GameEvent.State(log = log))
                 }
             }
 
@@ -228,15 +230,21 @@ object ActiveGameManager {
              * Rival reconectado
              */
             GameMessageType.RECONNECTION -> {
-                // Si el mensaje trae extra, es nuestra propia reconexión:
-                // content = ID del rival, extra = nuestro tiempo restante en ms
                 val myTimeMs = serverMsg.extra?.toLongOrNull()
                 if (myTimeMs != null) {
-                    // Convertir ms a segundos para currentStartingTime
+                    // Es nuestra propia reconexión: content=ID rival, extra=tiempo restante ms
                     currentStartingTime = (myTimeMs / 1000).toInt()
-
                     reconnectingOpponentId = serverMsg.content?.toLongOrNull()
+                    // A partir de aquí esperamos InitialState + State antes de navegar
+                    awaitingReconnectMessages = true
+                    onMessageReceivedCallback?.invoke(
+                        GameEvent.Reconnected(
+                            opponentId = serverMsg.content,
+                            remainingTime = serverMsg.extra
+                        )
+                    )
                 } else {
+                    // Es el rival quien se ha reconectado
                     onMessageReceivedCallback?.invoke(GameEvent.OpponentReconnected)
                 }
             }
@@ -367,7 +375,8 @@ object ActiveGameManager {
         android.util.Log.d("RECONNECT", "dispatchReconnectIfReady: gotInitial=$reconnectGotInitialState gotState=$reconnectGotState pendingLog='$pendingStateLog' csv=${intialBoardCSV != null}")
         if (reconnectGotInitialState && reconnectGotState) {
             android.util.Log.d("RECONNECT", "Ambos recibidos → navegando a GameActivity")
-            currentState = GameState.IN_GAME  // marcar en partida ANTES de navegar
+            awaitingReconnectMessages = false
+            currentState = GameState.IN_GAME
             onMessageReceivedCallback?.invoke(
                 GameEvent.State(log = pendingStateLog.orEmpty())
             )
@@ -385,6 +394,7 @@ object ActiveGameManager {
         reconnectGotInitialState = false
         reconnectGotState = false
         pendingStateLog = null
+        awaitingReconnectMessages = false
         currentState = GameState.CONNECTING
 
         val token = TokenManager.getAccessToken() ?: return
@@ -412,6 +422,7 @@ object ActiveGameManager {
         pendingStateLog = null
         reconnectGotInitialState = false
         reconnectGotState = false
+        awaitingReconnectMessages = false
         currentState = GameState.INACTIVE
         lastError = null
 
