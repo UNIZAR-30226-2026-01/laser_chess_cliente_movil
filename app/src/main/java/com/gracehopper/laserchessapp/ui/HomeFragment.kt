@@ -9,79 +9,190 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.ui.game.GameActivity
-import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
+
+// quitar hardcode despues
+enum class GameMode {
+    BOT,
+    RANKED,
+    PUBLIC
+}
 
 class HomeFragment : Fragment() {
+
+    private var currentMode = GameMode.BOT
+    private var expanded = false
+
+    private lateinit var topMode: GameMode
+    private lateinit var middleMode: GameMode
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         val btnPlay = view.findViewById<Button>(R.id.btnPlay)
-        btnPlay.setOnClickListener {
-            val intent = Intent(requireContext(), GameActivity::class.java)
-            startActivity(intent)
+
+        val btnGameMode = view.findViewById<ImageButton>(R.id.btnGameMode)
+        val btnModeTop = view.findViewById<ImageButton>(R.id.btnModeTop)
+        val btnModeMiddle = view.findViewById<ImageButton>(R.id.btnModeMiddle)
+        val layoutGamePopup = view.findViewById<View>(R.id.layoutGamePopup)
+
+        refreshMainButton(btnGameMode)
+
+        btnGameMode.setOnClickListener {
+
+            expanded = !expanded
+
+            if (expanded) {
+                showModes(layoutGamePopup, btnModeTop, btnModeMiddle)
+            } else {
+                hideModes(layoutGamePopup, btnGameMode)
+            }
         }
-        
+
+        btnModeTop.setOnClickListener {
+            currentMode = topMode
+            hideModes(layoutGamePopup, btnGameMode)
+        }
+
+        btnModeMiddle.setOnClickListener {
+            currentMode = middleMode
+            hideModes(layoutGamePopup, btnGameMode)
+        }
+
+        btnPlay.setOnClickListener {
+
+            when (currentMode) {
+
+                GameMode.BOT -> {
+                    val intent = Intent(requireContext(), GameActivity::class.java)
+                    startActivity(intent)
+                }
+
+                GameMode.RANKED -> {
+                    // matchmaking ranked
+                }
+
+                GameMode.PUBLIC -> {
+                    // matchmaking publico
+                }
+            }
+        }
+
         setupSelectors(view)
-        
+
         return view
     }
 
     private fun setupSelectors(view: View) {
-        var includeBoardSelector = view.findViewById<View>(R.id.includeBoardSelector)
-        val txtBoardTitle = includeBoardSelector.findViewById<TextView>(R.id.txtSelectorTitle)
-        val imgBoardIcon = includeBoardSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
+
+        val includeBoardSelector = view.findViewById<View>(R.id.includeBoardSelector)
+        val txtBoardTitle =
+            includeBoardSelector.findViewById<TextView>(R.id.txtSelectorTitle)
+        val imgBoardIcon =
+            includeBoardSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
 
         txtBoardTitle.text = "Tablero"
         imgBoardIcon.setImageResource(R.drawable.ic_tablero)
-        imgBoardIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.LCRed))
-        includeBoardSelector.setOnClickListener {
+        imgBoardIcon.setColorFilter(
+            ContextCompat.getColor(requireContext(), R.color.LCRed)
+        )
 
+        includeBoardSelector.setOnClickListener {
+            showBottomSheet("Seleccionar tablero")
         }
 
-        var includeTimeSelector = view.findViewById<View>(R.id.includeTimeSelector)
-        val txtTimeTitle = includeTimeSelector.findViewById<TextView>(R.id.txtSelectorTitle)
-        val imgTimeIcon = includeTimeSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
+        val includeTimeSelector = view.findViewById<View>(R.id.includeTimeSelector)
+        val txtTimeTitle =
+            includeTimeSelector.findViewById<TextView>(R.id.txtSelectorTitle)
+        val imgTimeIcon =
+            includeTimeSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
+
         txtTimeTitle.text = "Modo de tiempo"
         imgTimeIcon.setImageResource(R.drawable.ic_tiempo)
-        imgTimeIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.LCBlue))
-        includeBoardSelector.setOnClickListener {
+        imgTimeIcon.setColorFilter(
+            ContextCompat.getColor(requireContext(), R.color.LCBlue)
+        )
 
+        includeTimeSelector.setOnClickListener {
+            showBottomSheet("Seleccionar tiempo")
         }
     }
 
     private fun showBottomSheet(titulo: String) {
-        // 1. Creamos la instancia del BottomSheetDialog
+
         val bottomSheetDialog = BottomSheetDialog(requireContext())
 
-        // 2. Inflamos nuestro diseño XML personalizado
-        val dialogView = layoutInflater.inflate(R.layout.dialog_selector_desplegable, null)
+        val dialogView =
+            layoutInflater.inflate(R.layout.dialog_selector_desplegable, null)
 
-        // 3. Modificamos el título según qué botón hayamos pulsado
-        val txtTitle = dialogView.findViewById<TextView>(R.id.txtDialogTitle)
+        val txtTitle =
+            dialogView.findViewById<TextView>(R.id.txtDialogTitle)
+
         txtTitle.text = titulo
 
-        // 4. (Opcional) Configurar las acciones de las opciones internas
-        val btnOption1 = dialogView.findViewById<Button>(R.id.btnOption1)
+        val btnOption1 =
+            dialogView.findViewById<Button>(R.id.btnOption1)
+
         btnOption1.setOnClickListener {
-            // Aquí guardarías la opción seleccionada y cerrarías el diálogo
             bottomSheetDialog.dismiss()
         }
 
-        // 5. Asignamos la vista al diálogo y lo mostramos en pantalla
         bottomSheetDialog.setContentView(dialogView)
         bottomSheetDialog.show()
     }
 
+    private fun iconFor(mode: GameMode): Int {
+        return when (mode) {
+
+            GameMode.BOT ->
+                R.drawable.robot_2_48px
+
+            GameMode.RANKED ->
+                R.drawable.ic_ranked
+
+            GameMode.PUBLIC ->
+                R.drawable.ic_tiempo
+        }
+    }
+
+    private fun refreshMainButton(btn: ImageButton) {
+        btn.setImageResource(iconFor(currentMode))
+    }
+
+    private fun showModes(
+        popup: View,
+        btnTop: ImageButton,
+        btnMiddle: ImageButton
+    ) {
+
+        val others = GameMode.values().filter {
+            it != currentMode
+        }
+
+        topMode = others[0]
+        middleMode = others[1]
+
+        btnTop.setImageResource(iconFor(topMode))
+        btnMiddle.setImageResource(iconFor(middleMode))
+
+        popup.visibility = View.VISIBLE
+    }
+
+    private fun hideModes(
+        popup: View,
+        btnMain: ImageButton
+    ) {
+        expanded = false
+        popup.visibility = View.GONE
+        refreshMainButton(btnMain)
+    }
 }
