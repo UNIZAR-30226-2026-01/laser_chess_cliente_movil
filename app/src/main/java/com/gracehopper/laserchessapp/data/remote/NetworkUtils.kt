@@ -13,7 +13,8 @@ import java.net.CookiePolicy
 
 object NetworkUtils {
     // Para el emulador de Android, 10.0.2.2 pero habra q cambiarlo
-    const val BASE_URL = "http://192.168.0.17:8080/"
+    const val BASE_URL = "http://10.0.2.2:8080/"
+    // TODO EMULADOR: "http://10.0.2.2:8080/"
     // TODO PORTÁTIL AINHOA: "http://192.168.1.26:8080/"
     // TODO PORTÁTIL JORGE: "http://192.168.0.17:8080/"
     private var apiService: ApiService? = null
