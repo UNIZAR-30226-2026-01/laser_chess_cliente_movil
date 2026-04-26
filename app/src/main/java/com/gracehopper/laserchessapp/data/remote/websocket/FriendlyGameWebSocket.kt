@@ -17,6 +17,33 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
     private val BASE_URL = "ws://192.168.0.17:8080/api/rt/challenge"
         // TODO PORTÁTIL JORGE: "ws://192.168.0.17:8080/api/rt/challenge"
 
+
+    /**
+     *
+     */
+    fun startBotGame(
+        board: Int,
+        startingTime: Int,
+        timeIncrement: Int,
+        level: Int
+    ) {
+
+        val url =
+            "ws://192.168.0.17:8080/api/rt/bot" +
+                    "?board=$board" +
+                    "&starting_time=$startingTime" +
+                    "&time_increment=$timeIncrement" +
+                    "&level=$level"
+
+        val request = Request.Builder()
+            .url(url)
+            .build()
+
+        val client = NetworkUtils.getWebSocketClient()
+        webSocket = client.newWebSocket(request, listener)
+    }
+
+
     /**
      * Crea una nueva solicitud de reto a un usuario específico.
      *

@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit
 import okhttp3.JavaNetCookieJar
 import java.net.CookieManager
 import java.net.CookiePolicy
-import java.sql.Time
 
 object NetworkUtils {
     // Para el emulador de Android, 10.0.2.2 pero habra q cambiarlo

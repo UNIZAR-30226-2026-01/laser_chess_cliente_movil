@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 
 // quitar hardcode despues
@@ -72,8 +73,19 @@ class HomeFragment : Fragment() {
 
             when (currentMode) {
 
+                // Cambiar luego por valores reales
                 GameMode.BOT -> {
-                    val intent = Intent(requireContext(), GameActivity::class.java)
+
+                    ActiveGameManager.createBotGame(
+                        board = 1,
+                        startingTime = 300,
+                        timeIncrement = 2,
+                        level = 1
+                    )
+
+                    val intent =
+                        Intent(requireContext(), GameActivity::class.java)
+
                     startActivity(intent)
                 }
 
