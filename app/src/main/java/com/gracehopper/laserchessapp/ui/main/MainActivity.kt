@@ -20,12 +20,15 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.manager.SseManager
+import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.SettingsDialogFragment
+import com.gracehopper.laserchessapp.ui.game.GameActivity
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
 import com.gracehopper.laserchessapp.ui.social.RequestsDialogFragment
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
@@ -173,6 +176,10 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         sseManager.connect()
+
+        if (ActiveGameManager.currentState == ActiveGameManager.GameState.INACTIVE) {
+            setupGameReconnection()
+        }
     }
 
     override fun onStop() {
@@ -377,6 +384,29 @@ class MainActivity : AppCompatActivity() {
 
     fun openCustomizeFragment() {
         viewPager2.currentItem = 1
+    }
+
+    private fun setupGameReconnection() {
+
+        ActiveGameManager.setCallbacks(
+
+            onMessageReceived = { event ->
+
+                if (event is GameEvent.State) {
+                    runOnUiThread {
+                        if (!isFinishing) {
+                            startActivity(Intent(this, GameActivity::class.java))
+                        }
+                    }
+                }
+            },
+
+            onError = {
+                ActiveGameManager.resetAll()
+            }
+        )
+
+        ActiveGameManager.reconnectGame()
     }
 
 }

@@ -29,6 +29,7 @@ import android.os.Looper
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.manager.GameTimerManager
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
@@ -70,8 +71,13 @@ class GameActivity : AppCompatActivity() {
     private var clearTrigger by mutableIntStateOf(0)    // Trigger para limpiar selección en UI
     private var selectedPos: Pair<Int, Int>? = null             // Posición seleccionada
     private lateinit var controls: LinearLayout
-    private var pendingGameEnd: Pair<String, String?>? = null
     private var gameEnded = false
+    private var gameResultShown = false
+    private var waitingEndAfterMove = false
+    private var lastWinner: String? = null
+    private var lastCause: String? = null
+    private var pauseDialog: DialogFragment? = null
+    var pauseRequested = false
     lateinit var backCallback: OnBackPressedCallback
 
     /**
@@ -108,13 +114,29 @@ class GameActivity : AppCompatActivity() {
         val timerPlayer = findViewById<TextView>(R.id.timePlayer)
         val timerEnemy = findViewById<TextView>(R.id.timeEnemy)
 
-    // Usuario actual
+        // Usuario actual
         val myProfile = CurrentUserManager.getMyCurrentProfile()
         namePlayer.text = myProfile?.username ?: "Tú"
 
-    // Rival
+        // Rival
         val opponent = ActiveGameManager.currentOpponentUsername
         nameEnemy.text = opponent ?: "Rival"
+
+        // Si venimos de una reconexión, currentOpponentUsername está vacío pero
+        // tenemos el ID del rival — lo resolvemos con una llamada HTTP.
+        val opponentId = ActiveGameManager.reconnectingOpponentId
+        if (opponent == null && opponentId != null) {
+            val userRepo = com.gracehopper.laserchessapp.data.repository.UserRepository(
+                com.gracehopper.laserchessapp.data.remote.NetworkUtils.getApiService()
+            )
+            userRepo.getUserProfile(
+                userId = opponentId,
+                onSuccess = { profile ->
+                    runOnUiThread { nameEnemy.text = profile.username }
+                },
+                onError = { /* dejar "Rival" */ }
+            )
+        }
 
         val board = findViewById<ComposeView>(R.id.board)
         controls = findViewById<LinearLayout>(R.id.rotationButtons)
@@ -122,6 +144,15 @@ class GameActivity : AppCompatActivity() {
         val btnRight = findViewById<ImageButton>(R.id.btnRotRight)
 
         val btnExit = findViewById<ImageButton>(R.id.btnExit)
+        val btnPause = findViewById<ImageButton>(R.id.btnPause)
+
+        if (ActiveGameManager.isFriendlyGame) {
+            btnPause.visibility = View.VISIBLE
+            btnExit.visibility = View.GONE
+        } else {
+            btnPause.visibility = View.GONE
+            btnExit.visibility = View.VISIBLE
+        }
 
         boardM = Board(rows, cols)
 
@@ -156,8 +187,20 @@ class GameActivity : AppCompatActivity() {
             loadTestBoard()
         } else {
             val csv = ActiveGameManager.intialBoardCSV
+            Log.d("RECONNECT", "CSV es null: ${csv == null}")
             if (csv != null) {
+                Log.d("RECONNECT", "Cargando tablero desde CSV (${csv.length} chars)")
                 BoardParser.boadFromCSV(boardM, csv)
+            }
+            // Si venimos de reconexión, el State llegó antes de que esta Activity
+            // existiera. Aplicamos el log guardado ahora que el tablero está listo.
+            val pending = ActiveGameManager.pendingStateLog
+            Log.d("RECONNECT", "pendingStateLog es null: ${pending == null}, valor: '$pending'")
+            if (pending != null) {
+                Log.d("RECONNECT", "Aplicando state log: '$pending'")
+                applyStateLog(pending)
+                clearTrigger++
+                Log.d("RECONNECT", "State log aplicado, clearTrigger=$clearTrigger")
             }
         }
 
@@ -182,31 +225,93 @@ class GameActivity : AppCompatActivity() {
                          * Fin de partida
                          */
                         is GameEvent.End -> {
+
+                            if (gameResultShown) return@runOnUiThread
+
                             val winner = event.winner ?: return@runOnUiThread
-                            val cause = event.victoryCause ?: return@runOnUiThread
-                            pendingGameEnd = Pair(winner, cause)
+                            val cause = event.victoryCause
+
+                            lastWinner = winner
+                            lastCause = cause
                             gameEnded = true
+
+                            // Si viene tras movimiento → esperar animación
+                            if (waitingForServerConfirmation) {
+                                waitingEndAfterMove = true
+                            } else {
+                                showGameResult()
+                            }
                         }
 
                         // TODO: REVISAR NUEVOS MENSAJES (de aquí para abajo) ----------------------
 
                         is GameEvent.State -> {
-                            // esto para reconstruir desde log, ns si se hará aquí
+
+                            val log = event.log ?: return@runOnUiThread
+
+                            // Limpiar el board existente en vez de crear una nueva instancia.
+                            // Si creamos boardM = Board(...) Compose sigue pintando la referencia
+                            // vieja y el tablero no se actualiza.
+                            boardM.clear()
+
+                            val csv = ActiveGameManager.intialBoardCSV
+                            if (csv != null) {
+                                BoardParser.boadFromCSV(boardM, csv)
+                            }
+
+                            applyStateLog(log)
+                            clearTrigger++
                         }
 
                         is GameEvent.PauseRequest -> {
                             // TODO: Diálogo de aceptar/rechazar pausa
+                            val dialog = PauseRequestDialogFragment(
+                                onAccept = {
+                                    gameRepository.sendPause()
+                                },
+                                onReject = {
+                                    gameRepository.sendPauseReject()
+                                }
+                            )
+
+                            dialog.show(supportFragmentManager, "PauseDialog")
                         }
 
                         is GameEvent.PauseReject -> {
                             // TODO: Diálogo de rechazo de pausa ??
-                            Toast.makeText(this,
-                                "Tu solicitud de pausa ha sido rechazada",
-                                Toast.LENGTH_SHORT).show()
+                            pauseDialog?.dismiss()
+                            pauseDialog = null
+
+                            supportFragmentManager.findFragmentByTag("PauseDialog")?.let {
+                                (it as? DialogFragment)?.dismiss()
+                            }
+
+                            if (pauseRequested) {
+                                Toast.makeText(
+                                    this,
+                                    "Tu solicitud de pausa ha sido rechazada",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    this,
+                                    "El rival ha cancelado la solicitud de pausa",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            pauseRequested = false
                         }
 
                         is GameEvent.Paused -> {
                             // TODO: Diálogo de pausa
+                            pauseRequested = false
+
+                            pauseDialog?.dismiss()
+                            pauseDialog = null
+
+                            GameTimerManager.stop()
+
                             Toast.makeText(this,
                                 "La partida ha sido pausada",
                                 Toast.LENGTH_SHORT).show()
@@ -252,12 +357,23 @@ class GameActivity : AppCompatActivity() {
             },
             onClosed = {
                 Log.d("WS", "WebSocket cerrado")
+
+                if (!gameEnded) {
+                    runOnUiThread {
+                        Toast.makeText(
+                            this,
+                            "Conexión perdida",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        finish()
+                    }
+                }
             },
             onError = { error ->
                 runOnUiThread {
                     Log.e("WS", "Error: $error")
 
-                    if (!gameEnded) {
+                    if (!gameResultShown) {
                         Toast.makeText(this,
                             "Error de conexión",
                             Toast.LENGTH_SHORT).show()
@@ -316,6 +432,33 @@ class GameActivity : AppCompatActivity() {
         }
 
         /**
+         * Solicitar pausar la partida
+         */
+        btnPause.setOnClickListener {
+            if (!pauseRequested) {
+                // pedir pausa
+                pauseRequested = true
+                gameRepository.sendPause()
+
+                pauseDialog = PauseWaitingDialogFragment(
+                    onCancel = {
+                        pauseRequested = false
+                        gameRepository.sendPauseReject()
+                    }
+                )
+
+                pauseDialog?.show(supportFragmentManager, "PauseWaitingDialog")
+            } else {
+                // cancelar solicitud de pausa
+                pauseRequested = false
+                gameRepository.sendPauseReject()
+
+                pauseDialog?.dismiss()
+                pauseDialog = null
+            }
+        }
+
+        /**
          * Rotación izquierda
          */
         btnLeft.setOnClickListener {
@@ -363,11 +506,8 @@ class GameActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        /**
-         * Limpiar callbacks al destruir la activity
-         */
-        ActiveGameManager.clearCallbacks()
         GameTimerManager.stop()
+        ActiveGameManager.resetAll()
     }
 
 
@@ -444,6 +584,7 @@ class GameActivity : AppCompatActivity() {
 
         if (iMoved) {
             waitingForServerConfirmation = false
+            waitingEndAfterMove = false
         }
 
         isMyTurn = !iMoved
@@ -497,31 +638,76 @@ class GameActivity : AppCompatActivity() {
                 boardM.setPiece(destroyedPos.first, destroyedPos.second, null)
             }
 
+            if (waitingEndAfterMove && gameEnded && !gameResultShown) {
+                showGameResult()
+            }
+
             laserPath = emptyList()
 
             controls.visibility = View.GONE
             clearTrigger++
-
-            /**
-             * Mostrar resultado de partida
-             */
-            if (gameEnded && pendingGameEnd != null) {
-                if (!isFinishing && !isDestroyed &&
-                    supportFragmentManager.findFragmentByTag("GameResult") == null
-                ) {
-
-                    val (winner, cause) = pendingGameEnd!!
-                    backCallback.isEnabled = false
-
-                    val dialog = GameResultDialogFragment(winner, cause)
-                    dialog.show(supportFragmentManager, "GameResult")
-                }
-
-                pendingGameEnd = null
-                gameEnded = false
-            }
         }, 1000)
     }
 
+    private fun applyStateLog(log: String) {
+
+        if (log.isBlank()) {
+            Log.d("RECONNECT", "applyStateLog: log vacío, nada que aplicar")
+            return
+        }
+
+        val moves = log.split(";").filter { it.isNotBlank() }
+
+        Log.d("RECONNECT", "applyStateLog: ${moves.size} movimientos a aplicar")
+
+        for (moveStr in moves) {
+            applyStateMove(moveStr)
+        }
+    }
+
+    private fun applyStateMove(moveStr: String) {
+
+        Log.d("RECONNECT", "applyStateMove: '$moveStr'")
+        val move = MoveParser.parseMove(moveStr)
+
+        val fromPos = CoordsConverter.notationToPosition(move.from)
+        val piece = boardM.getPiece(fromPos.first, fromPos.second)
+        Log.d("RECONNECT", "  from=${move.from} pos=$fromPos pieza=$piece tipo=${move.type}")
+
+        when (move.type) {
+
+            'T' -> {
+                val toPos = CoordsConverter.notationToPosition(move.to!!)
+                val pieceTo = boardM.getPiece(toPos.first, toPos.second)
+
+                boardM.setPiece(toPos.first, toPos.second, piece)
+                boardM.setPiece(fromPos.first, fromPos.second, pieceTo)
+            }
+
+            'R' -> piece?.rotateRight()
+            'L' -> piece?.rotateLeft()
+        }
+
+        // eliminar pieza destruida
+        move.destroyed?.let {
+            val destroyedPos = CoordsConverter.notationToPosition(it)
+            boardM.setPiece(destroyedPos.first, destroyedPos.second, null)
+        }
+    }
+
+    private fun showGameResult() {
+        if (gameResultShown) return
+
+        gameResultShown = true
+        GameTimerManager.stop()
+        backCallback.isEnabled = false
+
+        val dialog = GameResultDialogFragment(
+            winner = lastWinner ?: return,
+            cause = lastCause
+        )
+
+        dialog.show(supportFragmentManager, "GameResult")
+    }
 
 }
