@@ -8,12 +8,14 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import com.gracehopper.laserchessapp.R
@@ -41,7 +43,7 @@ class SettingsDialogFragment : DialogFragment() {
     private lateinit var checkMusic: CheckBox
     private lateinit var checkSoundEffects: CheckBox
     private lateinit var checkNotifications: CheckBox
-    private lateinit var buttonLogout: MaterialButton
+    private lateinit var buttonLogout: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

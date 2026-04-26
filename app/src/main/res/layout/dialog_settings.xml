@@ -2,47 +2,50 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="20dp">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_modal_border"
+        android:background="@drawable/bg_dark_panel"
         android:padding="24dp" >
 
-        <ImageButton
-            android:id="@+id/buttonCloseSettingsDialog"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/bg_box_border"
-            android:contentDescription="@string/close"
-            android:padding="8dp"
-            android:src="@drawable/ic_close" />
-
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="28dp" >
+            android:layout_marginBottom="28dp"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="12dp"
                 android:contentDescription="@string/settings"
-                android:src="@drawable/ic_settings" />
+                android:src="@drawable/settings_48px" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/settings"
-                android:textColor="@android:color/black"
-                android:textSize="30sp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/LCWhite"
+                android:textSize="@dimen/text_large"
                 android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/buttonCloseSettingsDialog"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/bg_button"
+                android:contentDescription="@string/close"
+                android:src="@drawable/baseline_close_24"
+                app:tint="@color/LCRed" />
 
         </LinearLayout>
 
@@ -52,8 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="18dp"
             android:text="@string/personal_data"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
+            android:textColor="@color/LCWhite"
+            android:textSize="@dimen/text_medium"
             android:textStyle="bold" />
 
         <!-- Email -->
@@ -69,8 +72,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="12dp"
                 android:text="@string/email"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
+                android:textColor="@color/LCWhite"
+                android:textSize="@dimen/text_medium_small"
                 android:textStyle="bold" />
 
             <TextView
@@ -78,12 +81,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/bg_box_border"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="10dp"
                 android:text=""
-                android:textColor="@android:color/black"
-                android:textSize="16sp"
+                android:textColor="@color/LCWhite"
+                android:textSize="@dimen/text_medium_small"
                 android:maxLines="1"
                 android:ellipsize="end" />
 
@@ -96,9 +98,10 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="18dp"
             android:text="@string/change_password"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textColor="@color/LCGray"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold"
+            />
 
         <!-- Eliminar cuenta -->
         <TextView
@@ -107,25 +110,34 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="18dp"
             android:text="@string/eliminate_account"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
+            android:textColor="@color/LCGray"
+            android:textSize="@dimen/text_medium"
             android:textStyle="bold" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_surface2_panel_rounded"
+            android:paddingBottom="10dp">
 
         <!-- Música -->
         <LinearLayout
+            android:id="@+id/musicSelect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_margin="10dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/music"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
+                android:textColor="@color/LCWhite"
+                android:textSize="@dimen/text_medium"
                 android:textStyle="bold" />
 
             <CheckBox
@@ -133,25 +145,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:buttonTint="@android:color/black" />
+                android:buttonTint="@color/LCWhite" />
 
         </LinearLayout>
 
         <!-- Efectos de sonido -->
         <LinearLayout
+            android:id="@+id/soundSelect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_margin="10dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/musicSelect">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/sound_effects"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
+                android:textColor="@color/LCWhite"
+                android:textSize="@dimen/text_medium"
                 android:textStyle="bold" />
 
             <CheckBox
@@ -159,25 +173,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:buttonTint="@android:color/black" />
+                android:buttonTint="@color/LCWhite" />
 
         </LinearLayout>
 
         <!-- Notificaciones -->
         <LinearLayout
+            android:id="@+id/notificationsSelect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_margin="10dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/soundSelect">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/notifications"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
+                android:textColor="@color/LCWhite"
+                android:textSize="@dimen/text_medium"
                 android:textStyle="bold" />
 
             <CheckBox
@@ -185,23 +201,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:buttonTint="@android:color/black" />
+                android:buttonTint="@color/LCWhite" />
 
         </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- Ajustes de accesibilidad -->
 
         <!-- Cerrar sesión -->
-        <com.google.android.material.button.MaterialButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/buttonLogout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
+            android:padding="12dp"
             android:layout_gravity="center"
+            android:layout_marginTop="16dp"
             android:text="@string/logout"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textColor="@color/LCWhite"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold"
+            android:background="@drawable/bg_red_button"/>
 
     </LinearLayout>
 
