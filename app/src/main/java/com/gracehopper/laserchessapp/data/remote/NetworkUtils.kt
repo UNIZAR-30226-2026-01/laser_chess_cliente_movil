@@ -157,8 +157,22 @@ object NetworkUtils {
 
     }
 
+    fun resetClients() {
+        apiService = null
+        okHttpClient = null
+        refreshClient = null
+        webSocketClient = null
+        sseClient = null
+    }
+
     fun clearCookies() {
         persistentCookieJar.clear()
+    }
+
+    fun clearSession() {
+        TokenManager.clear()
+        clearCookies()
+        resetClients()
     }
 
 }
