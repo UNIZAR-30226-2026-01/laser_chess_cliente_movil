@@ -198,7 +198,8 @@ class GameActivity : AppCompatActivity() {
             Log.d("RECONNECT", "pendingStateLog es null: ${pending == null}, valor: '$pending'")
             if (pending != null) {
                 Log.d("RECONNECT", "Aplicando state log: '$pending'")
-                applyStateLog(pending)
+                val moveCount = applyStateLog(pending)
+                recalculateTurnAfterStateLog(moveCount)
                 clearTrigger++
                 Log.d("RECONNECT", "State log aplicado, clearTrigger=$clearTrigger")
             }
@@ -259,7 +260,8 @@ class GameActivity : AppCompatActivity() {
                                 BoardParser.boadFromCSV(boardM, csv)
                             }
 
-                            applyStateLog(log)
+                            val moveCount = applyStateLog(log)
+                            recalculateTurnAfterStateLog(moveCount)
                             clearTrigger++
                         }
 
@@ -649,11 +651,11 @@ class GameActivity : AppCompatActivity() {
         }, 1000)
     }
 
-    private fun applyStateLog(log: String) {
+    private fun applyStateLog(log: String) : Int {
 
         if (log.isBlank()) {
             Log.d("RECONNECT", "applyStateLog: log vacío, nada que aplicar")
-            return
+            return 0
         }
 
         val moves = log.split(";").filter { it.isNotBlank() }
@@ -663,6 +665,18 @@ class GameActivity : AppCompatActivity() {
         for (moveStr in moves) {
             applyStateMove(moveStr)
         }
+
+        return moves.size
+    }
+
+    /**
+     * Calcula si es el turno del jugador actual.
+     */
+    private fun recalculateTurnAfterStateLog(moveCount: Int) {
+        val isRedTurn = moveCount % 2 == 0
+        isMyTurn = (imInternalRed == isRedTurn)
+        GameTimerManager.setMyTurn(isMyTurn)
+        Log.d("RECONNECT", "recalculateTurn: moveCount=$moveCount isRedTurn=$isRedTurn imRed=$imInternalRed → isMyTurn=$isMyTurn")
     }
 
     private fun applyStateMove(moveStr: String) {
