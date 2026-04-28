@@ -1,5 +1,8 @@
 package com.gracehopper.laserchessapp.data.manager
 
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.google.gson.Gson
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.game.GameMessageType
@@ -67,9 +70,19 @@ object ActiveGameManager {
 
     private var onConnectedCallback: (() -> Unit)? = null
     private var onMessageReceivedCallback: ((GameEvent) -> Unit)? = null
+
     // Para errores del socket (de conexión, refresh...)
     private var onErrorCallback: ((String) -> Unit)? = null
     private var onClosedCallback: (() -> Unit)? = null
+
+    private const val PREF_NAME = "active_game_prefs"
+    private const val KEY_IS_FRIENDLY = "is_friendly_game"
+    private lateinit var prefs: SharedPreferences
+
+    fun init(context: Context) {
+        prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        isFriendlyGame = prefs.getBoolean(KEY_IS_FRIENDLY, false)  // restaurar al arrancar
+    }
 
     /**
      * Establece los callbacks de la conexión.
@@ -146,8 +159,11 @@ object ActiveGameManager {
              * Movimiento de partida
              */
             GameMessageType.MOVE -> {
-                onMessageReceivedCallback?.invoke(GameEvent.Move(
-                    moveAndTime = serverMsg.content.orEmpty()))
+                onMessageReceivedCallback?.invoke(
+                    GameEvent.Move(
+                        moveAndTime = serverMsg.content.orEmpty()
+                    )
+                )
             }
 
             /**
@@ -190,10 +206,12 @@ object ActiveGameManager {
              * Fin de partida
              */
             GameMessageType.END -> {
-                onMessageReceivedCallback?.invoke(GameEvent.End(
-                    winner = serverMsg.content.orEmpty(),
-                    victoryCause = serverMsg.extra.orEmpty()
-                ))
+                onMessageReceivedCallback?.invoke(
+                    GameEvent.End(
+                        winner = serverMsg.content.orEmpty(),
+                        victoryCause = serverMsg.extra.orEmpty()
+                    )
+                )
             }
 
             /**
@@ -261,6 +279,7 @@ object ActiveGameManager {
      */
     fun setGameType(isFriendly: Boolean) {
         isFriendlyGame = isFriendly
+        prefs.edit { putBoolean(KEY_IS_FRIENDLY, isFriendly) }
     }
 
     /**
@@ -275,7 +294,7 @@ object ActiveGameManager {
 
         resetConnectionOnly()
 
-        setGameType(true)
+        setGameType(false)
 
         currentOpponentUsername = "BOT"
         currentBoard = board
@@ -346,7 +365,7 @@ object ActiveGameManager {
         setGameType(true)                   // La partida es amistosa
         currentOpponentUsername = challengerUsername
         currentBoard = board
-        currentStartingTime = startingTime/1000
+        currentStartingTime = startingTime / 1000
         currentTimeIncrement = timeIncrement
         currentState = GameState.CONNECTING
         lastError = null
@@ -408,7 +427,10 @@ object ActiveGameManager {
      * (InitialState y State), sin importar el orden en que lleguen.
      */
     private fun dispatchReconnectIfReady() {
-        android.util.Log.d("RECONNECT", "dispatchReconnectIfReady: gotInitial=$reconnectGotInitialState gotState=$reconnectGotState pendingLog='$pendingStateLog' csv=${intialBoardCSV != null}")
+        android.util.Log.d(
+            "RECONNECT",
+            "dispatchReconnectIfReady: gotInitial=$reconnectGotInitialState gotState=$reconnectGotState pendingLog='$pendingStateLog' csv=${intialBoardCSV != null}"
+        )
         if (reconnectGotInitialState && reconnectGotState) {
             android.util.Log.d("RECONNECT", "Ambos recibidos → navegando a GameActivity")
             awaitingReconnectMessages = false
@@ -461,6 +483,8 @@ object ActiveGameManager {
         awaitingReconnectMessages = false
         currentState = GameState.INACTIVE
         lastError = null
+
+        setGameType(false)
 
         clearCallbacks()
     }

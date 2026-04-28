@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_dark_panel"
+    android:background="@drawable/bg_dark_panel_rounded"
     android:orientation="vertical"
     android:padding="24dp">
 
@@ -12,7 +12,7 @@
         android:layout_height="4dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
-        android:background="#4A4458" />
+        android:background="@color/LCGray" />
 
     <TextView
         android:id="@+id/txtDialogTitle"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:text="Título"
-        android:textColor="@color/LCWhite"
+        android:textColor="@color/LCRed"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -29,15 +29,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <Button
-            android:id="@+id/btnOption1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Opción 1"
-            android:backgroundTint="#3B354D"
-            android:textColor="@color/LCWhite"
-            app:cornerRadius="8dp" />
 
     </LinearLayout>
 

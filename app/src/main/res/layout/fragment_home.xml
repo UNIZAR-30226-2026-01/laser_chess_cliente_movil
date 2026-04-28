@@ -70,7 +70,7 @@
             android:id="@+id/btnGameMode"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:background="@drawable/bg_dark_panel"
+            android:background="@drawable/bg_dark_panel_rounded"
             android:src="@drawable/robot_2_48px"
             app:tint="@color/LCWhite"
             android:contentDescription="modo_juego"/>
@@ -113,14 +113,15 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/bg_dark_panel"
+            android:background="@drawable/bg_dark_panel_rounded"
             app:tint="@color/LCWhite"/>
 
         <ImageButton
             android:id="@+id/btnModeMiddle"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:background="@drawable/bg_dark_panel"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_dark_panel_rounded"
             app:tint="@color/LCWhite"/>
 
     </LinearLayout>
