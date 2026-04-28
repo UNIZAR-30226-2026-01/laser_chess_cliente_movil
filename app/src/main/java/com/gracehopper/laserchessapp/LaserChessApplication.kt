@@ -1,6 +1,7 @@
 package com.gracehopper.laserchessapp
 
 import android.app.Application
+import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.utils.TokenManager
 
@@ -15,6 +16,7 @@ class LaserChessApplication : Application() {
 
         NetworkUtils.init(this)
         TokenManager.init(this)
+        ActiveGameManager.init(this)
     }
 
 }

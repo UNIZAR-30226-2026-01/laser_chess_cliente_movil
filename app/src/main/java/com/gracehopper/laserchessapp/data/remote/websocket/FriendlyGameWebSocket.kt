@@ -25,7 +25,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
 
 
     /**
-     *
+     * Crea una nueva partida contra un bot.
      */
     fun startBotGame(
         board: Int,
