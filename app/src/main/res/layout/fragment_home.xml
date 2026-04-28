@@ -113,14 +113,15 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/bg_dark_panel"
+            android:background="@drawable/bg_dark_panel_rounded"
             app:tint="@color/LCWhite"/>
 
         <ImageButton
             android:id="@+id/btnModeMiddle"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:background="@drawable/bg_dark_panel"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_dark_panel_rounded"
             app:tint="@color/LCWhite"/>
 
     </LinearLayout>

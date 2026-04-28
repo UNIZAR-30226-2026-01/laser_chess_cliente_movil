@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -105,15 +106,15 @@ class HomeFragment : Fragment() {
             includeBoardSelector.findViewById<TextView>(R.id.txtSelectorTitle)
         val imgBoardIcon =
             includeBoardSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
+        val LCRed = ContextCompat.getColor(requireContext(), R.color.LCRed)
 
         txtBoardTitle.text = "Tablero"
         imgBoardIcon.setImageResource(R.drawable.ic_tablero)
-        imgBoardIcon.setColorFilter(
-            ContextCompat.getColor(requireContext(), R.color.LCRed)
-        )
+        imgBoardIcon.setColorFilter(LCRed)
 
         includeBoardSelector.setOnClickListener {
-            showBottomSheet("Seleccionar tablero")
+            val boardOptions = listOf("Ace", "Curiosity", "Grail", "Mercury", "Sophie")
+            showBottomSheet("Seleccionar tablero", boardOptions, LCRed, txtBoardTitle)
         }
 
         val includeTimeSelector = view.findViewById<View>(R.id.includeTimeSelector)
@@ -121,21 +122,21 @@ class HomeFragment : Fragment() {
             includeTimeSelector.findViewById<TextView>(R.id.txtSelectorTitle)
         val imgTimeIcon =
             includeTimeSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
+        val LCBlue = ContextCompat.getColor(requireContext(), R.color.LCBlue)
 
         txtTimeTitle.text = "Modo de tiempo"
         imgTimeIcon.setImageResource(R.drawable.ic_tiempo)
-        imgTimeIcon.setColorFilter(
-            ContextCompat.getColor(requireContext(), R.color.LCBlue)
-        )
+        imgTimeIcon.setColorFilter(LCBlue)
 
         includeTimeSelector.setOnClickListener {
-            showBottomSheet("Seleccionar tiempo")
+            val gameModeOptions = listOf("Blitz", "Bullet", "Classic", "Extended")
+            showBottomSheet("Seleccionar modo de tiempo", gameModeOptions, LCBlue, txtTimeTitle)
         }
     }
 
-    private fun showBottomSheet(titulo: String) {
+    private fun showBottomSheet(titulo: String, opciones: List<String>, colorTitulo: Int, targetTextView: TextView) {
 
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.TemaBottomSheetTransparente)
 
         val dialogView =
             layoutInflater.inflate(R.layout.dialog_selector_desplegable, null)
@@ -144,12 +145,36 @@ class HomeFragment : Fragment() {
             dialogView.findViewById<TextView>(R.id.txtDialogTitle)
 
         txtTitle.text = titulo
+        txtTitle.setTextColor(colorTitulo)
 
-        val btnOption1 =
-            dialogView.findViewById<Button>(R.id.btnOption1)
+        val container = dialogView.findViewById<LinearLayout>(R.id.layoutOptionsContainer)
 
-        btnOption1.setOnClickListener {
-            bottomSheetDialog.dismiss()
+        // Cargamos en el selector las opciones que queramos
+        // Se puede poner q se seleccionen imágenes en vez de botones de texto
+        // pero por ahora nos vale con esto
+        for (opcion in opciones) {
+            val button = com.google.android.material.button.MaterialButton(requireContext()).apply {
+                text = opcion
+                setTextColor(ContextCompat.getColor(context, R.color.LCWhite))
+                backgroundTintList = ContextCompat.getColorStateList(context, R.color.S2)
+                cornerRadius = 36
+
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(0, 0, 0, 16)
+                }
+
+                setOnClickListener {
+                    // TODO: Aquí guardaremos la opción elegida en el futuro
+                    targetTextView.text = opcion
+                    bottomSheetDialog.dismiss()
+                }
+            }
+
+            //ñadimos el botón recién creado al contenedor
+            container.addView(button)
         }
 
         bottomSheetDialog.setContentView(dialogView)
@@ -163,10 +188,10 @@ class HomeFragment : Fragment() {
                 R.drawable.robot_2_48px
 
             GameMode.RANKED ->
-                R.drawable.ic_ranked
+                R.drawable.ic_ranked_mode
 
             GameMode.PUBLIC ->
-                R.drawable.ic_tiempo
+                R.drawable.ic_casual_mode
         }
     }
 

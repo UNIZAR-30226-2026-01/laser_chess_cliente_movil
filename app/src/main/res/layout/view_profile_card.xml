@@ -53,7 +53,7 @@
         android:id="@+id/txtXP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="XP"
+        android:text="XP"
         android:textColor="@color/LCGreen"
         android:layout_marginBottom="4dp"
         android:textSize="@dimen/text_small"
@@ -64,16 +64,21 @@
 
     <TextView
         android:id="@+id/txtMyProfileLevel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tools:text="LVL 24 - 170/300"
-        android:textColor="@color/LCWhite"
         android:layout_marginBottom="4dp"
+        android:layout_marginEnd="2dp"
+        android:textColor="@color/LCWhite"
         android:textSize="@dimen/text_small"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/progressMyProfileXp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:gravity="end"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/txtXP"
-        app:layout_constraintTop_toBottomOf="@id/imgMyProfileAvatar"/>
+        app:layout_constraintBottom_toTopOf="@id/progressMyProfileXp"
+        app:layout_constraintTop_toBottomOf="@id/imgMyProfileAvatar"
+        tools:text="LVL 24 - 170/300" />
 
 
     <ProgressBar
