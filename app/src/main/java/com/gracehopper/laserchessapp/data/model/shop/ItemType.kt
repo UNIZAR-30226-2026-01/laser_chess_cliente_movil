@@ -10,5 +10,8 @@ enum class ItemType {
     PIECE_SKIN,
 
     @SerializedName("WIN_ANIMATION")
-    WIN_ANIMATION
+    WIN_ANIMATION,
+
+    @SerializedName("AVATAR")
+    AVATAR
 }

@@ -28,6 +28,7 @@ class ShopFragment : Fragment() {
     private lateinit var piecesAdapter: ShopProductAdapter
     private lateinit var boardsAdapter: ShopProductAdapter
     private lateinit var animationsAdapter: ShopProductAdapter
+    private lateinit var avatarsAdapter: ShopProductAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +58,10 @@ class ShopFragment : Fragment() {
             buyProduct(product)
         }
 
+        avatarsAdapter = ShopProductAdapter(emptyList()) { product ->
+            buyProduct(product)
+        }
+
         binding.recyclerPiecesShop.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -73,6 +78,12 @@ class ShopFragment : Fragment() {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = animationsAdapter
+        }
+
+        binding.recyclerAvatarsShop.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = avatarsAdapter
         }
     }
 
@@ -113,8 +124,6 @@ class ShopFragment : Fragment() {
     private fun scrollRecycler(recyclerView: RecyclerView, direction: Int) {
         val distancePx = (recyclerView.width * 0.75f).toInt()
 
-        Log.d("SHOP_ARROWS", "Scroll dx=${direction * distancePx}")
-
         recyclerView.smoothScrollBy(direction * distancePx, 0)
     }
 
@@ -145,15 +154,17 @@ class ShopFragment : Fragment() {
                 val pieces = products.filter { it.itemType == ItemType.PIECE_SKIN }
                 val boards = products.filter { it.itemType == ItemType.BOARD_SKIN }
                 val animations = products.filter { it.itemType == ItemType.WIN_ANIMATION }
+                val avatars = products.filter { it.itemType == ItemType.AVATAR }
 
                 Log.d(
                     "SHOP_FRAGMENT",
-                    "Piezas=${pieces.size}, tableros=${boards.size}, animaciones=${animations.size}"
+                    "Piezas=${pieces.size}, tableros=${boards.size}, animaciones=${animations.size}, avatares=${avatars.size}"
                 )
 
                 piecesAdapter.updateData(pieces)
                 boardsAdapter.updateData(boards)
                 animationsAdapter.updateData(animations)
+                avatarsAdapter.updateData(avatars)
             },
             onError = { error ->
                 Log.e("SHOP_FRAGMENT", "Error cargando tienda: $error")
@@ -165,19 +176,24 @@ class ShopFragment : Fragment() {
 
     private fun buyProduct(product: ShopProduct) {
 
-        itemRepository.buyItem(itemId = product.itemId,
+        itemRepository.buyItem(
+            itemId = product.itemId,
             onSuccess = {
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     "Has comprado ${product.name}",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
 
                 loadShopItems()
             },
             onError = { error ->
                 Log.e("SHOP_FRAGMENT", "Error comprando item: $error")
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     error,
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         )
 
@@ -209,6 +225,7 @@ private fun getShopItemName(itemId: Int, itemType: ItemType): String {
         ItemType.PIECE_SKIN -> "Skin $itemId"
         ItemType.BOARD_SKIN -> "Tablero $itemId"
         ItemType.WIN_ANIMATION -> "Animación $itemId"
+        ItemType.AVATAR -> "Avatar $itemId"
     }
 
 }
