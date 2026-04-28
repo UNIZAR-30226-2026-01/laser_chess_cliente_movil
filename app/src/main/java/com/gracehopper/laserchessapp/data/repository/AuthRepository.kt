@@ -5,6 +5,7 @@ import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
 import com.gracehopper.laserchessapp.data.model.auth.LoginResponse
 import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
 import com.gracehopper.laserchessapp.data.remote.ApiService
+import com.gracehopper.laserchessapp.utils.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -103,4 +104,28 @@ class AuthRepository (private val apiService: ApiService) {
 
         })
     }
+
+    fun refreshToken(
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        apiService.refreshToken().enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(
+                call: Call<LoginResponse>,
+                response: Response<LoginResponse>
+            ) {
+                if (response.isSuccessful && response.body()?.accessToken != null) {
+                    TokenManager.saveAccessToken(response.body()!!.accessToken)
+                    onSuccess()
+                } else {
+                    onError("Refresh falló: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                onError(t.message ?: "Error de conexión")
+            }
+        })
+    }
+
 }

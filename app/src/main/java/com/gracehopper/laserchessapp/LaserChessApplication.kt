@@ -2,6 +2,7 @@ package com.gracehopper.laserchessapp
 
 import android.app.Application
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.utils.TokenManager
 
 /**
  * Clase global que se ejecuta antes que cualquier Activity.
@@ -13,6 +14,7 @@ class LaserChessApplication : Application() {
         super.onCreate()
 
         NetworkUtils.init(this)
+        TokenManager.init(this)
     }
 
 }
