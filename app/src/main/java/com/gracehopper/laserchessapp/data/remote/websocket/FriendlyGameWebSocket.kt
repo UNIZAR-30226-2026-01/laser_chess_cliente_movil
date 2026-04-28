@@ -15,7 +15,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
 
     private var webSocket: WebSocket? = null
 
-    private val BASE_URL = "ws://10.0.2.2:8080/api/rt/"
+    private val BASE_URL = "ws://laserchess-api.elcangrejo.es:8081/api/rt/"
         // TODO EMULADOR:           "ws://10.0.2.2:8080/api/rt/"
         // TODO PORTÁTIL AINHOA:    "ws://192.168.1.26:8080/api/rt/"
         // TODO PORTÁTIL JORGE:     "ws://192.168.0.17:8080/api/rt/"
