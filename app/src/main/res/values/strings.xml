@@ -27,8 +27,8 @@
     <string name="registerTitle">Crear una cuenta</string>
     <string name="registerSubtitle">¡La diversión comienza aquí!</string>
     <string name="register">Registrarse</string>
-    <string name="username">pepe123</string>
-    <string name="email">pepe@example.com</string>
+    <string name="username">username</string>
+    <string name="email">name@example.com</string>
     <string name="yesAccount">¿Ya tienes una cuenta?</string>
     <string name="switch_login">Inicia sesión</string>
 
@@ -85,5 +85,9 @@
     <string name="music">Música</string>
     <string name="sound_effects">Efectos de sonido</string>
     <string name="logout">Cerrar sesión</string>
+
+    <string name="previous">Anterior</string>
+    <string name="next">Siguiente</string>
+    <string name="item">Artículo</string>
 
 </resources>

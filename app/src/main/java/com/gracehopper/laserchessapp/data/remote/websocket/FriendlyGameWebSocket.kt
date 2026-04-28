@@ -14,8 +14,14 @@ import okhttp3.WebSocketListener
 class FriendlyGameWebSocket(private val listener: WebSocketListener) {
 
     private var webSocket: WebSocket? = null
-    private val BASE_URL = "ws://192.168.0.17:8080/api/rt/challenge"
-        // TODO PORTÁTIL JORGE: "ws://192.168.0.17:8080/api/rt/challenge"
+
+    private val BASE_URL = "ws://10.0.2.2:8080/api/rt/"
+        // TODO EMULADOR:           "ws://10.0.2.2:8080/api/rt/"
+        // TODO PORTÁTIL AINHOA:    "ws://192.168.1.26:8080/api/rt/"
+        // TODO PORTÁTIL JORGE:     "ws://192.168.0.17:8080/api/rt/"
+    private val CHALLENGE_URL = BASE_URL + "challenge"
+    private val BOT_URL = BASE_URL + "bot"
+    private val RECONNECT_URL = BASE_URL + "reconnect"
 
 
     /**
@@ -29,7 +35,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
     ) {
 
         val url =
-            "ws://192.168.0.17:8080/api/rt/bot" +
+            BOT_URL +
                     "?board=$board" +
                     "&starting_time=$startingTime" +
                     "&time_increment=$timeIncrement" +
@@ -58,7 +64,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
     ) {
 
         val url =
-            "$BASE_URL?username=$username&board=$board&starting_time=$startingTime&time_increment=$timeIncrement"
+            "$CHALLENGE_URL?username=$username&board=$board&starting_time=$startingTime&time_increment=$timeIncrement"
 
         val request = Request.Builder()
             .url(url)
@@ -70,7 +76,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
     }
 
     private fun openChallengeReplySocket(action: String, username: String) {
-        val url = "$BASE_URL/$action?username=$username"
+        val url = "$CHALLENGE_URL/$action?username=$username"
 
         val request = Request.Builder()
             .url(url)
@@ -98,10 +104,9 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
 
     fun reconnect(token: String) {
 
-        val url = "ws://192.168.0.17:8080/api/rt/reconnect?token=$token"
 
         val request = Request.Builder()
-            .url(url)
+            .url(RECONNECT_URL)
             .build()
 
         val client = NetworkUtils.getWebSocketClient()

@@ -1,10 +1,10 @@
-package com.gracehopper.laserchessapp.ui
+package com.gracehopper.laserchessapp.ui.settings
 
 import android.app.AlertDialog
 import android.graphics.Paint
 import android.os.Bundle
-import android.text.method.PasswordTransformationMethod
 import android.text.InputType
+import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +24,6 @@ import com.gracehopper.laserchessapp.data.repository.AuthRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.utils.redirectToLogin
-
 
 /**
  * Diálogo de notificaciones de retos de partidas amistosas
@@ -232,7 +231,8 @@ class SettingsDialogFragment : DialogFragment() {
     private fun validateAndChangePassword(currentPassword: String,
                                           newPassword: String,
                                           repeatPassword: String,
-                                          dialog: AlertDialog) {
+                                          dialog: AlertDialog
+    ) {
 
         when {
             currentPassword.isBlank() -> {
@@ -298,7 +298,8 @@ class SettingsDialogFragment : DialogFragment() {
 
     private fun changePassword(currentPassword: String,
                                newPassword: String,
-                               dialog: AlertDialog) {
+                               dialog: AlertDialog
+    ) {
 
         userRepository.changePassword(
             request = ChangePasswordRequest(currentPassword, newPassword),
@@ -433,6 +434,7 @@ class SettingsDialogFragment : DialogFragment() {
 
         // limpio tokens
         TokenManager.clear()
+        NetworkUtils.clearCookies()
 
         // limpio perfil en memoria
         CurrentUserManager.clearMyProfile()

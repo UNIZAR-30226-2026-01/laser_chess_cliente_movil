@@ -1,4 +1,4 @@
-package com.gracehopper.laserchessapp.ui
+package com.gracehopper.laserchessapp.ui.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,14 +14,8 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
+import com.gracehopper.laserchessapp.data.model.game.GameMode
 import com.gracehopper.laserchessapp.ui.game.GameActivity
-
-// quitar hardcode despues
-enum class GameMode {
-    BOT,
-    RANKED,
-    PUBLIC
-}
 
 class HomeFragment : Fragment() {
 
