@@ -264,6 +264,42 @@ object ActiveGameManager {
     }
 
     /**
+     *
+     */
+    fun createBotGame(
+        board: Int,
+        startingTime: Int,
+        timeIncrement: Int,
+        level: Int
+    ) {
+
+        resetConnectionOnly()
+
+        setGameType(true)
+
+        currentOpponentUsername = "BOT"
+        currentBoard = board
+        currentStartingTime = startingTime
+        currentTimeIncrement = timeIncrement
+
+        currentState = GameState.CONNECTING
+        lastError = null
+
+        val listener = buildListener(
+            onOpenState = GameState.STARTING_GAME
+        )
+
+        friendlyGameWebSocket = FriendlyGameWebSocket(listener)
+
+        friendlyGameWebSocket?.startBotGame(
+            board,
+            startingTime,
+            timeIncrement,
+            level
+        )
+    }
+
+    /**
      * Crea un reto contra otro jugador.
      */
     fun createChallenge(

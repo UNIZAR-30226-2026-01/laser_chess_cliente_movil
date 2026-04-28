@@ -27,7 +27,7 @@ import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
-import com.gracehopper.laserchessapp.ui.SettingsDialogFragment
+import com.gracehopper.laserchessapp.ui.settings.SettingsDialogFragment
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
 import com.gracehopper.laserchessapp.ui.social.RequestsDialogFragment
@@ -175,6 +175,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
         sseManager.connect()
 
         if (ActiveGameManager.currentState == ActiveGameManager.GameState.INACTIVE) {

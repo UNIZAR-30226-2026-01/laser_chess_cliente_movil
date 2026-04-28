@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="@android:color/white"
-    tools:context=".ui.CustomizeFragment">
+    tools:context=".ui.customize.CustomizeFragment">
 
         <LinearLayout
             android:layout_width="match_parent"

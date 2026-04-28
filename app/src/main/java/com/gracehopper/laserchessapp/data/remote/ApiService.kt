@@ -13,12 +13,15 @@ import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.model.social.FriendshipStatusResponse
 import com.gracehopper.laserchessapp.data.model.user.AccountResponse
 import com.gracehopper.laserchessapp.data.model.ranking.RatingResponse
+import com.gracehopper.laserchessapp.data.model.shop.BuyItemRequest
+import com.gracehopper.laserchessapp.data.model.shop.ShopItem
 import com.gracehopper.laserchessapp.data.model.social.ReceivedRequestsResponse
 import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
 import com.gracehopper.laserchessapp.data.model.user.MyAccountResponse
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
 import com.gracehopper.laserchessapp.data.model.user.XPInfoResponse
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 /**
@@ -113,6 +116,19 @@ interface ApiService {
     @DELETE("api/friendship/{user2Username}")
     fun deleteFriendship(@Path("user2Username") username: String): Call<Unit>
 
+    // Endpoints de ITEM
+
+    @POST("api/item")
+    fun buyItem(@Body request: BuyItemRequest): Call<Unit>
+
+    @GET("api/item/inventory")
+    fun getInventory(): Call<List<ShopItem>>
+
+    @GET("api/item/{itemID}")
+    fun getItem(@Path("itemID") itemID: Int): Call<ShopItem>
+
+    @GET("api/item/all")
+    fun getAllShopItems(): Call<List<ShopItem>>
 
     // Endpoint de CHALLENGE
     @GET("api/rt/challenges")

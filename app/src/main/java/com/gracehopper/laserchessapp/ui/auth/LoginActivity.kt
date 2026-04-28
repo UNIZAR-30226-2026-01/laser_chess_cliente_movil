@@ -15,6 +15,7 @@ import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
 import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.AuthRepository
+import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.main.MainActivity
 import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
@@ -41,23 +42,21 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var registerButton: Button
 
     private lateinit var authRepository: AuthRepository
+    private lateinit var userRepository: UserRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        TokenManager.init(this)
-        if (TokenManager.isLoggedIn()) {
-            goToMain()
-            return
-        }
-
         setContentView(R.layout.activity_login)
 
         authRepository = AuthRepository(NetworkUtils.getApiService())
+        userRepository = UserRepository(NetworkUtils.getApiService())
 
         initViews()
         initListeners()
-        loginLayout.visibility = View.VISIBLE
+        loginLayout.visibility = View.GONE
+
+        checkSession()
     }
 
     private fun initViews() {
@@ -99,6 +98,42 @@ class LoginActivity : AppCompatActivity() {
         // Listener para el botón de register
         registerButton.setOnClickListener {
             performRegister()
+        }
+
+    }
+
+    private fun checkSession() {
+
+        val token = TokenManager.getAccessToken()
+
+        if (!token.isNullOrBlank()) {
+
+            // Si se realiza la llamada correctamente, el token es válido
+            userRepository.getMyProfile(
+                onSuccess = { account ->
+                    Log.d("SESSION", "Sesión válida. userId=${account.id}")
+                    TokenManager.saveUserId(account.id)
+                    goToMain()
+                },
+                onError = {
+                    Log.w("SESSION", "Token inválido/no refrescable")
+                    showLogin()
+                }
+            )
+
+        } else {
+
+            authRepository.refreshToken(
+                onSuccess = {
+                    Log.d("SESSION", "Refresh inicial OK")
+                    goToMain()
+                },
+                onError = {
+                    Log.w("SESSION", "No hay sesión recuperable")
+                    showLogin()
+                }
+            )
+
         }
 
     }

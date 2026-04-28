@@ -1,22 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ShopFragment">
+    android:background="#0D0814"
+    android:fillViewport="true">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/shop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        android:textSize="24sp"
-        android:gravity="center" />
+        android:orientation="vertical"
+        android:padding="24dp">
 
+        <!-- PIEZAS -->
+        <TextView
+            android:id="@+id/txtPiecesTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/piece_skin"
+            android:textColor="@color/LCWhite"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:layout_marginBottom="12dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_shop_section"
+            android:paddingHorizontal="12dp">
+
+            <ImageButton
+                android:id="@+id/btnPrevPieces"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_left"
+                android:contentDescription="@string/previous" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerPiecesShop"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clipToPadding="true"
+                android:overScrollMode="never"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingHorizontal="4dp" />
+
+            <ImageButton
+                android:id="@+id/btnNextPieces"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_right"
+                android:contentDescription="@string/next" />
+        </LinearLayout>
+
+        <!-- TABLEROS -->
+        <TextView
+            android:id="@+id/txtBoardsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/board_skin"
+            android:textColor="@color/LCWhite"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_shop_section"
+            android:paddingHorizontal="12dp">
+
+            <ImageButton
+                android:id="@+id/btnPrevBoards"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_left"
+                android:contentDescription="@string/previous" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerBoardsShop"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clipToPadding="true"
+                android:overScrollMode="never"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingHorizontal="4dp" />
+
+            <ImageButton
+                android:id="@+id/btnNextBoards"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_right"
+                android:contentDescription="@string/next" />
+        </LinearLayout>
+
+        <!-- ANIMACIONES DE FIN DE PARTIDA -->
+        <TextView
+            android:id="@+id/txtAvatarsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/animation"
+            android:textColor="#E1F5FE"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_shop_section"
+            android:paddingHorizontal="12dp">
+
+            <ImageButton
+                android:id="@+id/btnPrevAvatars"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_left"
+                android:contentDescription="@string/previous" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerAnimationsShop"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clipToPadding="true"
+                android:overScrollMode="never"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingHorizontal="4dp" />
+
+            <ImageButton
+                android:id="@+id/btnNextAvatars"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_right"
+                android:contentDescription="@string/next" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

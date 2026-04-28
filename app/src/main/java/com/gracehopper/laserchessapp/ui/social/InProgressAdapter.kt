@@ -1,4 +1,4 @@
-package com.gracehopper.laserchessapp.ui
+package com.gracehopper.laserchessapp.ui.social
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

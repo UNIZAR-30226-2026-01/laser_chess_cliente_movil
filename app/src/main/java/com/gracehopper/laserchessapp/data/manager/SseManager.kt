@@ -15,13 +15,16 @@ class SseManager(
 ) {
 
     private var eventSource: EventSource? = null
+    private var manuallyClosed = false
 
     fun connect() {
 
         if (eventSource != null) return
 
+        val url = NetworkUtils.BASE_URL + "api/events"
+
         val request = Request.Builder()
-            .url(NetworkUtils.BASE_URL + "api/events")
+            .url(url)
             .build()
 
         val client = NetworkUtils.getSseClient()
@@ -54,8 +57,15 @@ class SseManager(
                 t: Throwable?,
                 response: Response?
             ) {
-                Log.e("SSE", "Error en SSE", t)
                 this@SseManager.eventSource = null
+
+                if (manuallyClosed) {
+                    Log.d("SSE", "SSE cerrado manualmente")
+                    manuallyClosed = false
+                    return
+                }
+
+                Log.e("SSE", "Error en SSE", t)
                 onError?.invoke(t)
             }
 
@@ -64,6 +74,7 @@ class SseManager(
     }
 
     fun disconnect() {
+        manuallyClosed = true
         eventSource?.cancel()
         eventSource = null
     }

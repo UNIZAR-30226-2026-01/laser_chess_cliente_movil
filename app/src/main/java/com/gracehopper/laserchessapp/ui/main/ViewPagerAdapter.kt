@@ -4,10 +4,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.gracehopper.laserchessapp.ui.ranking.RankingFragment
-import com.gracehopper.laserchessapp.ui.HomeFragment
-import com.gracehopper.laserchessapp.ui.CustomizeFragment
+import com.gracehopper.laserchessapp.ui.home.HomeFragment
+import com.gracehopper.laserchessapp.ui.customize.CustomizeFragment
 import com.gracehopper.laserchessapp.ui.social.SocialFragment
-import com.gracehopper.laserchessapp.ui.ShopFragment
+import com.gracehopper.laserchessapp.ui.shop.ShopFragment
 
 class ViewPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
