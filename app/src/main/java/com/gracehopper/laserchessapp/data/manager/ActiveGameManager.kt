@@ -67,6 +67,7 @@ object ActiveGameManager {
 
     private var onConnectedCallback: (() -> Unit)? = null
     private var onMessageReceivedCallback: ((GameEvent) -> Unit)? = null
+
     // Para errores del socket (de conexión, refresh...)
     private var onErrorCallback: ((String) -> Unit)? = null
     private var onClosedCallback: (() -> Unit)? = null
@@ -146,8 +147,11 @@ object ActiveGameManager {
              * Movimiento de partida
              */
             GameMessageType.MOVE -> {
-                onMessageReceivedCallback?.invoke(GameEvent.Move(
-                    moveAndTime = serverMsg.content.orEmpty()))
+                onMessageReceivedCallback?.invoke(
+                    GameEvent.Move(
+                        moveAndTime = serverMsg.content.orEmpty()
+                    )
+                )
             }
 
             /**
@@ -190,10 +194,12 @@ object ActiveGameManager {
              * Fin de partida
              */
             GameMessageType.END -> {
-                onMessageReceivedCallback?.invoke(GameEvent.End(
-                    winner = serverMsg.content.orEmpty(),
-                    victoryCause = serverMsg.extra.orEmpty()
-                ))
+                onMessageReceivedCallback?.invoke(
+                    GameEvent.End(
+                        winner = serverMsg.content.orEmpty(),
+                        victoryCause = serverMsg.extra.orEmpty()
+                    )
+                )
             }
 
             /**
@@ -275,7 +281,7 @@ object ActiveGameManager {
 
         resetConnectionOnly()
 
-        setGameType(true)
+        setGameType(false)
 
         currentOpponentUsername = "BOT"
         currentBoard = board
@@ -346,7 +352,7 @@ object ActiveGameManager {
         setGameType(true)                   // La partida es amistosa
         currentOpponentUsername = challengerUsername
         currentBoard = board
-        currentStartingTime = startingTime/1000
+        currentStartingTime = startingTime / 1000
         currentTimeIncrement = timeIncrement
         currentState = GameState.CONNECTING
         lastError = null
@@ -408,7 +414,10 @@ object ActiveGameManager {
      * (InitialState y State), sin importar el orden en que lleguen.
      */
     private fun dispatchReconnectIfReady() {
-        android.util.Log.d("RECONNECT", "dispatchReconnectIfReady: gotInitial=$reconnectGotInitialState gotState=$reconnectGotState pendingLog='$pendingStateLog' csv=${intialBoardCSV != null}")
+        android.util.Log.d(
+            "RECONNECT",
+            "dispatchReconnectIfReady: gotInitial=$reconnectGotInitialState gotState=$reconnectGotState pendingLog='$pendingStateLog' csv=${intialBoardCSV != null}"
+        )
         if (reconnectGotInitialState && reconnectGotState) {
             android.util.Log.d("RECONNECT", "Ambos recibidos → navegando a GameActivity")
             awaitingReconnectMessages = false
