@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.data.model.shop.ItemType
 import com.gracehopper.laserchessapp.data.model.shop.ShopItem
 import com.gracehopper.laserchessapp.data.model.shop.ShopProduct
@@ -39,6 +40,7 @@ class ShopFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupAdapters()
+        setupArrowButtons()
         loadShopItems()
     }
 
@@ -74,14 +76,66 @@ class ShopFragment : Fragment() {
         }
     }
 
+    private fun setupArrowButtons() {
+        binding.btnPrevPieces.setOnClickListener {
+            scrollRecycler(binding.recyclerPiecesShop, -1)
+        }
+
+        binding.btnNextPieces.setOnClickListener {
+            scrollRecycler(binding.recyclerPiecesShop, 1)
+        }
+
+        binding.btnPrevBoards.setOnClickListener {
+            scrollRecycler(binding.recyclerBoardsShop, -1)
+        }
+
+        binding.btnNextBoards.setOnClickListener {
+            scrollRecycler(binding.recyclerBoardsShop, 1)
+        }
+
+        binding.btnPrevAvatars.setOnClickListener {
+            scrollRecycler(binding.recyclerAnimationsShop, -1)
+        }
+
+        binding.btnNextAvatars.setOnClickListener {
+            scrollRecycler(binding.recyclerAnimationsShop, 1)
+        }
+    }
+
+    private fun scrollRecycler(recyclerView: RecyclerView, direction: Int) {
+        val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+
+        val currentPosition = layoutManager.findFirstVisibleItemPosition()
+        val itemCount = recyclerView.adapter?.itemCount ?: return
+
+        val targetPosition = (currentPosition + direction)
+            .coerceIn(0, itemCount - 1)
+
+        recyclerView.smoothScrollToPosition(targetPosition)
+    }
+
     private fun loadShopItems() {
 
         itemRepository.getAllShopItems(
             onSuccess = { items ->
                 Log.d("SHOP_FRAGMENT", "Items recibidos: ${items.size}")
 
+                items.forEachIndexed { index, item ->
+                    Log.d(
+                        "SHOP_FRAGMENT",
+                        "RAW [$index] id=${item.itemId}, type=${item.itemType}, price=${item.price}, level=${item.levelRequisite}, default=${item.isDefault}"
+                    )
+                }
+
                 val products = items.map { item ->
                     item.toShopProduct()
+                }
+
+                products.forEachIndexed { index, product ->
+                    Log.d(
+                        "SHOP_FRAGMENT",
+                        "PRODUCT [$index] id=${product.itemId}, name=${product.name}, type=${product.itemType}, price=${product.price}"
+                    )
                 }
 
                 val pieces = products.filter { it.itemType == ItemType.PIECE_SKIN }

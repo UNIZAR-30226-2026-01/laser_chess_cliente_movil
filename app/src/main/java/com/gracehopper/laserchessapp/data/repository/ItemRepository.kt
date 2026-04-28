@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.data.repository
 
+import android.util.Log
 import com.gracehopper.laserchessapp.data.model.shop.BuyItemRequest
 import com.gracehopper.laserchessapp.data.model.shop.ShopItem
 import com.gracehopper.laserchessapp.data.remote.ApiService
@@ -24,8 +25,20 @@ class ItemRepository(
                     response: Response<List<ShopItem>>
                 ) {
 
+                    Log.d("ITEM_REPO", "GET /api/item/all HTTP=${response.code()}")
+                    Log.d("ITEM_REPO", "Body parseado=${response.body()}")
+                    Log.d("ITEM_REPO", "ErrorBody=${response.errorBody()?.string()}")
+
                     if (response.isSuccessful) {
                         onSuccess(response.body().orEmpty())
+
+                        response.body()?.forEachIndexed { index, item ->
+                            Log.d(
+                                "ITEM_REPO",
+                                "[$index] id=${item.itemId}, type=${item.itemType}, price=${item.price}, level=${item.levelRequisite}, default=${item.isDefault}"
+                            )
+                        }
+
                     } else {
                         onError("Error cargando tienda: ${response.code()}")
                     }
