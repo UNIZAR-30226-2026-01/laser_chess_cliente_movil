@@ -93,25 +93,29 @@ class ShopFragment : Fragment() {
             scrollRecycler(binding.recyclerBoardsShop, 1)
         }
 
-        binding.btnPrevAvatars.setOnClickListener {
+        binding.btnPrevAnimations.setOnClickListener {
             scrollRecycler(binding.recyclerAnimationsShop, -1)
         }
 
-        binding.btnNextAvatars.setOnClickListener {
+        binding.btnNextAnimations.setOnClickListener {
             scrollRecycler(binding.recyclerAnimationsShop, 1)
+        }
+
+        binding.btnPrevAvatars.setOnClickListener {
+            scrollRecycler(binding.recyclerAvatarsShop, -1)
+        }
+
+        binding.btnNextAvatars.setOnClickListener {
+            scrollRecycler(binding.recyclerAvatarsShop, 1)
         }
     }
 
     private fun scrollRecycler(recyclerView: RecyclerView, direction: Int) {
-        val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+        val distancePx = (recyclerView.width * 0.75f).toInt()
 
-        val currentPosition = layoutManager.findFirstVisibleItemPosition()
-        val itemCount = recyclerView.adapter?.itemCount ?: return
+        Log.d("SHOP_ARROWS", "Scroll dx=${direction * distancePx}")
 
-        val targetPosition = (currentPosition + direction)
-            .coerceIn(0, itemCount - 1)
-
-        recyclerView.smoothScrollToPosition(targetPosition)
+        recyclerView.smoothScrollBy(direction * distancePx, 0)
     }
 
     private fun loadShopItems() {
