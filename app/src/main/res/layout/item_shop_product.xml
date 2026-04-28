@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutShopProduct"
+    android:layout_width="96dp"
+    android:layout_height="120dp"
+    android:layout_marginHorizontal="6dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/bg_shop_item"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/txtShopProductName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Piezas · Cats"
+        android:textColor="@color/LCWhite"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <ImageView
+        android:id="@+id/imgShopProduct"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_piece_placeholder"
+        android:contentDescription="@string/item" />
+
+    <LinearLayout
+        android:id="@+id/layoutShopPrice"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/bg_shop_price">
+
+        <TextView
+            android:id="@+id/txtShopProductPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1000"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imgShopCoin"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/ic_coin"
+            android:contentDescription="@string/coin" />
+    </LinearLayout>
+
+</LinearLayout>

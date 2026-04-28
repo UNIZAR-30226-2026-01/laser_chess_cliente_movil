@@ -20,8 +20,10 @@ class SseManager(
 
         if (eventSource != null) return
 
+        val url = NetworkUtils.BASE_URL + "api/events"
+
         val request = Request.Builder()
-            .url(NetworkUtils.BASE_URL + "api/events")
+            .url(url)
             .build()
 
         val client = NetworkUtils.getSseClient()

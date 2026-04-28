@@ -21,6 +21,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
         // TODO PORTÁTIL JORGE:     "ws://192.168.0.17:8080/api/rt/"
     private val CHALLENGE_URL = BASE_URL + "challenge"
     private val BOT_URL = BASE_URL + "bot"
+    private val RECONNECT_URL = BASE_URL + "reconnect"
 
 
     /**
@@ -103,10 +104,9 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
 
     fun reconnect(token: String) {
 
-        val url = "ws://192.168.0.17:8080/api/rt/reconnect?token=$token"
 
         val request = Request.Builder()
-            .url(url)
+            .url(RECONNECT_URL)
             .build()
 
         val client = NetworkUtils.getWebSocketClient()

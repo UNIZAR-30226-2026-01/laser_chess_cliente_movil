@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.data.remote
 
+import android.content.Context
 import com.gracehopper.laserchessapp.utils.TokenManager
 import okhttp3.OkHttpClient
 import okhttp3.Interceptor
@@ -29,9 +30,10 @@ object NetworkUtils {
         }
     }
 
-    private val cookieJar by lazy {
-        JavaNetCookieJar(cookieManager)
-    }
+    private lateinit var persistentCookieJar: PersistentCookieJar
+
+    private val cookieJar: PersistentCookieJar
+        get() = persistentCookieJar
 
     private val tokenAuthenticator by lazy { TokenAuthenticator() }
 
@@ -46,6 +48,10 @@ object NetworkUtils {
 
             chain.proceed(requestBuilder.build())
         }
+    }
+
+    fun init(context: Context) {
+        persistentCookieJar = PersistentCookieJar(context.applicationContext)
     }
 
     fun getOkHttpClient(): OkHttpClient {
@@ -147,6 +153,10 @@ object NetworkUtils {
         apiService = retrofit.create(ApiService::class.java)
         return apiService!!
 
+    }
+
+    fun clearCookies() {
+        persistentCookieJar.clear()
     }
 
 }

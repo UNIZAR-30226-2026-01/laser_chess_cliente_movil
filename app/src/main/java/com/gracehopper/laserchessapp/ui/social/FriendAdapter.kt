@@ -1,15 +1,14 @@
-package com.gracehopper.laserchessapp.ui
+package com.gracehopper.laserchessapp.ui.social
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.databinding.ItemFriendBinding
-import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 
 class FriendAdapter (private var friends: List<FriendSummary>,
-            private val onFriendClick: (FriendSummary) -> Unit)
+                     private val onFriendClick: (FriendSummary) -> Unit)
             : RecyclerView.Adapter<FriendAdapter.FriendViewHolder>() {
 
     class FriendViewHolder(val binding: ItemFriendBinding)

@@ -25,8 +25,8 @@ import com.gracehopper.laserchessapp.data.model.user.TimeMode
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.databinding.FragmentSocialBinding
-import com.gracehopper.laserchessapp.ui.FriendAdapter
-import com.gracehopper.laserchessapp.ui.InProgressAdapter
+import com.gracehopper.laserchessapp.ui.social.FriendAdapter
+import com.gracehopper.laserchessapp.ui.social.InProgressAdapter
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidator

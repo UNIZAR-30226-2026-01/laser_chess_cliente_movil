@@ -86,4 +86,8 @@
     <string name="sound_effects">Efectos de sonido</string>
     <string name="logout">Cerrar sesión</string>
 
+    <string name="previous">Anterior</string>
+    <string name="next">Siguiente</string>
+    <string name="item">Artículo</string>
+
 </resources>
