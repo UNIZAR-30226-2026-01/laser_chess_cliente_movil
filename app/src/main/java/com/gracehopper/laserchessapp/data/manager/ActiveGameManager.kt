@@ -1,5 +1,8 @@
 package com.gracehopper.laserchessapp.data.manager
 
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.google.gson.Gson
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.game.GameMessageType
@@ -71,6 +74,15 @@ object ActiveGameManager {
     // Para errores del socket (de conexión, refresh...)
     private var onErrorCallback: ((String) -> Unit)? = null
     private var onClosedCallback: (() -> Unit)? = null
+
+    private const val PREF_NAME = "active_game_prefs"
+    private const val KEY_IS_FRIENDLY = "is_friendly_game"
+    private lateinit var prefs: SharedPreferences
+
+    fun init(context: Context) {
+        prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        isFriendlyGame = prefs.getBoolean(KEY_IS_FRIENDLY, false)  // restaurar al arrancar
+    }
 
     /**
      * Establece los callbacks de la conexión.
@@ -267,6 +279,7 @@ object ActiveGameManager {
      */
     fun setGameType(isFriendly: Boolean) {
         isFriendlyGame = isFriendly
+        prefs.edit { putBoolean(KEY_IS_FRIENDLY, isFriendly) }
     }
 
     /**
@@ -470,6 +483,8 @@ object ActiveGameManager {
         awaitingReconnectMessages = false
         currentState = GameState.INACTIVE
         lastError = null
+
+        setGameType(false)
 
         clearCallbacks()
     }

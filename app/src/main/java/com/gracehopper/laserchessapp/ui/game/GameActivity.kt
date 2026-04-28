@@ -122,7 +122,7 @@ class GameActivity : AppCompatActivity() {
         val opponent = ActiveGameManager.currentOpponentUsername
         nameEnemy.text = opponent ?: "Rival"
 
-        // Si venimos de una reconexión, currentOpponentUsername está vacío pero
+        // Si venimos de una reconexión, currentOpponentUsername está vacío, pero
         // tenemos el ID del rival — lo resolvemos con una llamada HTTP.
         val opponentId = ActiveGameManager.reconnectingOpponentId
         if (opponent == null && opponentId != null) {
@@ -236,7 +236,7 @@ class GameActivity : AppCompatActivity() {
                             lastCause = cause
                             gameEnded = true
 
-                            // Si viene tras movimiento → esperar animación
+                            // Sí viene tras movimiento → esperar animación
                             if (waitingForServerConfirmation) {
                                 waitingEndAfterMove = true
                             } else {
@@ -625,7 +625,7 @@ class GameActivity : AppCompatActivity() {
          * Mostrar trayectoria del láser
          */
         laserPath = LaserUtils.parseLaserPath(move.laserPath)
-        Log.d("LASER", "Laser path board coords: $laserPath")
+        Log.d("LASER", "Laser path board cords: $laserPath")
 
         /**
          * Aplicar efectos tras 1 segundo (animación)
