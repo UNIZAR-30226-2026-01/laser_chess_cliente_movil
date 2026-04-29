@@ -50,7 +50,9 @@ class FriendlyGameWebSocketListener(
      * @param response Respuesta del servidor
      */
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-        Log.e("WS", "Error: ${t.message}")
+        val errorBody = response?.body?.string()
+
+        Log.e("WS", "Error HTTP=${response?.code} body=$errorBody", t)
         onError(t.message ?: "Error desconocido")
     }
 
