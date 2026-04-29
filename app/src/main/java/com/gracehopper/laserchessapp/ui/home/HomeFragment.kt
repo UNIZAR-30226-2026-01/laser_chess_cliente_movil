@@ -10,12 +10,16 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
+import com.gracehopper.laserchessapp.data.model.game.BoardLayouts
 import com.gracehopper.laserchessapp.data.model.game.GameMode
+import com.gracehopper.laserchessapp.gameLogic.board.Board
+import com.gracehopper.laserchessapp.gameLogic.board.BoardParser
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 
 class HomeFragment : Fragment() {
@@ -25,6 +29,10 @@ class HomeFragment : Fragment() {
 
     private lateinit var topMode: GameMode
     private lateinit var middleMode: GameMode
+
+    private var selectedBoardName: String = "Ace"
+    private var selectedBoardId: Int = 1
+    private var boardComposeView: ComposeView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,16 +80,13 @@ class HomeFragment : Fragment() {
                 GameMode.BOT -> {
 
                     ActiveGameManager.createBotGame(
-                        board = 1,
+                        board = selectedBoardId,
                         startingTime = 300,
                         timeIncrement = 2,
                         level = 1
                     )
 
-                    val intent =
-                        Intent(requireContext(), GameActivity::class.java)
-
-                    startActivity(intent)
+                    startActivity(Intent(requireContext(), GameActivity::class.java))
                 }
 
                 GameMode.RANKED -> {
@@ -94,9 +99,39 @@ class HomeFragment : Fragment() {
             }
         }
 
+        setupBoardPreview(view)
         setupSelectors(view)
 
         return view
+    }
+
+    /**
+     * Configura el ComposeView para mostrar el tablero seleccionado.
+     */
+    private fun setupBoardPreview(view: View) {
+        val boardContainer = view.findViewById<ViewGroup>(R.id.boardContainer)
+
+        view.findViewById<ImageView?>(R.id.imgBoardPlaceholder)?.visibility = View.GONE
+        val composeView = ComposeView(requireContext()).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        }
+        boardComposeView = composeView
+        boardContainer.addView(composeView)
+        renderBoard()
+    }
+
+    /**
+     * Parsea el CSV del tablero seleccionado y lo muestra en el ComposeView.
+     */
+    private fun renderBoard() {
+        boardComposeView?.setContent {
+            val board = Board(rows = 10, cols = 8)
+            BoardParser.boadFromCSV(board, BoardLayouts.getCsvForBoard(selectedBoardName))
+            HomeBoardPreview(board = board)
+        }
     }
 
     private fun setupSelectors(view: View) {
@@ -108,13 +143,12 @@ class HomeFragment : Fragment() {
             includeBoardSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
         val LCRed = ContextCompat.getColor(requireContext(), R.color.LCRed)
 
-        txtBoardTitle.text = "Tablero"
+        txtBoardTitle.text = selectedBoardName
         imgBoardIcon.setImageResource(R.drawable.ic_tablero)
         imgBoardIcon.setColorFilter(LCRed)
 
         includeBoardSelector.setOnClickListener {
-            val boardOptions = listOf("Ace", "Curiosity", "Grail", "Mercury", "Sophie")
-            showBottomSheet("Seleccionar tablero", boardOptions, LCRed, txtBoardTitle)
+            showBoardBottomSheet(LCRed, txtBoardTitle)
         }
 
         val includeTimeSelector = view.findViewById<View>(R.id.includeTimeSelector)
@@ -134,24 +168,73 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun showBottomSheet(titulo: String, opciones: List<String>, colorTitulo: Int, targetTextView: TextView) {
+    /**
+     * BottomSheet específico para selección de tablero.
+     * Al elegir un tablero actualiza la previsualización.
+     */
+    private fun showBoardBottomSheet(colorTitulo: Int, targetTextView: TextView) {
 
-        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.TemaBottomSheetTransparente)
+        val bottomSheetDialog = BottomSheetDialog(
+            requireContext(),
+            R.style.TemaBottomSheetTransparente
+        )
 
-        val dialogView =
-            layoutInflater.inflate(R.layout.dialog_selector_desplegable, null)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_selector_desplegable, null)
 
-        val txtTitle =
-            dialogView.findViewById<TextView>(R.id.txtDialogTitle)
+        val txtTitle = dialogView.findViewById<TextView>(R.id.txtDialogTitle)
+        txtTitle.text = "Seleccionar tablero"
+        txtTitle.setTextColor(colorTitulo)
 
+        val container = dialogView.findViewById<LinearLayout>(R.id.layoutOptionsContainer)
+
+        BoardLayouts.ALL_BOARD_NAMES.forEachIndexed { index, boardName ->
+            val button = com.google.android.material.button.MaterialButton(requireContext()).apply {
+                text = boardName
+                setTextColor(ContextCompat.getColor(context, R.color.LCWhite))
+                backgroundTintList = ContextCompat.getColorStateList(context, R.color.S2)
+                cornerRadius = 36
+
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(0, 0, 0, 16)
+                }
+
+                setOnClickListener {
+                    selectedBoardName = boardName
+                    selectedBoardId = index + 1
+                    targetTextView.text = boardName
+                    renderBoard()          // ← actualiza el tablero en Home
+                    bottomSheetDialog.dismiss()
+                }
+            }
+            container.addView(button)
+        }
+
+        bottomSheetDialog.setContentView(dialogView)
+        bottomSheetDialog.show()
+    }
+
+    private fun showBottomSheet(
+        titulo: String,
+        opciones: List<String>,
+        colorTitulo: Int,
+        targetTextView: TextView
+    ) {
+        val bottomSheetDialog = BottomSheetDialog(
+            requireContext(),
+            R.style.TemaBottomSheetTransparente
+        )
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_selector_desplegable, null)
+
+        val txtTitle = dialogView.findViewById<TextView>(R.id.txtDialogTitle)
         txtTitle.text = titulo
         txtTitle.setTextColor(colorTitulo)
 
         val container = dialogView.findViewById<LinearLayout>(R.id.layoutOptionsContainer)
 
-        // Cargamos en el selector las opciones que queramos
-        // Se puede poner q se seleccionen imágenes en vez de botones de texto
-        // pero por ahora nos vale con esto
         for (opcion in opciones) {
             val button = com.google.android.material.button.MaterialButton(requireContext()).apply {
                 text = opcion
@@ -167,13 +250,10 @@ class HomeFragment : Fragment() {
                 }
 
                 setOnClickListener {
-                    // TODO: Aquí guardaremos la opción elegida en el futuro
                     targetTextView.text = opcion
                     bottomSheetDialog.dismiss()
                 }
             }
-
-            //ñadimos el botón recién creado al contenedor
             container.addView(button)
         }
 
@@ -183,15 +263,9 @@ class HomeFragment : Fragment() {
 
     private fun iconFor(mode: GameMode): Int {
         return when (mode) {
-
-            GameMode.BOT ->
-                R.drawable.robot_2_48px
-
-            GameMode.RANKED ->
-                R.drawable.ic_ranked_mode
-
-            GameMode.PUBLIC ->
-                R.drawable.ic_casual_mode
+            GameMode.BOT     -> R.drawable.robot_2_48px
+            GameMode.RANKED  -> R.drawable.ic_ranked_mode
+            GameMode.PUBLIC  -> R.drawable.ic_casual_mode
         }
     }
 
@@ -199,29 +273,16 @@ class HomeFragment : Fragment() {
         btn.setImageResource(iconFor(currentMode))
     }
 
-    private fun showModes(
-        popup: View,
-        btnTop: ImageButton,
-        btnMiddle: ImageButton
-    ) {
-
-        val others = GameMode.values().filter {
-            it != currentMode
-        }
-
+    private fun showModes(popup: View, btnTop: ImageButton, btnMiddle: ImageButton) {
+        val others = GameMode.values().filter { it != currentMode }
         topMode = others[0]
         middleMode = others[1]
-
         btnTop.setImageResource(iconFor(topMode))
         btnMiddle.setImageResource(iconFor(middleMode))
-
         popup.visibility = View.VISIBLE
     }
 
-    private fun hideModes(
-        popup: View,
-        btnMain: ImageButton
-    ) {
+    private fun hideModes(popup: View, btnMain: ImageButton) {
         expanded = false
         popup.visibility = View.GONE
         refreshMainButton(btnMain)
