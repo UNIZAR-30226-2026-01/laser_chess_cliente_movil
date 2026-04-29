@@ -21,6 +21,10 @@ class WaitingGameDialogFragment : DialogFragment() {
     private lateinit var textDetails: TextView
     private lateinit var buttonCancel: Button
 
+    @Volatile
+    private var matchFound = false
+    private var pendingOpponentId: Long? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isCancelable = false
@@ -61,12 +65,16 @@ class WaitingGameDialogFragment : DialogFragment() {
     }
 
     private fun loadGameInfo() {
-        val opponent = ActiveGameManager.currentOpponentUsername ?: "rival"
+        val opponent = ActiveGameManager.currentOpponentUsername
         val board = ActiveGameManager.currentBoard ?: 1
         val startingTime = ActiveGameManager.currentStartingTime ?: 300
         val increment = ActiveGameManager.currentTimeIncrement ?: 0
 
-        textOpponent.text = "Esperando a que $opponent acepte la partida"
+        if (ActiveGameManager.isMatchmakingGame) {
+            textOpponent.text = "Buscando rival en el matchmaking..."
+        } else {
+            textOpponent.text = "Esperando a que ${opponent ?: "rival"} acepte la partida"
+        }
         textDetails.text = "Tablero $board · ${startingTime}s + ${increment}s"
     }
 
@@ -90,9 +98,19 @@ class WaitingGameDialogFragment : DialogFragment() {
                 // conectados
             },
             onMessageReceived = { event ->
-                requireActivity().runOnUiThread {
+                if (event is GameEvent.InitialState) {
+                    matchFound = true
+                }
+
+                val act = activity ?: return@setCallbacks
+                act.runOnUiThread {
 
                     when (event) {
+
+                        is GameEvent.MatchStart -> {
+                            pendingOpponentId = event.opponentId
+                            textOpponent.text = "¡Rival encontrado!"
+                        }
 
                         is GameEvent.ChallengeRejected -> {
                             Toast.makeText(
@@ -116,8 +134,8 @@ class WaitingGameDialogFragment : DialogFragment() {
 
                             dismiss()
 
-                            val intent = Intent(requireContext(),
-                                GameActivity::class.java)
+                            val intent = Intent(requireContext(), GameActivity::class.java)
+                            pendingOpponentId?.let { intent.putExtra("OPPONENT_ID", it) }
                             startActivity(intent)
                         }
 
@@ -134,7 +152,7 @@ class WaitingGameDialogFragment : DialogFragment() {
 
                         // Para cierres lógicos enviados por server
                         is GameEvent.ConnectionClosed -> {
-                            if (isAdded) {
+                            if (!matchFound && isAdded) {
                                 Toast.makeText(
                                     requireContext(),
                                     "La espera de partida ha finalizado",
@@ -153,7 +171,9 @@ class WaitingGameDialogFragment : DialogFragment() {
                 }
             },
             onError = { error ->
-                requireActivity().runOnUiThread {
+                if (matchFound) return@setCallbacks
+                val act = activity ?: return@setCallbacks
+                act.runOnUiThread {
                     Toast.makeText(
                         requireContext(),
                         "Error en la solicitud: $error",
@@ -166,7 +186,9 @@ class WaitingGameDialogFragment : DialogFragment() {
             },
             // Para cierre técnico de socket
             onClosed = {
-                requireActivity().runOnUiThread {
+                if (matchFound) return@setCallbacks
+                val act = activity ?: return@setCallbacks
+                act.runOnUiThread {
                     if (isAdded) {
                         Toast.makeText(
                             requireContext(),
