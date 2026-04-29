@@ -1,574 +1,309 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@android:color/white"
-    tools:context=".ui.customize.CustomizeFragment">
+    android:background="#0A0010"
+    android:fillViewport="true">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="16dp">
+
+        <!-- PLACEHOLDER TABLERO -->
+        <FrameLayout
+            android:id="@+id/boardPlaceholder"
+            android:layout_width="320dp"
+            android:layout_height="320dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:background="@color/S1" />
+
+
+        <!-- SELECTOR DE PIEZAS -->
         <LinearLayout
+            android:id="@+id/piecesSelectorContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:paddingTop="24dp"
-            android:paddingBottom="32dp">
+            android:layout_height="58dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingHorizontal="10dp"
+            android:background="@drawable/bg_shop_section">
 
-            <TextView
-                android:id="@+id/textCustomizeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/customize"
-                android:textStyle="bold"
-                android:textSize="32sp"
-                android:textColor="@android:color/black"
-                android:layout_marginBottom="24dp" />
-
-            <!-- PIEZAS -->
-            <TextView
-                android:id="@+id/textPieceSectionTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Personaliza tus piezas"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginBottom="16dp" />
+            <ImageButton
+                android:id="@+id/btnPreviousPieces"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_left"
+                android:contentDescription="@string/previous"
+                app:tint="@color/LCWhite" />
 
             <LinearLayout
-                android:id="@+id/layoutPieceRow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="32dp">
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/buttonPrevPiece"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_left"
-                    android:contentDescription="Anterior skin de pieza"
-                    android:padding="8dp" />
+                <TextView
+                    android:id="@+id/txtPiecesTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Piezas · Soretro"
+                    android:textColor="#FFFFFF"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:id="@+id/layoutPiecesPreview"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="horizontal"
                     android:gravity="center">
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardPieceSkin1"
-                        android:layout_width="92dp"
-                        android:layout_height="132dp"
-                        android:layout_marginEnd="12dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="3dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#D0D0D0">
+                    <ImageView
+                        android:id="@+id/imgPiecePreview1"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginHorizontal="5dp"
+                        android:src="@drawable/ic_piece_placeholder" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:padding="12dp">
+                    <ImageView
+                        android:id="@+id/imgPiecePreview2"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginHorizontal="5dp"
+                        android:src="@drawable/ic_piece_placeholder" />
 
-                            <ImageView
-                                android:id="@+id/imagePieceSkin1"
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                android:layout_marginTop="8dp"
-                                android:src="@drawable/piece_skin_1"
-                                android:contentDescription="Skin de piezas 1" />
+                    <ImageView
+                        android:id="@+id/imgPiecePreview3"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginHorizontal="5dp"
+                        android:src="@drawable/ic_piece_placeholder" />
 
-                            <Space
-                                android:layout_width="1dp"
-                                android:layout_height="12dp" />
+                    <ImageView
+                        android:id="@+id/imgPiecePreview4"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginHorizontal="5dp"
+                        android:src="@drawable/ic_piece_placeholder" />
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/buttonEquipPiece1"
-                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minWidth="0dp"
-                                android:text="Equipar"
-                                android:textAllCaps="false"
-                                android:textSize="12sp"
-                                app:strokeColor="@android:color/black"
-                                android:textColor="@android:color/black" />
-
-                        </LinearLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardPieceSkin2"
-                        android:layout_width="92dp"
-                        android:layout_height="132dp"
-                        android:layout_marginEnd="12dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="3dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#D0D0D0">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:id="@+id/imagePieceSkin2"
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                android:layout_marginTop="8dp"
-                                android:src="@drawable/piece_skin_2"
-                                android:contentDescription="Skin de piezas 2" />
-
-                            <Space
-                                android:layout_width="1dp"
-                                android:layout_height="12dp" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/buttonEquipPiece2"
-                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minWidth="0dp"
-                                android:text="Equipar"
-                                android:textAllCaps="false"
-                                android:textSize="12sp"
-                                app:strokeColor="@android:color/black"
-                                android:textColor="@android:color/black" />
-
-                        </LinearLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardPieceSkin3"
-                        android:layout_width="92dp"
-                        android:layout_height="132dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp"
-                        app:strokeWidth="2dp"
-                        app:strokeColor="#6200EE">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:id="@+id/imagePieceSkin3"
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                android:layout_marginTop="8dp"
-                                android:src="@drawable/piece_skin_3"
-                                android:contentDescription="Skin de piezas equipada" />
-
-                            <Space
-                                android:layout_width="1dp"
-                                android:layout_height="12dp" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/buttonEquippedPiece3"
-                                style="@style/Widget.MaterialComponents.Button"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minWidth="0dp"
-                                android:text="Equipado"
-                                android:textAllCaps="false"
-                                android:textSize="12sp"
-                                android:textColor="@android:color/white"
-                                app:backgroundTint="#6200EE" />
-
-                        </LinearLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
+                    <ImageView
+                        android:id="@+id/imgPiecePreview5"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_marginHorizontal="5dp"
+                        android:src="@drawable/ic_piece_placeholder" />
 
                 </LinearLayout>
-
-                <ImageButton
-                    android:id="@+id/buttonNextPiece"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_right"
-                    android:contentDescription="Siguiente skin de pieza"
-                    android:padding="8dp" />
             </LinearLayout>
 
-            <!-- TABLERO -->
-            <TextView
-                android:id="@+id/textBoardSectionTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Personaliza tu tablero"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginBottom="16dp" />
+            <ImageButton
+                android:id="@+id/btnNextPieces"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_right"
+                android:contentDescription="@string/next"
+                app:tint="@color/LCWhite" />
 
+        </LinearLayout>
+
+
+        <!-- FILA INFERIOR: TABLERO / AVATAR / VICTORIA -->
+        <LinearLayout
+            android:id="@+id/bottomSelectorsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:baselineAligned="false">
+
+            <!-- SELECTOR TABLERO -->
             <LinearLayout
-                android:id="@+id/layoutBoardRow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="32dp">
+                android:id="@+id/boardSkinContainer"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="6dp"
+                android:background="@drawable/bg_shop_section">
 
-                <ImageButton
-                    android:id="@+id/buttonPrevBoard"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_left"
-                    android:contentDescription="Anterior skin de tablero"
-                    android:padding="8dp" />
+                <TextView
+                    android:id="@+id/txtBoardSkinTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tablero · Soretro"
+                    android:textColor="@color/LCWhite"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:gravity="center" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardBoardSkin1"
-                        android:layout_width="92dp"
-                        android:layout_height="132dp"
-                        android:layout_marginEnd="12dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp"
-                        app:strokeWidth="2dp"
-                        app:strokeColor="#6200EE">
+                    <ImageButton
+                        android:id="@+id/btnPreviousBoard"
+                        android:layout_width="24dp"
+                        android:layout_height="36dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_arrow_left"
+                        android:contentDescription="@string/previous"
+                        app:tint="@color/LCWhite" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:padding="12dp">
+                    <ImageView
+                        android:id="@+id/imgBoardPreview"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginHorizontal="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_board_placeholder" />
 
-                            <ImageView
-                                android:id="@+id/imageBoardSkin1"
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                android:layout_marginTop="8dp"
-                                android:src="@drawable/board_skin_1"
-                                android:contentDescription="Skin de tablero equipada" />
-
-                            <Space
-                                android:layout_width="1dp"
-                                android:layout_height="12dp" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/buttonEquippedBoard1"
-                                style="@style/Widget.MaterialComponents.Button"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minWidth="0dp"
-                                android:text="Equipado"
-                                android:textAllCaps="false"
-                                android:textSize="12sp"
-                                android:textColor="@android:color/white"
-                                app:backgroundTint="#6200EE" />
-
-                        </LinearLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardBoardSkin2"
-                        android:layout_width="92dp"
-                        android:layout_height="132dp"
-                        android:layout_marginEnd="12dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="3dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#D0D0D0">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:id="@+id/imageBoardSkin2"
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                android:layout_marginTop="8dp"
-                                android:src="@drawable/board_skin_2"
-                                android:contentDescription="Skin de tablero 2" />
-
-                            <Space
-                                android:layout_width="1dp"
-                                android:layout_height="12dp" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/buttonEquipBoard2"
-                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minWidth="0dp"
-                                android:text="Equipar"
-                                android:textAllCaps="false"
-                                android:textSize="12sp"
-                                app:strokeColor="@android:color/black"
-                                android:textColor="@android:color/black" />
-
-                        </LinearLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardBoardSkin3"
-                        android:layout_width="92dp"
-                        android:layout_height="132dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="3dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#D0D0D0">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:id="@+id/imageBoardSkin3"
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                android:layout_marginTop="8dp"
-                                android:src="@drawable/board_skin_3"
-                                android:contentDescription="Skin de tablero 3" />
-
-                            <Space
-                                android:layout_width="1dp"
-                                android:layout_height="12dp" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/buttonEquipBoard3"
-                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minWidth="0dp"
-                                android:text="Equipar"
-                                android:textAllCaps="false"
-                                android:textSize="12sp"
-                                app:strokeColor="@android:color/black"
-                                android:textColor="@android:color/black" />
-
-                        </LinearLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
+                    <ImageButton
+                        android:id="@+id/btnNextBoard"
+                        android:layout_width="24dp"
+                        android:layout_height="36dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_arrow_right"
+                        android:contentDescription="@string/next"
+                        app:tint="@color/LCWhite" />
 
                 </LinearLayout>
-
-                <ImageButton
-                    android:id="@+id/buttonNextBoard"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_right"
-                    android:contentDescription="Siguiente skin de tablero"
-                    android:padding="8dp" />
             </LinearLayout>
 
-            <!-- AVATAR -->
-            <TextView
-                android:id="@+id/textAvatarSectionTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Personaliza tu avatar"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginBottom="16dp" />
 
+            <!-- SELECTOR AVATAR -->
             <LinearLayout
-                android:id="@+id/layoutAvatarRow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:id="@+id/avatarContainer"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="6dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="6dp"
+                android:background="@drawable/bg_shop_section">
 
-                <ImageButton
-                    android:id="@+id/buttonPrevAvatar"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_left"
-                    android:contentDescription="Avatar anterior"
-                    android:padding="8dp" />
+                <TextView
+                    android:id="@+id/txtAvatarTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Avatar · mr pollo"
+                    android:textColor="@color/LCWhite"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:gravity="center" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardAvatar1"
-                        android:layout_width="92dp"
-                        android:layout_height="132dp"
-                        android:layout_marginEnd="12dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="3dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#D0D0D0">
+                    <ImageButton
+                        android:id="@+id/btnPreviousAvatar"
+                        android:layout_width="24dp"
+                        android:layout_height="36dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_arrow_left"
+                        android:contentDescription="@string/previous"
+                        app:tint="@color/LCWhite" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:padding="12dp">
+                    <ImageView
+                        android:id="@+id/imgAvatarPreview"
+                        android:layout_width="54dp"
+                        android:layout_height="54dp"
+                        android:layout_marginHorizontal="2dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_avatar" />
 
-                            <ImageView
-                                android:id="@+id/imageAvatar1"
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                android:layout_marginTop="8dp"
-                                android:src="@drawable/avatar_1"
-                                android:contentDescription="Avatar 1" />
-
-                            <Space
-                                android:layout_width="1dp"
-                                android:layout_height="12dp" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/buttonEquipAvatar1"
-                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minWidth="0dp"
-                                android:text="Equipar"
-                                android:textAllCaps="false"
-                                android:textSize="12sp"
-                                app:strokeColor="@android:color/black"
-                                android:textColor="@android:color/black" />
-
-                        </LinearLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardAvatar2"
-                        android:layout_width="92dp"
-                        android:layout_height="132dp"
-                        android:layout_marginEnd="12dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp"
-                        app:strokeWidth="2dp"
-                        app:strokeColor="#6200EE">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:id="@+id/imageAvatar2"
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                android:layout_marginTop="8dp"
-                                android:src="@drawable/avatar_2"
-                                android:contentDescription="Avatar equipado" />
-
-                            <Space
-                                android:layout_width="1dp"
-                                android:layout_height="12dp" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/buttonEquippedAvatar2"
-                                style="@style/Widget.MaterialComponents.Button"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minWidth="0dp"
-                                android:text="Equipado"
-                                android:textAllCaps="false"
-                                android:textSize="12sp"
-                                android:textColor="@android:color/white"
-                                app:backgroundTint="#6200EE" />
-
-                        </LinearLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardAvatar3"
-                        android:layout_width="92dp"
-                        android:layout_height="132dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="3dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#D0D0D0">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:id="@+id/imageAvatar3"
-                                android:layout_width="52dp"
-                                android:layout_height="52dp"
-                                android:layout_marginTop="8dp"
-                                android:src="@drawable/avatar_3"
-                                android:contentDescription="Avatar 3" />
-
-                            <Space
-                                android:layout_width="1dp"
-                                android:layout_height="12dp" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/buttonEquipAvatar3"
-                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minWidth="0dp"
-                                android:text="Equipar"
-                                android:textAllCaps="false"
-                                android:textSize="12sp"
-                                app:strokeColor="@android:color/black"
-                                android:textColor="@android:color/black" />
-
-                        </LinearLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
+                    <ImageButton
+                        android:id="@+id/btnNextAvatar"
+                        android:layout_width="24dp"
+                        android:layout_height="36dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_arrow_right"
+                        android:contentDescription="@string/next"
+                        app:tint="@color/LCWhite" />
 
                 </LinearLayout>
+            </LinearLayout>
 
-                <ImageButton
-                    android:id="@+id/buttonNextAvatar"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_right"
-                    android:contentDescription="Siguiente avatar"
-                    android:padding="8dp" />
+
+            <!-- SELECTOR VICTORIA -->
+            <LinearLayout
+                android:id="@+id/victorySkinContainer"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="6dp"
+                android:background="@drawable/bg_shop_section">
+
+                <TextView
+                    android:id="@+id/txtVictorySkinTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Victoria · Soretro"
+                    android:textColor="#FFFFFF"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:gravity="center" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/btnPreviousAnimation"
+                        android:layout_width="24dp"
+                        android:layout_height="36dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_arrow_left"
+                        android:contentDescription="@string/previous"
+                        app:tint="@color/LCWhite" />
+
+                    <ImageView
+                        android:id="@+id/imgAnimationPreview"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginHorizontal="2dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_piece_placeholder" />
+
+                    <ImageButton
+                        android:id="@+id/btnNextAnimation"
+                        android:layout_width="24dp"
+                        android:layout_height="36dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_arrow_right"
+                        android:contentDescription="@string/next"
+                        app:tint="@color/LCWhite" />
+
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
-    </ScrollView>
+
+    </LinearLayout>
+
+</ScrollView>

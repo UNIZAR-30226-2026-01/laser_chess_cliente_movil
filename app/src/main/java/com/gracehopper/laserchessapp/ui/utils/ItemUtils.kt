@@ -50,7 +50,7 @@ object ItemUtils {
         }
     }
 
-    fun getItemTypeDisplayName(itemType: ItemType): String {
+    fun getItemTypeName(itemType: ItemType): String {
         return when (itemType) {
             ItemType.PIECE_SKIN -> "Piezas"
             ItemType.BOARD_SKIN -> "Tablero"
