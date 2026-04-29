@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
     private lateinit var middleMode: GameMode
 
     private var selectedBoardName: String = "Ace"
-    private var selectedBoardId: Int = 1
+    private var selectedBoardId: Int = 0
     private var boardComposeView: ComposeView? = null
 
     override fun onCreateView(
@@ -203,9 +203,9 @@ class HomeFragment : Fragment() {
 
                 setOnClickListener {
                     selectedBoardName = boardName
-                    selectedBoardId = index + 1
+                    selectedBoardId = index
                     targetTextView.text = boardName
-                    renderBoard()          // ← actualiza el tablero en Home
+                    renderBoard()          //  actualiza el tablero en Home
                     bottomSheetDialog.dismiss()
                 }
             }

@@ -2,6 +2,10 @@ package com.gracehopper.laserchessapp.data.model.game
 
 /**
  * Configuraciones CSV de los tableros disponibles.
+ * Formato: cada celda es [Tipo][Equipo][Orientación]
+ *   Tipo: L=Laser, K=King, S=Switcher, D=Deflector, E=Defender
+ *   Equipo: A=Azul, R=Rojo
+ *   Orientación: U=Arriba, R=Derecha, D=Abajo, L=Izquierda
  */
 object BoardLayouts {
 
@@ -52,6 +56,7 @@ SAL,,,DRR,KR,DRD,,,,LRL"""
 
     /**
      * Devuelve el CSV del tablero por su nombre.
+     * El nombre debe coincidir con los de BoardType.
      */
     fun getCsvForBoard(boardName: String): String {
         return when (boardName.uppercase()) {
@@ -64,5 +69,10 @@ SAL,,,DRR,KR,DRD,,,,LRL"""
         }
     }
 
-    val ALL_BOARD_NAMES = listOf("Ace", "Curiosity", "Grail", "Sophie", "Mercury")
+    /**
+     * Lista de nombres en el mismo orden que game_constants.go (0-based):
+     * 0=ACE, 1=CURIOSITY, 2=GRAIL, 3=MERCURY, 4=SOPHIE
+     * (Fuente real: constantes Board_T del engine de Go, no boards.go)
+     */
+    val ALL_BOARD_NAMES = listOf("Ace", "Curiosity", "Grail", "Mercury", "Sophie")
 }
