@@ -13,6 +13,7 @@ object ItemUtils {
             ItemType.PIECE_SKIN -> getPieceSkinDrawable(itemId)
             ItemType.BOARD_SKIN -> getBoardSkinDrawable(itemId)
             ItemType.WIN_ANIMATION -> getWinAnimationDrawable(itemId)
+            ItemType.AVATAR -> AvatarUtils.getAvatarDrawable(itemId)
         }
     }
 
@@ -54,6 +55,7 @@ object ItemUtils {
             ItemType.PIECE_SKIN -> "Piezas"
             ItemType.BOARD_SKIN -> "Tablero"
             ItemType.WIN_ANIMATION -> "Animación"
+            ItemType.AVATAR -> "Avatar"
         }
     }
 

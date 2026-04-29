@@ -18,6 +18,7 @@ class LaserChessApplication : Application() {
 
         NetworkUtils.init(this)
         TokenManager.init(this)
+        ActiveGameManager.init(this)
 
         clearSessionIfUrlChanged()
     }
@@ -26,19 +27,19 @@ class LaserChessApplication : Application() {
 
         val prefs = getSharedPreferences("app_environment", Context.MODE_PRIVATE)
 
-        val lastBaseUrl = prefs.getString("last_base_url", null)
-        val currentBaseUrl = NetworkUtils.BASE_URL
+        val lastEnvironment = prefs.getString("last_environment", null)
+        val currentEnvironment = "${NetworkUtils.BASE_URL}|${NetworkUtils.WS_BASE_URL}"
 
-        Log.d("APP_ENV", "lastBaseUrl=$lastBaseUrl")
-        Log.d("APP_ENV", "currentBaseUrl=$currentBaseUrl")
+        Log.d("APP_ENV", "lastEnvironment=$lastEnvironment")
+        Log.d("APP_ENV", "currentEnvironment=$currentEnvironment")
 
-        if (lastBaseUrl != null && lastBaseUrl != currentBaseUrl) {
-            Log.w("APP_ENV", "Base URL cambiada. Limpiando sesión antigua.")
+        if (lastEnvironment != null && lastEnvironment != currentEnvironment) {
+            Log.w("APP_ENV", "Environment cambiado. Limpiando sesión antigua.")
             NetworkUtils.clearSession()
         }
 
         prefs.edit()
-            .putString("last_base_url", currentBaseUrl)
+            .putString("last_environment", currentEnvironment)
             .apply()
     }
 
