@@ -2,6 +2,7 @@ package com.gracehopper.laserchessapp.data.manager
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.content.edit
 import com.google.gson.Gson
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
@@ -139,6 +140,8 @@ object ActiveGameManager {
                 val myId = TokenManager.getUserId()
 
                 imRedPlayer = (redPlayerId == myId)
+                Log.d("PLAYER", "Mi id: $myId")
+                Log.d("PLAYER", "Id de red player: $redPlayerId")
 
                 if (awaitingReconnectMessages) {
                     // Reconexión: guardar y esperar a tener ambos mensajes
