@@ -17,6 +17,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
     private val CHALLENGE_URL = NetworkUtils.WS_BASE_URL + "challenge"
     private val BOT_URL = NetworkUtils.WS_BASE_URL + "bot"
     private val RECONNECT_URL = NetworkUtils.WS_BASE_URL + "reconnect"
+    private val MATCHMAKING_URL = NetworkUtils.WS_BASE_URL + "matchmaking"
 
 
     /**
@@ -42,6 +43,28 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
 
         val client = NetworkUtils.getWebSocketClient()
         webSocket = client.newWebSocket(request, listener)
+    }
+
+    /**
+     * Entra en la cola de matchmaking (Ranked o no)
+     * @param board Tablero de juego
+     * @param timeBase Tiempo inicial del juego
+     * @param timeIncrement Incremento de tiempo
+     * @param ranked 1 si es Ranked, 0 si no
+     */
+    fun joinMatchmaking(
+        board: Int,
+        timeBase: Int,
+        timeIncrement: Int,
+        ranked: Int
+    ) {
+        val url = MATCHMAKING_URL +
+                "?board=$board" +
+                "&time_base=$timeBase" +
+                "&time_increment=$timeIncrement" +
+                "&ranked=$ranked"
+        val request = Request.Builder().url(url).build()
+        webSocket = NetworkUtils.getWebSocketClient().newWebSocket(request, listener)
     }
 
 
@@ -97,7 +120,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
         webSocket?.send(message)
     }
 
-    fun reconnect(token: String) {
+    fun reconnect() {
 
 
         val request = Request.Builder()

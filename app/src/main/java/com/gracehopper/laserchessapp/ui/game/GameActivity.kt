@@ -33,6 +33,8 @@ import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.manager.GameTimerManager
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
+import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.utils.TimeUtils.formatTime
 
 
@@ -118,24 +120,13 @@ class GameActivity : AppCompatActivity() {
         val myProfile = CurrentUserManager.getMyCurrentProfile()
         namePlayer.text = myProfile?.username ?: "Tú"
 
-        // Rival
+        // Rival: se intenta obtener del estado del manager.
+        // Si no está disponible (reconexión o matchmaking), se resuelve por HTTP.
         val opponent = ActiveGameManager.currentOpponentUsername
         nameEnemy.text = opponent ?: "Rival"
 
-        // Si venimos de una reconexión, currentOpponentUsername está vacío, pero
-        // tenemos el ID del rival — lo resolvemos con una llamada HTTP.
-        val opponentId = ActiveGameManager.reconnectingOpponentId
-        if (opponent == null && opponentId != null) {
-            val userRepo = com.gracehopper.laserchessapp.data.repository.UserRepository(
-                com.gracehopper.laserchessapp.data.remote.NetworkUtils.getApiService()
-            )
-            userRepo.getUserProfile(
-                userId = opponentId,
-                onSuccess = { profile ->
-                    runOnUiThread { nameEnemy.text = profile.username }
-                },
-                onError = { /* dejar "Rival" */ }
-            )
+        if (opponent == null) {
+            resolveOpponentName(nameEnemy)
         }
 
         val board = findViewById<ComposeView>(R.id.board)
@@ -314,9 +305,11 @@ class GameActivity : AppCompatActivity() {
 
                             GameTimerManager.stop()
 
-                            Toast.makeText(this,
+                            Toast.makeText(
+                                this,
                                 "La partida ha sido pausada",
-                                Toast.LENGTH_SHORT).show()
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
 
                         is GameEvent.Error -> {
@@ -376,9 +369,11 @@ class GameActivity : AppCompatActivity() {
                     Log.e("WS", "Error: $error")
 
                     if (!gameResultShown) {
-                        Toast.makeText(this,
+                        Toast.makeText(
+                            this,
                             "Error de conexión",
-                            Toast.LENGTH_SHORT).show()
+                            Toast.LENGTH_SHORT
+                        ).show()
                         finish()
                     }
                 }
@@ -503,6 +498,28 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    /**
+     * Resuelve el nombre del rival por HTTP cuando no está disponible en el manager.
+     * Cubre dos casos: reconexión (reconnectingOpponentId) y matchmaking (OPPONENT_ID en el Intent).
+     */
+    private fun resolveOpponentName(nameEnemy: TextView) {
+        val opponentId = ActiveGameManager.reconnectingOpponentId
+            ?: intent.getLongExtra("OPPONENT_ID", -1L).takeIf { it != -1L }
+            ?: return
+
+        val userRepo = UserRepository(NetworkUtils.getApiService())
+        userRepo.getUserProfile(
+            userId = opponentId,
+            onSuccess = { profile ->
+                runOnUiThread {
+                    nameEnemy.text = profile.username
+                    ActiveGameManager.currentOpponentUsername = profile.username
+                }
+            },
+            onError = { /* mantener "Rival" */ }
+        )
     }
 
     override fun onDestroy() {
@@ -651,7 +668,7 @@ class GameActivity : AppCompatActivity() {
         }, 1000)
     }
 
-    private fun applyStateLog(log: String) : Int {
+    private fun applyStateLog(log: String): Int {
 
         if (log.isBlank()) {
             Log.d("RECONNECT", "applyStateLog: log vacío, nada que aplicar")
@@ -676,7 +693,10 @@ class GameActivity : AppCompatActivity() {
         val isRedTurn = moveCount % 2 == 0
         isMyTurn = (imInternalRed == isRedTurn)
         GameTimerManager.setMyTurn(isMyTurn)
-        Log.d("RECONNECT", "recalculateTurn: moveCount=$moveCount isRedTurn=$isRedTurn imRed=$imInternalRed → isMyTurn=$isMyTurn")
+        Log.d(
+            "RECONNECT",
+            "recalculateTurn: moveCount=$moveCount isRedTurn=$isRedTurn imRed=$imInternalRed → isMyTurn=$isMyTurn"
+        )
     }
 
     private fun applyStateMove(moveStr: String) {

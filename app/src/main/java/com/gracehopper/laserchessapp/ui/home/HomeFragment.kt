@@ -18,9 +18,12 @@ import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.model.game.BoardLayouts
 import com.gracehopper.laserchessapp.data.model.game.GameMode
+import com.gracehopper.laserchessapp.data.model.user.TimeMode
+import com.gracehopper.laserchessapp.data.model.user.TimeModeConfig
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.gameLogic.board.BoardParser
 import com.gracehopper.laserchessapp.ui.game.GameActivity
+import com.gracehopper.laserchessapp.ui.game.WaitingGameDialogFragment
 
 class HomeFragment : Fragment() {
 
@@ -32,7 +35,11 @@ class HomeFragment : Fragment() {
 
     private var selectedBoardName: String = "Ace"
     private var selectedBoardId: Int = 0
+    private var selectedTimeMode: TimeMode = TimeMode.BLITZ
+    private var selectedTimeIncrement: Int = 0
+
     private var boardComposeView: ComposeView? = null
+    private var txtTimeIncrementTitle: TextView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,13 +83,11 @@ class HomeFragment : Fragment() {
 
             when (currentMode) {
 
-                // Cambiar luego por valores reales
                 GameMode.BOT -> {
-
                     ActiveGameManager.createBotGame(
                         board = selectedBoardId,
-                        startingTime = 300,
-                        timeIncrement = 2,
+                        startingTime = TimeModeConfig.getBaseTimeSeconds(selectedTimeMode),
+                        timeIncrement = selectedTimeIncrement,
                         level = 1
                     )
 
@@ -90,11 +95,25 @@ class HomeFragment : Fragment() {
                 }
 
                 GameMode.RANKED -> {
-                    // matchmaking ranked
+                    ActiveGameManager.joinMatchmaking(
+                        board = selectedBoardId,
+                        timeBase = TimeModeConfig.getBaseTimeSeconds(selectedTimeMode),
+                        timeIncrement = selectedTimeIncrement,
+                        ranked = true
+                    )
+
+                    WaitingGameDialogFragment().show(parentFragmentManager, "MatchmakingWait")
                 }
 
                 GameMode.PUBLIC -> {
-                    // matchmaking publico
+                    ActiveGameManager.joinMatchmaking(
+                        board = selectedBoardId,
+                        timeBase = TimeModeConfig.getBaseTimeSeconds(selectedTimeMode),
+                        timeIncrement = selectedTimeIncrement,
+                        ranked = false
+                    )
+
+                    WaitingGameDialogFragment().show(parentFragmentManager, "MatchmakingWait")
                 }
             }
         }
@@ -135,36 +154,41 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupSelectors(view: View) {
+        val LCRed  = ContextCompat.getColor(requireContext(), R.color.LCRed)
+        val LCBlue = ContextCompat.getColor(requireContext(), R.color.LCBlue)
+        val LCGreen = ContextCompat.getColor(requireContext(), R.color.LCGreen)
 
+        // Selector de tablero
         val includeBoardSelector = view.findViewById<View>(R.id.includeBoardSelector)
-        val txtBoardTitle =
-            includeBoardSelector.findViewById<TextView>(R.id.txtSelectorTitle)
-        val imgBoardIcon =
-            includeBoardSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
-        val LCRed = ContextCompat.getColor(requireContext(), R.color.LCRed)
-
+        val txtBoardTitle = includeBoardSelector.findViewById<TextView>(R.id.txtSelectorTitle)
+        val imgBoardIcon  = includeBoardSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
         txtBoardTitle.text = selectedBoardName
         imgBoardIcon.setImageResource(R.drawable.ic_tablero)
         imgBoardIcon.setColorFilter(LCRed)
-
         includeBoardSelector.setOnClickListener {
             showBoardBottomSheet(LCRed, txtBoardTitle)
         }
 
+        // Selector de modo de tiempo
         val includeTimeSelector = view.findViewById<View>(R.id.includeTimeSelector)
-        val txtTimeTitle =
-            includeTimeSelector.findViewById<TextView>(R.id.txtSelectorTitle)
-        val imgTimeIcon =
-            includeTimeSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
-        val LCBlue = ContextCompat.getColor(requireContext(), R.color.LCBlue)
-
-        txtTimeTitle.text = "Modo de tiempo"
-        imgTimeIcon.setImageResource(R.drawable.ic_tiempo)
-        imgTimeIcon.setColorFilter(LCBlue)
-
+        val txtTimeTitle = includeTimeSelector.findViewById<TextView>(R.id.txtSelectorTitle)
+        val imgTimeIcon  = includeTimeSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
+        txtTimeTitle.text = TimeModeConfig.getName(selectedTimeMode)
+        imgTimeIcon.setImageResource(R.drawable.ic_timer)
+        imgTimeIcon.setColorFilter(LCGreen)
         includeTimeSelector.setOnClickListener {
-            val gameModeOptions = listOf("Blitz", "Bullet", "Classic", "Extended")
-            showBottomSheet("Seleccionar modo de tiempo", gameModeOptions, LCBlue, txtTimeTitle)
+            showTimeModeBottomSheet(LCGreen, txtTimeTitle)
+        }
+
+        val includeIncrementSelector = view.findViewById<View>(R.id.includeIncrementSelector)
+        val txtIncrementTitle = includeIncrementSelector.findViewById<TextView>(R.id.txtSelectorTitle)
+        val imgIncrementIcon  = includeIncrementSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
+        txtTimeIncrementTitle = txtIncrementTitle
+        txtIncrementTitle.text = "+${selectedTimeIncrement}s"
+        imgIncrementIcon.setImageResource(R.drawable.ic_timer)
+        imgIncrementIcon.setColorFilter(LCBlue)
+        includeIncrementSelector.setOnClickListener {
+            showIncrementBottomSheet(LCBlue, txtIncrementTitle)
         }
     }
 
@@ -172,100 +196,92 @@ class HomeFragment : Fragment() {
      * BottomSheet específico para selección de tablero.
      * Al elegir un tablero actualiza la previsualización.
      */
-    private fun showBoardBottomSheet(colorTitulo: Int, targetTextView: TextView) {
-
-        val bottomSheetDialog = BottomSheetDialog(
-            requireContext(),
-            R.style.TemaBottomSheetTransparente
-        )
-
-        val dialogView = layoutInflater.inflate(R.layout.dialog_selector_desplegable, null)
-
-        val txtTitle = dialogView.findViewById<TextView>(R.id.txtDialogTitle)
-        txtTitle.text = "Seleccionar tablero"
-        txtTitle.setTextColor(colorTitulo)
-
-        val container = dialogView.findViewById<LinearLayout>(R.id.layoutOptionsContainer)
-
-        BoardLayouts.ALL_BOARD_NAMES.forEachIndexed { index, boardName ->
-            val button = com.google.android.material.button.MaterialButton(requireContext()).apply {
-                text = boardName
-                setTextColor(ContextCompat.getColor(context, R.color.LCWhite))
-                backgroundTintList = ContextCompat.getColorStateList(context, R.color.S2)
-                cornerRadius = 36
-
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    setMargins(0, 0, 0, 16)
-                }
-
-                setOnClickListener {
+    private fun showBoardBottomSheet(color: Int, targetView: TextView) {
+        val dialog = buildBottomSheet("Seleccionar tablero", color) { container, dlg ->
+            BoardLayouts.ALL_BOARD_NAMES.forEachIndexed { index, boardName ->
+                addButton(container, dlg, boardName) {
                     selectedBoardName = boardName
                     selectedBoardId = index
-                    targetTextView.text = boardName
-                    renderBoard()          //  actualiza el tablero en Home
-                    bottomSheetDialog.dismiss()
+                    targetView.text = boardName
+                    renderBoard()
                 }
             }
-            container.addView(button)
         }
-
-        bottomSheetDialog.setContentView(dialogView)
-        bottomSheetDialog.show()
+        dialog.show()
     }
 
-    private fun showBottomSheet(
-        titulo: String,
-        opciones: List<String>,
-        colorTitulo: Int,
-        targetTextView: TextView
-    ) {
-        val bottomSheetDialog = BottomSheetDialog(
-            requireContext(),
-            R.style.TemaBottomSheetTransparente
-        )
-
-        val dialogView = layoutInflater.inflate(R.layout.dialog_selector_desplegable, null)
-
-        val txtTitle = dialogView.findViewById<TextView>(R.id.txtDialogTitle)
-        txtTitle.text = titulo
-        txtTitle.setTextColor(colorTitulo)
-
-        val container = dialogView.findViewById<LinearLayout>(R.id.layoutOptionsContainer)
-
-        for (opcion in opciones) {
-            val button = com.google.android.material.button.MaterialButton(requireContext()).apply {
-                text = opcion
-                setTextColor(ContextCompat.getColor(context, R.color.LCWhite))
-                backgroundTintList = ContextCompat.getColorStateList(context, R.color.S2)
-                cornerRadius = 36
-
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    setMargins(0, 0, 0, 16)
-                }
-
-                setOnClickListener {
-                    targetTextView.text = opcion
-                    bottomSheetDialog.dismiss()
+    private fun showTimeModeBottomSheet(color: Int, targetView: TextView) {
+        val dialog = buildBottomSheet("Modo de tiempo", color) { container, dlg ->
+            TimeMode.values().filter { it != TimeMode.CUSTOM }.forEach { mode ->
+                addButton(container, dlg, TimeModeConfig.getName(mode)) {
+                    if (selectedTimeMode != mode) {
+                        selectedTimeMode = mode
+                        selectedTimeIncrement = TimeModeConfig.getAllowedIncrements(mode).first()
+                        txtTimeIncrementTitle?.text = "+${selectedTimeIncrement}s"
+                    }
+                    targetView.text = TimeModeConfig.getName(mode)
                 }
             }
-            container.addView(button)
+        }
+        dialog.show()
+    }
+
+    private fun showIncrementBottomSheet(color: Int, targetView: TextView) {
+        val dialog = buildBottomSheet("Incremento", color) { container, dlg ->
+            TimeModeConfig.getAllowedIncrements(selectedTimeMode).forEach { inc ->
+                addButton(container, dlg, "+${inc}s") {
+                    selectedTimeIncrement = inc
+                    targetView.text = "+${inc}s"
+                }
+            }
+        }
+        dialog.show()
+    }
+
+    private fun buildBottomSheet(
+        titulo: String,
+        colorTitulo: Int,
+        fillOptions: (container: LinearLayout, dialog: BottomSheetDialog) -> Unit
+    ): BottomSheetDialog {
+        val dialog = BottomSheetDialog(requireContext(), R.style.TemaBottomSheetTransparente)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_selector_desplegable, null)
+
+        dialogView.findViewById<TextView>(R.id.txtDialogTitle).apply {
+            text = titulo
+            setTextColor(colorTitulo)
         }
 
-        bottomSheetDialog.setContentView(dialogView)
-        bottomSheetDialog.show()
+        val container = dialogView.findViewById<LinearLayout>(R.id.layoutOptionsContainer)
+        fillOptions(container, dialog)
+
+        dialog.setContentView(dialogView)
+        return dialog
+    }
+
+    private fun addButton(container: LinearLayout, dialog: BottomSheetDialog, label: String, onClick: () -> Unit) {
+        val button = com.google.android.material.button.MaterialButton(requireContext()).apply {
+            text = label
+            setTextColor(ContextCompat.getColor(context, R.color.LCWhite))
+            backgroundTintList = ContextCompat.getColorStateList(context, R.color.S2)
+            cornerRadius = 36
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 0, 0, 16) }
+
+            setOnClickListener {
+                onClick()
+                dialog.dismiss()
+            }
+        }
+        container.addView(button)
     }
 
     private fun iconFor(mode: GameMode): Int {
         return when (mode) {
-            GameMode.BOT     -> R.drawable.robot_2_48px
-            GameMode.RANKED  -> R.drawable.ic_ranked_mode
-            GameMode.PUBLIC  -> R.drawable.ic_casual_mode
+            GameMode.BOT -> R.drawable.robot_2_48px
+            GameMode.RANKED -> R.drawable.ic_ranked_mode
+            GameMode.PUBLIC -> R.drawable.ic_casual_mode
         }
     }
 
