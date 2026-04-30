@@ -32,12 +32,6 @@ object NetworkUtils {
     private var webSocketClient: OkHttpClient? = null
     private var sseClient: OkHttpClient? = null
 
-    private val cookieManager: CookieManager by lazy {
-        CookieManager().apply {
-            setCookiePolicy(CookiePolicy.ACCEPT_ALL)
-        }
-    }
-
     private lateinit var persistentCookieJar: PersistentCookieJar
 
     private val cookieJar: PersistentCookieJar
