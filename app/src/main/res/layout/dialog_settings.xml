@@ -121,62 +121,6 @@
             android:background="@drawable/bg_surface2_panel_rounded"
             android:paddingBottom="10dp">
 
-        <!-- Música -->
-        <LinearLayout
-            android:id="@+id/musicSelect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/music"
-                android:textColor="@color/LCWhite"
-                android:textSize="@dimen/text_medium"
-                android:textStyle="bold" />
-
-            <CheckBox
-                android:id="@+id/checkMusic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:buttonTint="@color/LCWhite" />
-
-        </LinearLayout>
-
-        <!-- Efectos de sonido -->
-        <LinearLayout
-            android:id="@+id/soundSelect"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/musicSelect">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/sound_effects"
-                android:textColor="@color/LCWhite"
-                android:textSize="@dimen/text_medium"
-                android:textStyle="bold" />
-
-            <CheckBox
-                android:id="@+id/checkSoundEffects"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:buttonTint="@color/LCWhite" />
-
-        </LinearLayout>
-
         <!-- Notificaciones -->
         <LinearLayout
             android:id="@+id/notificationsSelect"
@@ -185,7 +129,7 @@
             android:layout_margin="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/soundSelect">
+            app:layout_constraintTop_toTopOf="parent" >
 
             <TextView
                 android:layout_width="0dp"

@@ -1,8 +1,14 @@
 package com.gracehopper.laserchessapp.ui.settings
 
+import android.Manifest
 import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Paint
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.InputType
 import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
@@ -15,9 +21,11 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.button.MaterialButton
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
@@ -39,16 +47,32 @@ class SettingsDialogFragment : DialogFragment() {
     private lateinit var txtEmail: TextView
     private lateinit var txtChangePassword: TextView
     private lateinit var txtEliminateAccount: TextView
-    private lateinit var checkMusic: CheckBox
-    private lateinit var checkSoundEffects: CheckBox
     private lateinit var checkNotifications: CheckBox
     private lateinit var buttonLogout: Button
+
+    private lateinit var notificationPermissionLauncher: ActivityResultLauncher<String>
+    private var changingNotificationCheckProgrammatically = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val apiService = NetworkUtils.getApiService()
         userRepository = UserRepository(apiService)
         authRepository = AuthRepository(apiService)
+
+        notificationPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+                if (!granted) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Notificaciones desactivadas",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                syncNotificationCheck()
+            }
+
         isCancelable = true
     }
 
@@ -68,7 +92,7 @@ class SettingsDialogFragment : DialogFragment() {
         setupTexts()
         loadUserData()
         setupListeners()
-
+        syncNotificationCheck()
     }
 
     private fun bindViews(view: View) {
@@ -77,8 +101,6 @@ class SettingsDialogFragment : DialogFragment() {
         txtEmail = view.findViewById(R.id.txtEmailSettings)
         txtChangePassword = view.findViewById(R.id.txtChangePassword)
         txtEliminateAccount = view.findViewById(R.id.txtEliminateAccount)
-        checkMusic = view.findViewById(R.id.checkMusic)
-        checkSoundEffects = view.findViewById(R.id.checkSoundEffects)
         checkNotifications = view.findViewById(R.id.checkNotifications)
         buttonLogout = view.findViewById(R.id.buttonLogout)
 
@@ -140,29 +162,22 @@ class SettingsDialogFragment : DialogFragment() {
             ).show()
         }
 
-        checkMusic.setOnCheckedChangeListener { _, isChecked ->
-            // TODO guardar ajustes música
-            Toast.makeText(requireContext(),
-                if (isChecked) "Música activada" else "Música desactivada",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        checkSoundEffects.setOnCheckedChangeListener { _, isChecked ->
-            // TODO guardar ajustes efectos de sonido
-            Toast.makeText(requireContext(),
-                if (isChecked) "Efectos de sonido activados" else "Efectos de sonido desactivados",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
         checkNotifications.setOnCheckedChangeListener { _, isChecked ->
-            // TODO guardar ajustes notificaciones
-            Toast.makeText(
-                requireContext(),
-                if (isChecked) "Notificaciones activadas" else "Notificaciones desactivadas",
-                Toast.LENGTH_SHORT
-            ).show()
+
+            if (changingNotificationCheckProgrammatically) return@setOnCheckedChangeListener
+
+            if (isChecked) {
+                requestNotificationPermission()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Para desactivar las notificaciones, cambia el permiso en ajustes",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                openAppNotificationSettings()
+            }
+
         }
 
         buttonLogout.setOnClickListener {
@@ -400,6 +415,69 @@ class SettingsDialogFragment : DialogFragment() {
 
     }
 
+    private fun syncNotificationCheck() {
+        val notificationsEnabled = NotificationManagerCompat
+            .from(requireContext())
+            .areNotificationsEnabled()
+
+        val permissionGranted =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            } else {
+                true
+            }
+
+        changingNotificationCheckProgrammatically = true
+        checkNotifications.isChecked = notificationsEnabled && permissionGranted
+        changingNotificationCheckProgrammatically = false
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val granted = ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if (granted) {
+                syncNotificationCheck()
+                return
+            }
+
+            if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Activa las notificaciones desde ajustes",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                openAppNotificationSettings()
+                syncNotificationCheck()
+            }
+        } else {
+            syncNotificationCheck()
+        }
+    }
+
+    private fun openAppNotificationSettings() {
+        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+            }
+        } else {
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.parse("package:${requireContext().packageName}")
+            }
+        }
+
+        startActivity(intent)
+    }
+
     private fun openLogoutDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Cerrar sesión")
@@ -453,6 +531,14 @@ class SettingsDialogFragment : DialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (::checkNotifications.isInitialized) {
+            syncNotificationCheck()
+        }
     }
 
     companion object {
