@@ -1,0 +1,66 @@
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+  <group>
+    <clip-path
+        android:pathData="M0,0h120v120h-120z"/>
+    <path
+        android:pathData="M0,0h120v120h-120z"
+        android:fillColor="#fb8c00"/>
+    <path
+        android:pathData="M36,80L36,80A2,2 0,0 1,38 82L38,86A2,2 0,0 1,36 88L36,88A2,2 0,0 1,34 86L34,82A2,2 0,0 1,36 80z"
+        android:fillColor="#000"
+        android:fillAlpha="0.6"/>
+    <path
+        android:pathData="M60,80L60,80A2,2 0,0 1,62 82L62,86A2,2 0,0 1,60 88L60,88A2,2 0,0 1,58 86L58,82A2,2 0,0 1,60 80z"
+        android:fillColor="#000"
+        android:fillAlpha="0.6"/>
+    <path
+        android:pathData="M48,80L48,80A2,2 0,0 1,50 82L50,86A2,2 0,0 1,48 88L48,88A2,2 0,0 1,46 86L46,82A2,2 0,0 1,48 80z"
+        android:fillColor="#000"
+        android:fillAlpha="0.6"/>
+    <path
+        android:pathData="M72,80L72,80A2,2 0,0 1,74 82L74,86A2,2 0,0 1,72 88L72,88A2,2 0,0 1,70 86L70,82A2,2 0,0 1,72 80z"
+        android:fillColor="#000"
+        android:fillAlpha="0.6"/>
+    <path
+        android:pathData="M84,80L84,80A2,2 0,0 1,86 82L86,86A2,2 0,0 1,84 88L84,88A2,2 0,0 1,82 86L82,82A2,2 0,0 1,84 80z"
+        android:fillColor="#000"
+        android:fillAlpha="0.6"/>
+    <path
+        android:pathData="M25,31L95,31A17,17 0,0 1,112 48L112,48A17,17 0,0 1,95 65L25,65A17,17 0,0 1,8 48L8,48A17,17 0,0 1,25 31z"
+        android:fillColor="#000"
+        android:fillAlpha="0.8"/>
+    <path
+        android:pathData="M37,48m-13,0a13,13 0,1 1,26 0a13,13 0,1 1,-26 0"
+        android:fillColor="#F1EEDA"/>
+    <path
+        android:pathData="M83,48m-13,0a13,13 0,1 1,26 0a13,13 0,1 1,-26 0"
+        android:fillColor="#F1EEDA"/>
+    <path
+        android:pathData="M34,43L40,43A2,2 0,0 1,42 45L42,51A2,2 0,0 1,40 53L34,53A2,2 0,0 1,32 51L32,45A2,2 0,0 1,34 43z"
+        android:fillColor="#000"
+        android:fillAlpha="0.8"/>
+    <path
+        android:pathData="M80,43L86,43A2,2 0,0 1,88 45L88,51A2,2 0,0 1,86 53L80,53A2,2 0,0 1,78 51L78,45A2,2 0,0 1,80 43z"
+        android:fillColor="#000"
+        android:fillAlpha="0.8"/>
+  </group>
+</vector>

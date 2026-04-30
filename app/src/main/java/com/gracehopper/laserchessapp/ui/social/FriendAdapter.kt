@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.databinding.ItemFriendBinding
-import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
+import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 class FriendAdapter (private var friends: List<FriendSummary>,
                      private val onFriendClick: (FriendSummary) -> Unit)
@@ -24,7 +24,7 @@ class FriendAdapter (private var friends: List<FriendSummary>,
 
         holder.binding.apply {
             txtFriendUsername.text = friend.username
-            imgFriendAvatar.setImageResource(AvatarUtils.getAvatarDrawable(friend.avatar))
+            imgFriendAvatar.setImageResource(ItemUtils.getItemDrawable(friend.avatar))
             txtFriendLevel.text = "${friend.level}"
         }
 

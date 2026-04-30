@@ -1,6 +1,7 @@
 package com.gracehopper.laserchessapp.ui.utils
 
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.model.shop.ItemMetadata
 import com.gracehopper.laserchessapp.data.model.shop.ItemType
 
 /**
@@ -8,55 +9,50 @@ import com.gracehopper.laserchessapp.data.model.shop.ItemType
  */
 object ItemUtils {
 
-    fun getItemDrawable(itemType: ItemType, itemId: Int): Int {
-        return when (itemType) {
-            ItemType.PIECE_SKIN -> getPieceSkinDrawable(itemId)
-            ItemType.BOARD_SKIN -> getBoardSkinDrawable(itemId)
-            ItemType.WIN_ANIMATION -> getWinAnimationDrawable(itemId)
-            ItemType.AVATAR -> AvatarUtils.getAvatarDrawable(itemId)
-        }
+    fun getItemDrawable(itemId: Int): Int {
+        return getItemMetadata(itemId).drawableRes
     }
 
-    fun getPieceSkinDrawable(skinId: Int): Int {
-        return when (skinId) {
-            1 -> R.drawable.piece_skin_1
-            2 -> R.drawable.piece_skin_2
-            3 -> R.drawable.piece_skin_3
-            4 -> R.drawable.piece_skin_4
-            5 -> R.drawable.piece_skin_5
-            else -> R.drawable.piece_skin_1
-        }
+    fun getItemName(itemId: Int): String {
+        return getItemMetadata(itemId).name
     }
 
-    fun getBoardSkinDrawable(skinId: Int): Int {
-        return when (skinId) {
-            1 -> R.drawable.board_skin_1
-            2 -> R.drawable.board_skin_2
-            3 -> R.drawable.board_skin_3
-            4 -> R.drawable.board_skin_4
-            5 -> R.drawable.board_skin_5
-            else -> R.drawable.board_skin_1
-        }
-    }
+    private fun getItemMetadata(itemId: Int): ItemMetadata {
 
-    fun getWinAnimationDrawable(animationId: Int): Int {
-        return when (animationId) {
-            1 -> R.drawable.win_animation_1
-            2 -> R.drawable.win_animation_2
-            3 -> R.drawable.win_animation_3
-            4 -> R.drawable.win_animation_4
-            5 -> R.drawable.win_animation_5
-            else -> R.drawable.win_animation_1
-        }
-    }
+        return when (itemId) {
 
-    fun getItemTypeName(itemType: ItemType): String {
-        return when (itemType) {
-            ItemType.PIECE_SKIN -> "Piezas"
-            ItemType.BOARD_SKIN -> "Tablero"
-            ItemType.WIN_ANIMATION -> "Animación"
-            ItemType.AVATAR -> "Avatar"
+            // PIECE_SKIN
+            1 -> ItemMetadata("Classic", R.drawable.kin_b_classic)
+            2 -> ItemMetadata("Soretro", R.drawable.kin_r_cats) // TODO Cambiar cuando funke soretro
+            3 -> ItemMetadata("Cats", R.drawable.kin_b_cats)
+
+            // BOARD_SKIN
+            4 -> ItemMetadata("Classic", R.drawable.bg_classic)
+            5 -> ItemMetadata("Soretro", R.drawable.bg_soretro)
+            6 -> ItemMetadata("Cats", R.drawable.bg_cats)
+
+            // WIN_ANIMATION TODO: CAMBIAR CUANDO HAYA LOL
+            7 -> ItemMetadata("Classic", R.drawable.kin_r_cats)
+            8 -> ItemMetadata("Soretro", R.drawable.kin_r_cats)
+            9 -> ItemMetadata("Cats", R.drawable.kin_r_cats)
+
+            // AVATAR TODO: CAMBIAR NOMBRES CUANDO SE DECIDAN
+            10 -> ItemMetadata("robotito1", R.drawable.bot1)
+            11 -> ItemMetadata("robotito2", R.drawable.bot2)
+            12 -> ItemMetadata("robotito3", R.drawable.bot3)
+            13 -> ItemMetadata("robotito4", R.drawable.bot4)
+            14 -> ItemMetadata("robotito5", R.drawable.bot5)
+            15 -> ItemMetadata("robotito6", R.drawable.bot6)
+            16 -> ItemMetadata("robotito7", R.drawable.bot7)
+            17 -> ItemMetadata("robotito8", R.drawable.bot8)
+            18 -> ItemMetadata("robotito9", R.drawable.bot9)
+            19 -> ItemMetadata("robotito10", R.drawable.bot10)
+            20 -> ItemMetadata("robotito11", R.drawable.bot11)
+            21 -> ItemMetadata("mividaentera", R.drawable.bot12)
+
+            else -> throw IllegalArgumentException("Invalid item ID: $itemId")
         }
+
     }
 
 }

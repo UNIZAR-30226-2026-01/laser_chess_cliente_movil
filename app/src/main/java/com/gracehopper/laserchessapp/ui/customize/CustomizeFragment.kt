@@ -137,8 +137,8 @@ class CustomizeFragment : Fragment() {
         }
 
         val item = piecesItems[piecesIndex]
-        val name = ItemUtils.getItemTypeName(item.itemType)
-        val imageRes = ItemUtils.getItemDrawable(item.itemType, item.itemId)
+        val name = ItemUtils.getItemName(item.itemId)
+        val imageRes = ItemUtils.getItemDrawable(item.itemId)
 
         binding.txtPiecesTitle.text = "Piezas · $name"
 
@@ -156,8 +156,8 @@ class CustomizeFragment : Fragment() {
         }
 
         val item = boardItems[boardIndex]
-        val name = ItemUtils.getItemTypeName(item.itemType)
-        val imageRes = ItemUtils.getItemDrawable(item.itemType, item.itemId)
+        val name = ItemUtils.getItemName(item.itemId)
+        val imageRes = ItemUtils.getItemDrawable(item.itemId)
 
         binding.txtBoardSkinTitle.text = "Tablero · $name"
         binding.imgBoardPreview.setImageResource(imageRes)
@@ -170,8 +170,8 @@ class CustomizeFragment : Fragment() {
         }
 
         val item = animationsItems[animationIndex]
-        val name = ItemUtils.getItemTypeName(item.itemType)
-        val imageRes = ItemUtils.getItemDrawable(item.itemType, item.itemId)
+        val name = ItemUtils.getItemName(item.itemId)
+        val imageRes = ItemUtils.getItemDrawable(item.itemId)
 
         binding.txtVictorySkinTitle.text = "Victoria · $name"
         binding.imgAnimationPreview.setImageResource(imageRes)

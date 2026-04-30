@@ -1,0 +1,58 @@
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+  <group>
+    <clip-path
+        android:pathData="M0,0h120v120h-120z"/>
+    <path
+        android:pathData="M0,0h120v120h-120z"
+        android:fillColor="#c0ca33"/>
+    <path
+        android:pathData="M31,72L89,72A5,5 0,0 1,94 77L94,91A5,5 0,0 1,89 96L31,96A5,5 0,0 1,26 91L26,77A5,5 0,0 1,31 72z"
+        android:fillColor="#000"
+        android:fillAlpha="0.2"/>
+    <path
+        android:pathData="M32,76L88,76A2,2 0,0 1,90 78L90,90A2,2 0,0 1,88 92L32,92A2,2 0,0 1,30 90L30,78A2,2 0,0 1,32 76z"
+        android:fillColor="#000"
+        android:fillAlpha="0.8"/>
+    <path
+        android:pathData="M31,85h11l2,-4 3,7 4,-8 2,9 3,-11 3,10 3,-3h15l3,-4 2,7 3,-3h4"
+        android:strokeLineJoin="round"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeColor="#4EFAC9"
+        android:strokeLineCap="round"/>
+    <path
+        android:pathData="M12,24L108,24A4,4 0,0 1,112 28L112,62A4,4 0,0 1,108 66L12,66A4,4 0,0 1,8 62L8,28A4,4 0,0 1,12 24z"
+        android:fillColor="#000"
+        android:fillAlpha="0.8"/>
+    <path
+        android:pathData="M38,45L44,45A2,2 0,0 1,46 47L46,54A2,2 0,0 1,44 56L38,56A2,2 0,0 1,36 54L36,47A2,2 0,0 1,38 45z"
+        android:fillColor="#8BDDFF"/>
+    <path
+        android:pathData="M76,45L82,45A2,2 0,0 1,84 47L84,54A2,2 0,0 1,82 56L76,56A2,2 0,0 1,74 54L74,47A2,2 0,0 1,76 45z"
+        android:fillColor="#8BDDFF"/>
+    <path
+        android:pathData="M29,24h8L20,66L12,66L29,24Z"
+        android:fillColor="#fff"
+        android:fillAlpha="0.4"
+        android:fillType="evenOdd"/>
+  </group>
+</vector>

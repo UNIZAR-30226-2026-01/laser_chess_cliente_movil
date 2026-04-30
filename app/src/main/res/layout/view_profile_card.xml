@@ -8,14 +8,15 @@
     android:background="@drawable/bg_dark_panel_rounded"
     android:padding="10dp">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imgMyProfileAvatar"
         android:layout_width="52dp"
         android:layout_height="52dp"
-        android:src="@drawable/avatar_1"
+        android:src="@drawable/bot1"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/CircleImage"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/LCWhite" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txtMyProfileUsername"

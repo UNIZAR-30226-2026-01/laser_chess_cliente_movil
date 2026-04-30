@@ -32,7 +32,7 @@ import com.gracehopper.laserchessapp.ui.game.GameActivity
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
 import com.gracehopper.laserchessapp.ui.social.RequestsDialogFragment
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
-import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
+import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 import com.gracehopper.laserchessapp.utils.AppNotificationHelper
 
 /**
@@ -361,7 +361,7 @@ class MainActivity : AppCompatActivity() {
         val maxLevelXp = 1000
         val currentXpInLevel = profile.xp % maxLevelXp
         txtProfileLevel.text = getString(R.string.profile_card_level_format, profile.level, currentXpInLevel, maxLevelXp)
-        imgProfileAvatar.setImageResource(AvatarUtils.getAvatarDrawable(profile.avatar))
+        imgProfileAvatar.setImageResource(ItemUtils.getItemDrawable(profile.avatar))
         progressProfileXP.max = maxLevelXp
         progressProfileXP.progress = profile.xp % maxLevelXp
 

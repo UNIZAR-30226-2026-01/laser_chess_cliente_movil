@@ -17,7 +17,7 @@ import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 import com.gracehopper.laserchessapp.data.model.user.UserFriendshipStatus
-import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
+import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 
 class RequestsDialogFragment : DialogFragment() {
@@ -157,7 +157,7 @@ class RequestsDialogFragment : DialogFragment() {
                             itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
 
                         textUsername.text = request.username
-                        imageAvatar.setImageResource(AvatarUtils.getAvatarDrawable(request.avatar))
+                        imageAvatar.setImageResource(ItemUtils.getItemDrawable(request.avatar))
                         buttonAccept.visibility = View.VISIBLE
 
                         itemView.setOnClickListener {
@@ -220,7 +220,7 @@ class RequestsDialogFragment : DialogFragment() {
                             itemView.findViewById<ImageButton>(R.id.buttonRejectCancelRequest)
 
                         textUsername.text = request.username
-                        imageAvatar.setImageResource(AvatarUtils.getAvatarDrawable(request.avatar))
+                        imageAvatar.setImageResource(ItemUtils.getItemDrawable(request.avatar))
                         buttonAccept.visibility = View.GONE
 
                         itemView.setOnClickListener {

@@ -1,0 +1,52 @@
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+  <group>
+    <clip-path
+        android:pathData="M0,0h120v120h-120z"/>
+    <path
+        android:pathData="M0,0h120v120h-120z"
+        android:fillColor="#fdd835"/>
+    <path
+        android:pathData="M31,73L89,73A5,5 0,0 1,94 78L94,90A5,5 0,0 1,89 95L31,95A5,5 0,0 1,26 90L26,78A5,5 0,0 1,31 73z"
+        android:fillColor="#000"
+        android:fillAlpha="0.2"/>
+    <path
+        android:pathData="M32,77L88,77A2,2 0,0 1,90 79L90,89A2,2 0,0 1,88 91L32,91A2,2 0,0 1,30 89L30,79A2,2 0,0 1,32 77z"
+        android:fillColor="#fff"/>
+    <path
+        android:pathData="M40,77h4v14h-4zM64,77h4v14h-4zM52,77h4v14h-4zM76,77h4v14h-4z"
+        android:fillColor="#000"
+        android:fillAlpha="0.1"/>
+    <path
+        android:pathData="M19,36L102,36A4,4 0,0 1,106 40L106,48A4,4 0,0 1,102 52L19,52A4,4 0,0 1,15 48L15,40A4,4 0,0 1,19 36z"
+        android:fillColor="#000"
+        android:fillAlpha="0.8"/>
+    <group>
+      <clip-path
+          android:pathData="M19,36L102,36A4,4 0,0 1,106 40L106,48A4,4 0,0 1,102 52L19,52A4,4 0,0 1,15 48L15,40A4,4 0,0 1,19 36z"/>
+      <path
+          android:pathData="M84,27h18L90,57L72,57L84,27ZM60,27h9L57,57h-9L60,27Z"
+          android:fillColor="#fff"
+          android:fillAlpha="0.8"
+          android:fillType="evenOdd"/>
+    </group>
+  </group>
+</vector>

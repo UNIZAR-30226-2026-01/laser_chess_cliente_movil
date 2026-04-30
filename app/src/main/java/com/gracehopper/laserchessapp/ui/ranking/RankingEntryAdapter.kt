@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.ranking.RankingEntry
 import com.gracehopper.laserchessapp.databinding.ItemRankingEntryBinding
-import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
+import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 class RankingEntryAdapter(
     private var entries: List<RankingEntry>,
@@ -40,7 +40,7 @@ class RankingEntryAdapter(
             textRankingUsername.text = entry.username
             textRankingElo.text = entry.elo.toString()
             imageRankingAvatar.setImageResource(
-                AvatarUtils.getAvatarDrawable(entry.avatar)
+                ItemUtils.getItemDrawable(entry.avatar)
             )
 
             val highlightColor = when {

@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="20dp">
 
     <!-- Caja principal -->
@@ -32,11 +33,13 @@
             android:gravity="center_vertical"
             android:layout_marginBottom="20dp">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageProfileAvatar"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:src="@drawable/ic_avatar"
+                android:src="@drawable/bot1"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/CircleImage"
                 android:contentDescription="@string/avatar"
                 android:layout_marginEnd="16dp" />
 

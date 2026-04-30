@@ -20,7 +20,7 @@ class ShopProductAdapter(
             binding.txtShopProductName.text = product.name
             binding.txtShopProductPrice.text = product.price.toString()
             binding.imgShopProduct.setImageResource(
-                ItemUtils.getItemDrawable(product.itemType, product.itemId)
+                ItemUtils.getItemDrawable(product.itemId)
             )
 
             binding.root.setOnClickListener {

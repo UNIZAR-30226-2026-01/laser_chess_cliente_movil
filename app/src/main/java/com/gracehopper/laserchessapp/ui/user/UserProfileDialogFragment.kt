@@ -19,7 +19,6 @@ import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.gameConfig.GameConfigDialogFragment
-import com.gracehopper.laserchessapp.ui.utils.AvatarUtils
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 class UserProfileDialogFragment : DialogFragment() {
@@ -215,14 +214,14 @@ class UserProfileDialogFragment : DialogFragment() {
         txtProfileClassicElo.text = profile.ratings.classic.toString()
         txtProfileExtendedElo.text = profile.ratings.extended.toString()
 
-        imageProfileAvatar.setImageResource(AvatarUtils.getAvatarDrawable(profile.avatar))
+        imageProfileAvatar.setImageResource(ItemUtils.getItemDrawable(profile.avatar))
 
         progressProfileXP.max = 100
         progressProfileXP.progress = profile.xp % 100
 
-        imgPieceSkin.setImageResource(ItemUtils.getPieceSkinDrawable(profile.pieceSkin))
-        imgBoardSkin.setImageResource(ItemUtils.getBoardSkinDrawable(profile.boardSkin))
-        imgWinAnimation.setImageResource(ItemUtils.getWinAnimationDrawable(profile.winAnimation))
+        imgPieceSkin.setImageResource(ItemUtils.getItemDrawable(profile.pieceSkin))
+        imgBoardSkin.setImageResource(ItemUtils.getItemDrawable(profile.boardSkin))
+        imgWinAnimation.setImageResource(ItemUtils.getItemDrawable(profile.winAnimation))
 
     }
 
