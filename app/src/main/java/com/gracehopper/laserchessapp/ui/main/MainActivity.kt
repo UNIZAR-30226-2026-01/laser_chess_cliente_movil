@@ -29,6 +29,7 @@ import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.settings.SettingsDialogFragment
 import com.gracehopper.laserchessapp.ui.game.GameActivity
+import com.gracehopper.laserchessapp.ui.history.HistoryDialogFragment
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
 import com.gracehopper.laserchessapp.ui.social.RequestsDialogFragment
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
@@ -170,6 +171,11 @@ class MainActivity : AppCompatActivity() {
         btnNotifications.setOnClickListener {
             val dialog = NotificationsDialogFragment()
             dialog.show(supportFragmentManager, "NotificationsDialog")
+        }
+
+        btnHistory.setOnClickListener {
+            val dialog = HistoryDialogFragment()
+            dialog.show(supportFragmentManager, "HistoryDialog")
         }
     }
 

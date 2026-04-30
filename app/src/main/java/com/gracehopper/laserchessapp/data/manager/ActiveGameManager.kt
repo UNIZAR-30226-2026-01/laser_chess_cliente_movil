@@ -403,7 +403,7 @@ object ActiveGameManager {
         currentState = GameState.CONNECTING
         lastError = null
 
-        val backendRanked = if (ranked) 1 else 0
+        val backendRanked = if (ranked) 0 else 1
 
         val listener = buildListener(onOpenState = GameState.STARTING_GAME)
         friendlyGameWebSocket = FriendlyGameWebSocket(listener)
