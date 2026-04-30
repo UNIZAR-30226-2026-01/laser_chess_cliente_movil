@@ -78,11 +78,11 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
      */
     fun createChallenge(
         username: String, board: Int,
-        startingTime: Int, timeIncrement: Int
+        startingTime: Int, timeIncrement: Int, matchId: Long? = null
     ) {
 
-        val url =
-            "$CHALLENGE_URL?username=$username&board=$board&starting_time=$startingTime&time_increment=$timeIncrement"
+        val base = "$CHALLENGE_URL?username=$username&board=$board&starting_time=$startingTime&time_increment=$timeIncrement"
+        val url = if (matchId != null) "$base&match_id=$matchId" else base
 
         val request = Request.Builder()
             .url(url)

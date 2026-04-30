@@ -50,6 +50,10 @@ object ActiveGameManager {
 
     var currentTimeIncrement: Int? = null
         private set
+
+    var currentMatchId: Long? = null
+        private set
+
     var reconnectingOpponentId: Long? = null
         private set
 
@@ -347,7 +351,8 @@ object ActiveGameManager {
         challengedUsername: String,
         board: Int,
         startingTime: Int,
-        timeIncrement: Int
+        timeIncrement: Int,
+        matchId: Long? = null
     ) {
 
         resetConnectionOnly()
@@ -357,6 +362,7 @@ object ActiveGameManager {
         currentBoard = board
         currentStartingTime = startingTime
         currentTimeIncrement = timeIncrement
+        currentMatchId = matchId
         currentState = GameState.CONNECTING
         lastError = null
 
@@ -367,7 +373,7 @@ object ActiveGameManager {
         friendlyGameWebSocket = FriendlyGameWebSocket(listener)
         friendlyGameWebSocket?.createChallenge(
             challengedUsername,
-            board, startingTime, timeIncrement
+            board, startingTime, timeIncrement, matchId
         )
 
     }
@@ -528,6 +534,7 @@ object ActiveGameManager {
         currentBoard = null
         currentStartingTime = null
         currentTimeIncrement = null
+        currentMatchId = null
         reconnectingOpponentId = null
         pendingStateLog = null
         reconnectGotInitialState = false

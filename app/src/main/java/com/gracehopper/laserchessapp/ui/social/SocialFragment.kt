@@ -18,15 +18,16 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
-import com.gracehopper.laserchessapp.data.model.game.BoardType
+import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
+import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.game.InProgressGameSummary
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
-import com.gracehopper.laserchessapp.data.model.user.TimeMode
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
+import com.gracehopper.laserchessapp.data.repository.MatchHistoryRepository
+import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.databinding.FragmentSocialBinding
-import com.gracehopper.laserchessapp.ui.social.FriendAdapter
-import com.gracehopper.laserchessapp.ui.social.InProgressAdapter
+import com.gracehopper.laserchessapp.ui.game.WaitingGameDialogFragment
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
@@ -44,6 +45,10 @@ class SocialFragment : Fragment() {
 
     private val repository by lazy {
         FriendRepository(NetworkUtils.getApiService())
+    }
+
+    private val matchHistoryRepository by lazy {
+        MatchHistoryRepository(NetworkUtils.getApiService())
     }
 
     private enum class SocialTab {
@@ -94,7 +99,7 @@ class SocialFragment : Fragment() {
         setupRecycler()
         loadFriends()
         loadNumReceivedRequests()
-        loadFakeGamesInProgress()
+        loadPausedGames()
         setupTabs()
 
         setupListeners()
@@ -172,38 +177,74 @@ class SocialFragment : Fragment() {
 
     }
 
-    private fun loadFakeGamesInProgress() {
-        val fakeMatches = listOf(
-            InProgressGameSummary(
-                id = "1",
-                myTime = "13:00",
-                opponentUsername = "Usuario",
-                opponentTime = "12:00",
-                timeMode = TimeMode.BLITZ,
-                boardType = BoardType.ACE
-            ),
-            InProgressGameSummary(
-                id = "2",
-                myTime = "14:00",
-                opponentUsername = "Usuario",
-                opponentTime = "11:00",
-                timeMode = TimeMode.EXTENDED,
-                boardType = BoardType.SOPHIE
-            )
-        )
+    private fun loadPausedGames() {
+        val userId = TokenManager.getUserId()
+        if (userId == -1L) return
 
-        if (fakeMatches.isEmpty()) {
-            binding.emptyInProgressMessage.visibility = View.VISIBLE
-            binding.recyclerInProgressGames.visibility = View.GONE
-        } else {
-            binding.emptyInProgressMessage.visibility = View.GONE
-            binding.recyclerInProgressGames.visibility = View.VISIBLE
-            inProgressAdapter.updateData(fakeMatches)
-        }
+        matchHistoryRepository.getPausedMatches(
+            userId = userId,
+            onSuccess = { games ->
+                if (games.isEmpty()) {
+                    binding.emptyInProgressMessage.visibility = View.VISIBLE
+                    binding.recyclerInProgressGames.visibility = View.GONE
+                } else {
+                    binding.emptyInProgressMessage.visibility = View.GONE
+                    binding.recyclerInProgressGames.visibility = View.VISIBLE
+                    inProgressAdapter.updateData(games)
+                }
+            },
+            onError = { errorCode ->
+                binding.emptyInProgressMessage.visibility = View.VISIBLE
+                binding.recyclerInProgressGames.visibility = View.GONE
+                when (errorCode) {
+                    401  -> Toast.makeText(requireContext(), "No autorizado", Toast.LENGTH_SHORT).show()
+                    500  -> Toast.makeText(requireContext(), "Error del servidor", Toast.LENGTH_SHORT).show()
+                    null -> Toast.makeText(requireContext(), "Error de conexión", Toast.LENGTH_SHORT).show()
+                    else -> Toast.makeText(requireContext(), "Error: $errorCode", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
     }
 
     private fun resumeGame(game: InProgressGameSummary) {
-        Toast.makeText(requireContext(), "Retomar partida con id ${game.id}", Toast.LENGTH_SHORT).show()
+        val matchId = game.id.toLongOrNull() ?: run {
+            Toast.makeText(requireContext(), "ID de partida inválido", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        ActiveGameManager.setCallbacks(
+            onConnected = {
+                requireActivity().runOnUiThread {
+                    WaitingGameDialogFragment().show(parentFragmentManager, "WaitingResumeDialog")
+                }
+            },
+            onMessageReceived = { event ->
+                requireActivity().runOnUiThread {
+                    when (event) {
+                        is GameEvent.Error -> {
+                            Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                            ActiveGameManager.resetAll()
+                        }
+                        else -> { /* WaitingGameDialogFragment gestiona el resto */ }
+                    }
+                }
+            },
+            onError = { error ->
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Error al retomar: $error", Toast.LENGTH_SHORT).show()
+                    ActiveGameManager.resetAll()
+                }
+            },
+            onClosed = {}
+        )
+
+        ActiveGameManager.createChallenge(
+            challengedUsername = game.opponentUsername,
+            board = 0,          // El backend ignora board/time cuando recibe match_id
+            startingTime = 0,
+            timeIncrement = 0,
+            matchId = matchId
+        )
     }
 
     private fun setupTabs() {
@@ -347,6 +388,7 @@ class SocialFragment : Fragment() {
 
         loadFriends()
         loadNumReceivedRequests()
+        loadPausedGames()
     }
 
     override fun onDestroyView() {
