@@ -39,9 +39,15 @@ class PendingChallengesAdapter(
         private val buttonReject: Button = itemView.findViewById(R.id.buttonRejectChallenge)
 
         fun bind(challenge: PendingChallengeResponse) {
-            textChallengeTitle.text = "${challenge.challengerUsername} te ha retado a una partida"
-            textChallengeDetails.text =
-                "Tablero ${challenge.board} · ${challenge.startingTime/1000}s + ${challenge.timeIncrement}s"
+            val isResume = challenge.startingTime == 0
+            if (isResume) {
+                textChallengeTitle.text = "${challenge.challengerUsername} quiere retomar una partida contigo"
+                textChallengeDetails.text = "Partida pausada"
+            } else {
+                textChallengeTitle.text = "${challenge.challengerUsername} te ha retado a una partida"
+                textChallengeDetails.text =
+                    "Tablero ${challenge.board} · ${challenge.startingTime / 1000}s + ${challenge.timeIncrement}s"
+            }
 
             buttonAccept.setOnClickListener {
                 onAcceptClicked(challenge)
