@@ -86,16 +86,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <include
-        android:id="@+id/includeTimeSelector"
-        layout="@layout/view_selector_desplegable"
+    <LinearLayout
+        android:id="@+id/layoutTimeRow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@id/includeBoardSelector"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <include
+            android:id="@+id/includeTimeSelector"
+            layout="@layout/view_selector_desplegable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:layout_marginEnd="8dp"/>
+
+        <include
+            android:id="@+id/includeIncrementSelector"
+            layout="@layout/view_selector_desplegable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"/>
+    </LinearLayout>
 
     <!-- POPUP FLOTANTE MODOS -->
     <LinearLayout

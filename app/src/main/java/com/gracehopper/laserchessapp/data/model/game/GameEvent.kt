@@ -17,6 +17,15 @@ sealed class GameEvent {
     ) : GameEvent()
 
     /**
+     * Rival encontrado en matchmaking
+     *
+     * @param opponentId ID del rival
+     */
+    data class MatchStart(
+        val opponentId: Long?
+    ) : GameEvent()
+
+    /**
      * Movimiento de pieza
      *
      * @param moveAndTime Movimiento y tiempo restante del jugador

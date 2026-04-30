@@ -2,6 +2,7 @@ package com.gracehopper.laserchessapp.data.manager
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.content.edit
 import com.google.gson.Gson
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
@@ -32,11 +33,14 @@ object ActiveGameManager {
     private var friendlyGameWebSocket: FriendlyGameWebSocket? = null
     private var isReconnecting = false
 
+    var isMatchmakingGame: Boolean = false
+        private set
+
     var isFriendlyGame: Boolean = false
         private set
 
     var currentOpponentUsername: String? = null
-        private set
+        internal set
 
     var currentBoard: Int? = null
         private set
@@ -75,6 +79,9 @@ object ActiveGameManager {
     private var onErrorCallback: ((String) -> Unit)? = null
     private var onClosedCallback: (() -> Unit)? = null
 
+    // Buffer de eventos que llegaron antes de que el Fragment registrara su callback
+    private val pendingEvents = mutableListOf<GameEvent>()
+
     private const val PREF_NAME = "active_game_prefs"
     private const val KEY_IS_FRIENDLY = "is_friendly_game"
     private lateinit var prefs: SharedPreferences
@@ -103,6 +110,12 @@ object ActiveGameManager {
         onMessageReceivedCallback = onMessageReceived
         onErrorCallback = onError
         onClosedCallback = onClosed
+
+        // Despachar eventos que llegaron antes de tener listener
+        if (onMessageReceived != null && pendingEvents.isNotEmpty()) {
+            pendingEvents.forEach { onMessageReceived.invoke(it) }
+            pendingEvents.clear()
+        }
 
     }
 
@@ -139,6 +152,8 @@ object ActiveGameManager {
                 val myId = TokenManager.getUserId()
 
                 imRedPlayer = (redPlayerId == myId)
+                Log.d("PLAYER", "Mi id: $myId")
+                Log.d("PLAYER", "Id de red player: $redPlayerId")
 
                 if (awaitingReconnectMessages) {
                     // Reconexión: guardar y esperar a tener ambos mensajes
@@ -146,12 +161,12 @@ object ActiveGameManager {
                     dispatchReconnectIfReady()
                 } else {
                     // Partida en curso normal (GameActivity ya escucha)
-                    onMessageReceivedCallback?.invoke(
-                        GameEvent.InitialState(
-                            boardCsv = intialBoardCSV,
-                            redPlayerId = redPlayerId
-                        )
+                    val event = GameEvent.InitialState(
+                        boardCsv = intialBoardCSV,
+                        redPlayerId = redPlayerId
                     )
+                    val cb = onMessageReceivedCallback
+                    if (cb != null) cb.invoke(event) else pendingEvents.add(event)
                 }
             }
 
@@ -267,6 +282,13 @@ object ActiveGameManager {
                 }
             }
 
+            GameMessageType.MATCH_START -> {
+                val opponentId = serverMsg.content?.toLongOrNull()
+                val event = GameEvent.MatchStart(opponentId = opponentId)
+                val cb = onMessageReceivedCallback
+                if (cb != null) cb.invoke(event) else pendingEvents.add(event)
+            }
+
             else -> {
                 // ignorar
             }
@@ -351,6 +373,38 @@ object ActiveGameManager {
     }
 
     /**
+     * Entra en la cola de matchmaking pública o ranked.
+     *
+     * @param board Tablero de juego
+     * @param timeBase Tiempo base en segundos
+     * @param timeIncrement Incremento de tiempo en segundos
+     * @param ranked true si es ranked, false si es casual
+     */
+    fun joinMatchmaking(
+        board: Int,
+        timeBase: Int,
+        timeIncrement: Int,
+        ranked: Boolean
+    ) {
+        resetConnectionOnly()
+        setGameType(false)
+        isMatchmakingGame = true
+
+        currentBoard = board
+        currentStartingTime = timeBase
+        currentTimeIncrement = timeIncrement
+        currentOpponentUsername = null
+        currentState = GameState.CONNECTING
+        lastError = null
+
+        val backendRanked = if (ranked) 1 else 0
+
+        val listener = buildListener(onOpenState = GameState.STARTING_GAME)
+        friendlyGameWebSocket = FriendlyGameWebSocket(listener)
+        friendlyGameWebSocket?.joinMatchmaking(board, timeBase, timeIncrement, backendRanked)
+    }
+
+    /**
      * Acepta un reto recibido.
      */
     fun acceptChallenge(
@@ -427,12 +481,12 @@ object ActiveGameManager {
      * (InitialState y State), sin importar el orden en que lleguen.
      */
     private fun dispatchReconnectIfReady() {
-        android.util.Log.d(
+        Log.d(
             "RECONNECT",
             "dispatchReconnectIfReady: gotInitial=$reconnectGotInitialState gotState=$reconnectGotState pendingLog='$pendingStateLog' csv=${intialBoardCSV != null}"
         )
         if (reconnectGotInitialState && reconnectGotState) {
-            android.util.Log.d("RECONNECT", "Ambos recibidos → navegando a GameActivity")
+            Log.d("RECONNECT", "Ambos recibidos → navegando a GameActivity")
             awaitingReconnectMessages = false
             currentState = GameState.IN_GAME
             onMessageReceivedCallback?.invoke(
@@ -455,14 +509,12 @@ object ActiveGameManager {
         awaitingReconnectMessages = false
         currentState = GameState.CONNECTING
 
-        val token = TokenManager.getAccessToken() ?: return
-
         val listener = buildListener(
             onOpenState = GameState.CONNECTING
         )
 
         friendlyGameWebSocket = FriendlyGameWebSocket(listener)
-        friendlyGameWebSocket?.reconnect(token)
+        friendlyGameWebSocket?.reconnect()
     }
 
     /**
@@ -481,8 +533,10 @@ object ActiveGameManager {
         reconnectGotInitialState = false
         reconnectGotState = false
         awaitingReconnectMessages = false
+        isMatchmakingGame = false
         currentState = GameState.INACTIVE
         lastError = null
+        pendingEvents.clear()
 
         setGameType(false)
 
