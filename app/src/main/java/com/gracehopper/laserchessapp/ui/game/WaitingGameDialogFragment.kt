@@ -76,12 +76,12 @@ class WaitingGameDialogFragment : DialogFragment() {
                 textDetails.text = "Tablero $board · ${startingTime}s + ${increment}s"
             }
             ActiveGameManager.currentMatchId != null -> {
-                textOpponent.text = "Esperando a que ${opponent ?: "rival"} acepte retomar la partida"
-                textDetails.text = "Partida #${ActiveGameManager.currentMatchId}"
+                textOpponent.text = "Esperando al otro jugador"
+                textDetails.text = "Retomando partida con ${opponent ?: "rival"}"
             }
             else -> {
-                textOpponent.text = "Esperando a que ${opponent ?: "rival"} acepte la partida"
-                textDetails.text = "Tablero $board · ${startingTime}s + ${increment}s"
+                textOpponent.text = "Esperando al otro jugador"
+                textDetails.text = "Partida con ${opponent ?: "rival"}"
             }
         }
     }
