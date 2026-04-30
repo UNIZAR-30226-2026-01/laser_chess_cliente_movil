@@ -3,7 +3,9 @@ package com.gracehopper.laserchessapp.data.repository
 import android.util.Log
 import com.gracehopper.laserchessapp.data.model.shop.BuyItemRequest
 import com.gracehopper.laserchessapp.data.model.shop.ShopItem
+import com.gracehopper.laserchessapp.data.model.shop.ShopProduct
 import com.gracehopper.laserchessapp.data.remote.ApiService
+import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -11,6 +13,42 @@ import retrofit2.Response
 class ItemRepository(
     private val apiService: ApiService
 ) {
+
+    fun getShopProducts(
+        onSuccess: (List<ShopProduct>) -> Unit,
+        onError: (String) -> Unit
+    ) {
+
+        getInventory(
+            onSuccess = { inventory ->
+
+                val ownedIds = inventory.map { it.itemId }.toSet()
+
+                getAllShopItems(
+                    onSuccess = { items ->
+
+                        val products = items.map { item ->
+                            ShopProduct(
+                                itemId = item.itemId,
+                                name = ItemUtils.getItemName(item.itemId),
+                                itemType = item.itemType,
+                                price = item.price,
+                                levelRequisite = item.levelRequisite,
+                                isDefault = item.isDefault,
+                                isOwned = ownedIds.contains(item.itemId)
+                            )
+                        }
+
+                        onSuccess(products)
+
+                    },
+                    onError = onError
+                )
+            },
+            onError = onError
+        )
+
+    }
 
     fun getAllShopItems(
         onSuccess: (List<ShopItem>) -> Unit,

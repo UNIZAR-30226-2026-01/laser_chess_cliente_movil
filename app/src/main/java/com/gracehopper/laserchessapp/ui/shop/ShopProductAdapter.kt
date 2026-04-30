@@ -1,6 +1,7 @@
 package com.gracehopper.laserchessapp.ui.shop
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.data.model.shop.ShopProduct
@@ -18,13 +19,24 @@ class ShopProductAdapter(
 
         fun bind(product: ShopProduct) {
             binding.txtShopProductName.text = product.name
-            binding.txtShopProductPrice.text = product.price.toString()
             binding.imgShopProduct.setImageResource(
                 ItemUtils.getItemDrawable(product.itemId)
             )
 
-            binding.root.setOnClickListener {
-                onClick(product)
+            if (product.isOwned) {
+                binding.txtShopProductPrice.text = "COMPRADO"
+                binding.imgShopCoin.visibility = View.GONE
+                binding.root.isEnabled = false
+                binding.root.alpha = 0.6f
+                binding.root.setOnClickListener(null)
+            } else {
+                binding.txtShopProductPrice.text = product.price.toString()
+                binding.imgShopCoin.visibility = View.VISIBLE
+                binding.root.isEnabled = true
+                binding.root.alpha = 1f
+                binding.root.setOnClickListener {
+                    onClick(product)
+                }
             }
         }
 

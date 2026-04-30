@@ -244,9 +244,9 @@
             </LinearLayout>
 
 
-            <!-- SELECTOR VICTORIA -->
+            <!-- SELECTOR ANIMACIÓN -->
             <LinearLayout
-                android:id="@+id/victorySkinContainer"
+                android:id="@+id/animationSkinContainer"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -257,7 +257,7 @@
                 android:background="@drawable/bg_shop_section">
 
                 <TextView
-                    android:id="@+id/txtVictorySkinTitle"
+                    android:id="@+id/txt_animation_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Victoria · Soretro"

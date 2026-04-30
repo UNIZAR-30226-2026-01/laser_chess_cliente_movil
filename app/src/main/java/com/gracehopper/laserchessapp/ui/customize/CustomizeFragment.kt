@@ -44,6 +44,10 @@ class CustomizeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
         loadInventoryItems()
     }
 
@@ -115,11 +119,15 @@ class CustomizeFragment : Fragment() {
         }
 
         binding.btnPreviousAvatar.setOnClickListener {
-            Toast.makeText(requireContext(), "Avatar pendiente de backend", Toast.LENGTH_SHORT).show()
+            avatarIndex = previousIndex(avatarIndex, avatarItems.size)
+            renderAvatar()
+            saveAvatarSelection()
         }
 
         binding.btnNextAvatar.setOnClickListener {
-            Toast.makeText(requireContext(), "Avatar pendiente de backend", Toast.LENGTH_SHORT).show()
+            avatarIndex = nextIndex(avatarIndex, avatarItems.size)
+            renderAvatar()
+            saveAvatarSelection()
         }
     }
 
@@ -165,7 +173,7 @@ class CustomizeFragment : Fragment() {
 
     private fun renderAnimation() {
         if (animationsItems.isEmpty()) {
-            binding.txtVictorySkinTitle.text = "Victoria · Sin items"
+            binding.txtAnimationTitle.text = "Animación · Sin items"
             return
         }
 
@@ -173,12 +181,22 @@ class CustomizeFragment : Fragment() {
         val name = ItemUtils.getItemName(item.itemId)
         val imageRes = ItemUtils.getItemDrawable(item.itemId)
 
-        binding.txtVictorySkinTitle.text = "Victoria · $name"
+        binding.txtAnimationTitle.text = "Animación · $name"
         binding.imgAnimationPreview.setImageResource(imageRes)
     }
 
     private fun renderAvatar() {
-        binding.txtAvatarTitle.text = "Avatar · Pendiente"
+        if (avatarItems.isEmpty()) {
+            binding.txtAvatarTitle.text = "Avatar · Sin items"
+            return
+        }
+
+        val item = avatarItems[avatarIndex]
+        val name = ItemUtils.getItemName(item.itemId)
+        val imageRes = ItemUtils.getItemDrawable(item.itemId)
+
+        binding.txtAvatarTitle.text = "Avatar · $name"
+        binding.imgAvatarPreview.setImageResource(imageRes)
     }
 
     private fun savePiecesSelection() {
@@ -198,6 +216,13 @@ class CustomizeFragment : Fragment() {
     private fun saveAnimationSelection() {
         val item = animationsItems.getOrNull(animationIndex) ?: return
         Log.d("CUSTOMIZE", "Equipar animación itemId=${item.itemId}")
+
+        // TODO: llamar a repository para equipar win_animation
+    }
+
+    private fun saveAvatarSelection() {
+        val item = avatarItems.getOrNull(avatarIndex) ?: return
+        Log.d("CUSTOMIZE", "Equipar avatar itemId=${item.itemId}")
 
         // TODO: llamar a repository para equipar win_animation
     }

@@ -17,6 +17,7 @@ import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.ItemRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.databinding.FragmentShopBinding
+import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 class ShopFragment : Fragment() {
 
@@ -135,25 +136,14 @@ class ShopFragment : Fragment() {
 
     private fun loadShopItems() {
 
-        itemRepository.getAllShopItems(
-            onSuccess = { items ->
-                Log.d("SHOP_FRAGMENT", "Items recibidos: ${items.size}")
+        itemRepository.getShopProducts(
+            onSuccess = { products ->
+                Log.d("SHOP_FRAGMENT", "Items recibidos: ${products.size}")
 
-                items.forEachIndexed { index, item ->
+                products.forEachIndexed { index, item ->
                     Log.d(
                         "SHOP_FRAGMENT",
                         "RAW [$index] id=${item.itemId}, type=${item.itemType}, price=${item.price}, level=${item.levelRequisite}, default=${item.isDefault}"
-                    )
-                }
-
-                val products = items.map { item ->
-                    item.toShopProduct()
-                }
-
-                products.forEachIndexed { index, product ->
-                    Log.d(
-                        "SHOP_FRAGMENT",
-                        "PRODUCT [$index] id=${product.itemId}, name=${product.name}, type=${product.itemType}, price=${product.price}"
                     )
                 }
 
@@ -181,6 +171,15 @@ class ShopFragment : Fragment() {
     }
 
     private fun buyProduct(product: ShopProduct) {
+
+        if (product.isOwned) {
+            Toast.makeText(
+                requireContext(),
+                "Ya tienes ${product.name}",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
 
         itemRepository.buyItem(
             itemId = product.itemId,
@@ -225,17 +224,16 @@ class ShopFragment : Fragment() {
 
 }
 
-private fun ShopItem.toShopProduct(): ShopProduct {
-
+private fun ShopItem.toShopProduct(isOwned: Boolean): ShopProduct {
     return ShopProduct(
         itemId = itemId,
-        name = getShopItemName(itemId, itemType),
+        name = ItemUtils.getItemName(itemId),
         itemType = itemType,
         price = price,
         levelRequisite = levelRequisite,
-        isDefault = isDefault
+        isDefault = isDefault,
+        isOwned = isOwned
     )
-
 }
 
 private fun getShopItemName(itemId: Int, itemType: ItemType): String {
