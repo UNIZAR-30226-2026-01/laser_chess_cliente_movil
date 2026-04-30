@@ -67,6 +67,15 @@ object CurrentUserManager {
     }
 
     /**
+     * Obtiene el level del usuario actual.
+     *
+     * @return Level del usuario actual, o null si no se ha establecido
+     */
+    fun getMyCurrentLevel(): Int? {
+        return _myProfile.value?.level
+    }
+
+    /**
      * Obtiene los ratings del usuario actual.
      *
      * @return Ratings del usuario actual, o null si no se ha establecido

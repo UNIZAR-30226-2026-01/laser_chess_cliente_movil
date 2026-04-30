@@ -29,6 +29,12 @@ class ShopProductAdapter(
                 binding.root.isEnabled = false
                 binding.root.alpha = 0.6f
                 binding.root.setOnClickListener(null)
+            } else if (product.isLevelLocked) {
+                binding.txtShopProductPrice.text = "Nivel ${product.levelRequisite}"
+                binding.imgShopCoin.visibility = View.GONE
+                binding.root.isEnabled = false
+                binding.root.alpha = 0.6f
+                binding.root.setOnClickListener(null)
             } else {
                 binding.txtShopProductPrice.text = product.price.toString()
                 binding.imgShopCoin.visibility = View.VISIBLE
