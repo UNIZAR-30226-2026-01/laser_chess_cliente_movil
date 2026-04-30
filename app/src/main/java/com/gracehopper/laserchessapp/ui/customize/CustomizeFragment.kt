@@ -167,15 +167,15 @@ class CustomizeFragment : Fragment() {
 
         val item = piecesItems[piecesIndex]
         val name = ItemUtils.getItemName(item.itemId)
-        val imageRes = ItemUtils.getItemDrawable(item.itemId)
+        val imageRes = ItemUtils.getPiecesPackDrawables(item.itemId)
 
         binding.txtPiecesTitle.text = "Piezas · $name"
 
-        binding.imgPiecePreview1.setImageResource(imageRes)
-        binding.imgPiecePreview2.setImageResource(imageRes)
-        binding.imgPiecePreview3.setImageResource(imageRes)
-        binding.imgPiecePreview4.setImageResource(imageRes)
-        binding.imgPiecePreview5.setImageResource(imageRes)
+        binding.imgPiecePreview1.setImageResource(imageRes[0])
+        binding.imgPiecePreview2.setImageResource(imageRes[1])
+        binding.imgPiecePreview3.setImageResource(imageRes[2])
+        binding.imgPiecePreview4.setImageResource(imageRes[3])
+        binding.imgPiecePreview5.setImageResource(imageRes[4])
     }
 
     private fun renderBoard() {

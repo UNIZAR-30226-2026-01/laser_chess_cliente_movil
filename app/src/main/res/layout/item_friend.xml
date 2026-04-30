@@ -17,13 +17,14 @@
         android:gravity="center_vertical"
         android:padding="8dp">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imgFriendAvatar"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/ic_avatar"
-            android:contentDescription="@string/avatar"
-            app:tint="@color/LCWhite"/>
+            android:src="@drawable/bot1"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/CircleImage"
+            android:contentDescription="@string/avatar" />
 
         <TextView
             android:id="@+id/txtFriendUsername"
