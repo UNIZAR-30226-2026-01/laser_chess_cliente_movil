@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.shop.ItemType
 import com.gracehopper.laserchessapp.data.model.shop.ShopItem
+import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.ItemRepository
+import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.databinding.FragmentCustomizeBinding
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
@@ -21,6 +24,10 @@ class CustomizeFragment : Fragment() {
 
     private val itemRepository by lazy {
         ItemRepository(NetworkUtils.getApiService())
+    }
+
+    private val userRepository by lazy {
+        UserRepository(NetworkUtils.getApiService())
     }
 
     private var piecesIndex = 0
@@ -203,28 +210,47 @@ class CustomizeFragment : Fragment() {
         val item = piecesItems.getOrNull(piecesIndex) ?: return
         Log.d("CUSTOMIZE", "Equipar piezas itemId=${item.itemId}")
 
-        // TODO: llamar a repository para equipar piece_skin
+        val dto = UpdateAccountRequest(pieceSkin = item.itemId)
+        equipItem(dto)
     }
 
     private fun saveBoardSelection() {
         val item = boardItems.getOrNull(boardIndex) ?: return
         Log.d("CUSTOMIZE", "Equipar tablero itemId=${item.itemId}")
 
-        // TODO: llamar a repository para equipar board_skin
+        val dto = UpdateAccountRequest(boardSkin = item.itemId)
+        equipItem(dto)
     }
 
     private fun saveAnimationSelection() {
         val item = animationsItems.getOrNull(animationIndex) ?: return
         Log.d("CUSTOMIZE", "Equipar animación itemId=${item.itemId}")
 
-        // TODO: llamar a repository para equipar win_animation
+        val dto = UpdateAccountRequest(winAnimation = item.itemId)
+        equipItem(dto)
     }
 
     private fun saveAvatarSelection() {
         val item = avatarItems.getOrNull(avatarIndex) ?: return
         Log.d("CUSTOMIZE", "Equipar avatar itemId=${item.itemId}")
 
-        // TODO: llamar a repository para equipar win_animation
+        val dto = UpdateAccountRequest(avatar = item.itemId)
+        equipItem(dto)
+    }
+
+    private fun equipItem(dto: UpdateAccountRequest) {
+
+        userRepository.updateMyProfile(
+            dto,
+            onSuccess = { profile ->
+                CurrentUserManager.setMyProfile(profile)
+                Toast.makeText(requireContext(), "Item equipado", Toast.LENGTH_SHORT).show()
+            },
+            onError = {
+                Toast.makeText(requireContext(), "Error equipando item", Toast.LENGTH_SHORT).show()
+            }
+        )
+
     }
 
     private fun nextIndex(current: Int, size: Int): Int {
