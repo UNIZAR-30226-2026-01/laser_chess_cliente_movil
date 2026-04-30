@@ -67,6 +67,15 @@ object CurrentUserManager {
     }
 
     /**
+     * Obtiene el mail del usuario actual.
+     *
+     * @return Mail del usuario actual, o null si no se ha establecido
+     */
+    fun getMyCurrentMail(): String? {
+        return _myProfile.value?.mail
+    }
+
+    /**
      * Obtiene el level del usuario actual.
      *
      * @return Level del usuario actual, o null si no se ha establecido

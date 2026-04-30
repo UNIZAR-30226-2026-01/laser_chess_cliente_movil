@@ -29,11 +29,15 @@ import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
+import com.gracehopper.laserchessapp.data.model.user.MyProfile
+import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.AuthRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.utils.redirectToLogin
+import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
+import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
 
 /**
  * Diálogo de notificaciones de retos de partidas amistosas
@@ -45,6 +49,7 @@ class SettingsDialogFragment : DialogFragment() {
 
     private lateinit var buttonClose: ImageButton
     private lateinit var txtEmail: TextView
+    private lateinit var buttonEditMail: ImageButton
     private lateinit var txtChangePassword: TextView
     private lateinit var txtEliminateAccount: TextView
     private lateinit var checkNotifications: CheckBox
@@ -53,6 +58,7 @@ class SettingsDialogFragment : DialogFragment() {
     private lateinit var notificationPermissionLauncher: ActivityResultLauncher<String>
     private var changingNotificationCheckProgrammatically = false
 
+    private var currentMail: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,6 +105,7 @@ class SettingsDialogFragment : DialogFragment() {
 
         buttonClose = view.findViewById(R.id.buttonCloseSettingsDialog)
         txtEmail = view.findViewById(R.id.txtEmailSettings)
+        buttonEditMail = view.findViewById(R.id.btnEditEmail)
         txtChangePassword = view.findViewById(R.id.txtChangePassword)
         txtEliminateAccount = view.findViewById(R.id.txtEliminateAccount)
         checkNotifications = view.findViewById(R.id.checkNotifications)
@@ -118,10 +125,10 @@ class SettingsDialogFragment : DialogFragment() {
 
     private fun loadUserData() {
 
-        val currentProfile = CurrentUserManager.getMyCurrentProfile()
+        currentMail = CurrentUserManager.getMyCurrentMail()
 
-        if (currentProfile != null) {
-            txtEmail.text = currentProfile.mail
+        if (currentMail != null) {
+            txtEmail.text = currentMail
             return
         }
 
@@ -149,6 +156,10 @@ class SettingsDialogFragment : DialogFragment() {
     private fun setupListeners() {
 
         buttonClose.setOnClickListener { dismiss() }
+
+        buttonEditMail.setOnClickListener {
+            openEditMailDialog()
+        }
 
         txtChangePassword.setOnClickListener {
             openChangePasswordDialog()
@@ -182,6 +193,116 @@ class SettingsDialogFragment : DialogFragment() {
 
         buttonLogout.setOnClickListener {
             openLogoutDialog()
+        }
+
+    }
+
+    private fun openEditMailDialog() {
+        // AlertDialog temporal para salir del paso
+        // TODO Dialog en nueva pantalla de editar email
+
+        val editText = EditText(requireContext()).apply {
+            setText(currentMail.orEmpty())
+            setSelection(text.length)
+            hint = "Nuevo e-mail"
+            maxLines = 1
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Cambiar e-mail")
+            .setMessage("Introduce tu nuevo e-mail.")
+            .setView(editText)
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Guardar", null)
+            .create()
+            .also { dialog ->
+
+                dialog.setOnShowListener {
+
+                    val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+                    positiveButton.setOnClickListener {
+                        val newMail = editText.text.toString().trim()
+                        validateAndSaveMail(newMail, dialog)
+                    }
+
+                }
+
+                dialog.show()
+
+            }
+
+    }
+
+    private fun validateAndSaveMail(newUsername: String, dialog: AlertDialog) {
+        // TODO MAIL VALIDATOR
+        when (UsernameValidator.validate(newUsername)) {
+
+            UsernameValidationResult.EmptyUsername -> {
+                Toast.makeText(requireContext(),
+                    "El username no puede estar vacío",
+                    Toast.LENGTH_SHORT).show()
+            }
+
+            UsernameValidationResult.LongUsername -> {
+                Toast.makeText(requireContext(),
+                    "Máximo ${UsernameValidator.MAX_LENGTH} caracteres",
+                    Toast.LENGTH_SHORT).show()
+            }
+
+            UsernameValidationResult.InvalidUsername -> {
+                Toast.makeText(requireContext(),
+                    "El username no puede contener espacios en blanco",
+                    Toast.LENGTH_SHORT).show()
+            }
+
+            UsernameValidationResult.Valid -> {
+
+                if (newUsername == currentUsername) {
+                    Toast.makeText(requireContext(),
+                        "El nuevo username debe ser distinto al actual",
+                        Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                userRepository.updateMyProfile(
+                    request = UpdateAccountRequest(username = newUsername),
+                    onSuccess = { profile ->
+                        CurrentUserManager.setMyProfile(profile)
+                        bindProfile(profile)
+                        Toast.makeText(requireContext(),
+                            "Username actualizado",
+                            Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    },
+                    onError = { code ->
+                        when (code) {
+                            409 -> {
+                                Toast.makeText(requireContext(),
+                                    "El username ya está en uso",
+                                    Toast.LENGTH_SHORT).show()
+                            }
+                            400 -> {
+                                Toast.makeText(requireContext(),
+                                    "El username no es válido",
+                                    Toast.LENGTH_SHORT).show()
+                            }
+                            null -> {
+                                Toast.makeText(requireContext(),
+                                    "Error de conexión al actualizar tu username",
+                                    Toast.LENGTH_SHORT).show()
+                            }
+                            else -> {
+                                Toast.makeText(requireContext(),
+                                    "Error al actualizar tu username",
+                                    Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                )
+
+            }
+
         }
 
     }

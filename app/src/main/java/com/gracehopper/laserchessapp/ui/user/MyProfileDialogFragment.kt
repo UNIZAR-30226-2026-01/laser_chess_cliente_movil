@@ -145,7 +145,6 @@ class MyProfileDialogFragment : DialogFragment() {
 
             }
 
-        Toast.makeText(requireContext(), "Edit Username", Toast.LENGTH_SHORT).show()
     }
 
     private fun validateAndSaveUsername(newUsername: String, dialog: AlertDialog) {

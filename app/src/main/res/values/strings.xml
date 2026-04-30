@@ -28,7 +28,8 @@
     <string name="registerSubtitle">¡La diversión comienza aquí!</string>
     <string name="register">Registrarse</string>
     <string name="username">username</string>
-    <string name="email">name@example.com</string>
+    <string name="mail">E-mail</string>
+    <string name="mail_address">name@example.com</string>
     <string name="yesAccount">¿Ya tienes una cuenta?</string>
     <string name="switch_login">Inicia sesión</string>
 
@@ -79,6 +80,7 @@
     <string name="edit_avatar">Editar avatar</string>
     <string name="edit_username">Editar nombre de usuario</string>
     <string name="edit_equipped">Editar equipo</string>
+    <string name="edit_email">Editar email</string>
 
     <string name="change_password">¿Deseas cambiar tu contraseña?</string>
     <string name="eliminate_account">¿Deseas eliminar tu cuenta?</string>

@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="12dp"
-                android:text="@string/email"
+                android:text="@string/mail"
                 android:textColor="@color/LCWhite"
                 android:textSize="@dimen/text_medium_small"
                 android:textStyle="bold" />
@@ -88,6 +88,16 @@
                 android:textSize="@dimen/text_medium_small"
                 android:maxLines="1"
                 android:ellipsize="end" />
+
+            <ImageButton
+                android:id="@+id/btnEditEmail"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_box_border"
+                android:padding="6dp"
+                android:src="@drawable/ic_edit"
+                android:contentDescription="@string/edit_email" />
 
         </LinearLayout>
 
