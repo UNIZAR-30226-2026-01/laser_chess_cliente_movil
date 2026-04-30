@@ -6,5 +6,6 @@ data class ShopProduct(
     val itemType: ItemType,
     val price: Int,
     val levelRequisite: Int = 0,
-    val isDefault: Boolean = false
+    val isDefault: Boolean = false,
+    val isOwned: Boolean = false
 )

@@ -9,11 +9,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.shop.ItemType
 import com.gracehopper.laserchessapp.data.model.shop.ShopItem
 import com.gracehopper.laserchessapp.data.model.shop.ShopProduct
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.ItemRepository
+import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.databinding.FragmentShopBinding
 
 class ShopFragment : Fragment() {
@@ -23,6 +25,10 @@ class ShopFragment : Fragment() {
 
     private val itemRepository by lazy {
         ItemRepository(NetworkUtils.getApiService())
+    }
+
+    private val userRepository by lazy {
+        UserRepository(NetworkUtils.getApiService())
     }
 
     private lateinit var piecesAdapter: ShopProductAdapter
@@ -185,7 +191,9 @@ class ShopFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
 
+                refreshCurrentUser()
                 loadShopItems()
+
             },
             onError = { error ->
                 Log.e("SHOP_FRAGMENT", "Error comprando item: $error")
@@ -197,6 +205,17 @@ class ShopFragment : Fragment() {
             }
         )
 
+    }
+
+    private fun refreshCurrentUser() {
+        userRepository.getMyProfile(
+            onSuccess = { profile ->
+                CurrentUserManager.setMyProfile(profile)
+            },
+            onError = {
+                Log.e("SHOP_FRAGMENT", "Error actualizando usuario")
+            }
+        )
     }
 
     override fun onDestroyView() {
