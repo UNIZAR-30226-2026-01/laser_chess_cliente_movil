@@ -23,7 +23,7 @@ object ItemUtils {
 
             // PIECE_SKIN
             1 -> ItemMetadata("Classic", R.drawable.kin_b_classic)
-            2 -> ItemMetadata("Soretro", R.drawable.kin_r_cats) // TODO Cambiar cuando funke soretro
+            2 -> ItemMetadata("Soretro", R.drawable.kin_b_soretro)
             3 -> ItemMetadata("Cats", R.drawable.kin_b_cats)
 
             // BOARD_SKIN
@@ -67,11 +67,11 @@ object ItemUtils {
             )
 
             2 -> listOf(
-                R.drawable.kin_r_cats,
-                R.drawable.esc_r_cats,
-                R.drawable.def_r_cats,
-                R.drawable.swi_r_cats,
-                R.drawable.las_r_cats
+                R.drawable.kin_b_soretro,
+                R.drawable.esc_b_soretro,
+                R.drawable.def_b_soretro,
+                R.drawable.swi_b_soretro,
+                R.drawable.las_b_soretro
             )
 
             3 -> listOf(
