@@ -73,10 +73,19 @@ class CustomizeFragment : Fragment() {
                 animationsItems.addAll(items.filter { it.itemType == ItemType.WIN_ANIMATION })
                 avatarItems.addAll(items.filter { it.itemType == ItemType.AVATAR })
 
-                piecesIndex = 0
-                boardIndex = 0
-                animationIndex = 0
-                avatarIndex = 0
+                val account = CurrentUserManager.getMyCurrentProfile()
+
+                if (account != null) {
+                    piecesIndex = findEquippedIndex(piecesItems, account.pieceSkin)
+                    boardIndex = findEquippedIndex(boardItems, account.boardSkin)
+                    animationIndex = findEquippedIndex(animationsItems, account.winAnimation)
+                    avatarIndex = findEquippedIndex(avatarItems, account.avatar)
+                } else {
+                    piecesIndex = 0
+                    boardIndex = 0
+                    animationIndex = 0
+                    avatarIndex = 0
+                }
 
                 renderAll()
 
@@ -86,6 +95,11 @@ class CustomizeFragment : Fragment() {
             }
         )
 
+    }
+
+    private fun findEquippedIndex(items: List<ShopItem>, equippedItemId: Int): Int {
+        val index = items.indexOfFirst { it.itemId == equippedItemId }
+        return if (index >= 0) index else 0
     }
 
     private fun setupListeners() {
