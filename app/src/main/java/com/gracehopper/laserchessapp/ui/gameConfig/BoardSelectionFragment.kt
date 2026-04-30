@@ -18,11 +18,11 @@ class BoardSelectionFragment : Fragment() {
 
     private val boards by lazy {
         listOf(
-            BoardOption(1, "Ace", R.drawable.board_1),
-            BoardOption(2, "Curiosity", R.drawable.board_2),
-            BoardOption(3, "Grail", R.drawable.board_3),
-            BoardOption(4, "Mercury", R.drawable.board_4),
-            BoardOption(5, "Sophie", R.drawable.board_5)
+            BoardOption(0, "Ace", R.drawable.board_1),
+            BoardOption(1, "Curiosity", R.drawable.board_2),
+            BoardOption(2, "Grail", R.drawable.board_3),
+            BoardOption(3, "Mercury", R.drawable.board_4),
+            BoardOption(4, "Sophie", R.drawable.board_5)
         )
     }
 

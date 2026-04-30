@@ -4,6 +4,7 @@ import com.gracehopper.laserchessapp.data.model.auth.RegisterResponse
 import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
 import com.gracehopper.laserchessapp.data.model.auth.LoginResponse
 import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
+import com.gracehopper.laserchessapp.data.model.game.PausedMatchResponse
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
 import com.gracehopper.laserchessapp.data.model.ranking.AllRatingsResponse
@@ -18,10 +19,8 @@ import com.gracehopper.laserchessapp.data.model.shop.ShopItem
 import com.gracehopper.laserchessapp.data.model.social.ReceivedRequestsResponse
 import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
 import com.gracehopper.laserchessapp.data.model.user.MyAccountResponse
-import com.gracehopper.laserchessapp.data.model.user.TimeMode
 import com.gracehopper.laserchessapp.data.model.user.XPInfoResponse
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.*
 
 /**
@@ -133,5 +132,9 @@ interface ApiService {
     // Endpoint de CHALLENGE
     @GET("api/rt/challenges")
     fun getPendingChallenges(): Call<List<PendingChallengeResponse>>
+
+    // Endpoints de MATCH HISTORY
+    @GET("api/match/history/{userID}/paused")
+    fun getPausedMatches(@Path("userID") userId: Long): Call<List<PausedMatchResponse>>
 
 }

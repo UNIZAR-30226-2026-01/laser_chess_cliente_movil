@@ -70,12 +70,20 @@ class WaitingGameDialogFragment : DialogFragment() {
         val startingTime = ActiveGameManager.currentStartingTime ?: 300
         val increment = ActiveGameManager.currentTimeIncrement ?: 0
 
-        if (ActiveGameManager.isMatchmakingGame) {
-            textOpponent.text = "Buscando rival en el matchmaking..."
-        } else {
-            textOpponent.text = "Esperando a que ${opponent ?: "rival"} acepte la partida"
+        when {
+            ActiveGameManager.isMatchmakingGame -> {
+                textOpponent.text = "Buscando rival en el matchmaking..."
+                textDetails.text = "Tablero $board · ${startingTime}s + ${increment}s"
+            }
+            ActiveGameManager.currentMatchId != null -> {
+                textOpponent.text = "Esperando al otro jugador"
+                textDetails.text = "Retomando partida con ${opponent ?: "rival"}"
+            }
+            else -> {
+                textOpponent.text = "Esperando al otro jugador"
+                textDetails.text = "Partida con ${opponent ?: "rival"}"
+            }
         }
-        textDetails.text = "Tablero $board · ${startingTime}s + ${increment}s"
     }
 
     private fun setupListeners() {
