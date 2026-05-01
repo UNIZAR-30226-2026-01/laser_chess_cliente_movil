@@ -11,6 +11,7 @@ import okhttp3.sse.EventSources
 class SseManager(
     private val onChallengeReceived: ((String) -> Unit)? = null,
     private val onFriendRequestReceived: ((String) -> Unit)? = null,
+    private val onNewFriendshipReceived: ((String) -> Unit)? = null,
     private val onError: ((Throwable?) -> Unit)? = null
 ) {
 
@@ -93,6 +94,10 @@ class SseManager(
 
             "FriendRequest" -> {
                 onFriendRequestReceived?.invoke(data)
+            }
+
+            "NewFriend" -> {
+                onNewFriendshipReceived?.invoke(data)
             }
 
         }

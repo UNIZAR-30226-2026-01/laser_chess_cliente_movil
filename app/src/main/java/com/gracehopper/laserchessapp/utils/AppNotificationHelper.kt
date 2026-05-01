@@ -22,19 +22,27 @@ object AppNotificationHelper {
     private const val CHANNEL_DESCRIPTION_CHALLENGE =
         "Notificaciones de invitaciones de partida amistosa"
 
-    // Friendship
-    const val CHANNEL_ID_FRIENDSHIP = "friendship_notifications"
-    private const val CHANNEL_NAME_FRIENDSHIP = "Solicitudes de amistad"
-    private const val CHANNEL_DESCRIPTION_FRIENDSHIP =
+    // Friendship Requests
+    const val CHANNEL_ID_FRIENDSHIP_REQUESTS = "friendship_requests_notifications"
+    private const val CHANNEL_NAME_FRIENDSHIP_REQUESTS = "Solicitudes de amistad"
+    private const val CHANNEL_DESCRIPTION_FRIENDSHIP_REQUESTS =
         "Notificaciones de solicitudes de amistad"
+
+    // New Friendship
+    const val CHANNEL_ID_NEW_FRIENDSHIP = "new_friendship_notifications"
+    private const val CHANNEL_NAME_NEW_FRIENDSHIP = "Nueva amistad"
+    private const val CHANNEL_DESCRIPTION_NEW_FRIENDSHIP =
+        "Notificaciones de nuevas amistades"
 
     // Notification IDs
     private const val NOTIFICATION_ID_CHALLENGE = 1001
-    private const val NOTIFICATION_ID_FRIENDSHIP = 1002
+    private const val NOTIFICATION_ID_FRIENDSHIP_REQUESTS = 1002
+    private const val NOTIFICATION_ID_NEW_FRIENDSHIP = 1003
 
     // Request codes
     private const val REQUEST_CODE_CHALLENGE = 2001
-    private const val REQUEST_CODE_FRIENDSHIP = 2002
+    private const val REQUEST_CODE_FRIENDSHIP_REQUESTS = 2002
+    private const val REQUEST_CODE_NEW_FRIENDSHIP = 2003
 
     fun createChannels(context: Context) {
 
@@ -53,16 +61,26 @@ object AppNotificationHelper {
             }
 
             // Canal de solicitudes de amistad
-            val friendshipChannel = NotificationChannel(
-                CHANNEL_ID_FRIENDSHIP,
-                CHANNEL_NAME_FRIENDSHIP,
+            val friendshipRequestsChannel = NotificationChannel(
+                CHANNEL_ID_FRIENDSHIP_REQUESTS,
+                CHANNEL_NAME_FRIENDSHIP_REQUESTS,
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = CHANNEL_DESCRIPTION_FRIENDSHIP
+                description = CHANNEL_DESCRIPTION_FRIENDSHIP_REQUESTS
+            }
+
+            // Canal de nuevas amistades
+            val newFriendshipChannel = NotificationChannel(
+                CHANNEL_ID_NEW_FRIENDSHIP,
+                CHANNEL_NAME_NEW_FRIENDSHIP,
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = CHANNEL_DESCRIPTION_NEW_FRIENDSHIP
             }
 
             notificationManager.createNotificationChannel(challengeChannel)
-            notificationManager.createNotificationChannel(friendshipChannel)
+            notificationManager.createNotificationChannel(friendshipRequestsChannel)
+            notificationManager.createNotificationChannel(newFriendshipChannel)
 
         }
 
@@ -146,11 +164,30 @@ object AppNotificationHelper {
 
         showNotification(
             context = context,
-            channelId = CHANNEL_ID_FRIENDSHIP,
-            notificationId = NOTIFICATION_ID_FRIENDSHIP,
-            requestCode = REQUEST_CODE_FRIENDSHIP,
+            channelId = CHANNEL_ID_FRIENDSHIP_REQUESTS,
+            notificationId = NOTIFICATION_ID_FRIENDSHIP_REQUESTS,
+            requestCode = REQUEST_CODE_FRIENDSHIP_REQUESTS,
             title = "Nueva solicitud de amistad",
             text = "Has recibido una solicitud de amistad de $username",
+            intent = intent
+        )
+
+    }
+
+    fun showNewFriendshipNotification(context: Context, username: String) {
+
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("notification_type", "friend_request")
+        }
+
+        showNotification(
+            context = context,
+            channelId = CHANNEL_ID_NEW_FRIENDSHIP,
+            notificationId = NOTIFICATION_ID_NEW_FRIENDSHIP,
+            requestCode = REQUEST_CODE_NEW_FRIENDSHIP,
+            title = "Nueva amistad",
+            text = "TU amistad con $username ha comenzado",
             intent = intent
         )
 

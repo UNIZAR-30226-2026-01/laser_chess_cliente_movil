@@ -263,7 +263,7 @@ class MyProfileDialogFragment : DialogFragment() {
 
         txtProfileUsername.text = profile.username
         txtProfileLevel.text = "Nivel ${profile.level}"
-        txtProfileXp.text = "${profile.xpLevel} XP"
+        txtProfileXp.text = "${profile.xpTotal} XP"
         txtProfileCoins.text = profile.money.toString()
 
         txtProfileBlitzElo.text = profile.ratings.blitz.toString()

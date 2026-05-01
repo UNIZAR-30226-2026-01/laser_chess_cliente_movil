@@ -73,6 +73,14 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         },
+        onNewFriendshipReceived = { newFriendUsername ->
+            runOnUiThread {
+                AppNotificationHelper.showNewFriendshipNotification(
+                    applicationContext,
+                    newFriendUsername
+                )
+            }
+        },
         onError = {
             // error en SSE
         }
