@@ -85,12 +85,21 @@ object CurrentUserManager {
     }
 
     /**
-     * Obtiene los ratings del usuario actual.
+     * Obtiene la xp por nivel del usuario actual.
      *
-     * @return Ratings del usuario actual, o null si no se ha establecido
+     * @return Xp por nivel del usuario actual, o null si no se ha establecido
      */
-    fun getMyCurrentRatings(): UserRatings? {
-        return _myProfile.value?.ratings
+    fun getMyCurrentXpLevel(): Int? {
+        return _myProfile.value?.xpLevel
+    }
+
+    /**
+     * Obtiene la xp requerida para completar el nivel del usuario actual.
+     *
+     * @return Xp requerida para completar el nivel del usuario actual, o null si no se ha establecido.
+     */
+    fun getMyCurrentMaxXpLevel(): Int? {
+        return _myProfile.value?.xpRequired
     }
 
     /**

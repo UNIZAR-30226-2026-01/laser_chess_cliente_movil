@@ -9,6 +9,6 @@ import com.google.gson.annotations.SerializedName
  * @property requiredXp Cantidad mínima de experiencia requerida para el siguiente nivel.
  */
 data class XPInfoResponse (
-    @SerializedName("xp") val xp: Long,
-    @SerializedName("required_xp") val requiredXp: Long
+    @SerializedName("xp") val xp: Int,
+    @SerializedName("required_xp") val requiredXp: Int
 )

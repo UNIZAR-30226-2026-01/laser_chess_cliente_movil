@@ -358,12 +358,11 @@ class MainActivity : AppCompatActivity() {
     private fun updateProfileCard(profile: MyProfile) {
 
         txtProfileUsername.text = profile.username
-        val maxLevelXp = 1000
-        val currentXpInLevel = profile.xp % maxLevelXp
-        txtProfileLevel.text = getString(R.string.profile_card_level_format, profile.level, currentXpInLevel, maxLevelXp)
+        txtProfileLevel.text = getString(R.string.profile_card_level_format,
+            profile.level, profile.xpLevel, profile.xpRequired)
         imgProfileAvatar.setImageResource(ItemUtils.getItemDrawable(profile.avatar))
-        progressProfileXP.max = maxLevelXp
-        progressProfileXP.progress = profile.xp % maxLevelXp
+        progressProfileXP.max = profile.xpRequired
+        progressProfileXP.progress = profile.xpLevel
 
         txtNumCoins.text = profile.money.toString()
 
