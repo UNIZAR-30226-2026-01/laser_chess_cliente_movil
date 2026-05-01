@@ -1,5 +1,8 @@
 package com.gracehopper.laserchessapp.ui.auth
 
+import com.gracehopper.laserchessapp.utils.validation.PasswordValidationResult
+import com.gracehopper.laserchessapp.utils.validation.PasswordValidator
+
 /**
  * Clase de validación para el inicio de sesión.
  */
@@ -19,10 +22,13 @@ object LoginValidator {
         return when {
             credentialTrimmed.isEmpty() -> LoginValidationResult.EmptyCredential
             credentialTrimmed.contains(" ") -> LoginValidationResult.InvalidCredential
-            password.isEmpty() -> LoginValidationResult.EmptyPassword
-            password.length < 6 -> LoginValidationResult.ShortPassword
-            password.length > 50 -> LoginValidationResult.LongPassword
-            else -> LoginValidationResult.Valid
+            else ->
+                when (PasswordValidator.validate(password)) {
+                    PasswordValidationResult.EmptyPassword -> LoginValidationResult.EmptyPassword
+                    PasswordValidationResult.ShortPassword -> LoginValidationResult.ShortPassword
+                    PasswordValidationResult.LongPassword -> LoginValidationResult.LongPassword
+                    PasswordValidationResult.Valid -> LoginValidationResult.Valid
+                }
         }
 
     }

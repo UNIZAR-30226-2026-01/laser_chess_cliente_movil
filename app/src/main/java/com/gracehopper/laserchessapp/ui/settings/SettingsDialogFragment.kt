@@ -36,6 +36,10 @@ import com.gracehopper.laserchessapp.data.repository.AuthRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.utils.redirectToLogin
+import com.gracehopper.laserchessapp.utils.validation.MailValidationResult
+import com.gracehopper.laserchessapp.utils.validation.MailValidator
+import com.gracehopper.laserchessapp.utils.validation.PasswordValidationResult
+import com.gracehopper.laserchessapp.utils.validation.PasswordValidator
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
 
@@ -234,68 +238,67 @@ class SettingsDialogFragment : DialogFragment() {
 
     }
 
-    private fun validateAndSaveMail(newUsername: String, dialog: AlertDialog) {
-        // TODO MAIL VALIDATOR
-        when (UsernameValidator.validate(newUsername)) {
+    private fun validateAndSaveMail(newMail: String, dialog: AlertDialog) {
 
-            UsernameValidationResult.EmptyUsername -> {
+        when (MailValidator.validate(newMail)) {
+
+            MailValidationResult.EmptyMail -> {
                 Toast.makeText(requireContext(),
-                    "El username no puede estar vacío",
+                    "El mail no puede estar vacío",
                     Toast.LENGTH_SHORT).show()
             }
 
-            UsernameValidationResult.LongUsername -> {
+            MailValidationResult.InvalidMail -> {
                 Toast.makeText(requireContext(),
-                    "Máximo ${UsernameValidator.MAX_LENGTH} caracteres",
+                    "El mail no es válido",
                     Toast.LENGTH_SHORT).show()
             }
 
-            UsernameValidationResult.InvalidUsername -> {
-                Toast.makeText(requireContext(),
-                    "El username no puede contener espacios en blanco",
-                    Toast.LENGTH_SHORT).show()
-            }
+            MailValidationResult.Valid -> {
 
-            UsernameValidationResult.Valid -> {
-
-                if (newUsername == currentUsername) {
+                if (newMail == currentMail) {
                     Toast.makeText(requireContext(),
-                        "El nuevo username debe ser distinto al actual",
+                        "El nuevo mail debe ser distinto al actual",
                         Toast.LENGTH_SHORT).show()
                     return
                 }
 
                 userRepository.updateMyProfile(
-                    request = UpdateAccountRequest(username = newUsername),
+                    request = UpdateAccountRequest(mail = newMail),
                     onSuccess = { profile ->
                         CurrentUserManager.setMyProfile(profile)
-                        bindProfile(profile)
+
+                        currentMail = profile.mail
+                        txtEmail.text = profile.mail
+
                         Toast.makeText(requireContext(),
-                            "Username actualizado",
+                            "Mail actualizado",
                             Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
                     },
                     onError = { code ->
-                        when (code) {
-                            409 -> {
-                                Toast.makeText(requireContext(),
-                                    "El username ya está en uso",
-                                    Toast.LENGTH_SHORT).show()
-                            }
-                            400 -> {
-                                Toast.makeText(requireContext(),
-                                    "El username no es válido",
-                                    Toast.LENGTH_SHORT).show()
-                            }
-                            null -> {
-                                Toast.makeText(requireContext(),
-                                    "Error de conexión al actualizar tu username",
-                                    Toast.LENGTH_SHORT).show()
-                            }
-                            else -> {
-                                Toast.makeText(requireContext(),
-                                    "Error al actualizar tu username",
-                                    Toast.LENGTH_SHORT).show()
+                        requireActivity().runOnUiThread {
+                            when (code) {
+                                409 -> {
+                                    Toast.makeText(requireContext(),
+                                        "El mail ya está en uso",
+                                        Toast.LENGTH_SHORT).show()
+                                }
+                                400 -> {
+                                    Toast.makeText(requireContext(),
+                                        "El mail no es válido",
+                                        Toast.LENGTH_SHORT).show()
+                                }
+                                null -> {
+                                    Toast.makeText(requireContext(),
+                                        "Error de conexión al actualizar tu mail",
+                                        Toast.LENGTH_SHORT).show()
+                                }
+                                else -> {
+                                    Toast.makeText(requireContext(),
+                                        "Error al actualizar tu mail",
+                                        Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
                     }
@@ -372,62 +375,116 @@ class SettingsDialogFragment : DialogFragment() {
                                           dialog: AlertDialog
     ) {
 
-        when {
-            currentPassword.isBlank() -> {
+        when (PasswordValidator.validate(currentPassword)) {
+
+            PasswordValidationResult.EmptyPassword -> {
                 Toast.makeText(requireContext(),
                     "Contraseña actual vacía",
                     Toast.LENGTH_SHORT
                 ).show()
             }
 
-            newPassword.isBlank() -> {
+            PasswordValidationResult.ShortPassword -> {
                 Toast.makeText(requireContext(),
-                    "Nueva contraseña vacía",
+                    "Mínimo ${PasswordValidator.MIN_LENGTH} caracteres",
                     Toast.LENGTH_SHORT
                 ).show()
             }
 
-            newPassword.length < 6 -> {
+            PasswordValidationResult.LongPassword -> {
                 Toast.makeText(requireContext(),
-                    "La contraseña debe tener al menos 6 caracteres",
+                    "Máximo ${PasswordValidator.MAX_LENGTH} caracteres",
                     Toast.LENGTH_SHORT
                 ).show()
             }
 
-            newPassword.length > 50 -> {
-                Toast.makeText(requireContext(),
-                    "La contraseña no puede tener más de 50 caracteres",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            PasswordValidationResult.Valid -> {
 
-            repeatPassword.isBlank() -> {
-                Toast.makeText(requireContext(),
-                    "Repite la contraseña nueva",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+                when (PasswordValidator.validate(newPassword)) {
 
-            newPassword != repeatPassword -> {
-                Toast.makeText(requireContext(),
-                    "Las contraseñas no coinciden",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+                    PasswordValidationResult.EmptyPassword -> {
+                        Toast.makeText(requireContext(),
+                            "Nueva contraseña vacía",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-            currentPassword == newPassword -> {
-                Toast.makeText(requireContext(),
-                    "La nueva contraseña debe ser distinta a la actual",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+                    PasswordValidationResult.ShortPassword -> {
+                        Toast.makeText(requireContext(),
+                            "Mínimo ${PasswordValidator.MIN_LENGTH} caracteres",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-            else -> {
-                changePassword(
-                    currentPassword = currentPassword,
-                    newPassword = newPassword,
-                    dialog = dialog
-                )
+                    PasswordValidationResult.LongPassword -> {
+                        Toast.makeText(requireContext(),
+                            "Máximo ${PasswordValidator.MAX_LENGTH} caracteres",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    PasswordValidationResult.Valid -> {
+
+                        when (PasswordValidator.validate(repeatPassword)) {
+
+                            PasswordValidationResult.EmptyPassword -> {
+                                Toast.makeText(requireContext(),
+                                    "Repite la contraseña nueva",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            PasswordValidationResult.ShortPassword -> {
+                                Toast.makeText(requireContext(),
+                                    "Mínimo ${PasswordValidator.MIN_LENGTH} caracteres",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            PasswordValidationResult.LongPassword -> {
+                                Toast.makeText(requireContext(),
+                                    "Máximo ${PasswordValidator.MAX_LENGTH} caracteres",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+
+                            PasswordValidationResult.Valid -> {
+
+                                when {
+
+                                    newPassword != repeatPassword -> {
+                                        Toast.makeText(requireContext(),
+                                            "Las contraseñas no coinciden",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+                                    currentPassword == newPassword -> {
+                                        Toast.makeText(requireContext(),
+                                            "La nueva contraseña debe ser distinta a la actual",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+                                    else -> {
+                                        changePassword(
+                                            currentPassword = currentPassword,
+                                            newPassword = newPassword,
+                                            dialog = dialog
+                                        )
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
             }
 
         }
