@@ -139,7 +139,9 @@ object AppNotificationHelper {
     ) {
 
         val openAppIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP
             putExtra("notification_type", "challenge")
         }
 
@@ -158,7 +160,9 @@ object AppNotificationHelper {
     fun showFriendRequestNotification(context: Context, username: String) {
 
         val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP
             putExtra("notification_type", "friend_request")
         }
 
@@ -177,8 +181,10 @@ object AppNotificationHelper {
     fun showNewFriendshipNotification(context: Context, username: String) {
 
         val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            putExtra("notification_type", "friend_request")
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                    Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra("notification_type", "new_friendship")
         }
 
         showNotification(
@@ -187,7 +193,7 @@ object AppNotificationHelper {
             notificationId = NOTIFICATION_ID_NEW_FRIENDSHIP,
             requestCode = REQUEST_CODE_NEW_FRIENDSHIP,
             title = "Nueva amistad",
-            text = "TU amistad con $username ha comenzado",
+            text = "Tu amistad con $username ha comenzado",
             intent = intent
         )
 

@@ -20,6 +20,8 @@ class SseManager(
 
     fun connect() {
 
+        Log.d("SSE", "connect() llamado. eventSourceNull=${eventSource == null}")
+
         if (eventSource != null) return
 
         val url = NetworkUtils.BASE_URL + "api/events"
@@ -34,7 +36,7 @@ class SseManager(
         eventSource = factory.newEventSource(request, object : EventSourceListener() {
 
             override fun onOpen(eventSource: EventSource, response: Response) {
-                Log.d("SSE", "Conectado")
+                Log.d("SSE", "Conectado HTTP=${response.code}")
             }
 
             override fun onEvent(
@@ -66,12 +68,17 @@ class SseManager(
                     return
                 }
 
-                Log.e("SSE", "Error en SSE", t)
+                Log.e("SSE", "onFailure manuallyClosed=$manuallyClosed HTTP=${response?.code}", t)
                 onError?.invoke(t)
             }
 
         })
 
+    }
+
+    fun reconnect() {
+        disconnect()
+        connect()
     }
 
     fun disconnect() {
@@ -82,6 +89,7 @@ class SseManager(
 
     private fun handleEvent(type: String?, data: String) {
 
+        Log.d("SSE", "RAW eventType=$type data=$data")
         when (type) {
 
             "Init" -> {

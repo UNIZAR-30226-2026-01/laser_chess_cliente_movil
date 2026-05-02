@@ -34,6 +34,7 @@ import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.AuthRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
+import com.gracehopper.laserchessapp.ui.main.MainActivity
 import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.utils.redirectToLogin
 import com.gracehopper.laserchessapp.utils.validation.MailValidationResult
@@ -554,9 +555,9 @@ class SettingsDialogFragment : DialogFragment() {
 
                 userRepository.deleteMyAccount(
                     onSuccess = {
-                        CurrentUserManager.clearMyProfile()
-                        TokenManager.clear()
-                        // ir a login
+                        requireActivity().runOnUiThread {
+                            clearSession()
+                        }
                     },
                     onError = { code ->
                         when (code) {
@@ -690,16 +691,14 @@ class SettingsDialogFragment : DialogFragment() {
 
     private fun clearSession() {
 
+        (activity as? MainActivity)?.disconnectSse()
+
         // limpio tokens
         TokenManager.clear()
         NetworkUtils.clearCookies()
 
         // limpio perfil en memoria
         CurrentUserManager.clearMyProfile()
-
-        // cerrar websockets si hay, hace falta??
-        // ActiveGameManager.disconnect()
-        // TODO SseManager.disconnect()
 
         // ir a login y limpiar backstack
         redirectToLogin(requireContext())
