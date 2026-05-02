@@ -171,6 +171,8 @@ class RequestsDialogFragment : DialogFragment() {
 
                             // UI OPTIMISTA
                             receivedContainer.removeView(itemView)
+                            emptyReceived.visibility =
+                                if (receivedContainer.childCount == 0) View.VISIBLE else View.GONE
 
                             acceptFriendshipRequest(request.username)
                         }
@@ -181,6 +183,8 @@ class RequestsDialogFragment : DialogFragment() {
 
                             // UI OPTIMISTA
                             receivedContainer.removeView(itemView)
+                            emptyReceived.visibility =
+                                if (receivedContainer.childCount == 0) View.VISIBLE else View.GONE
 
                             rejectFriendshipRequest(request.username)
                         }
@@ -241,6 +245,8 @@ class RequestsDialogFragment : DialogFragment() {
 
                             // UI OPTIMISTA
                             sentContainer.removeView(itemView)
+                            emptySent.visibility =
+                                if (sentContainer.childCount == 0) View.VISIBLE else View.GONE
 
                             cancelSentFriendshipRequest(request.username)
                         }
