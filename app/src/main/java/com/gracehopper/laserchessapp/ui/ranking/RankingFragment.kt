@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.ranking.RankingEntry
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
@@ -50,9 +52,15 @@ class RankingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupOwnRankCard()
         setupDropdown()
         setupRecycler()
         loadRanking(selectedMode)
+    }
+
+    private fun setupOwnRankCard() {
+        //TODO("Hay que implementar que se actualice la tarjeta en base al usuario logeado")
+        context?.let { binding.myPosition.cardRankingEntry.setCardBackgroundColor(ContextCompat.getColor(it, R.color.S3)) }
     }
 
     private fun setupDropdown() {

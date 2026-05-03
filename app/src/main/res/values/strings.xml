@@ -27,7 +27,7 @@
     <string name="registerTitle">Crear una cuenta</string>
     <string name="registerSubtitle">¡La diversión comienza aquí!</string>
     <string name="register">Registrarse</string>
-    <string name="username">username</string>
+    <string name="username">Jugador</string>
     <string name="mail">E-mail</string>
     <string name="mail_address">name@example.com</string>
     <string name="yesAccount">¿Ya tienes una cuenta?</string>
