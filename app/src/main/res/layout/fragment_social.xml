@@ -144,7 +144,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:contentDescription="@string/avatar"
-                android:src="@drawable/ic_inbox"
+                android:src="@drawable/ic_friend_requests"
                 app:tint="@color/LCWhite"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

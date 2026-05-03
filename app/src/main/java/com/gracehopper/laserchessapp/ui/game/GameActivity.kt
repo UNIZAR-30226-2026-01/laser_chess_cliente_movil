@@ -388,6 +388,7 @@ class GameActivity : AppCompatActivity() {
                 board = boardM,
                 isRedPlayer = imInternalRed,
                 isMyTurn = isMyTurn,
+                renderCoordinates = true,
                 /**
                  * Selección de pieza
                  */
