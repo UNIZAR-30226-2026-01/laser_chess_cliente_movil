@@ -50,6 +50,11 @@ class RankingRepository(private val apiService: ApiService) {
         )
     }
 
+    /**
+     * Obtiene los usuarios del ranking top 100 según tipo de elo.
+     *
+     * @param eloType Tipo de elo
+     */
     fun getTopRankUsers(
         eloType: TimeMode,
         onSuccess: (List<RankingEntry>) -> Unit,
