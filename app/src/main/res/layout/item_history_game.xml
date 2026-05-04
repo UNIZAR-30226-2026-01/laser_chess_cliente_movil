@@ -31,12 +31,14 @@
                 android:orientation="vertical"
                 android:gravity="center">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/avatarPlayer1"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:src="@drawable/avatar_1"
-                    app:tint="@color/LCWhite"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/CircleImage"
+                    android:contentDescription="@string/avatar"/>
 
                 <TextView
                     android:id="@+id/textPlayer1Name"
@@ -78,12 +80,14 @@
                 android:orientation="vertical"
                 android:gravity="center">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/avatarPlayer2"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:src="@drawable/avatar_3"
-                    app:tint="@color/LCWhite"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/CircleImage"
+                    android:contentDescription="@string/avatar"/>
 
                 <TextView
                     android:id="@+id/textPlayer2Name"

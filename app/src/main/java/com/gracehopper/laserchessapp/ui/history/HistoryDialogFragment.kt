@@ -23,9 +23,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-/**
- * Diálogo para mostrar el historial de partidas terminadas.
- */
 class HistoryDialogFragment : DialogFragment() {
 
     private lateinit var apiService: ApiService
@@ -36,9 +33,8 @@ class HistoryDialogFragment : DialogFragment() {
 
     private lateinit var adapter: HistoryGameAdapter
 
-    private val usernameCache = mutableMapOf<Long, String>()
+    private val userCache = mutableMapOf<Long, AccountResponse>()
     private var games: List<GameResume> = emptyList()
-    private var pendingRequests = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,9 +53,9 @@ class HistoryDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        buttonClose    = view.findViewById(R.id.buttonCloseHistory)
+        buttonClose = view.findViewById(R.id.buttonCloseHistory)
         recyclerHistory = view.findViewById(R.id.recyclerHistory)
-        textEmpty      = view.findViewById(R.id.textHistoryEmpty)
+        textEmpty = view.findViewById(R.id.textHistoryEmpty)
         progressHistory = view.findViewById(R.id.progressHistory)
 
         setupRecyclerView()
@@ -73,7 +69,7 @@ class HistoryDialogFragment : DialogFragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = HistoryGameAdapter(emptyList(), emptyMap()) { game ->
+        adapter = HistoryGameAdapter(emptyList(), userCache) { game ->
 
             val json = com.google.gson.Gson().toJson(game)
 
@@ -90,6 +86,7 @@ class HistoryDialogFragment : DialogFragment() {
                 )
             )
         }
+
         recyclerHistory.layoutManager = LinearLayoutManager(requireContext())
         recyclerHistory.adapter = adapter
     }
@@ -112,20 +109,25 @@ class HistoryDialogFragment : DialogFragment() {
                 response: Response<List<GameResume>>
             ) {
                 if (!isAdded) return
+
                 if (response.isSuccessful) {
                     val data = response.body().orEmpty()
                     games = data
+
                     if (data.isEmpty()) {
                         activity?.runOnUiThread { showEmpty() }
                     } else {
-                        loadUsernames(data)
+                        activity?.runOnUiThread { showGames() }
+                        loadUsers(data)
                     }
                 } else {
                     activity?.runOnUiThread {
                         showEmpty()
-                        Toast.makeText(requireContext(),
+                        Toast.makeText(
+                            requireContext(),
                             "Error al cargar el historial",
-                            Toast.LENGTH_SHORT).show()
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
@@ -134,58 +136,50 @@ class HistoryDialogFragment : DialogFragment() {
                 if (!isAdded) return
                 activity?.runOnUiThread {
                     showEmpty()
-                    Toast.makeText(requireContext(),
+                    Toast.makeText(
+                        requireContext(),
                         "Sin conexión",
-                        Toast.LENGTH_SHORT).show()
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         })
     }
 
     /**
-     * Carga los nombres de usuario de los jugadores en segundo plano.
+     * Carga usuarios y actualiza progresivamente
      */
-    private fun loadUsernames(games: List<GameResume>) {
+    private fun loadUsers(games: List<GameResume>) {
+
         val idsToFetch = games
             .flatMap { listOf(it.p1_id, it.p2_id) }
             .toSet()
-            .filter { !usernameCache.containsKey(it) }
-
-        if (idsToFetch.isEmpty()) {
-            activity?.runOnUiThread { showGames() }
-            return
-        }
-
-        pendingRequests = idsToFetch.size
+            .filter { !userCache.containsKey(it) }
 
         idsToFetch.forEach { userId ->
             apiService.getAccount(userId).enqueue(object : Callback<AccountResponse> {
+
                 override fun onResponse(
                     call: Call<AccountResponse>,
                     response: Response<AccountResponse>
                 ) {
                     if (!isAdded) return
+
                     response.body()?.let { account ->
-                        usernameCache[account.accountId] = account.username
+                        userCache[account.accountId] = account
+
+                        activity?.runOnUiThread {
+                            adapter.updateData(games, userCache)
+                        }
                     }
-                    onRequestDone()
                 }
 
                 override fun onFailure(call: Call<AccountResponse>, t: Throwable) {
-                    if (!isAdded) return
-                    onRequestDone()
+                    // ignoramos fallo individual
                 }
             })
         }
     }
-
-    private fun onRequestDone() {
-        pendingRequests--
-        if (pendingRequests <= 0) {
-            activity?.runOnUiThread { showGames() }
-        }
-    }
-
 
     private fun showLoading() {
         progressHistory.visibility = View.VISIBLE
@@ -202,7 +196,7 @@ class HistoryDialogFragment : DialogFragment() {
     private fun showGames() {
         progressHistory.visibility = View.GONE
         textEmpty.visibility = View.GONE
-        adapter.updateData(games, usernameCache)
+        adapter.updateData(games, userCache)
         recyclerHistory.visibility = View.VISIBLE
     }
 }

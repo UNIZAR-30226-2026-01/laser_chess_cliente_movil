@@ -419,22 +419,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun setupAdditionalButtons() {
-        btnSettings = findViewById(R.id.btnSettings)
-        btnNotifications = findViewById(R.id.btnNotifications)
-        btnHistory = findViewById(R.id.btnHistory)
-
-        btnSettings.setOnClickListener {
-            val dialog = SettingsDialogFragment()
-            dialog.show(supportFragmentManager, "SettingsDialog")
-        }
-
-        btnNotifications.setOnClickListener {
-            val dialog = NotificationsDialogFragment()
-            dialog.show(supportFragmentManager, "NotificationsDialog")
-        }
-    }
-
     fun openCustomizeFragment() {
         viewPager2.currentItem = 1
     }

@@ -165,7 +165,11 @@ fun GameScreen(
                                 ) {
                                     piece?.let { p ->
                                         key(p) {
-                                            val visualRotation = p.rotation + 180
+                                            val visualRotation = if (isRedPlayer) {
+                                                p.rotation
+                                            } else {
+                                                (p.rotation + 180) % 360
+                                            }
                                             val rotation by animateFloatAsState(targetValue = visualRotation.toFloat(), animationSpec = tween(200))
                                             Image(
                                                 painter = painterResource(id = p.getImageRes(isRedPlayer)),

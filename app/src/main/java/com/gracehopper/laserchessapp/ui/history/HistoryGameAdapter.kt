@@ -4,29 +4,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.game.GameResume
+import com.gracehopper.laserchessapp.data.model.user.AccountResponse
+import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
-/**
- * Adapter para mostrar el historial de partidas terminadas.
- */
 class HistoryGameAdapter(
     private var games: List<GameResume>,
-    private val usernameCache: Map<Long, String>,
+    private var userCache: Map<Long, AccountResponse>,
     private val onViewClick: (GameResume) -> Unit
 ) : RecyclerView.Adapter<HistoryGameAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textPlayer1Name: TextView = view.findViewById(R.id.textPlayer1Name)
         val textPlayer2Name: TextView = view.findViewById(R.id.textPlayer2Name)
-        val textPlayer1Elo: TextView  = view.findViewById(R.id.textPlayer1Elo)
-        val textPlayer2Elo: TextView  = view.findViewById(R.id.textPlayer2Elo)
-        val textBoard: TextView       = view.findViewById(R.id.textBoard)
-        val textMatchType: TextView   = view.findViewById(R.id.textMatchType)
-        val textWinner: TextView      = view.findViewById(R.id.textWinner)
-        val textDate: TextView        = view.findViewById(R.id.textDate)
+        val textPlayer1Elo: TextView = view.findViewById(R.id.textPlayer1Elo)
+        val textPlayer2Elo: TextView = view.findViewById(R.id.textPlayer2Elo)
+        val textBoard: TextView = view.findViewById(R.id.textBoard)
+        val textMatchType: TextView = view.findViewById(R.id.textMatchType)
+        val textWinner: TextView = view.findViewById(R.id.textWinner)
+        val textDate: TextView = view.findViewById(R.id.textDate)
+
+        val avatar1: ImageView = view.findViewById(R.id.avatarPlayer1)
+        val avatar2: ImageView = view.findViewById(R.id.avatarPlayer2)
+
         val btnViewGame: Button = view.findViewById(R.id.btnViewGame)
     }
 
@@ -39,25 +43,44 @@ class HistoryGameAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val game = games[position]
 
+        val player1 = userCache[game.p1_id]
+        val player2 = userCache[game.p2_id]
+
+        holder.textPlayer1Name.text = player1?.username ?: "Jugador ${game.p1_id}"
+        holder.textPlayer2Name.text = player2?.username ?: "Jugador ${game.p2_id}"
+
+        holder.textPlayer1Elo.text = game.p1_elo.toString()
+        holder.textPlayer2Elo.text = game.p2_elo.toString()
+
+        holder.textBoard.text = game.board.uppercase()
+        holder.textMatchType.text = game.match_type.uppercase()
+
+        holder.textWinner.text =
+            userCache[game.winner.toLongOrNull()]?.username ?: game.winner
+
+        holder.textDate.text = formatDate(game.date)
+
+        val avatar1Id = player1?.avatar?.takeIf { it > 0 } ?: 1
+        val avatar2Id = player2?.avatar?.takeIf { it > 0 } ?: 1
+
+        holder.avatar1.setImageResource(
+            ItemUtils.getItemDrawable(avatar1Id)
+        )
+
+        holder.avatar2.setImageResource(
+            ItemUtils.getItemDrawable(avatar2Id)
+        )
+
         holder.btnViewGame.setOnClickListener {
             onViewClick(game)
         }
-
-        holder.textPlayer1Name.text = usernameCache[game.p1_id] ?: "Jugador ${game.p1_id}"
-        holder.textPlayer2Name.text = usernameCache[game.p2_id] ?: "Jugador ${game.p2_id}"
-        holder.textPlayer1Elo.text  = game.p1_elo.toString()
-        holder.textPlayer2Elo.text  = game.p2_elo.toString()
-        holder.textBoard.text       = game.board.uppercase()
-        holder.textMatchType.text   = game.match_type.uppercase()
-        holder.textWinner.text      = usernameCache[game.winner.toLongOrNull()] ?: game.winner
-        holder.textDate.text        = formatDate(game.date)
-
     }
 
     override fun getItemCount(): Int = games.size
 
-    fun updateData(newGames: List<GameResume>, newCache: Map<Long, String>) {
+    fun updateData(newGames: List<GameResume>, newCache: Map<Long, AccountResponse>) {
         games = newGames
+        userCache = newCache
         notifyDataSetChanged()
     }
 

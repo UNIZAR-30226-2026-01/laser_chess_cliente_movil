@@ -102,7 +102,8 @@ class GameReplayActivity : AppCompatActivity() {
                 onPieceSelected = {},
                 onMove = { _, _ -> },
                 clearSelectionTrigger = moveIndex,
-                laserPath = emptyList()
+                laserPath = emptyList(),
+                renderCoordinates = true
             )
         }
     }
