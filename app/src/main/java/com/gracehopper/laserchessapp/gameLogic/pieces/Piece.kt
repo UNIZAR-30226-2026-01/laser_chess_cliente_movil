@@ -97,11 +97,11 @@ class Piece(
         val isMyPiece = (this.isRed == imInternalRed)
 
         return when (type) {
-            PieceType.KING -> if (isMyPiece) R.drawable.blue_king else R.drawable.red_king
-            PieceType.DEFENDER -> if (isMyPiece) R.drawable.blue_shield else R.drawable.red_shield
-            PieceType.DEFLECTOR -> if (isMyPiece) R.drawable.blue_deflector else R.drawable.red_deflector
-            PieceType.SWITCHER -> if (isMyPiece) R.drawable.blue_switch else R.drawable.red_switch
-            PieceType.LASER -> if (isMyPiece) R.drawable.blue_lasser else R.drawable.red_lasser
+            PieceType.KING -> if (isMyPiece) R.drawable.kin_b_classic else R.drawable.kin_r_cats
+            PieceType.DEFENDER -> if (isMyPiece) R.drawable.esc_b_classic else R.drawable.esc_r_cats
+            PieceType.DEFLECTOR -> if (isMyPiece) R.drawable.def_b_classic else R.drawable.def_r_cats
+            PieceType.SWITCHER -> if (isMyPiece) R.drawable.swi_b_classic else R.drawable.swi_r_cats
+            PieceType.LASER -> if (isMyPiece) R.drawable.las_b_classic else R.drawable.las_r_cats
         }
     }
 

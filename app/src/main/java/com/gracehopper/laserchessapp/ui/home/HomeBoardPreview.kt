@@ -13,6 +13,7 @@ fun HomeBoardPreview(board: Board) {
         board = board,
         isRedPlayer = false,
         isMyTurn = false,
+        renderCoordinates = false,
         onPieceSelected = {},
         onMove = { _, _ -> },
         clearSelectionTrigger = 0,
