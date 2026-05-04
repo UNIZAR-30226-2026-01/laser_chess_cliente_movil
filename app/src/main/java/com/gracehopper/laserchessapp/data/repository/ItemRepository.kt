@@ -1,6 +1,7 @@
 package com.gracehopper.laserchessapp.data.repository
 
 import android.util.Log
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.shop.BuyItemRequest
 import com.gracehopper.laserchessapp.data.model.shop.ShopItem
 import com.gracehopper.laserchessapp.data.model.shop.ShopProduct
@@ -23,6 +24,7 @@ class ItemRepository(
             onSuccess = { inventory ->
 
                 val ownedIds = inventory.map { it.itemId }.toSet()
+                val currentLevel = CurrentUserManager.getMyCurrentLevel() ?: 0
 
                 getAllShopItems(
                     onSuccess = { items ->
@@ -35,7 +37,8 @@ class ItemRepository(
                                 price = item.price,
                                 levelRequisite = item.levelRequisite,
                                 isDefault = item.isDefault,
-                                isOwned = ownedIds.contains(item.itemId)
+                                isOwned = ownedIds.contains(item.itemId),
+                                isLevelLocked = currentLevel < item.levelRequisite
                             )
                         }
 

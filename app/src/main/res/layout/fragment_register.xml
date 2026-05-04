@@ -56,7 +56,7 @@
             android:id="@+id/editTextRegisterEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/email"
+            android:hint="@string/mail_address"
             android:textColorHint="@android:color/darker_gray"
             android:inputType="textEmailAddress"
             android:textColor="@color/LCWhite"

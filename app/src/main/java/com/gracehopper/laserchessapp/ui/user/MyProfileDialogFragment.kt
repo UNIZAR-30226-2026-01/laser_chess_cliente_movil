@@ -145,7 +145,6 @@ class MyProfileDialogFragment : DialogFragment() {
 
             }
 
-        Toast.makeText(requireContext(), "Edit Username", Toast.LENGTH_SHORT).show()
     }
 
     private fun validateAndSaveUsername(newUsername: String, dialog: AlertDialog) {
@@ -264,7 +263,7 @@ class MyProfileDialogFragment : DialogFragment() {
 
         txtProfileUsername.text = profile.username
         txtProfileLevel.text = "Nivel ${profile.level}"
-        txtProfileXp.text = "${profile.xp} XP"
+        txtProfileXp.text = "${profile.xpTotal} XP"
         txtProfileCoins.text = profile.money.toString()
 
         txtProfileBlitzElo.text = profile.ratings.blitz.toString()
@@ -274,8 +273,8 @@ class MyProfileDialogFragment : DialogFragment() {
 
         imageProfileAvatar.setImageResource(ItemUtils.getItemDrawable(profile.avatar))
 
-        progressProfileXP.max = 100
-        progressProfileXP.progress = profile.xp % 100
+        progressProfileXP.max = profile.xpRequired
+        progressProfileXP.progress = profile.xpLevel
 
         imgPieceSkin.setImageResource(ItemUtils.getItemDrawable(profile.pieceSkin))
         imgBoardSkin.setImageResource(ItemUtils.getItemDrawable(profile.boardSkin))

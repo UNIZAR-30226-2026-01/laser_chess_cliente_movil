@@ -1,8 +1,14 @@
 package com.gracehopper.laserchessapp.ui.settings
 
+import android.Manifest
 import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Paint
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.InputType
 import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
@@ -15,17 +21,28 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.button.MaterialButton
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
+import com.gracehopper.laserchessapp.data.model.user.MyProfile
+import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.AuthRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
+import com.gracehopper.laserchessapp.ui.main.MainActivity
 import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.utils.redirectToLogin
+import com.gracehopper.laserchessapp.utils.validation.MailValidationResult
+import com.gracehopper.laserchessapp.utils.validation.MailValidator
+import com.gracehopper.laserchessapp.utils.validation.PasswordValidationResult
+import com.gracehopper.laserchessapp.utils.validation.PasswordValidator
+import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
+import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
 
 /**
  * Diálogo de notificaciones de retos de partidas amistosas
@@ -37,18 +54,36 @@ class SettingsDialogFragment : DialogFragment() {
 
     private lateinit var buttonClose: ImageButton
     private lateinit var txtEmail: TextView
+    private lateinit var buttonEditMail: ImageButton
     private lateinit var txtChangePassword: TextView
     private lateinit var txtEliminateAccount: TextView
-    private lateinit var checkMusic: CheckBox
-    private lateinit var checkSoundEffects: CheckBox
     private lateinit var checkNotifications: CheckBox
     private lateinit var buttonLogout: Button
+
+    private lateinit var notificationPermissionLauncher: ActivityResultLauncher<String>
+    private var changingNotificationCheckProgrammatically = false
+
+    private var currentMail: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val apiService = NetworkUtils.getApiService()
         userRepository = UserRepository(apiService)
         authRepository = AuthRepository(apiService)
+
+        notificationPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+                if (!granted) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Notificaciones desactivadas",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                syncNotificationCheck()
+            }
+
         isCancelable = true
     }
 
@@ -68,17 +103,16 @@ class SettingsDialogFragment : DialogFragment() {
         setupTexts()
         loadUserData()
         setupListeners()
-
+        syncNotificationCheck()
     }
 
     private fun bindViews(view: View) {
 
         buttonClose = view.findViewById(R.id.buttonCloseSettingsDialog)
         txtEmail = view.findViewById(R.id.txtEmailSettings)
+        buttonEditMail = view.findViewById(R.id.btnEditEmail)
         txtChangePassword = view.findViewById(R.id.txtChangePassword)
         txtEliminateAccount = view.findViewById(R.id.txtEliminateAccount)
-        checkMusic = view.findViewById(R.id.checkMusic)
-        checkSoundEffects = view.findViewById(R.id.checkSoundEffects)
         checkNotifications = view.findViewById(R.id.checkNotifications)
         buttonLogout = view.findViewById(R.id.buttonLogout)
 
@@ -96,10 +130,10 @@ class SettingsDialogFragment : DialogFragment() {
 
     private fun loadUserData() {
 
-        val currentProfile = CurrentUserManager.getMyCurrentProfile()
+        currentMail = CurrentUserManager.getMyCurrentMail()
 
-        if (currentProfile != null) {
-            txtEmail.text = currentProfile.mail
+        if (currentMail != null) {
+            txtEmail.text = currentMail
             return
         }
 
@@ -128,6 +162,10 @@ class SettingsDialogFragment : DialogFragment() {
 
         buttonClose.setOnClickListener { dismiss() }
 
+        buttonEditMail.setOnClickListener {
+            openEditMailDialog()
+        }
+
         txtChangePassword.setOnClickListener {
             openChangePasswordDialog()
         }
@@ -140,33 +178,135 @@ class SettingsDialogFragment : DialogFragment() {
             ).show()
         }
 
-        checkMusic.setOnCheckedChangeListener { _, isChecked ->
-            // TODO guardar ajustes música
-            Toast.makeText(requireContext(),
-                if (isChecked) "Música activada" else "Música desactivada",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        checkSoundEffects.setOnCheckedChangeListener { _, isChecked ->
-            // TODO guardar ajustes efectos de sonido
-            Toast.makeText(requireContext(),
-                if (isChecked) "Efectos de sonido activados" else "Efectos de sonido desactivados",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
         checkNotifications.setOnCheckedChangeListener { _, isChecked ->
-            // TODO guardar ajustes notificaciones
-            Toast.makeText(
-                requireContext(),
-                if (isChecked) "Notificaciones activadas" else "Notificaciones desactivadas",
-                Toast.LENGTH_SHORT
-            ).show()
+
+            if (changingNotificationCheckProgrammatically) return@setOnCheckedChangeListener
+
+            if (isChecked) {
+                requestNotificationPermission()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Para desactivar las notificaciones, cambia el permiso en ajustes",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                openAppNotificationSettings()
+            }
+
         }
 
         buttonLogout.setOnClickListener {
             openLogoutDialog()
+        }
+
+    }
+
+    private fun openEditMailDialog() {
+        // AlertDialog temporal para salir del paso
+        // TODO Dialog en nueva pantalla de editar email
+
+        val editText = EditText(requireContext()).apply {
+            setText(currentMail.orEmpty())
+            setSelection(text.length)
+            hint = "Nuevo e-mail"
+            maxLines = 1
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Cambiar e-mail")
+            .setMessage("Introduce tu nuevo e-mail.")
+            .setView(editText)
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Guardar", null)
+            .create()
+            .also { dialog ->
+
+                dialog.setOnShowListener {
+
+                    val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+
+                    positiveButton.setOnClickListener {
+                        val newMail = editText.text.toString().trim()
+                        validateAndSaveMail(newMail, dialog)
+                    }
+
+                }
+
+                dialog.show()
+
+            }
+
+    }
+
+    private fun validateAndSaveMail(newMail: String, dialog: AlertDialog) {
+
+        when (MailValidator.validate(newMail)) {
+
+            MailValidationResult.EmptyMail -> {
+                Toast.makeText(requireContext(),
+                    "El mail no puede estar vacío",
+                    Toast.LENGTH_SHORT).show()
+            }
+
+            MailValidationResult.InvalidMail -> {
+                Toast.makeText(requireContext(),
+                    "El mail no es válido",
+                    Toast.LENGTH_SHORT).show()
+            }
+
+            MailValidationResult.Valid -> {
+
+                if (newMail == currentMail) {
+                    Toast.makeText(requireContext(),
+                        "El nuevo mail debe ser distinto al actual",
+                        Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                userRepository.updateMyProfile(
+                    request = UpdateAccountRequest(mail = newMail),
+                    onSuccess = { profile ->
+                        CurrentUserManager.setMyProfile(profile)
+
+                        currentMail = profile.mail
+                        txtEmail.text = profile.mail
+
+                        Toast.makeText(requireContext(),
+                            "Mail actualizado",
+                            Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    },
+                    onError = { code ->
+                        requireActivity().runOnUiThread {
+                            when (code) {
+                                409 -> {
+                                    Toast.makeText(requireContext(),
+                                        "El mail ya está en uso",
+                                        Toast.LENGTH_SHORT).show()
+                                }
+                                400 -> {
+                                    Toast.makeText(requireContext(),
+                                        "El mail no es válido",
+                                        Toast.LENGTH_SHORT).show()
+                                }
+                                null -> {
+                                    Toast.makeText(requireContext(),
+                                        "Error de conexión al actualizar tu mail",
+                                        Toast.LENGTH_SHORT).show()
+                                }
+                                else -> {
+                                    Toast.makeText(requireContext(),
+                                        "Error al actualizar tu mail",
+                                        Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }
+                )
+
+            }
+
         }
 
     }
@@ -236,62 +376,116 @@ class SettingsDialogFragment : DialogFragment() {
                                           dialog: AlertDialog
     ) {
 
-        when {
-            currentPassword.isBlank() -> {
+        when (PasswordValidator.validate(currentPassword)) {
+
+            PasswordValidationResult.EmptyPassword -> {
                 Toast.makeText(requireContext(),
                     "Contraseña actual vacía",
                     Toast.LENGTH_SHORT
                 ).show()
             }
 
-            newPassword.isBlank() -> {
+            PasswordValidationResult.ShortPassword -> {
                 Toast.makeText(requireContext(),
-                    "Nueva contraseña vacía",
+                    "Mínimo ${PasswordValidator.MIN_LENGTH} caracteres",
                     Toast.LENGTH_SHORT
                 ).show()
             }
 
-            newPassword.length < 6 -> {
+            PasswordValidationResult.LongPassword -> {
                 Toast.makeText(requireContext(),
-                    "La contraseña debe tener al menos 6 caracteres",
+                    "Máximo ${PasswordValidator.MAX_LENGTH} caracteres",
                     Toast.LENGTH_SHORT
                 ).show()
             }
 
-            newPassword.length > 50 -> {
-                Toast.makeText(requireContext(),
-                    "La contraseña no puede tener más de 50 caracteres",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            PasswordValidationResult.Valid -> {
 
-            repeatPassword.isBlank() -> {
-                Toast.makeText(requireContext(),
-                    "Repite la contraseña nueva",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+                when (PasswordValidator.validate(newPassword)) {
 
-            newPassword != repeatPassword -> {
-                Toast.makeText(requireContext(),
-                    "Las contraseñas no coinciden",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+                    PasswordValidationResult.EmptyPassword -> {
+                        Toast.makeText(requireContext(),
+                            "Nueva contraseña vacía",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-            currentPassword == newPassword -> {
-                Toast.makeText(requireContext(),
-                    "La nueva contraseña debe ser distinta a la actual",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+                    PasswordValidationResult.ShortPassword -> {
+                        Toast.makeText(requireContext(),
+                            "Mínimo ${PasswordValidator.MIN_LENGTH} caracteres",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-            else -> {
-                changePassword(
-                    currentPassword = currentPassword,
-                    newPassword = newPassword,
-                    dialog = dialog
-                )
+                    PasswordValidationResult.LongPassword -> {
+                        Toast.makeText(requireContext(),
+                            "Máximo ${PasswordValidator.MAX_LENGTH} caracteres",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    PasswordValidationResult.Valid -> {
+
+                        when (PasswordValidator.validate(repeatPassword)) {
+
+                            PasswordValidationResult.EmptyPassword -> {
+                                Toast.makeText(requireContext(),
+                                    "Repite la contraseña nueva",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            PasswordValidationResult.ShortPassword -> {
+                                Toast.makeText(requireContext(),
+                                    "Mínimo ${PasswordValidator.MIN_LENGTH} caracteres",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            PasswordValidationResult.LongPassword -> {
+                                Toast.makeText(requireContext(),
+                                    "Máximo ${PasswordValidator.MAX_LENGTH} caracteres",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+
+                            PasswordValidationResult.Valid -> {
+
+                                when {
+
+                                    newPassword != repeatPassword -> {
+                                        Toast.makeText(requireContext(),
+                                            "Las contraseñas no coinciden",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+                                    currentPassword == newPassword -> {
+                                        Toast.makeText(requireContext(),
+                                            "La nueva contraseña debe ser distinta a la actual",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+                                    else -> {
+                                        changePassword(
+                                            currentPassword = currentPassword,
+                                            newPassword = newPassword,
+                                            dialog = dialog
+                                        )
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
             }
 
         }
@@ -361,9 +555,9 @@ class SettingsDialogFragment : DialogFragment() {
 
                 userRepository.deleteMyAccount(
                     onSuccess = {
-                        CurrentUserManager.clearMyProfile()
-                        TokenManager.clear()
-                        // ir a login
+                        requireActivity().runOnUiThread {
+                            clearSession()
+                        }
                     },
                     onError = { code ->
                         when (code) {
@@ -400,6 +594,69 @@ class SettingsDialogFragment : DialogFragment() {
 
     }
 
+    private fun syncNotificationCheck() {
+        val notificationsEnabled = NotificationManagerCompat
+            .from(requireContext())
+            .areNotificationsEnabled()
+
+        val permissionGranted =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            } else {
+                true
+            }
+
+        changingNotificationCheckProgrammatically = true
+        checkNotifications.isChecked = notificationsEnabled && permissionGranted
+        changingNotificationCheckProgrammatically = false
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val granted = ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if (granted) {
+                syncNotificationCheck()
+                return
+            }
+
+            if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Activa las notificaciones desde ajustes",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                openAppNotificationSettings()
+                syncNotificationCheck()
+            }
+        } else {
+            syncNotificationCheck()
+        }
+    }
+
+    private fun openAppNotificationSettings() {
+        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+            }
+        } else {
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.parse("package:${requireContext().packageName}")
+            }
+        }
+
+        startActivity(intent)
+    }
+
     private fun openLogoutDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Cerrar sesión")
@@ -434,16 +691,14 @@ class SettingsDialogFragment : DialogFragment() {
 
     private fun clearSession() {
 
+        (activity as? MainActivity)?.disconnectSse()
+
         // limpio tokens
         TokenManager.clear()
         NetworkUtils.clearCookies()
 
         // limpio perfil en memoria
         CurrentUserManager.clearMyProfile()
-
-        // cerrar websockets si hay, hace falta??
-        // ActiveGameManager.disconnect()
-        // TODO SseManager.disconnect()
 
         // ir a login y limpiar backstack
         redirectToLogin(requireContext())
@@ -453,6 +708,14 @@ class SettingsDialogFragment : DialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (::checkNotifications.isInitialized) {
+            syncNotificationCheck()
+        }
     }
 
     companion object {

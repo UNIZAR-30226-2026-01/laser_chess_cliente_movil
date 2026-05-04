@@ -11,6 +11,7 @@ import okhttp3.sse.EventSources
 class SseManager(
     private val onChallengeReceived: ((String) -> Unit)? = null,
     private val onFriendRequestReceived: ((String) -> Unit)? = null,
+    private val onNewFriendshipReceived: ((String) -> Unit)? = null,
     private val onError: ((Throwable?) -> Unit)? = null
 ) {
 
@@ -18,6 +19,8 @@ class SseManager(
     private var manuallyClosed = false
 
     fun connect() {
+
+        Log.d("SSE", "connect() llamado. eventSourceNull=${eventSource == null}")
 
         if (eventSource != null) return
 
@@ -33,7 +36,7 @@ class SseManager(
         eventSource = factory.newEventSource(request, object : EventSourceListener() {
 
             override fun onOpen(eventSource: EventSource, response: Response) {
-                Log.d("SSE", "Conectado")
+                Log.d("SSE", "Conectado HTTP=${response.code}")
             }
 
             override fun onEvent(
@@ -65,12 +68,17 @@ class SseManager(
                     return
                 }
 
-                Log.e("SSE", "Error en SSE", t)
+                Log.e("SSE", "onFailure manuallyClosed=$manuallyClosed HTTP=${response?.code}", t)
                 onError?.invoke(t)
             }
 
         })
 
+    }
+
+    fun reconnect() {
+        disconnect()
+        connect()
     }
 
     fun disconnect() {
@@ -81,6 +89,7 @@ class SseManager(
 
     private fun handleEvent(type: String?, data: String) {
 
+        Log.d("SSE", "RAW eventType=$type data=$data")
         when (type) {
 
             "Init" -> {
@@ -93,6 +102,10 @@ class SseManager(
 
             "FriendRequest" -> {
                 onFriendRequestReceived?.invoke(data)
+            }
+
+            "NewFriend" -> {
+                onNewFriendshipReceived?.invoke(data)
             }
 
         }

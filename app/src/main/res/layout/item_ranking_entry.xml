@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="@color/S3"
+    app:cardBackgroundColor="@color/S2"
     app:cardCornerRadius="14dp"
     app:cardElevation="0dp"
     app:strokeColor="@color/S2"
@@ -21,24 +21,33 @@
         android:paddingVertical="12dp">
 
         <!-- Posición -->
-        <TextView
-            android:id="@+id/textRankingPosition"
+        <FrameLayout
             android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:text="#1"
-            android:textColor="@color/LCWhite"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:gravity="center" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textRankingPosition"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:text="1"
+                android:textColor="#FFC107"
+                android:textSize="@dimen/text_medium"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:background="@drawable/bg_rank_position_frame"
+                android:backgroundTint="@color/LCYellow"/> </FrameLayout>
 
         <!-- Avatar -->
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imageRankingAvatar"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_avatar"
+            android:src="@drawable/bot1"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/CircleImage"
             android:contentDescription="@string/avatar" />
 
         <!-- Username -->
@@ -49,21 +58,25 @@
             android:layout_weight="1"
             android:text="Usuario"
             android:textColor="@color/LCWhite"
-            android:textSize="15sp"
-            android:textStyle="bold"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="normal"
             android:maxLines="1"
             android:ellipsize="end" />
 
         <!-- Elo -->
         <TextView
-            android:id="@+id/textRankingElo"
-            android:layout_width="72dp"
-            android:layout_height="wrap_content"
-            android:text="1500"
-            android:textColor="@color/LCWhite"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:gravity="center" />
+        android:id="@+id/textRankingElo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="72dp"
+        android:text="1500"
+        android:textColor="@color/LCWhite"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:gravity="end|center_vertical"
+        android:drawablePadding="6dp"
+        app:drawableEndCompat="@drawable/ic_crown"
+        app:drawableTint="@color/LCYellow" />
 
     </LinearLayout>
 

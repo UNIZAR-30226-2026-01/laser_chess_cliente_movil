@@ -7,6 +7,7 @@ import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.model.user.UserRatings
+import com.gracehopper.laserchessapp.data.model.user.XPInfoResponse
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.*
@@ -38,6 +39,7 @@ class UserRepositoryTest {
         val apiService = mock<ApiService>()
         val accountCall = mock<Call<MyAccountResponse>>()
         val ratingsCall = mock<Call<AllRatingsResponse>>()
+        val xpCall = mock<Call<XPInfoResponse>>()
 
         // creo repo con el apiService falso
         val repository = UserRepository(apiService)
@@ -63,10 +65,17 @@ class UserRepositoryTest {
             extended = 1400
         )
 
+        val xpInfo = XPInfoResponse(
+            xp = 1,
+            requiredXp = 100
+        )
+
         // cuando se llame a apiService.getMyAccount -> devolver call falso
         whenever(apiService.getMyAccount()).thenReturn(accountCall)
         // cuando se llame a apiService.getRatings -> devolver call falso
         whenever(apiService.getRatings(1L)).thenReturn(ratingsCall)
+        // cuando se llame a apiService.getXpInfo -> devolver call false
+        whenever(apiService.getXPInfo()).thenReturn(xpCall)
 
         // simulo que la API responde correctamente
         doAnswer {
@@ -80,6 +89,12 @@ class UserRepositoryTest {
             callback.onResponse(ratingsCall, Response.success(ratings))
             null
         }.whenever(ratingsCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<XPInfoResponse>>(0)
+            callback.onResponse(xpCall, Response.success(xpInfo))
+            null
+        }.whenever(xpCall).enqueue(any())
 
         var successCalled = false
         var receivedProfile: MyProfile? = null
@@ -103,6 +118,8 @@ class UserRepositoryTest {
         assertEquals("mail@test.ts", receivedProfile?.mail)
         assertEquals("username", receivedProfile?.username)
         assertEquals(UserRatings(1100, 1200, 1300, 1400), receivedProfile?.ratings)
+        assertEquals(1, receivedProfile?.xpLevel)
+        assertEquals(100, receivedProfile?.xpRequired)
 
     }
 
@@ -335,6 +352,7 @@ class UserRepositoryTest {
         val apiService = mock<ApiService>()
         val updateCall = mock<Call<MyAccountResponse>>()
         val ratingsCall = mock<Call<AllRatingsResponse>>()
+        val xpCall = mock<Call<XPInfoResponse>>()
 
         val repository = UserRepository(apiService)
 
@@ -359,8 +377,14 @@ class UserRepositoryTest {
             extended = 1400
         )
 
+        val xpInfo = XPInfoResponse(
+            xp = 1,
+            requiredXp = 100
+        )
+
         whenever(apiService.updateMyAccount(any())).thenReturn(updateCall)
         whenever(apiService.getRatings(1L)).thenReturn(ratingsCall)
+        whenever(apiService.getXPInfo()).thenReturn(xpCall)
 
         doAnswer {
             val callback = it.getArgument<Callback<MyAccountResponse>>(0)
@@ -373,6 +397,12 @@ class UserRepositoryTest {
             callback.onResponse(ratingsCall, Response.success(ratings))
             null
         }.whenever(ratingsCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<XPInfoResponse>>(0)
+            callback.onResponse(xpCall, Response.success(xpInfo))
+            null
+        }.whenever(xpCall).enqueue(any())
 
         var successCalled = false
         var errorCode: Int? = null
@@ -394,6 +424,8 @@ class UserRepositoryTest {
         assertEquals(1L, receivedProfile?.id)
         assertEquals("newUsername", receivedProfile?.username)
         assertEquals(UserRatings(1100, 1200, 1300, 1400), receivedProfile?.ratings)
+        assertEquals(1, receivedProfile?.xpLevel)
+        assertEquals(100, receivedProfile?.xpRequired)
 
     }
 

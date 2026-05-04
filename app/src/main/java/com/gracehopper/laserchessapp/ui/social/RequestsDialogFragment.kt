@@ -60,8 +60,7 @@ class RequestsDialogFragment : DialogFragment() {
 
         setupListeners(dialog)
 
-        loadReceivedRequests()
-        loadSentRequests()
+        reloadRequests()
 
         selectRequestsTab(true)
 
@@ -169,13 +168,25 @@ class RequestsDialogFragment : DialogFragment() {
                         buttonAccept.setOnClickListener {
                             buttonAccept.isEnabled = false
                             buttonReject.isEnabled = false
-                            acceptFriendshipRequest(request.username, buttonAccept, buttonReject)
+
+                            // UI OPTIMISTA
+                            receivedContainer.removeView(itemView)
+                            emptyReceived.visibility =
+                                if (receivedContainer.childCount == 0) View.VISIBLE else View.GONE
+
+                            acceptFriendshipRequest(request.username)
                         }
 
                         buttonReject.setOnClickListener {
                             buttonAccept.isEnabled = false
                             buttonReject.isEnabled = false
-                            rejectFriendshipRequest(request.username, buttonAccept, buttonReject)
+
+                            // UI OPTIMISTA
+                            receivedContainer.removeView(itemView)
+                            emptyReceived.visibility =
+                                if (receivedContainer.childCount == 0) View.VISIBLE else View.GONE
+
+                            rejectFriendshipRequest(request.username)
                         }
 
                         receivedContainer.addView(itemView)
@@ -231,7 +242,13 @@ class RequestsDialogFragment : DialogFragment() {
 
                         buttonCancel.setOnClickListener {
                             buttonCancel.isEnabled = false
-                            cancelSentFriendshipRequest(request.username, buttonCancel)
+
+                            // UI OPTIMISTA
+                            sentContainer.removeView(itemView)
+                            emptySent.visibility =
+                                if (sentContainer.childCount == 0) View.VISIBLE else View.GONE
+
+                            cancelSentFriendshipRequest(request.username)
                         }
 
                         sentContainer.addView(itemView)
@@ -251,11 +268,7 @@ class RequestsDialogFragment : DialogFragment() {
 
     }
 
-    private fun acceptFriendshipRequest(
-        username: String,
-        buttonAccept: ImageButton,
-        buttonReject: ImageButton
-    ) {
+    private fun acceptFriendshipRequest (username: String) {
 
         repository.acceptFriendship(
             username = username,
@@ -273,8 +286,6 @@ class RequestsDialogFragment : DialogFragment() {
             onError = { errorCode ->
                 if (!isAdded) return@acceptFriendship
                 requireActivity().runOnUiThread {
-                    buttonAccept.isEnabled = true
-                    buttonReject.isEnabled = true
                     Toast.makeText(
                         requireContext(), "Error al aceptar: $errorCode",
                         Toast.LENGTH_SHORT
@@ -285,11 +296,7 @@ class RequestsDialogFragment : DialogFragment() {
 
     }
 
-    private fun rejectFriendshipRequest(
-        username: String,
-        buttonAccept: ImageButton,
-        buttonReject: ImageButton
-    ) {
+    private fun rejectFriendshipRequest (username: String) {
 
         repository.deleteFriendship(
             username = username,
@@ -307,19 +314,19 @@ class RequestsDialogFragment : DialogFragment() {
             onError = { errorCode ->
                 if (!isAdded) return@deleteFriendship
                 requireActivity().runOnUiThread {
-                    buttonAccept.isEnabled = true
-                    buttonReject.isEnabled = true
                     Toast.makeText(
                         requireContext(), "Error al rechazar: $errorCode",
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    reloadRequests()
                 }
             }
         )
 
     }
 
-    private fun cancelSentFriendshipRequest(username: String, buttonCancel: ImageButton) {
+    private fun cancelSentFriendshipRequest(username: String) {
 
         repository.deleteFriendship(
             username = username,
@@ -337,11 +344,12 @@ class RequestsDialogFragment : DialogFragment() {
             onError = { errorCode ->
                 if (!isAdded) return@deleteFriendship
                 requireActivity().runOnUiThread {
-                    buttonCancel.isEnabled = true
                     Toast.makeText(
                         requireContext(), "Error al cancelar: $errorCode",
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    reloadRequests()
                 }
             }
         )
@@ -352,6 +360,5 @@ class RequestsDialogFragment : DialogFragment() {
         super.onDismiss(dialog)
         parentFragmentManager.setFragmentResult("requests_dialog_closed", Bundle())
     }
-
 
 }

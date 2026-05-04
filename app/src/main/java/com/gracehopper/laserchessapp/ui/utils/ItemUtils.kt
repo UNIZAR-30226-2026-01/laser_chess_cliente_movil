@@ -23,7 +23,7 @@ object ItemUtils {
 
             // PIECE_SKIN
             1 -> ItemMetadata("Classic", R.drawable.kin_b_classic)
-            2 -> ItemMetadata("Soretro", R.drawable.kin_r_cats) // TODO Cambiar cuando funke soretro
+            2 -> ItemMetadata("Soretro", R.drawable.kin_b_soretro)
             3 -> ItemMetadata("Cats", R.drawable.kin_b_cats)
 
             // BOARD_SKIN
@@ -53,6 +53,38 @@ object ItemUtils {
             else -> throw IllegalArgumentException("Invalid item ID: $itemId")
         }
 
+    }
+
+    fun getPiecesPackDrawables(itemId: Int): List<Int> {
+        return when (itemId) {
+
+            1 -> listOf(
+                R.drawable.kin_b_classic,
+                R.drawable.esc_b_classic,
+                R.drawable.def_b_classic,
+                R.drawable.swi_b_classic,
+                R.drawable.las_b_classic
+            )
+
+            2 -> listOf(
+                R.drawable.kin_b_soretro,
+                R.drawable.esc_b_soretro,
+                R.drawable.def_b_soretro,
+                R.drawable.swi_b_soretro,
+                R.drawable.las_b_soretro
+            )
+
+            3 -> listOf(
+                R.drawable.kin_b_cats,
+                R.drawable.esc_b_cats,
+                R.drawable.def_b_cats,
+                R.drawable.swi_b_cats,
+                R.drawable.las_b_cats
+            )
+
+            else -> throw IllegalArgumentException("Invalid piece_skin ID: $itemId")
+
+        }
     }
 
 }

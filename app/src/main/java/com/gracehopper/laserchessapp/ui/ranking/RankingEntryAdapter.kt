@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.ranking
 
+import android.content.res.ColorStateList
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -43,18 +44,33 @@ class RankingEntryAdapter(
                 ItemUtils.getItemDrawable(entry.avatar)
             )
 
-            val highlightColor = when {
-                entry.isCurrentUser -> R.color.LCBlue
-                entry.position == 1 -> R.color.LCYellow
-                entry.position == 2 -> R.color.silver
-                entry.position == 3 -> R.color.bronze
-                else -> R.color.LCWhite
+
+            when (entry.position) {
+                1 -> { // ORO
+                textRankingPosition.setBackgroundResource(R.drawable.bg_rank_position_frame)
+                textRankingPosition.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.LCYellow))
+                textRankingPosition.setTextColor(ContextCompat.getColor(context, R.color.LCYellow))
+                }
+                2 -> { // PLATA
+                textRankingPosition.setBackgroundResource(R.drawable.bg_rank_position_frame)
+                textRankingPosition.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.LCGray))
+                textRankingPosition.setTextColor(ContextCompat.getColor(context, R.color.LCGray))
+                }
+                3 -> { // BRONCE
+                textRankingPosition.setBackgroundResource(R.drawable.bg_rank_position_frame)
+                textRankingPosition.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.bronze))
+                textRankingPosition.setTextColor(ContextCompat.getColor(context, R.color.bronze))
+                }
+                else -> { // DEL 4 EN ADELANTE (Sin círculo, blanco)
+                textRankingPosition.background = null
+                textRankingPosition.setTextColor(ContextCompat.getColor(context, R.color.LCWhite))
+                }
             }
 
-            val rowColor = ContextCompat.getColor(context, highlightColor)
-            textRankingUsername.setTextColor(rowColor)
-            textRankingPosition.setTextColor(rowColor)
-            textRankingElo.setTextColor(rowColor)
+            if(entry.isCurrentUser){
+                cardRankingEntry.setCardBackgroundColor(ContextCompat.getColor(context, R.color.S3))
+                textRankingUsername.setTextColor(ContextCompat.getColor(context, R.color.white))
+            }
 
             root.setOnClickListener {
                 onUserClicked(entry)

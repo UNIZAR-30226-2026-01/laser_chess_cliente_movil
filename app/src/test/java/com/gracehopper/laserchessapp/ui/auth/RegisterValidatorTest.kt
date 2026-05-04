@@ -69,7 +69,7 @@ class RegisterValidatorTest {
      */
     @Test
     fun register_validate_mail_invalido_error() {
-        val result = RegisterValidator.validate("username", "invalidmail",
+        val result = RegisterValidator.validate("username", "invalid mail",
             "password", "password")
         assertEquals(RegisterValidationResult.InvalidMail, result)
     }

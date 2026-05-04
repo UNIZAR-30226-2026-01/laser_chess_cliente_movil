@@ -1,18 +1,16 @@
 package com.gracehopper.laserchessapp.ui.auth
 
+import com.gracehopper.laserchessapp.utils.validation.MailValidationResult
+import com.gracehopper.laserchessapp.utils.validation.MailValidator
+import com.gracehopper.laserchessapp.utils.validation.PasswordValidationResult
+import com.gracehopper.laserchessapp.utils.validation.PasswordValidator
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
-import java.util.regex.Pattern
 
 /**
  * Clase de validación para el registro de usuarios.
  */
 object RegisterValidator {
-
-    // Expresión regular para validar direcciones de correo electrónico
-    private val EMAIL_PATTERN = Pattern.compile(
-        "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
-    )
 
     /**
      * Valida los datos de registro.
@@ -26,21 +24,50 @@ object RegisterValidator {
     fun validate(username: String, mail: String, password: String, confirmPassword: String)
             : RegisterValidationResult {
 
+        // Validación del username
         return when (UsernameValidator.validate(username)) {
             UsernameValidationResult.EmptyUsername -> RegisterValidationResult.EmptyUsername
             UsernameValidationResult.LongUsername -> RegisterValidationResult.LongUsername
             UsernameValidationResult.InvalidUsername -> RegisterValidationResult.InvalidUsername
             UsernameValidationResult.Valid -> {
-                when {
-                    mail.isEmpty() -> RegisterValidationResult.EmptyMail
-                    !EMAIL_PATTERN.matcher(mail).matches() -> RegisterValidationResult.InvalidMail
-                    password.isEmpty() -> RegisterValidationResult.EmptyPassword
-                    confirmPassword.isEmpty() -> RegisterValidationResult.EmptyConfirmPassword
-                    password.length < 6 -> RegisterValidationResult.ShortPassword
-                    password.length > 50 -> RegisterValidationResult.LongPassword
-                    password != confirmPassword -> RegisterValidationResult.PasswordsMismatch
-                    else -> RegisterValidationResult.Valid
+
+                // Validación del mail
+                when (MailValidator.validate(mail)) {
+
+                    MailValidationResult.EmptyMail -> RegisterValidationResult.EmptyMail
+                    MailValidationResult.InvalidMail -> RegisterValidationResult.InvalidMail
+                    MailValidationResult.Valid -> {
+
+                        // Validación de password
+                        when (PasswordValidator.validate(password)) {
+
+                            PasswordValidationResult.EmptyPassword -> RegisterValidationResult.EmptyPassword
+                            PasswordValidationResult.ShortPassword -> RegisterValidationResult.ShortPassword
+                            PasswordValidationResult.LongPassword -> RegisterValidationResult.LongPassword
+                            PasswordValidationResult.Valid -> {
+
+                                // Validación de confirmPassword
+                                when (PasswordValidator.validate(confirmPassword)) {
+
+                                    PasswordValidationResult.EmptyPassword -> RegisterValidationResult.EmptyConfirmPassword
+                                    PasswordValidationResult.ShortPassword -> RegisterValidationResult.ShortConfirmPassword
+                                    PasswordValidationResult.LongPassword -> RegisterValidationResult.LongConfirmPassword
+                                    PasswordValidationResult.Valid -> {
+
+                                        when {
+                                            password != confirmPassword -> RegisterValidationResult.PasswordsMismatch
+                                            else -> RegisterValidationResult.Valid
+                                        }
+                                    }
+
+                                }
+                            }
+
+                        }
+
+                    }
                 }
+
             }
         }
 
@@ -60,9 +87,11 @@ sealed class RegisterValidationResult {
     data object EmptyMail : RegisterValidationResult()
     data object InvalidMail : RegisterValidationResult()
     data object EmptyPassword : RegisterValidationResult()
-    data object EmptyConfirmPassword : RegisterValidationResult()
     data object ShortPassword : RegisterValidationResult()
     data object LongPassword : RegisterValidationResult()
+    data object EmptyConfirmPassword : RegisterValidationResult()
+    data object ShortConfirmPassword : RegisterValidationResult()
+    data object LongConfirmPassword : RegisterValidationResult()
     data object PasswordsMismatch : RegisterValidationResult()
 
 }

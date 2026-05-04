@@ -37,7 +37,8 @@
 
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="false" /> <!-- Ahora este lo lanza en vez del home -->
+            android:launchMode="singleTop"
+            android:exported="false" />
 
         <activity
             android:name=".ui.auth.LoginActivity"

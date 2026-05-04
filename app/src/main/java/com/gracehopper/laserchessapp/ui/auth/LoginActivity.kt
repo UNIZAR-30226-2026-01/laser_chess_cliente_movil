@@ -18,6 +18,7 @@ import com.gracehopper.laserchessapp.data.repository.AuthRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.main.MainActivity
 import com.gracehopper.laserchessapp.utils.TokenManager
+import com.gracehopper.laserchessapp.utils.validation.PasswordValidator
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
 
 /**
@@ -326,22 +327,22 @@ class LoginActivity : AppCompatActivity() {
             }
 
             RegisterValidationResult.ShortPassword -> {
-                registerPassword.error = "Mínimo 6 caracteres"
+                registerPassword.error = "Mínimo ${PasswordValidator.MIN_LENGTH} caracteres"
                 registerPassword.requestFocus()
                 Toast.makeText(
                     this,
-                    "La contraseña debe tener al menos 6 caracteres",
+                    "La contraseña debe tener al menos ${PasswordValidator.MIN_LENGTH} caracteres",
                     Toast.LENGTH_SHORT
                 ).show()
                 return
             }
 
             RegisterValidationResult.LongPassword -> {
-                registerPassword.error = "Máximo 50 caracteres"
+                registerPassword.error = "Máximo ${PasswordValidator.MAX_LENGTH} caracteres"
                 registerPassword.requestFocus()
                 Toast.makeText(
                     this,
-                    "La contraseña debe tener máximo 50 caracteres",
+                    "La contraseña debe tener máximo ${PasswordValidator.MAX_LENGTH} caracteres",
                     Toast.LENGTH_SHORT
                 ).show()
                 return
@@ -350,6 +351,28 @@ class LoginActivity : AppCompatActivity() {
             RegisterValidationResult.EmptyConfirmPassword -> {
                 registerConfirmPassword.error = "Confirma tu contraseña"
                 registerConfirmPassword.requestFocus()
+                return
+            }
+
+            RegisterValidationResult.ShortConfirmPassword -> {
+                registerPassword.error = "Mínimo ${PasswordValidator.MIN_LENGTH} caracteres"
+                registerPassword.requestFocus()
+                Toast.makeText(
+                    this,
+                    "La contraseña debe tener al menos ${PasswordValidator.MIN_LENGTH} caracteres",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return
+            }
+
+            RegisterValidationResult.LongConfirmPassword -> {
+                registerPassword.error = "Máximo ${PasswordValidator.MAX_LENGTH} caracteres"
+                registerPassword.requestFocus()
+                Toast.makeText(
+                    this,
+                    "La contraseña debe tener máximo ${PasswordValidator.MAX_LENGTH} caracteres",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return
             }
 

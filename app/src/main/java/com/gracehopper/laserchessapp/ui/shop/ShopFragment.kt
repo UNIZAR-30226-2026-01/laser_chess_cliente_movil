@@ -181,6 +181,15 @@ class ShopFragment : Fragment() {
             return
         }
 
+        if (product.isLevelLocked) {
+            Toast.makeText(
+                requireContext(),
+                "Necesitas nivel ${product.levelRequisite} para comprar ${product.name}",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
         itemRepository.buyItem(
             itemId = product.itemId,
             onSuccess = {
@@ -220,29 +229,6 @@ class ShopFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-}
-
-private fun ShopItem.toShopProduct(isOwned: Boolean): ShopProduct {
-    return ShopProduct(
-        itemId = itemId,
-        name = ItemUtils.getItemName(itemId),
-        itemType = itemType,
-        price = price,
-        levelRequisite = levelRequisite,
-        isDefault = isDefault,
-        isOwned = isOwned
-    )
-}
-
-private fun getShopItemName(itemId: Int, itemType: ItemType): String {
-
-    return when (itemType) {
-        ItemType.PIECE_SKIN -> "Skin $itemId"
-        ItemType.BOARD_SKIN -> "Tablero $itemId"
-        ItemType.WIN_ANIMATION -> "Animación $itemId"
-        ItemType.AVATAR -> "Avatar $itemId"
     }
 
 }

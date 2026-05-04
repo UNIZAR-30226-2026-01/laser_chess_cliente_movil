@@ -9,6 +9,7 @@ import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.model.user.UserRatings
+import com.gracehopper.laserchessapp.data.model.user.XPInfoResponse
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import retrofit2.Call
 import retrofit2.Callback
@@ -45,20 +46,29 @@ class UserRepository(private val apiService: ApiService) {
                     getUserRatings(
                         userId = myAccount.accountId,
                         onSuccess = { ratings ->
-                            val profile = MyProfile(
-                                id = myAccount.accountId,
-                                mail = myAccount.mail,
-                                username = myAccount.username,
-                                avatar = myAccount.avatar,
-                                level = myAccount.level,
-                                xp = myAccount.xp,
-                                money = myAccount.money,
-                                boardSkin = myAccount.boardSkin,
-                                pieceSkin = myAccount.pieceSkin,
-                                winAnimation = myAccount.winAnimation,
-                                ratings = ratings
+                            getUserXpInfo(
+                                userId = myAccount.accountId,
+                                onSuccess = { xpInfo ->
+                                    val profile = MyProfile(
+                                        id = myAccount.accountId,
+                                        mail = myAccount.mail,
+                                        username = myAccount.username,
+                                        avatar = myAccount.avatar,
+                                        level = myAccount.level,
+                                        xpTotal = myAccount.xp,
+                                        xpLevel = xpInfo.xp,
+                                        xpRequired = xpInfo.requiredXp,
+                                        money = myAccount.money,
+                                        boardSkin = myAccount.boardSkin,
+                                        pieceSkin = myAccount.pieceSkin,
+                                        winAnimation = myAccount.winAnimation,
+                                        ratings = ratings
+                                    )
+                                    onSuccess(profile)
+                                }, onError = {
+                                    onError()
+                                }
                             )
-                            onSuccess(profile)
                         }, onError = {
                             onError()
                         }
@@ -165,6 +175,35 @@ class UserRepository(private val apiService: ApiService) {
 
     }
 
+    private fun getUserXpInfo (userId: Long,
+                              onSuccess: (XPInfoResponse) -> Unit,
+                              onError: () -> Unit) {
+
+        apiService.getXPInfo().enqueue(
+            object : Callback<XPInfoResponse> {
+
+                override fun onResponse(
+                    call: Call<XPInfoResponse>,
+                    response: Response<XPInfoResponse>
+                ) {
+                    val xpInfo = response.body()
+                    if (!response.isSuccessful || xpInfo == null) {
+                        onError()
+                        return
+                    }
+
+                    onSuccess(xpInfo)
+
+                }
+
+                override fun onFailure(call: Call<XPInfoResponse>, t: Throwable) {
+                    onError()
+                }
+            }
+        )
+
+    }
+
     /**
      * Actualiza el perfil del usuario actual.
      *
@@ -188,48 +227,33 @@ class UserRepository(private val apiService: ApiService) {
                         return
                     }
 
-                    val currentRatings = CurrentUserManager.getMyCurrentRatings()
-
-                    // si he podido recuperar los ratings del usuario
-                    if (currentRatings != null) {
-
-                        val profile = MyProfile(
-                            id = myAccount.accountId,
-                            mail = myAccount.mail,
-                            username = myAccount.username,
-                            avatar = myAccount.avatar,
-                            level = myAccount.level,
-                            xp = myAccount.xp,
-                            money = myAccount.money,
-                            boardSkin = myAccount.boardSkin,
-                            pieceSkin = myAccount.pieceSkin,
-                            winAnimation = myAccount.winAnimation,
-                            ratings = currentRatings
-                        )
-
-                        onSuccess(profile)
-                        return
-
-                    }
-
-                    // si no he podido recuperarlos, vuelvo a solicitarlos
+                    // vuelvo a solicitarlo
                     getUserRatings(
                         userId = myAccount.accountId,
                         onSuccess = { ratings ->
-                            val profile = MyProfile(
-                                id = myAccount.accountId,
-                                mail = myAccount.mail,
-                                username = myAccount.username,
-                                avatar = myAccount.avatar,
-                                level = myAccount.level,
-                                xp = myAccount.xp,
-                                money = myAccount.money,
-                                boardSkin = myAccount.boardSkin,
-                                pieceSkin = myAccount.pieceSkin,
-                                winAnimation = myAccount.winAnimation,
-                                ratings = ratings
+                            getUserXpInfo(
+                                userId = myAccount.accountId,
+                                onSuccess = { xpInfo ->
+                                    val profile = MyProfile(
+                                        id = myAccount.accountId,
+                                        mail = myAccount.mail,
+                                        username = myAccount.username,
+                                        avatar = myAccount.avatar,
+                                        level = myAccount.level,
+                                        xpTotal = myAccount.xp,
+                                        xpLevel = xpInfo.xp,
+                                        xpRequired = xpInfo.requiredXp,
+                                        money = myAccount.money,
+                                        boardSkin = myAccount.boardSkin,
+                                        pieceSkin = myAccount.pieceSkin,
+                                        winAnimation = myAccount.winAnimation,
+                                        ratings = ratings
+                                    )
+                                    onSuccess(profile)
+                                }, onError = {
+                                    onError(null)
+                                }
                             )
-                            onSuccess(profile)
                         },
                         onError = {
                             onError(null)

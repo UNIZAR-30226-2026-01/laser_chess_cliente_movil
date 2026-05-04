@@ -33,27 +33,43 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
 
         super.onMessageReceived(message)
 
-        Log.d("FCM", "Mensaje recibido: ${message.data}")
+        val eventType = message.data["event_type"]
+        val data = message.data["data"]
 
-        when (message.data["type"]) {
-            "challenge" -> {
-                val challengerUsername = message.data["challengerUsername"]
-                if (!challengerUsername.isNullOrBlank()) {
+        Log.d("FCM", "Mensaje recibido eventType=$eventType data=$data")
+        Log.d("FCM", "Data completa=${message.data}")
+
+        when (eventType) {
+
+            "Challenge" -> {
+                if (!data.isNullOrBlank()) {
                     AppNotificationHelper.showChallengeNotification(
                         applicationContext,
-                        challengerUsername
+                        data
                     )
                 }
             }
 
-            "friend_request" -> {
-                val requesterUsername = message.data["requesterUsername"]
-                if (!requesterUsername.isNullOrBlank()) {
+            "FriendRequest" -> {
+                if (!data.isNullOrBlank()) {
                     AppNotificationHelper.showFriendRequestNotification(
                         applicationContext,
-                        requesterUsername
+                        data
                     )
                 }
+            }
+
+            "NewFriend" -> {
+                if (!data.isNullOrBlank()) {
+                    AppNotificationHelper.showNewFriendshipNotification(
+                        applicationContext,
+                        data
+                    )
+                }
+            }
+
+            else -> {
+                Log.w("FCM", "Tipo de evento no reconocido: $eventType")
             }
         }
 

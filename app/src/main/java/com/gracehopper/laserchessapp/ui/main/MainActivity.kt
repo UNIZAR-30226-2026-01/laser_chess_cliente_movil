@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -33,6 +34,7 @@ import com.gracehopper.laserchessapp.ui.history.HistoryDialogFragment
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
 import com.gracehopper.laserchessapp.ui.social.RequestsDialogFragment
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
+import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 import com.gracehopper.laserchessapp.utils.AppNotificationHelper
 
@@ -71,6 +73,14 @@ class MainActivity : AppCompatActivity() {
                 AppNotificationHelper.showFriendRequestNotification(
                     applicationContext,
                     requestUsername
+                )
+            }
+        },
+        onNewFriendshipReceived = { newFriendUsername ->
+            runOnUiThread {
+                AppNotificationHelper.showNewFriendshipNotification(
+                    applicationContext,
+                    newFriendUsername
                 )
             }
         },
@@ -182,7 +192,8 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        sseManager.connect()
+        Log.d("MAIN_ACTIVITY", "onStart -> connect SSE")
+        sseManager.reconnect()
 
         if (ActiveGameManager.currentState == ActiveGameManager.GameState.INACTIVE) {
             setupGameReconnection()
@@ -191,11 +202,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+
+
+        Log.d("MAIN_ACTIVITY", "onStop -> disconnect SSE")
         sseManager.disconnect()
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+
+        Log.d("MAIN_ACTIVITY", "onNewIntent notification=${intent.getStringExtra("notification_type")}")
         setIntent(intent)
         handleNotificationIntent(intent)
     }
@@ -204,6 +220,9 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         viewPager2.unregisterOnPageChangeCallback(pageChangeCallback)
+
+        Log.d("MAIN_ACTIVITY", "onDestroy -> disconnect SSE")
+        sseManager.disconnect()
     }
 
     /**
@@ -284,6 +303,11 @@ class MainActivity : AppCompatActivity() {
                 openRequestsDialog()
                 intent.removeExtra("notification_type")
             }
+
+            "new_friendship" -> {
+                openSocialFragment()
+                intent.removeExtra("notification_type")
+            }
         }
 
     }
@@ -306,6 +330,13 @@ class MainActivity : AppCompatActivity() {
         if (existing != null) return
 
         RequestsDialogFragment().show(supportFragmentManager, "RequestsDialog")
+    }
+
+    /**
+     * Abre el fragmento de social
+     */
+    private fun openSocialFragment() {
+        viewPager2.currentItem = 3
     }
 
     /**
@@ -364,12 +395,11 @@ class MainActivity : AppCompatActivity() {
     private fun updateProfileCard(profile: MyProfile) {
 
         txtProfileUsername.text = profile.username
-        val maxLevelXp = 1000
-        val currentXpInLevel = profile.xp % maxLevelXp
-        txtProfileLevel.text = getString(R.string.profile_card_level_format, profile.level, currentXpInLevel, maxLevelXp)
+        txtProfileLevel.text = getString(R.string.profile_card_level_format,
+            profile.level, profile.xpLevel, profile.xpRequired)
         imgProfileAvatar.setImageResource(ItemUtils.getItemDrawable(profile.avatar))
-        progressProfileXP.max = maxLevelXp
-        progressProfileXP.progress = profile.xp % maxLevelXp
+        progressProfileXP.max = profile.xpRequired
+        progressProfileXP.progress = profile.xpLevel
 
         txtNumCoins.text = profile.money.toString()
 
@@ -389,8 +419,28 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun setupAdditionalButtons() {
+        btnSettings = findViewById(R.id.btnSettings)
+        btnNotifications = findViewById(R.id.btnNotifications)
+        btnHistory = findViewById(R.id.btnHistory)
+
+        btnSettings.setOnClickListener {
+            val dialog = SettingsDialogFragment()
+            dialog.show(supportFragmentManager, "SettingsDialog")
+        }
+
+        btnNotifications.setOnClickListener {
+            val dialog = NotificationsDialogFragment()
+            dialog.show(supportFragmentManager, "NotificationsDialog")
+        }
+    }
+
     fun openCustomizeFragment() {
         viewPager2.currentItem = 1
+    }
+
+    fun disconnectSse() {
+        sseManager.disconnect()
     }
 
     private fun setupGameReconnection() {
