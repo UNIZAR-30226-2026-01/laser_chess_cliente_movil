@@ -40,7 +40,7 @@ class MailValidatorTest {
      */
     @Test
     fun mail_validate_valido() {
-        val result = MailValidator.validate("mail@test.ts")
+        val result = MailValidator.validate("mail@test.tst")
         assertEquals(MailValidationResult.Valid, result)
     }
 
