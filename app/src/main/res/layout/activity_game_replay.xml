@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/S1">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <!-- Player -->
+        <TextView
+            android:id="@+id/textPlayerReplay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Jugador 1"
+            android:textColor="@color/LCWhite"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="start"/>
+
+        <!-- VS / separador -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="vs"
+            android:textColor="@color/LCGray"
+            android:layout_marginHorizontal="8dp"/>
+
+        <!-- Enemy -->
+        <TextView
+            android:id="@+id/textEnemyReplay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Jugador 2"
+            android:textColor="@color/LCWhite"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <!-- TABLERO -->
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/boardReplay"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="8dp"/>
+
+    <!-- CONTROLES -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="16dp">
+
+        <ImageButton
+            android:id="@+id/btnPrev"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_replay_button"
+            android:src="@drawable/ic_arrow_left"
+            android:contentDescription="Anterior"
+            android:padding="12dp"/>
+
+        <ImageButton
+            android:id="@+id/btnNext"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/bg_replay_button"
+            android:src="@drawable/ic_arrow_right"
+            android:contentDescription="Siguiente"
+            android:padding="12dp"/>
+
+        <ImageButton
+            android:id="@+id/btnStart"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_media_previous"
+            android:contentDescription="Inicio"/>
+
+        <ImageButton
+            android:id="@+id/btnEnd"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_media_next"
+            android:contentDescription="Final"/>
+
+    </LinearLayout>
+
+</LinearLayout>

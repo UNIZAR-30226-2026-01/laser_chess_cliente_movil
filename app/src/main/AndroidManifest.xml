@@ -32,6 +32,10 @@
             android:theme="@style/Theme.LaserChessApp" />
 
         <activity
+            android:name=".ui.game.GameReplayActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.main.MainActivity"
             android:exported="false" /> <!-- Ahora este lo lanza en vez del home -->
 

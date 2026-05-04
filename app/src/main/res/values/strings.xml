@@ -91,4 +91,9 @@
     <string name="item">Artículo</string>
     <string name="profile_card_level_format">LVL %1$d · %2$d/%3$d</string>
 
+    <string name="replay_back">Regresar</string>
+    <string name="replay_step_forward">Siguiente movimiento</string>
+    <string name="replay_step_backward">Movimiento anterior</string>
+    <string name="replay_fast_forward">Final de la partida</string>
+    <string name="replay_fast_backward">Inicio de la partida</string>
 </resources>

@@ -3,6 +3,7 @@ package com.gracehopper.laserchessapp.ui.history
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
@@ -13,7 +14,8 @@ import com.gracehopper.laserchessapp.data.model.game.GameResume
  */
 class HistoryGameAdapter(
     private var games: List<GameResume>,
-    private val usernameCache: Map<Long, String>
+    private val usernameCache: Map<Long, String>,
+    private val onViewClick: (GameResume) -> Unit
 ) : RecyclerView.Adapter<HistoryGameAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -25,6 +27,7 @@ class HistoryGameAdapter(
         val textMatchType: TextView   = view.findViewById(R.id.textMatchType)
         val textWinner: TextView      = view.findViewById(R.id.textWinner)
         val textDate: TextView        = view.findViewById(R.id.textDate)
+        val btnViewGame: Button = view.findViewById(R.id.btnViewGame)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -36,6 +39,10 @@ class HistoryGameAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val game = games[position]
 
+        holder.btnViewGame.setOnClickListener {
+            onViewClick(game)
+        }
+
         holder.textPlayer1Name.text = usernameCache[game.p1_id] ?: "Jugador ${game.p1_id}"
         holder.textPlayer2Name.text = usernameCache[game.p2_id] ?: "Jugador ${game.p2_id}"
         holder.textPlayer1Elo.text  = game.p1_elo.toString()
@@ -44,6 +51,7 @@ class HistoryGameAdapter(
         holder.textMatchType.text   = game.match_type.uppercase()
         holder.textWinner.text      = usernameCache[game.winner.toLongOrNull()] ?: game.winner
         holder.textDate.text        = formatDate(game.date)
+
     }
 
     override fun getItemCount(): Int = games.size

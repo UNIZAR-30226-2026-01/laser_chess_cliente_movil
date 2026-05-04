@@ -35,6 +35,7 @@ enum class GameMessageType {
     @SerializedName("Disconnection")
     DISCONNECTION,
     @SerializedName("Reconnection")
-    RECONNECTION
-
+    RECONNECTION,
+    @SerializedName("Rewards")
+    REWARDS
 }

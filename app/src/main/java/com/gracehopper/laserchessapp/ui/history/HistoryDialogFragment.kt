@@ -73,7 +73,23 @@ class HistoryDialogFragment : DialogFragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = HistoryGameAdapter(emptyList(), emptyMap())
+        adapter = HistoryGameAdapter(emptyList(), emptyMap()) { game ->
+
+            val json = com.google.gson.Gson().toJson(game)
+
+            requireContext()
+                .getSharedPreferences("app", android.content.Context.MODE_PRIVATE)
+                .edit()
+                .putString("historyGame", json)
+                .apply()
+
+            startActivity(
+                android.content.Intent(
+                    requireContext(),
+                    com.gracehopper.laserchessapp.ui.game.GameReplayActivity::class.java
+                )
+            )
+        }
         recyclerHistory.layoutManager = LinearLayoutManager(requireContext())
         recyclerHistory.adapter = adapter
     }
