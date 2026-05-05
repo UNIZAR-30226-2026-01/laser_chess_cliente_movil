@@ -80,6 +80,7 @@ class GameActivity : AppCompatActivity() {
     private var lastCause: String? = null
     private var pauseDialog: DialogFragment? = null
     var pauseRequested = false
+    var laserIsRed by mutableStateOf(false)
     lateinit var backCallback: OnBackPressedCallback
 
     /**
@@ -418,7 +419,8 @@ class GameActivity : AppCompatActivity() {
                 },
                 onMove = { from, to -> movePiece(from, to) },
                 clearSelectionTrigger = clearTrigger,
-                laserPath = laserPath
+                laserPath = laserPath,
+                laserIsRed = laserIsRed
             )
         }
 
@@ -642,6 +644,7 @@ class GameActivity : AppCompatActivity() {
         /**
          * Mostrar trayectoria del láser
          */
+        laserIsRed = !iMoved
         laserPath = LaserUtils.parseLaserPath(move.laserPath)
         Log.d("LASER", "Laser path board cords: $laserPath")
 
