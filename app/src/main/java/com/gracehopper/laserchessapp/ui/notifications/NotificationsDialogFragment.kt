@@ -11,6 +11,9 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
@@ -20,6 +23,8 @@ import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.ChallengeRepository
 import com.gracehopper.laserchessapp.ui.game.GameActivity
+import com.gracehopper.laserchessapp.utils.AppEvents
+import kotlinx.coroutines.launch
 
 /**
  * Diálogo de notificaciones de retos de partidas amistosas
@@ -52,9 +57,19 @@ class NotificationsDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        buttonClose = view.findViewById(com.gracehopper.laserchessapp.R.id.buttonCloseNotifications)
-        recyclerChallenges = view.findViewById(com.gracehopper.laserchessapp.R.id.recyclerChallenges)
-        textEmptyState = view.findViewById(com.gracehopper.laserchessapp.R.id.textEmptyState)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    AppEvents.challengeReceived.collect {
+                        loadPendingChallenges()
+                    }
+                }
+            }
+        }
+
+        buttonClose = view.findViewById(R.id.buttonCloseNotifications)
+        recyclerChallenges = view.findViewById(R.id.recyclerChallenges)
+        textEmptyState = view.findViewById(R.id.textEmptyState)
 
         setupRecyclerView()
         setupListeners()
