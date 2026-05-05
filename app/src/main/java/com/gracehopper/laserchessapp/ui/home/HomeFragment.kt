@@ -128,9 +128,9 @@ class HomeFragment : Fragment() {
      * Configura el ComposeView para mostrar el tablero seleccionado.
      */
     private fun setupBoardPreview(view: View) {
-        val boardContainer = view.findViewById<ViewGroup>(R.id.boardContainer)
+        val boardContainer = view.findViewById<ViewGroup>(R.id.boardContainerHome)
 
-        view.findViewById<ImageView?>(R.id.imgBoardPlaceholder)?.visibility = View.GONE
+        view.findViewById<ImageView?>(R.id.imgBoardPlaceholderHome)?.visibility = View.GONE
         val composeView = ComposeView(requireContext()).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
