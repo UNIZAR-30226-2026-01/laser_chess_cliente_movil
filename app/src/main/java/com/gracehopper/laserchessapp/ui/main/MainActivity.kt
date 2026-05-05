@@ -30,6 +30,7 @@ import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.settings.SettingsDialogFragment
 import com.gracehopper.laserchessapp.ui.game.GameActivity
+import com.gracehopper.laserchessapp.ui.history.HistoryDialogFragment
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
 import com.gracehopper.laserchessapp.ui.social.RequestsDialogFragment
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
@@ -165,6 +166,27 @@ class MainActivity : AppCompatActivity() {
 
         handleNotificationIntent(intent)
 
+    }
+
+    private fun setupAdditionalButtons() {
+        btnSettings = findViewById(R.id.btnSettings)
+        btnNotifications = findViewById(R.id.btnNotifications)
+        btnHistory = findViewById(R.id.btnHistory)
+
+        btnSettings.setOnClickListener {
+            val dialog = SettingsDialogFragment()
+            dialog.show(supportFragmentManager, "SettingsDialog")
+        }
+
+        btnNotifications.setOnClickListener {
+            val dialog = NotificationsDialogFragment()
+            dialog.show(supportFragmentManager, "NotificationsDialog")
+        }
+
+        btnHistory.setOnClickListener {
+            val dialog = HistoryDialogFragment()
+            dialog.show(supportFragmentManager, "HistoryDialog")
+        }
     }
 
     override fun onStart() {
@@ -395,22 +417,6 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-    }
-
-    private fun setupAdditionalButtons() {
-        btnSettings = findViewById(R.id.btnSettings)
-        btnNotifications = findViewById(R.id.btnNotifications)
-        btnHistory = findViewById(R.id.btnHistory)
-
-        btnSettings.setOnClickListener {
-            val dialog = SettingsDialogFragment()
-            dialog.show(supportFragmentManager, "SettingsDialog")
-        }
-
-        btnNotifications.setOnClickListener {
-            val dialog = NotificationsDialogFragment()
-            dialog.show(supportFragmentManager, "NotificationsDialog")
-        }
     }
 
     fun openCustomizeFragment() {

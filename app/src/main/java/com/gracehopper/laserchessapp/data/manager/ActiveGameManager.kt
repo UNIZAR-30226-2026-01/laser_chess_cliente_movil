@@ -142,6 +142,11 @@ object ActiveGameManager {
         val gson = Gson()
         val serverMsg = gson.fromJson(message, WSServerMessage::class.java)
 
+        if (serverMsg.type == null) {
+            Log.w("WS", "Mensaje con type null: $message")
+            return
+        }
+
         when (serverMsg.type) {
 
             /**
@@ -293,6 +298,10 @@ object ActiveGameManager {
                 if (cb != null) cb.invoke(event) else pendingEvents.add(event)
             }
 
+            GameMessageType.REWARDS -> {
+                // de momento ignorar
+            }
+
             else -> {
                 // ignorar
             }
@@ -403,7 +412,7 @@ object ActiveGameManager {
         currentState = GameState.CONNECTING
         lastError = null
 
-        val backendRanked = if (ranked) 1 else 0
+        val backendRanked = if (ranked) 0 else 1
 
         val listener = buildListener(onOpenState = GameState.STARTING_GAME)
         friendlyGameWebSocket = FriendlyGameWebSocket(listener)
@@ -588,7 +597,9 @@ object ActiveGameManager {
                 } else {
                     currentState = GameState.CLOSED
                 }
-                onClosedCallback?.invoke()
+                if (currentState != GameState.IN_GAME) {
+                    onClosedCallback?.invoke()
+                }
             }
         )
     }

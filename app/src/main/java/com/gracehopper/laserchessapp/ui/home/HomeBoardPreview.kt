@@ -11,7 +11,7 @@ import com.gracehopper.laserchessapp.ui.game.GameScreen
 fun HomeBoardPreview(board: Board) {
     GameScreen(
         board = board,
-        isRedPlayer = false,
+        isRedPlayer = true,
         isMyTurn = false,
         renderCoordinates = false,
         onPieceSelected = {},

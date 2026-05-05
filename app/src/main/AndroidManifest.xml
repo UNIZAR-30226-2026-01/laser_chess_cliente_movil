@@ -32,6 +32,10 @@
             android:theme="@style/Theme.LaserChessApp" />
 
         <activity
+            android:name=".ui.game.GameReplayActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.main.MainActivity"
             android:launchMode="singleTop"
             android:exported="false" />
