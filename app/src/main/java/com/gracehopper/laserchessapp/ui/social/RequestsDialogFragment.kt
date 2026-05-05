@@ -12,12 +12,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 import com.gracehopper.laserchessapp.data.model.user.UserFriendshipStatus
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
+import com.gracehopper.laserchessapp.utils.AppEvents
+import kotlinx.coroutines.launch
 
 
 class RequestsDialogFragment : DialogFragment() {
@@ -47,6 +52,21 @@ class RequestsDialogFragment : DialogFragment() {
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
             .create()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    AppEvents.friendRequestReceived.collect {
+                        reloadRequests()
+                    }
+                }
+                launch {
+                    AppEvents.newFriendshipReceived.collect {
+                        reloadRequests()
+                    }
+                }
+            }
+        }
 
         setupTabs()
 

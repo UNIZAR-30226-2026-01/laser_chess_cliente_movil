@@ -15,6 +15,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
@@ -29,8 +32,10 @@ import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.databinding.FragmentSocialBinding
 import com.gracehopper.laserchessapp.ui.game.WaitingGameDialogFragment
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
+import com.gracehopper.laserchessapp.utils.AppEvents
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
+import kotlinx.coroutines.launch
 
 class SocialFragment : Fragment() {
 
@@ -66,6 +71,25 @@ class SocialFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                launch {
+                    AppEvents.friendRequestReceived.collect {
+                        loadFriends()
+                        loadNumReceivedRequests()
+                    }
+                }
+
+                launch {
+                    AppEvents.newFriendshipReceived.collect {
+                        loadFriends()
+                    }
+                }
+
+            }
+        }
 
         // cada vez que se elimine un amigo, se vuelve a cargar la lista de amigos
         parentFragmentManager.setFragmentResultListener(
