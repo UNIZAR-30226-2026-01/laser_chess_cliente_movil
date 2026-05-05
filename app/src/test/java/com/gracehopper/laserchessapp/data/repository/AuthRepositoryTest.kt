@@ -8,10 +8,10 @@ import com.gracehopper.laserchessapp.data.remote.ApiService
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Test
 import org.junit.Assert.*
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.doAnswer
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,8 +33,8 @@ class AuthRepositoryTest {
     fun login_exito_onSuccess() {
 
         // creo mocks
-        val apiService = mock(ApiService::class.java)
-        val call = mock(Call::class.java) as Call<LoginResponse>
+        val apiService = mock<ApiService>()
+        val call = mock<Call<LoginResponse>>()
 
         // creo repo con el apiService falso
         val repository = AuthRepository(apiService)
@@ -43,14 +43,14 @@ class AuthRepositoryTest {
         val response = LoginResponse("token")
 
         // cuando se llame a apiService.login -> devolver call falso
-        `when`(apiService.login(request)).thenReturn(call)
+        whenever(apiService.login(request)).thenReturn(call)
 
         // simulo qu ela API responde correctamente
         doAnswer {
             val callback = it.getArgument<Callback<LoginResponse>>(0)
             callback.onResponse(call, Response.success(response))
             null
-        }.`when`(call).enqueue(any())
+        }.whenever(call).enqueue(any())
 
         var successCalled = false
         var errorCalled = false
@@ -83,19 +83,20 @@ class AuthRepositoryTest {
     @Test
     fun login_error_body_null_onError_null() {
 
-        val apiService = mock(ApiService::class.java)
-        val call = mock(Call::class.java) as Call<LoginResponse>
+        val apiService = mock<ApiService>()
+        val call = mock<Call<LoginResponse>>()
+
         val repository = AuthRepository(apiService)
 
         val request = LoginRequest("username", "password")
 
-        `when`(apiService.login(request)).thenReturn(call)
+        whenever(apiService.login(request)).thenReturn(call)
 
         doAnswer {
             val callback = it.getArgument<Callback<LoginResponse>>(0)
             callback.onResponse(call, Response.success(null))
             null
-        }.`when`(call).enqueue(any())
+        }.whenever(call).enqueue(any())
 
         var successCalled = false
         var errorCode: Int? = 999
@@ -121,13 +122,14 @@ class AuthRepositoryTest {
     @Test
     fun login_error_500_onError() {
 
-        val apiService = mock(ApiService::class.java)
-        val call = mock(Call::class.java) as Call<LoginResponse>
+        val apiService = mock<ApiService>()
+        val call = mock<Call<LoginResponse>>()
+
         val repository = AuthRepository(apiService)
 
         val request = LoginRequest("username", "password")
 
-        `when`(apiService.login(request)).thenReturn(call)
+        whenever(apiService.login(request)).thenReturn(call)
 
         doAnswer {
             val callback = it.getArgument<Callback<LoginResponse>>(0)
@@ -137,7 +139,7 @@ class AuthRepositoryTest {
                     "Server error".toResponseBody(null))
             )
             null
-        }.`when`(call).enqueue(any())
+        }.whenever(call).enqueue(any())
 
         var successCalled = false
         var errorCode: Int? = null
@@ -163,13 +165,14 @@ class AuthRepositoryTest {
     @Test
     fun login_error_401_onError() {
 
-        val apiService = mock(ApiService::class.java)
-        val call = mock(Call::class.java) as Call<LoginResponse>
+        val apiService = mock<ApiService>()
+        val call = mock<Call<LoginResponse>>()
+
         val repository = AuthRepository(apiService)
 
         val request = LoginRequest("username", "password")
 
-        `when`(apiService.login(request)).thenReturn(call)
+        whenever(apiService.login(request)).thenReturn(call)
 
         doAnswer {
             val callback = it.getArgument<Callback<LoginResponse>>(0)
@@ -179,7 +182,7 @@ class AuthRepositoryTest {
                     "Unauthorized".toResponseBody(null))
             )
             null
-        }.`when`(call).enqueue(any())
+        }.whenever(call).enqueue(any())
 
         var successCalled = false
         var errorCode: Int? = null
@@ -205,13 +208,14 @@ class AuthRepositoryTest {
     @Test
     fun login_error_400_onError() {
 
-        val apiService = mock(ApiService::class.java)
-        val call = mock(Call::class.java) as Call<LoginResponse>
+        val apiService = mock<ApiService>()
+        val call = mock<Call<LoginResponse>>()
+
         val repository = AuthRepository(apiService)
 
         val request = LoginRequest("username", "password")
 
-        `when`(apiService.login(request)).thenReturn(call)
+        whenever(apiService.login(request)).thenReturn(call)
 
         doAnswer {
             val callback = it.getArgument<Callback<LoginResponse>>(0)
@@ -221,7 +225,7 @@ class AuthRepositoryTest {
                     "Invalid data".toResponseBody(null))
             )
             null
-        }.`when`(call).enqueue(any())
+        }.whenever(call).enqueue(any())
 
         var successCalled = false
         var errorCode: Int? = null
@@ -247,19 +251,20 @@ class AuthRepositoryTest {
     @Test
     fun login_fallo_red_onError_null() {
 
-        val apiService = mock(ApiService::class.java)
-        val call = mock(Call::class.java) as Call<LoginResponse>
+        val apiService = mock<ApiService>()
+        val call = mock<Call<LoginResponse>>()
+
         val repository = AuthRepository(apiService)
 
         val request = LoginRequest("username", "password")
 
-        `when`(apiService.login(request)).thenReturn(call)
+        whenever(apiService.login(request)).thenReturn(call)
 
         doAnswer {
             val callback = it.getArgument<Callback<LoginResponse>>(0)
             callback.onFailure(call, RuntimeException("Network error"))
             null
-        }.`when`(call).enqueue(any())
+        }.whenever(call).enqueue(any())
 
         var successCalled = false
         var errorCode: Int? = 999
@@ -285,20 +290,21 @@ class AuthRepositoryTest {
     @Test
     fun register_exito_onSuccess() {
 
-        val apiService = mock(ApiService::class.java)
-        val call = mock(Call::class.java) as Call<RegisterResponse>
+        val apiService = mock<ApiService>()
+        val call = mock<Call<RegisterResponse>>()
+
         val repository = AuthRepository(apiService)
 
         val request = RegisterRequest("username", "mail@test.tst", "password")
         val response = RegisterResponse(1L)
 
-        `when`(apiService.register(request)).thenReturn(call)
+        whenever(apiService.register(request)).thenReturn(call)
 
         doAnswer {
             val callback = it.getArgument<Callback<RegisterResponse>>(0)
             callback.onResponse(call, Response.success(response))
             null
-        }.`when`(call).enqueue(any())
+        }.whenever(call).enqueue(any())
 
         var successCalled = false
         var errorCalled = false
@@ -330,19 +336,20 @@ class AuthRepositoryTest {
     @Test
     fun register_error_body_null_onError_null() {
 
-        val apiService = mock(ApiService::class.java)
-        val call = mock(Call::class.java) as Call<RegisterResponse>
+        val apiService = mock<ApiService>()
+        val call = mock<Call<RegisterResponse>>()
+
         val repository = AuthRepository(apiService)
 
         val request = RegisterRequest("username", "mail@test.tst", "password")
 
-        `when`(apiService.register(request)).thenReturn(call)
+        whenever(apiService.register(request)).thenReturn(call)
 
         doAnswer {
             val callback = it.getArgument<Callback<RegisterResponse>>(0)
             callback.onResponse(call, Response.success(null))
             null
-        }.`when`(call).enqueue(any())
+        }.whenever(call).enqueue(any())
 
         var successCalled = false
         var errorCode: Int? = 999
@@ -368,13 +375,14 @@ class AuthRepositoryTest {
     @Test
     fun register_error_500_onError() {
 
-        val apiService = mock(ApiService::class.java)
-        val call = mock(Call::class.java) as Call<RegisterResponse>
+        val apiService = mock<ApiService>()
+        val call = mock<Call<RegisterResponse>>()
+
         val repository = AuthRepository(apiService)
 
         val request = RegisterRequest("username", "mail@test.tst", "password")
 
-        `when`(apiService.register(request)).thenReturn(call)
+        whenever(apiService.register(request)).thenReturn(call)
 
         doAnswer {
             val callback = it.getArgument<Callback<RegisterResponse>>(0)
@@ -384,7 +392,7 @@ class AuthRepositoryTest {
                     "Error server".toResponseBody(null))
             )
             null
-        }.`when`(call).enqueue(any())
+        }.whenever(call).enqueue(any())
 
         var successCalled = false
         var errorCode: Int? = null
@@ -410,13 +418,14 @@ class AuthRepositoryTest {
     @Test
     fun register_error_409_onError() {
 
-        val apiService = mock(ApiService::class.java)
-        val call = mock(Call::class.java) as Call<RegisterResponse>
+        val apiService = mock<ApiService>()
+        val call = mock<Call<RegisterResponse>>()
+
         val repository = AuthRepository(apiService)
 
         val request = RegisterRequest("username", "mail@test.tst", "password")
 
-        `when`(apiService.register(request)).thenReturn(call)
+        whenever(apiService.register(request)).thenReturn(call)
 
         doAnswer {
             val callback = it.getArgument<Callback<RegisterResponse>>(0)
@@ -426,7 +435,7 @@ class AuthRepositoryTest {
                     "Conflict".toResponseBody(null))
             )
             null
-        }.`when`(call).enqueue(any())
+        }.whenever(call).enqueue(any())
 
         var successCalled = false
         var errorCode: Int? = null
@@ -452,13 +461,14 @@ class AuthRepositoryTest {
     @Test
     fun register_error_400_onError() {
 
-        val apiService = mock(ApiService::class.java)
-        val call = mock(Call::class.java) as Call<RegisterResponse>
+        val apiService = mock<ApiService>()
+        val call = mock<Call<RegisterResponse>>()
+
         val repository = AuthRepository(apiService)
 
         val request = RegisterRequest("username", "mail@test.tst", "password")
 
-        `when`(apiService.register(request)).thenReturn(call)
+        whenever(apiService.register(request)).thenReturn(call)
 
         doAnswer {
             val callback = it.getArgument<Callback<RegisterResponse>>(0)
@@ -468,7 +478,7 @@ class AuthRepositoryTest {
                     "Invalida data".toResponseBody(null))
             )
             null
-        }.`when`(call).enqueue(any())
+        }.whenever(call).enqueue(any())
 
         var successCalled = false
         var errorCode: Int? = null
@@ -494,19 +504,20 @@ class AuthRepositoryTest {
     @Test
     fun register_fallo_red_onError_null() {
 
-        val apiService = mock(ApiService::class.java)
-        val call = mock(Call::class.java) as Call<RegisterResponse>
+        val apiService = mock<ApiService>()
+        val call = mock<Call<RegisterResponse>>()
+
         val repository = AuthRepository(apiService)
 
         val request = RegisterRequest("username", "mail@test.tst", "password")
 
-        `when`(apiService.register(request)).thenReturn(call)
+        whenever(apiService.register(request)).thenReturn(call)
 
         doAnswer {
             val callback = it.getArgument<Callback<RegisterResponse>>(0)
             callback.onFailure(call, RuntimeException("Network error"))
             null
-        }.`when`(call).enqueue(any())
+        }.whenever(call).enqueue(any())
 
         var successCalled = false
         var errorCode: Int? = 999
@@ -519,6 +530,113 @@ class AuthRepositoryTest {
 
         assertFalse(successCalled)
         assertNull(errorCode)
+
+    }
+
+    /**
+     * TEST 13: LOGOUT CON ÉXITO
+     *
+     * Comprueba:
+     * - la API devuelve éxito (200)
+     * -> llama a onSuccess correctamente
+     */
+    @Test
+    fun logout_exito_onSuccess() {
+
+        val apiService = mock<ApiService>()
+        val call = mock<Call<Unit>>()
+
+        val repository = AuthRepository(apiService)
+
+        whenever(apiService.logout()).thenReturn(call)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<Unit>>(0)
+            callback.onResponse(call, Response.success(Unit))
+            null
+        }.whenever(call).enqueue(any())
+
+        var successCalled = false
+        var errorCalled = false
+
+        repository.logout(
+            onSuccess = { successCalled = true },
+            onError = { errorCalled = true }
+        )
+
+        assertTrue(successCalled)
+        assertFalse(errorCalled)
+
+    }
+
+    /**
+     * TEST 14: LOGOUT CON ERROR 500 (error del servidor)
+     *
+     * Comprueba:
+     * - la API devuelve error 500
+     * -> llama a onError 500
+     */
+    @Test
+    fun logout_error_500_onError() {
+
+        val apiService = mock<ApiService>()
+        val call = mock<Call<Unit>>()
+
+        val repository = AuthRepository(apiService)
+
+        whenever(apiService.logout()).thenReturn(call)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<Unit>>(0)
+            callback.onResponse(call, Response.error(500, "Server error".toResponseBody(null)))
+            null
+        }.whenever(call).enqueue(any())
+
+        var successCalled = false
+        var errorCalled = false
+
+        repository.logout(
+            onSuccess = { successCalled = true },
+            onError = { errorCalled = true }
+        )
+
+        assertFalse(successCalled)
+        assertTrue(errorCalled)
+
+    }
+
+    /**
+     * TEST 15: LOGOUT CON FALLO POR RED
+     *
+     * Comprueba:
+     * - falla la conexión (onFailure)
+     * -> llama a onError
+     */
+    @Test
+    fun logout_fallo_red_onError() {
+
+        val apiService = mock<ApiService>()
+        val call = mock<Call<Unit>>()
+
+        val repository = AuthRepository(apiService)
+
+        whenever(apiService.logout()).thenReturn(call)
+        doAnswer {
+            val callback = it.getArgument<Callback<Unit>>(0)
+            callback.onFailure(call, RuntimeException("Network error"))
+            null
+        }.whenever(call).enqueue(any())
+
+        var successCalled = false
+        var errorCalled = false
+
+        repository.logout(
+            onSuccess = { successCalled = true },
+            onError = { errorCalled = true }
+        )
+
+        assertFalse(successCalled)
+        assertTrue(errorCalled)
 
     }
 
