@@ -184,40 +184,45 @@ fun GameScreen(
 
                         val points = laserPath.map { (r, c) -> cellCenter(r, c) }
 
-                        val lineWidth    = 2.dp.toPx()
-                        val whiteWidth   = 0.5.dp.toPx()
-                        val softSpread   = 3.dp.toPx()
-                        val midSpread    = 1.5.dp.toPx()
-                        val strongSpread = 0.5.dp.toPx()
-
                         drawIntoCanvas { canvas ->
                             for (i in 0 until points.size - 1) {
                                 val p1 = points[i]
                                 val p2 = points[i + 1]
 
+                                // Halo exterior con blur real
                                 canvas.drawLine(p1, p2, Paint().apply {
                                     color = laserSoft
-                                    strokeWidth = lineWidth + softSpread * 2 + 10.dp.toPx()  // era 20dp
+                                    strokeWidth = 2.dp.toPx()
                                     strokeCap = StrokeCap.Round
+                                    asFrameworkPaint().maskFilter =
+                                        android.graphics.BlurMaskFilter(20.dp.toPx(), android.graphics.BlurMaskFilter.Blur.NORMAL)
                                 })
+                                // Halo medio
                                 canvas.drawLine(p1, p2, Paint().apply {
                                     color = laserMid
-                                    strokeWidth = lineWidth + midSpread * 2 + 5.dp.toPx()    // era 10dp
+                                    strokeWidth = 2.dp.toPx()
                                     strokeCap = StrokeCap.Round
+                                    asFrameworkPaint().maskFilter =
+                                        android.graphics.BlurMaskFilter(10.dp.toPx(), android.graphics.BlurMaskFilter.Blur.NORMAL)
                                 })
+                                // Halo fuerte
                                 canvas.drawLine(p1, p2, Paint().apply {
                                     color = laserStrong
-                                    strokeWidth = lineWidth + strongSpread * 2 + 2.dp.toPx() // era 4dp
+                                    strokeWidth = 2.dp.toPx()
                                     strokeCap = StrokeCap.Round
+                                    asFrameworkPaint().maskFilter =
+                                        android.graphics.BlurMaskFilter(4.dp.toPx(), android.graphics.BlurMaskFilter.Blur.NORMAL)
                                 })
+                                // Núcleo sólido
                                 canvas.drawLine(p1, p2, Paint().apply {
                                     color = laserCore
-                                    strokeWidth = lineWidth
+                                    strokeWidth = 2.dp.toPx()
                                     strokeCap = StrokeCap.Round
                                 })
+                                // Línea blanca central
                                 canvas.drawLine(p1, p2, Paint().apply {
                                     color = Color(0xE6FFDCDC)
-                                    strokeWidth = whiteWidth
+                                    strokeWidth = 0.8.dp.toPx()
                                     strokeCap = StrokeCap.Round
                                 })
                             }
