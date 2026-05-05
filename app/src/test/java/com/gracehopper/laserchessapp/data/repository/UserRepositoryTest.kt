@@ -2,6 +2,7 @@ package com.gracehopper.laserchessapp.data.repository
 
 import com.gracehopper.laserchessapp.data.model.ranking.AllRatingsResponse
 import com.gracehopper.laserchessapp.data.model.user.AccountResponse
+import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
 import com.gracehopper.laserchessapp.data.model.user.MyAccountResponse
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
@@ -634,6 +635,338 @@ class UserRepositoryTest {
 
     }
 
-    // TODO: changePassword tests
+    /**
+     * TEST 12: FALLO RED AL RECUPERAR XPINFO EN GET MY PROFILE
+     *
+     * Comprueba:
+     * - cuenta y ratings correctos
+     * - falla XP info
+     * -> llama a onError
+     */
+    @Test
+    fun getMyProfile_error_xpInfo_fallo_red_onError() {
+
+        val apiService = mock<ApiService>()
+        val accountCall = mock<Call<MyAccountResponse>>()
+        val ratingsCall = mock<Call<AllRatingsResponse>>()
+        val xpCall = mock<Call<XPInfoResponse>>()
+
+        val repository = UserRepository(apiService)
+
+        val myAccount = MyAccountResponse(
+            accountId = 1L,
+            mail = "mail@test.ts",
+            username = "username",
+            avatar = 1,
+            level = 1,
+            xp = 100,
+            money = 100,
+            boardSkin = 1,
+            pieceSkin = 1,
+            winAnimation = 1
+        )
+
+        val ratings = AllRatingsResponse(
+            userId = 1L,
+            blitz = 1100,
+            rapid = 1200,
+            classic = 1300,
+            extended = 1400
+        )
+
+        whenever(apiService.getMyAccount()).thenReturn(accountCall)
+        whenever(apiService.getRatings(1L)).thenReturn(ratingsCall)
+        whenever(apiService.getXPInfo()).thenReturn(xpCall)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<MyAccountResponse>>(0)
+            callback.onResponse(accountCall, Response.success(myAccount))
+            null
+        }.whenever(accountCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<AllRatingsResponse>>(0)
+            callback.onResponse(ratingsCall, Response.success(ratings))
+            null
+        }.whenever(ratingsCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<XPInfoResponse>>(0)
+            callback.onFailure(xpCall, RuntimeException("Network error"))
+            null
+        }.whenever(xpCall).enqueue(any())
+
+        var successCalled = false
+        var errorCalled = false
+
+        repository.getMyProfile(
+            onSuccess = { successCalled = true },
+            onError = { errorCalled = true }
+        )
+
+        assertFalse(successCalled)
+        assertTrue(errorCalled)
+
+    }
+
+    /**
+     * TEST 13: FALLO RED AL RECUPERAR RATINGS EN UPDATE
+     *
+     * Comprueba:
+     * - update correcto
+     * - falla ratings
+     * -> llama a onError(null)
+     */
+    @Test
+    fun updateMyProfile_error_ratings_fallo_red_onError_null() {
+
+        val apiService = mock<ApiService>()
+        val updateCall = mock<Call<MyAccountResponse>>()
+        val ratingsCall = mock<Call<AllRatingsResponse>>()
+
+        val repository = UserRepository(apiService)
+
+        val updatedAccount = MyAccountResponse(
+            accountId = 1L,
+            mail = "mail@test.ts",
+            username = "newUsername",
+            avatar = 1,
+            level = 1,
+            xp = 100,
+            money = 100,
+            boardSkin = 1,
+            pieceSkin = 1,
+            winAnimation = 1
+        )
+
+        whenever(apiService.updateMyAccount(any())).thenReturn(updateCall)
+        whenever(apiService.getRatings(1L)).thenReturn(ratingsCall)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<MyAccountResponse>>(0)
+            callback.onResponse(updateCall, Response.success(updatedAccount))
+            null
+        }.whenever(updateCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<AllRatingsResponse>>(0)
+            callback.onFailure(ratingsCall, RuntimeException("Network error"))
+            null
+        }.whenever(ratingsCall).enqueue(any())
+
+        var successCalled = false
+        var errorCode: Int? = 999
+
+        repository.updateMyProfile(
+            request = UpdateAccountRequest(username = "newUsername"),
+            onSuccess = { successCalled = true },
+            onError = { errorCode = it }
+        )
+
+        assertFalse(successCalled)
+        assertNull(errorCode)
+
+    }
+
+    /**
+     * TEST 14: FALLO RED AL RECUPERAR XPINFO EN UPDATE
+     *
+     * Comprueba:
+     * - update y ratings correctos
+     * - falla XP info
+     * -> llama a onError(null)
+     */
+    @Test
+    fun updateMyProfile_error_xpInfo_fallo_red_onError_null() {
+
+        val apiService = mock<ApiService>()
+        val updateCall = mock<Call<MyAccountResponse>>()
+        val ratingsCall = mock<Call<AllRatingsResponse>>()
+        val xpCall = mock<Call<XPInfoResponse>>()
+
+        val repository = UserRepository(apiService)
+
+        val updatedAccount = MyAccountResponse(
+            accountId = 1L,
+            mail = "mail@test.ts",
+            username = "newUsername",
+            avatar = 1,
+            level = 1,
+            xp = 100,
+            money = 100,
+            boardSkin = 1,
+            pieceSkin = 1,
+            winAnimation = 1
+        )
+
+        val ratings = AllRatingsResponse(
+            userId = 1L,
+            blitz = 1100,
+            rapid = 1200,
+            classic = 1300,
+            extended = 1400
+        )
+
+        whenever(apiService.updateMyAccount(any())).thenReturn(updateCall)
+        whenever(apiService.getRatings(1L)).thenReturn(ratingsCall)
+        whenever(apiService.getXPInfo()).thenReturn(xpCall)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<MyAccountResponse>>(0)
+            callback.onResponse(updateCall, Response.success(updatedAccount))
+            null
+        }.whenever(updateCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<AllRatingsResponse>>(0)
+            callback.onResponse(ratingsCall, Response.success(ratings))
+            null
+        }.whenever(ratingsCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<XPInfoResponse>>(0)
+            callback.onFailure(xpCall, RuntimeException("Network error"))
+            null
+        }.whenever(xpCall).enqueue(any())
+
+        var successCalled = false
+        var errorCode: Int? = 999
+
+        repository.updateMyProfile(
+            request = UpdateAccountRequest(username = "newUsername"),
+            onSuccess = { successCalled = true },
+            onError = { errorCode = it }
+        )
+
+        assertFalse(successCalled)
+        assertNull(errorCode)
+
+    }
+
+    /**
+     * TEST 15: CHANGE PASSWORD CON ÉXITO
+     *
+     * Comprueba:
+     * - respuesta correcta
+     * -> llama a onSuccess
+     */
+    @Test
+    fun changePassword_exito_onSuccess() {
+
+        val apiService = mock<ApiService>()
+        val call = mock<Call<Unit>>()
+
+        val repository = UserRepository(apiService)
+
+        val request = ChangePasswordRequest(
+            oldPassword = "oldPassword",
+            newPassword = "newPassword"
+        )
+
+        whenever(apiService.changePassword(request)).thenReturn(call)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<Unit>>(0)
+            callback.onResponse(call, Response.success(Unit))
+            null
+        }.whenever(call).enqueue(any())
+
+        var successCalled = false
+        var errorCode: Int? = null
+
+        repository.changePassword(
+            request = request,
+            onSuccess = { successCalled = true },
+            onError = { errorCode = it }
+        )
+
+        assertTrue(successCalled)
+        assertNull(errorCode)
+
+    }
+
+    /**
+     * TEST 16: CHANGE PASSWORD CON ERROR 400
+     *
+     * Comprueba:
+     * - respuesta con error
+     * -> llama a onError(400)
+     */
+    @Test
+    fun changePassword_error_400_onError() {
+
+        val apiService = mock<ApiService>()
+        val call = mock<Call<Unit>>()
+
+        val repository = UserRepository(apiService)
+
+        val request = ChangePasswordRequest(
+            oldPassword = "oldPassword",
+            newPassword = "newPassword"
+        )
+
+        whenever(apiService.changePassword(request)).thenReturn(call)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<Unit>>(0)
+            callback.onResponse(call, Response.error(400, "Bad request".toResponseBody()))
+            null
+        }.whenever(call).enqueue(any())
+
+        var successCalled = false
+        var errorCode: Int? = null
+
+        repository.changePassword(
+            request = request,
+            onSuccess = { successCalled = true },
+            onError = { errorCode = it }
+        )
+
+        assertFalse(successCalled)
+        assertEquals(400, errorCode)
+
+    }
+
+    /**
+     * TEST 17: CHANGE PASSWORD CON FALLO DE RED
+     *
+     * Comprueba:
+     * - falla la conexión
+     * -> llama a onError(-1)
+     */
+    @Test
+    fun changePassword_fallo_red_onError_menos1() {
+
+        val apiService = mock<ApiService>()
+        val call = mock<Call<Unit>>()
+
+        val repository = UserRepository(apiService)
+
+        val request = ChangePasswordRequest(
+            oldPassword = "oldPassword",
+            newPassword = "newPassword"
+        )
+
+        whenever(apiService.changePassword(request)).thenReturn(call)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<Unit>>(0)
+            callback.onFailure(call, RuntimeException("Network error"))
+            null
+        }.whenever(call).enqueue(any())
+
+        var successCalled = false
+        var errorCode: Int? = null
+
+        repository.changePassword(
+            request = request,
+            onSuccess = { successCalled = true },
+            onError = { errorCode = it }
+        )
+
+        assertFalse(successCalled)
+        assertEquals(-1, errorCode)
+
+    }
 
 }
