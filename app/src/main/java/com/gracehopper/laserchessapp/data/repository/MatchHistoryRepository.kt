@@ -67,7 +67,9 @@ class MatchHistoryRepository(private val apiService: ApiService) {
             opponentUsername = opponentUsername,
             opponentTime    = oppTimeStr,
             timeMode        = timeMode,
-            boardType       = boardType
+            boardType       = boardType,
+            timeBaseMs      = timeBase,
+            timeIncrement   = timeIncrement
         )
     }
 
