@@ -37,6 +37,7 @@ class HomeFragment : Fragment() {
     private var selectedBoardId: Int = 0
     private var selectedTimeMode: TimeMode = TimeMode.BLITZ
     private var selectedTimeIncrement: Int = 0
+    private var selectedAiLevel: Int = 1
 
     private var boardComposeView: ComposeView? = null
     private var txtTimeIncrementTitle: TextView? = null
@@ -72,11 +73,13 @@ class HomeFragment : Fragment() {
         btnModeTop.setOnClickListener {
             currentMode = topMode
             hideModes(layoutGamePopup, btnGameMode)
+            checkAiMode()
         }
 
         btnModeMiddle.setOnClickListener {
             currentMode = middleMode
             hideModes(layoutGamePopup, btnGameMode)
+            checkAiMode()
         }
 
         btnPlay.setOnClickListener {
@@ -120,8 +123,17 @@ class HomeFragment : Fragment() {
 
         setupBoardPreview(view)
         setupSelectors(view)
+        checkAiMode()
 
         return view
+    }
+
+    private fun checkAiMode() {
+        if (currentMode == GameMode.BOT){
+            view?.findViewById<View>(R.id.includeAiLevelSelector)?.visibility = View.VISIBLE
+        }else{
+            view?.findViewById<View>(R.id.includeAiLevelSelector)?.visibility = View.GONE
+        }
     }
 
     /**
@@ -180,6 +192,7 @@ class HomeFragment : Fragment() {
             showTimeModeBottomSheet(LCGreen, txtTimeTitle)
         }
 
+        // Selector de incremento de tiempo
         val includeIncrementSelector = view.findViewById<View>(R.id.includeIncrementSelector)
         val txtIncrementTitle = includeIncrementSelector.findViewById<TextView>(R.id.txtSelectorTitle)
         val imgIncrementIcon  = includeIncrementSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
@@ -190,6 +203,31 @@ class HomeFragment : Fragment() {
         includeIncrementSelector.setOnClickListener {
             showIncrementBottomSheet(LCBlue, txtIncrementTitle)
         }
+
+        // Selector de nivel de IA
+        val includeAiLevelSelector = view.findViewById<View>(R.id.includeAiLevelSelector)
+        val txtAiLevelTitle = includeAiLevelSelector.findViewById<TextView>(R.id.txtSelectorTitle)
+        val imgAiLevelIcon  = includeAiLevelSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
+        txtAiLevelTitle.text = "${selectedAiLevel}"
+        imgAiLevelIcon.setImageResource(R.drawable.ic_ai_level)
+        imgAiLevelIcon.setColorFilter(LCRed)
+        includeAiLevelSelector.setOnClickListener {
+            showAiLevelBottomSheet(LCRed, txtAiLevelTitle)
+        }
+
+    }
+
+    private fun showAiLevelBottomSheet(color: Int, targetView: TextView) {
+        val dialog = buildBottomSheet("Nivel de dificultad de la IA", color) { container, dlg ->
+            val AiLevels = arrayOf("LVL 1", "LVL 2", "LVL 3")
+            AiLevels.forEachIndexed { index, level ->
+                addButton(container, dlg, level) {
+                    selectedAiLevel = index + 1
+                    targetView.text = level[4] + ""
+                }
+            }
+        }
+        dialog.show()
     }
 
     /**
