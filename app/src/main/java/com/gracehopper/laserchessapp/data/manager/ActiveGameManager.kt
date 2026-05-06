@@ -168,8 +168,13 @@ object ActiveGameManager {
                     // Reconexión: guardar y esperar a tener ambos mensajes
                     reconnectGotInitialState = true
                     dispatchReconnectIfReady()
+                } else if (reconnectGotState) {
+                    // Retomar partida pausada: activar la espera del State
+                    awaitingReconnectMessages = true
+                    reconnectGotInitialState = true
+                    dispatchReconnectIfReady()
                 } else {
-                    // Partida en curso normal (GameActivity ya escucha)
+                    // Partida en curso normal
                     val event = GameEvent.InitialState(
                         boardCsv = intialBoardCSV,
                         redPlayerId = redPlayerId
@@ -200,8 +205,17 @@ object ActiveGameManager {
                     pendingStateLog = log
                     reconnectGotState = true
                     dispatchReconnectIfReady()
+                } else if (currentState == GameState.IN_GAME) {
+                    val cb = onMessageReceivedCallback
+                    if (cb != null) {
+                        cb.invoke(GameEvent.State(log = log))
+                    } else {
+                        pendingEvents.add(GameEvent.State(log = log))
+                    }
                 } else {
-                    onMessageReceivedCallback?.invoke(GameEvent.State(log = log))
+                    // State llegó antes del InitialState
+                    pendingStateLog = log
+                    reconnectGotState = true
                 }
             }
 
@@ -248,7 +262,7 @@ object ActiveGameManager {
             }
 
             /**
-             * End Of Connection → cerrar conexión
+             * End Of Connection: cerrar conexión
              */
             GameMessageType.EOC -> {
                 if (serverMsg.content == "Challenge rejected") {
@@ -375,6 +389,10 @@ object ActiveGameManager {
         currentState = GameState.CONNECTING
         lastError = null
 
+        reconnectGotInitialState = false
+        reconnectGotState = false
+        pendingStateLog = null
+
         val listener = buildListener(
             onOpenState = GameState.WAITING_ACCEPTANCE
         )
@@ -438,6 +456,10 @@ object ActiveGameManager {
         currentTimeIncrement = timeIncrement
         currentState = GameState.CONNECTING
         lastError = null
+
+        reconnectGotInitialState = false
+        reconnectGotState = false
+        pendingStateLog = null
 
         val listener = buildListener(
             onOpenState = GameState.STARTING_GAME
@@ -505,7 +527,10 @@ object ActiveGameManager {
             awaitingReconnectMessages = false
             currentState = GameState.IN_GAME
             onMessageReceivedCallback?.invoke(
-                GameEvent.State(log = pendingStateLog.orEmpty())
+                GameEvent.InitialState(
+                    boardCsv = intialBoardCSV,
+                    redPlayerId = if (imRedPlayer) TokenManager.getUserId() else null
+                )
             )
         }
     }

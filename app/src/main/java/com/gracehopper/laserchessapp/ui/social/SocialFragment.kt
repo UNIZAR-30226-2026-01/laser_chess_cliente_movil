@@ -241,8 +241,8 @@ class SocialFragment : Fragment() {
         ActiveGameManager.createChallenge(
             challengedUsername = game.opponentUsername,
             board = 0,          // El backend ignora board/time cuando recibe match_id
-            startingTime = 0,
-            timeIncrement = 0,
+            startingTime = game.timeBaseMs / 1000,
+            timeIncrement = game.timeIncrement / 1000,
             matchId = matchId
         )
     }

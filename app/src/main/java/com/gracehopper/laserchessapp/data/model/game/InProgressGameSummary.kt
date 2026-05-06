@@ -18,5 +18,7 @@ data class InProgressGameSummary(
     val opponentUsername: String,
     val opponentTime: String,
     val timeMode: TimeMode,
-    val boardType: BoardType
+    val boardType: BoardType,
+    val timeBaseMs: Int,
+    val timeIncrement: Int
 )
