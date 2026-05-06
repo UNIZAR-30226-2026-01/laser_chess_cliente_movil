@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.game.BoardLayouts
 import com.gracehopper.laserchessapp.data.model.game.GameMode
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
@@ -146,10 +147,16 @@ class HomeFragment : Fragment() {
      * Parsea el CSV del tablero seleccionado y lo muestra en el ComposeView.
      */
     private fun renderBoard() {
+        val pieceSkin = CurrentUserManager.getMyCurrentPieceSkin()
+        val boardSkin = CurrentUserManager.getMyCurrentBoardSkin()
+
         boardComposeView?.setContent {
             val board = Board(rows = 10, cols = 8)
             BoardParser.boadFromCSV(board, BoardLayouts.getCsvForBoard(selectedBoardName))
-            HomeBoardPreview(board = board)
+            HomeBoardPreview(
+                board = board,
+                pieceSkin = pieceSkin,
+                boardSkin = boardSkin)
         }
     }
 

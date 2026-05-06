@@ -8,7 +8,10 @@ import com.gracehopper.laserchessapp.ui.game.GameScreen
  * Vista previa del tablero en Home.
  */
 @Composable
-fun HomeBoardPreview(board: Board) {
+fun HomeBoardPreview(
+    board: Board,
+    pieceSkin: Int,
+    boardSkin: Int) {
     GameScreen(
         board = board,
         isRedPlayer = true,
@@ -17,6 +20,8 @@ fun HomeBoardPreview(board: Board) {
         onPieceSelected = {},
         onMove = { _, _ -> },
         clearSelectionTrigger = 0,
-        laserPath = emptyList()
+        laserPath = emptyList(),
+        pieceSkin = pieceSkin,
+        boardSkin = boardSkin
     )
 }

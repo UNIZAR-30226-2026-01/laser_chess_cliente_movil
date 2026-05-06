@@ -204,7 +204,8 @@ fun ReplayBoardUI(board: Board) {
                         piece?.let { p ->
                             val rotation = p.rotation.toFloat()
                             Image(
-                                painter = painterResource(id = p.getImageRes(imInternalRed = true)),
+                                // TODO: ARREGLAR REPLAY
+                                painter = painterResource(id = p.getImageRes(imInternalRed = true, 1)),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .fillMaxSize(0.8f)

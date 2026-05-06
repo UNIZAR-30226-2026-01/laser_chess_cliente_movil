@@ -117,24 +117,28 @@ class CustomizeFragment : Fragment() {
         binding.btnPreviousPieces.setOnClickListener {
             piecesIndex = previousIndex(piecesIndex, piecesItems.size)
             renderPieces()
+            renderBoardPreview()
             savePiecesSelection()
         }
 
         binding.btnNextPieces.setOnClickListener {
             piecesIndex = nextIndex(piecesIndex, piecesItems.size)
             renderPieces()
+            renderBoardPreview()
             savePiecesSelection()
         }
 
         binding.btnPreviousBoard.setOnClickListener {
             boardIndex = previousIndex(boardIndex, boardItems.size)
             renderBoard()
+            renderBoardPreview()
             saveBoardSelection()
         }
 
         binding.btnNextBoard.setOnClickListener {
             boardIndex = nextIndex(boardIndex, boardItems.size)
             renderBoard()
+            renderBoardPreview()
             saveBoardSelection()
         }
 
@@ -168,6 +172,7 @@ class CustomizeFragment : Fragment() {
         renderBoard()
         renderAnimation()
         renderAvatar()
+        renderBoardPreview()
     }
 
     private fun renderPieces() {
@@ -269,10 +274,16 @@ class CustomizeFragment : Fragment() {
             dto,
             onSuccess = { profile ->
                 CurrentUserManager.setMyProfile(profile)
-                Toast.makeText(requireContext(), "Item equipado", Toast.LENGTH_SHORT).show()
+
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Item equipado", Toast.LENGTH_SHORT).show()
+                }
             },
             onError = {
-                Toast.makeText(requireContext(), "Error equipando item", Toast.LENGTH_SHORT).show()
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Error equipando item", Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         )
 
@@ -310,10 +321,18 @@ class CustomizeFragment : Fragment() {
      * Parsea el CSV del tablero y lo muestra en el ComposeView.
      */
     private fun renderBoardPreview() {
+        val pieceSkin = piecesItems.getOrNull(piecesIndex)?.itemId
+            ?: CurrentUserManager.getMyCurrentPieceSkin()
+        val boardSkin = boardItems.getOrNull(boardIndex)?.itemId
+            ?: CurrentUserManager.getMyCurrentBoardSkin()
+
         boardComposeView?.setContent {
             val board = Board(rows = 10, cols = 8)
             BoardParser.boadFromCSV(board, BoardLayouts.getCsvForBoard("ACE"))
-            CustomizeBoardPreview(board = board)
+            CustomizeBoardPreview(
+                board = board,
+                pieceSkin = pieceSkin,
+                boardSkin = boardSkin)
         }
     }
 

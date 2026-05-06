@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
 import com.google.gson.Gson
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.game.BoardLayouts
 import com.gracehopper.laserchessapp.data.model.game.GameResume
 import com.gracehopper.laserchessapp.gameLogic.board.Board
@@ -103,7 +104,9 @@ class GameReplayActivity : AppCompatActivity() {
                 onMove = { _, _ -> },
                 clearSelectionTrigger = moveIndex,
                 laserPath = emptyList(),
-                renderCoordinates = true
+                renderCoordinates = true,
+                pieceSkin = CurrentUserManager.getMyCurrentPieceSkin(),
+                boardSkin = CurrentUserManager.getMyCurrentBoardSkin()
             )
         }
     }

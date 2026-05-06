@@ -420,7 +420,9 @@ class GameActivity : AppCompatActivity() {
                 onMove = { from, to -> movePiece(from, to) },
                 clearSelectionTrigger = clearTrigger,
                 laserPath = laserPath,
-                laserIsRed = laserIsRed
+                laserIsRed = laserIsRed,
+                pieceSkin = CurrentUserManager.getMyCurrentPieceSkin(),
+                boardSkin = CurrentUserManager.getMyCurrentBoardSkin()
             )
         }
 

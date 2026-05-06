@@ -19,9 +19,11 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.gracehopper.laserchessapp.gameLogic.board.Board
+import com.gracehopper.laserchessapp.R
 
 @Composable
 fun GameScreen(
@@ -33,7 +35,9 @@ fun GameScreen(
     onMove: (Pair<Int, Int>, Pair<Int, Int>) -> Unit,
     clearSelectionTrigger: Int,
     laserPath: List<Pair<Int, Int>>,
-    laserIsRed: Boolean = false
+    laserIsRed: Boolean = false,
+    pieceSkin: Int,
+    boardSkin: Int
 ) {
     var highlightedMoves by remember { mutableStateOf<List<Pair<Int, Int>>>(emptyList()) }
     var selectedPos by remember { mutableStateOf<Pair<Int, Int>?>(null) }
@@ -89,7 +93,7 @@ fun GameScreen(
                             modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(text = letter.toString(), color = Color.White)
+                            Text(text = letter.toString(), color = colorResource(R.color.LCWhite))
                         }
                     }
                 }
@@ -150,7 +154,7 @@ fun GameScreen(
                                                     animationSpec = tween(200)
                                                 )
                                                 Image(
-                                                    painter = painterResource(id = p.getImageRes(isRedPlayer)),
+                                                    painter = painterResource(id = p.getImageRes(isRedPlayer, pieceSkin)),
                                                     contentDescription = null,
                                                     modifier = Modifier.fillMaxSize().graphicsLayer { rotationZ = rotation }
                                                 )

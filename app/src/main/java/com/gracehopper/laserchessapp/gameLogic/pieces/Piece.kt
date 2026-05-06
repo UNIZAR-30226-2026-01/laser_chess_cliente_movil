@@ -4,8 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.ui.game.GameActivity
+import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 /**
  * Clase que representa una pieza del juego.
@@ -92,16 +94,18 @@ class Piece(
      * @param imInternalRed Indica si el jugador actual es rojo (para perspectiva)
      * @return ID del recurso drawable
      */
-    fun getImageRes(imInternalRed: Boolean): Int {
+    fun getImageRes(imInternalRed: Boolean, pieceSkin: Int): Int {
 
         val isMyPiece = (this.isRed == imInternalRed)
 
+        val myPieces = ItemUtils.getPiecesPackDrawables(pieceSkin)
+
         return when (type) {
-            PieceType.KING -> if (isMyPiece) R.drawable.kin_b_classic else R.drawable.kin_r_cats
-            PieceType.DEFENDER -> if (isMyPiece) R.drawable.esc_b_classic else R.drawable.esc_r_cats
-            PieceType.DEFLECTOR -> if (isMyPiece) R.drawable.def_b_classic else R.drawable.def_r_cats
-            PieceType.SWITCHER -> if (isMyPiece) R.drawable.swi_b_classic else R.drawable.swi_r_cats
-            PieceType.LASER -> if (isMyPiece) R.drawable.las_b_classic else R.drawable.las_r_cats
+            PieceType.KING -> if (isMyPiece) myPieces[0] else R.drawable.kin_r_classic
+            PieceType.DEFENDER -> if (isMyPiece) myPieces[1] else R.drawable.esc_r_classic
+            PieceType.DEFLECTOR -> if (isMyPiece) myPieces[2] else R.drawable.def_r_classic
+            PieceType.SWITCHER -> if (isMyPiece) myPieces[3] else R.drawable.swi_r_classic
+            PieceType.LASER -> if (isMyPiece) myPieces[4] else R.drawable.las_r_classic
         }
     }
 
