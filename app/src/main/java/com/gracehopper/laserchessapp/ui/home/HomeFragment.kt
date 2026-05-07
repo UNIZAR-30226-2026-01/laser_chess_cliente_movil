@@ -186,7 +186,7 @@ class HomeFragment : Fragment() {
         val txtTimeTitle = includeTimeSelector.findViewById<TextView>(R.id.txtSelectorTitle)
         val imgTimeIcon  = includeTimeSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
         txtTimeTitle.text = TimeModeConfig.getName(selectedTimeMode)
-        imgTimeIcon.setImageResource(R.drawable.ic_timer)
+        imgTimeIcon.setImageResource(R.drawable.ic_tiempo)
         imgTimeIcon.setColorFilter(LCGreen)
         includeTimeSelector.setOnClickListener {
             showTimeModeBottomSheet(LCGreen, txtTimeTitle)
@@ -198,7 +198,7 @@ class HomeFragment : Fragment() {
         val imgIncrementIcon  = includeIncrementSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
         txtTimeIncrementTitle = txtIncrementTitle
         txtIncrementTitle.text = "+${selectedTimeIncrement}s"
-        imgIncrementIcon.setImageResource(R.drawable.ic_timer)
+        imgIncrementIcon.setImageResource(R.drawable.ic_time_increment)
         imgIncrementIcon.setColorFilter(LCBlue)
         includeIncrementSelector.setOnClickListener {
             showIncrementBottomSheet(LCBlue, txtIncrementTitle)
