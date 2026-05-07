@@ -91,7 +91,7 @@ class HomeFragment : Fragment() {
                         board = selectedBoardId,
                         startingTime = TimeModeConfig.getBaseTimeSeconds(selectedTimeMode),
                         timeIncrement = selectedTimeIncrement,
-                        level = 1
+                        level = selectedAiLevel
                     )
 
                     startActivity(Intent(requireContext(), GameActivity::class.java))
