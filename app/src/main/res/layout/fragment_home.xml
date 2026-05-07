@@ -76,15 +76,35 @@
             android:contentDescription="modo_juego"/>
     </LinearLayout>
 
-    <include
-        android:id="@+id/includeBoardSelector"
-        layout="@layout/view_selector_desplegable"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/board_levelSelectors"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@id/layoutPlayButtons"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layoutTimeRow">
+
+        <include
+            android:id="@+id/includeBoardSelector"
+            layout="@layout/view_selector_desplegable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"/>
+
+        <include
+            android:id="@+id/includeAiLevelSelector"
+            layout="@layout/view_selector_desplegable"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:id="@+id/layoutTimeRow"
@@ -93,7 +113,7 @@
         android:orientation="horizontal"
         android:layout_marginTop="12dp"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/includeBoardSelector"
+        app:layout_constraintTop_toBottomOf="@id/board_levelSelectors"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
