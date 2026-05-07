@@ -3,8 +3,6 @@ package com.gracehopper.laserchessapp.gameLogic.move
 import org.junit.Assert.*
 import org.junit.Test
 
-// COMENTADA HASTA FIXEARLA
-
 class MoveParserTest {
 
     /**
@@ -13,6 +11,7 @@ class MoveParserTest {
      * Comprueba:
      * - se parsea un movimiento de traslación
      * -> los campos se asignan correctamente
+     */
 
     @Test
     fun parseMove_simple_translation() {
@@ -87,5 +86,5 @@ class MoveParserTest {
         val move = MoveParser.parseMove("Tj1:f1xh1%%{120}")
 
         assertEquals("h1", move.destroyed)
-    }*/
+    }
 }

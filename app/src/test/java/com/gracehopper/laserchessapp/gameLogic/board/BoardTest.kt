@@ -113,4 +113,160 @@ class BoardTest {
 
         assertNull(result)
     }
+
+    /**
+     * TEST 7: FORBIDDEN CORNER RED — (8, 0)
+     *
+     * Comprueba:
+     * - la esquina (8, 0) es prohibida para piezas rojas
+     * -> devuelve true
+     */
+    @Test
+    fun forbidden_corner_red_row8_col0() {
+        val board = Board(10, 8)
+
+        val result = board.isForbiddenCell(8, 0, true)
+
+        assertTrue(result)
+    }
+
+    /**
+     * TEST 8: FORBIDDEN CORNER RED — (8, 7)
+     *
+     * Comprueba:
+     * - la esquina (8, 7) es prohibida para piezas rojas
+     * -> devuelve true
+     */
+    @Test
+    fun forbidden_corner_red_row8_col7() {
+        val board = Board(10, 8)
+
+        val result = board.isForbiddenCell(8, 7, true)
+
+        assertTrue(result)
+    }
+
+    /**
+     * TEST 9: FORBIDDEN CORNER BLUE — (1, 0)
+     *
+     * Comprueba:
+     * - la esquina (1, 0) es prohibida para piezas azules
+     * -> devuelve true
+     */
+    @Test
+    fun forbidden_corner_blue_row1_col0() {
+        val board = Board(10, 8)
+
+        val result = board.isForbiddenCell(1, 0, false)
+
+        assertTrue(result)
+    }
+
+    /**
+     * TEST 10: FORBIDDEN CORNER BLUE — (1, 7)
+     *
+     * Comprueba:
+     * - la esquina (1, 7) es prohibida para piezas azules
+     * -> devuelve true
+     */
+    @Test
+    fun forbidden_corner_blue_row1_col7() {
+        val board = Board(10, 8)
+
+        val result = board.isForbiddenCell(1, 7, false)
+
+        assertTrue(result)
+    }
+
+    /**
+     * TEST 11: RED CORNER NOT FORBIDDEN FOR BLUE
+     *
+     * Comprueba:
+     * - la esquina prohibida del rojo (8, 0) no lo es para el azul
+     * -> devuelve false
+     */
+    @Test
+    fun red_forbidden_corner_is_allowed_for_blue() {
+        val board = Board(10, 8)
+
+        val result = board.isForbiddenCell(8, 0, false)
+
+        assertFalse(result)
+    }
+
+    /**
+     * TEST 12: BLUE CORNER NOT FORBIDDEN FOR RED
+     *
+     * Comprueba:
+     * - la esquina prohibida del azul (1, 0) no lo es para el rojo
+     * -> devuelve false
+     */
+    @Test
+    fun blue_forbidden_corner_is_allowed_for_red() {
+        val board = Board(10, 8)
+
+        val result = board.isForbiddenCell(1, 0, true)
+
+        assertFalse(result)
+    }
+
+    /**
+     * TEST 13: ALLOWED CELL FOR BLUE
+     *
+     * Comprueba:
+     * - una celda central no es prohibida para piezas azules
+     * -> devuelve false
+     */
+    @Test
+    fun allowed_cell_for_blue() {
+        val board = Board(10, 8)
+
+        val result = board.isForbiddenCell(5, 4, false)
+
+        assertFalse(result)
+    }
+
+    /**
+     * TEST 14: CLEAR BOARD
+     *
+     * Comprueba:
+     * - se limpian todas las piezas del tablero
+     * -> todas las celdas quedan a null
+     */
+    @Test
+    fun clear_removes_all_pieces() {
+        val board = Board(10, 8)
+
+        board.setPiece(0, 0, Piece(true, PieceType.LASER))
+        board.setPiece(5, 4, Piece(false, PieceType.KING))
+        board.setPiece(9, 7, Piece(true, PieceType.DEFLECTOR))
+
+        board.clear()
+
+        assertNull(board.getPiece(0, 0))
+        assertNull(board.getPiece(5, 4))
+        assertNull(board.getPiece(9, 7))
+    }
+
+    /**
+     * TEST 15: OVERWRITE PIECE
+     *
+     * Comprueba:
+     * - se sobreescribe una pieza en una celda ocupada
+     * -> la celda contiene la nueva pieza
+     */
+    @Test
+    fun set_piece_overwrites_existing() {
+        val board = Board(10, 8)
+
+        val first = Piece(true, PieceType.DEFLECTOR)
+        val second = Piece(false, PieceType.KING)
+
+        board.setPiece(3, 3, first)
+        board.setPiece(3, 3, second)
+
+        val result = board.getPiece(3, 3)
+
+        assertEquals(second, result)
+    }
 }
