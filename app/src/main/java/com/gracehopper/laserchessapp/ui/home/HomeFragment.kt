@@ -187,7 +187,7 @@ class HomeFragment : Fragment() {
         val imgTimeIcon  = includeTimeSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
         txtTimeTitle.text = TimeModeConfig.getName(selectedTimeMode)
         imgTimeIcon.setImageResource(R.drawable.ic_tiempo)
-        imgTimeIcon.setColorFilter(LCGreen)
+        imgTimeIcon.setColorFilter(LCBlue)
         includeTimeSelector.setOnClickListener {
             showTimeModeBottomSheet(LCGreen, txtTimeTitle)
         }
