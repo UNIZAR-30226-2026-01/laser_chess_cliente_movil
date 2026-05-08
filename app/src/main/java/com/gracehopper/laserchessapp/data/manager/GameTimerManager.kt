@@ -84,7 +84,16 @@ object GameTimerManager {
      * Sincroniza con tiempos del backend
      */
     fun syncTimers(myTime: Long, opponentTime: Long) {
-        _myTimer.value = _myTimer.value?.copy(timeLeftMillis = myTime)
-        _opponentTimer.value = _opponentTimer.value?.copy(timeLeftMillis = opponentTime)
+
+        handler.post {
+
+            _myTimer.value = _myTimer.value?.copy(
+                timeLeftMillis = myTime
+            )
+
+            _opponentTimer.value = _opponentTimer.value?.copy(
+                timeLeftMillis = opponentTime
+            )
+        }
     }
 }
