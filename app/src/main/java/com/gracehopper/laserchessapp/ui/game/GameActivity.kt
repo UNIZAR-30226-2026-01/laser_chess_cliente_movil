@@ -89,6 +89,8 @@ class GameActivity : AppCompatActivity() {
      */
     var laserPath by mutableStateOf<List<Pair<Int, Int>>>(emptyList())
 
+    var opponentPieceSkinState by mutableIntStateOf(ActiveGameManager.getOpponentPieceSkin())
+    var opponentBoardSkinState  by mutableIntStateOf(ActiveGameManager.getOpponentBoardSkin())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,19 +115,35 @@ class GameActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_game)
 
-        val namePlayer = findViewById<TextView>(R.id.namePlayer)
-        val nameEnemy = findViewById<TextView>(R.id.nameEnemy)
+        val namePlayer  = findViewById<TextView>(R.id.namePlayer)
+        val nameEnemy   = findViewById<TextView>(R.id.nameEnemy)
         val timerPlayer = findViewById<TextView>(R.id.timePlayer)
-        val timerEnemy = findViewById<TextView>(R.id.timeEnemy)
+        val timerEnemy  = findViewById<TextView>(R.id.timeEnemy)
+        val avatarPlayerView = findViewById<android.widget.ImageView>(R.id.avatarPlayer)
+        val avatarEnemyView  = findViewById<android.widget.ImageView>(R.id.avatarEnemy)
 
         // Usuario actual
         val myProfile = CurrentUserManager.getMyCurrentProfile()
         namePlayer.text = myProfile?.username ?: "Tú"
 
+        myProfile?.avatar?.takeIf { it > 0 }?.let {
+            avatarPlayerView?.setImageResource(com.gracehopper.laserchessapp.ui.utils.ItemUtils.getItemDrawable(it))
+        }
+
         // Rival: se intenta obtener del estado del manager.
         // Si no está disponible (reconexión o matchmaking), se resuelve por HTTP.
         val opponent = ActiveGameManager.getOpponentUsername()
         nameEnemy.text = opponent ?: "Rival"
+
+        ActiveGameManager.getOpponentPieceSkin().let { skin ->
+            // Avatar del rival: se actualizará cuando llegue MatchStart si no estaba disponible
+        }
+
+        // Si el WaitingGameDialogFragment pasó las skins del rival en el Intent, usarlas ya
+        val intentPieceSkin = intent.getIntExtra("OPPONENT_PIECE_SKIN", -1)
+        val intentBoardSkin = intent.getIntExtra("OPPONENT_BOARD_SKIN", -1)
+        if (intentPieceSkin != -1) opponentPieceSkinState = intentPieceSkin
+        if (intentBoardSkin != -1) opponentBoardSkinState  = intentBoardSkin
 
         if (opponent == null) {
             resolveOpponentName(nameEnemy)
@@ -136,15 +154,12 @@ class GameActivity : AppCompatActivity() {
         val btnLeft = findViewById<ImageButton>(R.id.btnRotLeft)
         val btnRight = findViewById<ImageButton>(R.id.btnRotRight)
 
-        val btnExit = findViewById<ImageButton>(R.id.btnExit)
         val btnPause = findViewById<ImageButton>(R.id.btnPause)
 
         if (ActiveGameManager.isFriendlyGame) {
             btnPause.visibility = View.VISIBLE
-            btnExit.visibility = View.GONE
         } else {
             btnPause.visibility = View.GONE
-            btnExit.visibility = View.VISIBLE
         }
 
         boardM = Board(rows, cols)
@@ -243,9 +258,6 @@ class GameActivity : AppCompatActivity() {
 
                             val log = event.log ?: return@runOnUiThread
 
-                            // Limpiar el board existente en vez de crear una nueva instancia.
-                            // Si creamos boardM = Board(...) Compose sigue pintando la referencia
-                            // vieja y el tablero no se actualiza.
                             boardM.clear()
 
                             val csv = ActiveGameManager.intialBoardCSV
@@ -345,6 +357,38 @@ class GameActivity : AppCompatActivity() {
                             Log.d("WS", "Conexión cerrada: ${event.reason}")
                         }
 
+                        is GameEvent.MatchStart -> {
+                            val opponentId = event . opponentId ?: return@runOnUiThread
+                            val userRepo = UserRepository(NetworkUtils.getApiService())
+                            userRepo.getUserProfile(
+                                userId = opponentId,
+                                onSuccess = { profile ->
+                                    runOnUiThread {
+                                        nameEnemy.text = profile.username
+                                        avatarEnemyView?.setImageResource(
+                                            com.gracehopper.laserchessapp.ui.utils.ItemUtils.getItemDrawable(
+                                                profile.avatar.takeIf { it > 0 } ?: 1
+                                            )
+                                        )
+                                        ActiveGameManager.setOpponentInfo(
+                                            GamePlayerInfo(
+                                                id = opponentId,
+                                                username = profile.username,
+                                                avatar = profile.avatar,
+                                                pieceSkin = profile.pieceSkin,
+                                                boardSkin = profile.boardSkin,
+                                                winAnimation = profile.winAnimation
+                                            )
+                                        )
+                                        // Actualizar los State para que Compose recomponga el tablero
+                                        opponentPieceSkinState = profile.pieceSkin
+                                        opponentBoardSkinState = profile.boardSkin
+                                    }
+                                },
+                                onError = { /* mantener "Rival" si falla */ }
+                            )
+                        }
+
                         else -> {
                             // ignorar otros eventos
                         }
@@ -424,16 +468,9 @@ class GameActivity : AppCompatActivity() {
                 laserIsRed = laserIsRed,
                 myPieceSkin = CurrentUserManager.getMyCurrentPieceSkin(),
                 myBoardSkin = CurrentUserManager.getMyCurrentBoardSkin(),
-                opponentPieceSkin = ActiveGameManager.getOpponentPieceSkin(),
-                opponentBoardSkin = ActiveGameManager.getOpponentBoardSkin()
+                opponentPieceSkin = opponentPieceSkinState,
+                opponentBoardSkin = opponentBoardSkinState
             )
-        }
-
-        /**
-         * Salir de la partida
-         */
-        btnExit.setOnClickListener {
-            finish()
         }
 
         /**
@@ -517,20 +554,27 @@ class GameActivity : AppCompatActivity() {
             ?: intent.getLongExtra("OPPONENT_ID", -1L).takeIf { it != -1L }
             ?: return
 
+        val avatarEnemyView = findViewById<android.widget.ImageView?>(R.id.avatarEnemy)
+
         val userRepo = UserRepository(NetworkUtils.getApiService())
         userRepo.getUserProfile(
             userId = opponentId,
             onSuccess = { profile ->
                 runOnUiThread {
                     nameEnemy.text = profile.username
-                    ActiveGameManager.setOpponentInfo(GamePlayerInfo(
-                            id = opponentId,
-                            username = profile.username,
-                            avatar = profile.avatar,
-                            pieceSkin = profile.pieceSkin,
-                            boardSkin = profile.boardSkin,
-                            winAnimation = profile.winAnimation
+                    avatarEnemyView?.setImageResource(
+                        com.gracehopper.laserchessapp.ui.utils.ItemUtils.getItemDrawable(
+                            profile.avatar.takeIf { it > 0 } ?: 1
                         )
+                    )
+                    ActiveGameManager.setOpponentInfo(GamePlayerInfo(
+                        id = opponentId,
+                        username = profile.username,
+                        avatar = profile.avatar,
+                        pieceSkin = profile.pieceSkin,
+                        boardSkin = profile.boardSkin,
+                        winAnimation = profile.winAnimation
+                    )
                     )
                 }
             },

@@ -14,6 +14,8 @@ import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
+import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.repository.UserRepository
 
 class WaitingGameDialogFragment : DialogFragment() {
 
@@ -24,6 +26,14 @@ class WaitingGameDialogFragment : DialogFragment() {
     @Volatile
     private var matchFound = false
     private var pendingOpponentId: Long? = null
+
+    @Volatile
+    private var opponentProfileReady = false
+    private var opponentPieceSkin: Int = 1
+    private var opponentBoardSkin: Int = 4
+
+    @Volatile
+    private var waitingForProfile = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,10 +85,12 @@ class WaitingGameDialogFragment : DialogFragment() {
                 textOpponent.text = "Buscando rival en el matchmaking..."
                 textDetails.text = "Tablero $board · ${startingTime}s + ${increment}s"
             }
+
             ActiveGameManager.currentMatchId != null -> {
                 textOpponent.text = "Esperando al otro jugador"
                 textDetails.text = "Retomando partida con ${opponent ?: "rival"}"
             }
+
             else -> {
                 textOpponent.text = "Esperando al otro jugador"
                 textDetails.text = "Partida con ${opponent ?: "rival"}"
@@ -118,6 +130,29 @@ class WaitingGameDialogFragment : DialogFragment() {
                         is GameEvent.MatchStart -> {
                             pendingOpponentId = event.opponentId
                             textOpponent.text = "¡Rival encontrado!"
+
+                            event.opponentId?.let { opponentId ->
+                                val userRepo = UserRepository(NetworkUtils.getApiService())
+                                userRepo.getUserProfile(
+                                    userId = opponentId,
+                                    onSuccess = { profile ->
+                                        opponentPieceSkin = profile.pieceSkin
+                                        opponentBoardSkin = profile.boardSkin
+                                        opponentProfileReady = true
+                                        if (waitingForProfile) {
+                                            val act = activity ?: return@getUserProfile
+                                            act.runOnUiThread { navigateToGame() }
+                                        }
+                                    },
+                                    onError = {
+                                        opponentProfileReady = true
+                                        if (waitingForProfile) {
+                                            val act = activity ?: return@getUserProfile
+                                            act.runOnUiThread { navigateToGame() }
+                                        }
+                                    }
+                                )
+                            }
                         }
 
                         is GameEvent.ChallengeRejected -> {
@@ -134,17 +169,11 @@ class WaitingGameDialogFragment : DialogFragment() {
                         is GameEvent.InitialState -> {
                             ActiveGameManager.markInGame()
 
-                            Toast.makeText(
-                                requireContext(),
-                                "La partida ha comenzado",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                            dismiss()
-
-                            val intent = Intent(requireContext(), GameActivity::class.java)
-                            pendingOpponentId?.let { intent.putExtra("OPPONENT_ID", it) }
-                            startActivity(intent)
+                            if (opponentProfileReady) {
+                                navigateToGame()
+                            } else {
+                                waitingForProfile = true
+                            }
                         }
 
                         is GameEvent.Error -> {
@@ -208,5 +237,17 @@ class WaitingGameDialogFragment : DialogFragment() {
                 }
             }
         )
+    }
+
+    private fun navigateToGame() {
+        if (!isAdded) return
+        Toast.makeText(requireContext(), "La partida ha comenzado", Toast.LENGTH_SHORT).show()
+        dismiss()
+        val intent = Intent(requireContext(), GameActivity::class.java).apply {
+            pendingOpponentId?.let { putExtra("OPPONENT_ID", it) }
+            putExtra("OPPONENT_PIECE_SKIN", opponentPieceSkin)
+            putExtra("OPPONENT_BOARD_SKIN", opponentBoardSkin)
+        }
+        startActivity(intent)
     }
 }
