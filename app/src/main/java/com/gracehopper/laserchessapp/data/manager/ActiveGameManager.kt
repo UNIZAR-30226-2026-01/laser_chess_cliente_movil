@@ -314,7 +314,59 @@ object ActiveGameManager {
             }
 
             GameMessageType.REWARDS -> {
-                // de momento ignorar
+
+                val xpDiff = serverMsg.content?.toIntOrNull()
+                val moneyDiff = serverMsg.extra?.toIntOrNull()
+
+                if (xpDiff != null && moneyDiff != null) {
+
+                    val event = GameEvent.Rewards(
+                        xpDiff = xpDiff,
+                        moneyDiff = moneyDiff
+                    )
+
+                    val cb = onMessageReceivedCallback
+
+                    if (cb != null) {
+                        cb.invoke(event)
+                    } else {
+                        pendingEvents.add(event)
+                    }
+
+                } else {
+
+                    Log.w(
+                        "WS",
+                        "Mensaje REWARDS inválido: content=${serverMsg.content}, extra=${serverMsg.extra}"
+                    )
+                }
+            }
+
+            GameMessageType.ELO_UPDATE -> {
+
+                val eloDiff = serverMsg.content?.toIntOrNull()
+
+                if (eloDiff != null) {
+
+                    val event = GameEvent.EloUpdate(
+                        eloDiff = eloDiff
+                    )
+
+                    val cb = onMessageReceivedCallback
+
+                    if (cb != null) {
+                        cb.invoke(event)
+                    } else {
+                        pendingEvents.add(event)
+                    }
+
+                } else {
+
+                    Log.w(
+                        "WS",
+                        "Mensaje ELO_UPDATE inválido: content=${serverMsg.content}"
+                    )
+                }
             }
 
             else -> {

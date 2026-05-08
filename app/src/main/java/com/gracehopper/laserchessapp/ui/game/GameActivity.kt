@@ -83,6 +83,11 @@ class GameActivity : AppCompatActivity() {
     var pauseRequested = false
     var laserIsRed by mutableStateOf(false)
     lateinit var backCallback: OnBackPressedCallback
+    private var lastXpDiff: Int = 0
+    private var lastMoneyDiff: Int = 0
+    private var lastEloDiff: Int? = null
+    private var rewardsReceived = false
+    private var eloReceived = false
 
     /**
      * Trayectoria actual del láser para renderizar en UI.
@@ -244,11 +249,11 @@ class GameActivity : AppCompatActivity() {
                             lastCause = cause
                             gameEnded = true
 
-                            // Sí viene tras movimiento → esperar animación
+                            // Sí viene tras movimiento, esperar animación
                             if (waitingForServerConfirmation) {
                                 waitingEndAfterMove = true
                             } else {
-                                showGameResult()
+                                tryShowGameResult()
                             }
                         }
 
@@ -387,6 +392,25 @@ class GameActivity : AppCompatActivity() {
                                 },
                                 onError = { /* mantener "Rival" si falla */ }
                             )
+                        }
+
+                        is GameEvent.Rewards -> {
+
+                            rewardsReceived = true
+
+                            lastXpDiff = event.xpDiff
+                            lastMoneyDiff = event.moneyDiff
+
+                            tryShowGameResult()
+                        }
+
+                        is GameEvent.EloUpdate -> {
+
+                            eloReceived = true
+
+                            lastEloDiff = event.eloDiff
+
+                            tryShowGameResult()
                         }
 
                         else -> {
@@ -719,7 +743,7 @@ class GameActivity : AppCompatActivity() {
             }
 
             if (waitingEndAfterMove && gameEnded && !gameResultShown) {
-                showGameResult()
+                tryShowGameResult()
             }
 
             laserPath = emptyList()
@@ -790,6 +814,23 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    private fun tryShowGameResult() {
+
+        if (!gameEnded || gameResultShown) {
+            return
+        }
+
+        if (!rewardsReceived) {
+            return
+        }
+
+        if (ActiveGameManager.isMatchmakingGame && lastEloDiff == null) {
+            return
+        }
+
+        showGameResult()
+    }
+
     private fun showGameResult() {
         if (gameResultShown) return
 
@@ -798,11 +839,15 @@ class GameActivity : AppCompatActivity() {
         backCallback.isEnabled = false
 
         val dialog = GameResultDialogFragment(
-            winner = lastWinner ?: return,
-            cause = lastCause
+            winner    = lastWinner ?: return,
+            cause     = lastCause,
+            xpDiff    = lastXpDiff,
+            moneyDiff = lastMoneyDiff,
+            eloDiff   = lastEloDiff
         )
 
-        dialog.show(supportFragmentManager, "GameResult")
+
+            dialog.show(supportFragmentManager, "GameResult")
     }
 
 }
