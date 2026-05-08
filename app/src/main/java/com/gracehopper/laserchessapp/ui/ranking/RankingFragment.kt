@@ -19,6 +19,7 @@ import com.gracehopper.laserchessapp.data.repository.RankingRepository
 import com.gracehopper.laserchessapp.databinding.FragmentRankingBinding
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
+import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 class RankingFragment : Fragment() {
 
@@ -59,8 +60,30 @@ class RankingFragment : Fragment() {
     }
 
     private fun setupOwnRankCard() {
-        //TODO("Hay que implementar que se actualice la tarjeta en base al usuario logeado")
-        context?.let { binding.myPosition.cardRankingEntry.setCardBackgroundColor(ContextCompat.getColor(it, R.color.S3)) }
+
+        context?.let {
+            binding.myPosition.cardRankingEntry.setCardBackgroundColor(
+                ContextCompat.getColor(it, R.color.S3)
+            )
+        }
+
+        binding.myPosition.root.setOnClickListener {
+            MyProfileDialogFragment().show(
+                parentFragmentManager,
+                "MyProfileDialog"
+            )
+        }
+
+        CurrentUserManager.myProfile.observe(viewLifecycleOwner) { profile ->
+
+            profile ?: return@observe
+
+            binding.myPosition.textRankingUsername.text = profile.username
+
+            binding.myPosition.imageRankingAvatar.setImageResource(
+                ItemUtils.getItemDrawable(profile.avatar)
+            )
+        }
     }
 
     private fun setupDropdown() {
@@ -102,6 +125,20 @@ class RankingFragment : Fragment() {
             eloType = mode,
             onSuccess = { ranking ->
                 requireActivity().runOnUiThread {
+
+                    val myId = CurrentUserManager.getMyCurrentId()
+
+                    val myEntry = ranking.find { it.id == myId }
+
+                    myEntry?.let { entry ->
+
+                        binding.myPosition.textRankingPosition.text =
+                            entry.position.toString()
+
+                        binding.myPosition.textRankingElo.text =
+                            entry.elo.toString()
+                    }
+
                     rankingAdapter.updateData(ranking)
                 }
             },
