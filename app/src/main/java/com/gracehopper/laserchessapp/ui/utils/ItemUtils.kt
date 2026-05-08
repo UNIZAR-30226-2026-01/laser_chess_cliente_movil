@@ -87,4 +87,44 @@ object ItemUtils {
         }
     }
 
+    fun getOpponentPiecesPackDrawables(itemId: Int): List<Int> {
+
+        return when (itemId) {
+
+            1 -> listOf(
+                R.drawable.kin_r_classic,
+                R.drawable.esc_r_classic,
+                R.drawable.def_r_classic,
+                R.drawable.swi_r_classic,
+                R.drawable.las_r_classic
+            )
+
+            2 -> listOf(
+                R.drawable.kin_r_soretro,
+                R.drawable.esc_r_soretro,
+                R.drawable.def_r_soretro,
+                R.drawable.swi_r_soretro,
+                R.drawable.las_r_soretro
+            )
+
+            3 -> listOf(
+                R.drawable.kin_r_cats,
+                R.drawable.esc_r_cats,
+                R.drawable.def_r_cats,
+                R.drawable.swi_r_cats,
+                R.drawable.las_r_cats
+            )
+
+            else -> listOf(
+                R.drawable.kin_r_classic,
+                R.drawable.esc_r_classic,
+                R.drawable.def_r_classic,
+                R.drawable.swi_r_classic,
+                R.drawable.las_r_classic
+            )
+
+        }
+
+    }
+
 }

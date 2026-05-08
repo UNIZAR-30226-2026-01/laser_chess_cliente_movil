@@ -1,14 +1,14 @@
-package com.gracehopper.laserchessapp.ui.home
+package com.gracehopper.laserchessapp.ui.customize
 
 import androidx.compose.runtime.Composable
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.ui.game.GameScreen
 
 /**
- * Vista previa del tablero en Home.
+ * Vista previa del tablero en Customize.
  */
 @Composable
-fun HomeBoardPreview(
+fun CustomizeBoardPreview(
     board: Board,
     pieceSkin: Int,
     boardSkin: Int) {

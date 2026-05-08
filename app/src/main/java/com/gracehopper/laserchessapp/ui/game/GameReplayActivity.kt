@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.platform.ComposeView
 import com.google.gson.Gson
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.game.BoardLayouts
 import com.gracehopper.laserchessapp.data.model.game.GameResume
 import com.gracehopper.laserchessapp.gameLogic.board.Board
@@ -50,9 +51,9 @@ class GameReplayActivity : AppCompatActivity() {
         boardM = Board(10, 8)
 
         val csv = BoardLayouts.getCsvForBoard(game.board)
-        BoardParser.boadFromCSV(boardM, csv)
+        BoardParser.boardFromCSV(boardM, csv)
 
-        movimientos = game.movement_history
+        movimientos = game.movementHistory
             ?.split(";")
             ?.filter { it.isNotBlank() }
             ?: emptyList()
@@ -95,6 +96,7 @@ class GameReplayActivity : AppCompatActivity() {
      */
     private fun renderBoard() {
         boardView.setContent {
+            // TODO AÑADIR COSAS DEL OPONENTE?
             GameScreen(
                 board = boardM,
                 isRedPlayer = true,
@@ -103,7 +105,9 @@ class GameReplayActivity : AppCompatActivity() {
                 onMove = { _, _ -> },
                 clearSelectionTrigger = moveIndex,
                 laserPath = emptyList(),
-                renderCoordinates = true
+                renderCoordinates = true,
+                myPieceSkin = CurrentUserManager.getMyCurrentPieceSkin(),
+                myBoardSkin = CurrentUserManager.getMyCurrentBoardSkin()
             )
         }
     }
@@ -141,7 +145,7 @@ class GameReplayActivity : AppCompatActivity() {
     private fun rebuildBoard() {
         boardM.clear()
         val csv = BoardLayouts.getCsvForBoard(game.board)
-        BoardParser.boadFromCSV(boardM, csv)
+        BoardParser.boardFromCSV(boardM, csv)
 
         for (i in 0 until moveIndex) {
             applyStateMove(movimientos[i])

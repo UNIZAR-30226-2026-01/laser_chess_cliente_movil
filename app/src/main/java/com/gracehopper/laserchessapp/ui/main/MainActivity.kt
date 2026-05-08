@@ -36,6 +36,7 @@ import com.gracehopper.laserchessapp.ui.social.RequestsDialogFragment
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
+import com.gracehopper.laserchessapp.utils.AppEvents
 import com.gracehopper.laserchessapp.utils.AppNotificationHelper
 
 /**
@@ -62,6 +63,7 @@ class MainActivity : AppCompatActivity() {
     private val sseManager = SseManager(
         onChallengeReceived = { challengerUsername ->
             runOnUiThread {
+                AppEvents.challengeReceived.tryEmit(Unit)
                 AppNotificationHelper.showChallengeNotification(
                     applicationContext,
                     challengerUsername
@@ -70,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         },
         onFriendRequestReceived = { requestUsername ->
             runOnUiThread {
+                AppEvents.friendRequestReceived.tryEmit(Unit)
                 AppNotificationHelper.showFriendRequestNotification(
                     applicationContext,
                     requestUsername
@@ -78,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         },
         onNewFriendshipReceived = { newFriendUsername ->
             runOnUiThread {
+                AppEvents.newFriendshipReceived.tryEmit(Unit)
                 AppNotificationHelper.showNewFriendshipNotification(
                     applicationContext,
                     newFriendUsername

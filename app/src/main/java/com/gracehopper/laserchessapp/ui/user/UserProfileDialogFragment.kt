@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.model.game.GamePlayerInfo
 import com.gracehopper.laserchessapp.data.model.user.UserFriendshipStatus
 import com.gracehopper.laserchessapp.data.model.user.UserProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
@@ -45,7 +46,7 @@ class UserProfileDialogFragment : DialogFragment() {
     private lateinit var buttonPrimaryAction: Button
     private lateinit var buttonSecondaryAction: Button
 
-    private var currentUsername: String? = null
+    private var currentUser: GamePlayerInfo? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         userRepository = UserRepository(NetworkUtils.getApiService())
@@ -94,8 +95,8 @@ class UserProfileDialogFragment : DialogFragment() {
                 buttonSecondaryAction.text = getString(R.string.delete)
 
                 buttonPrimaryAction.setOnClickListener {
-                    currentUsername?.let { username ->
-                        GameConfigDialogFragment(username).show(
+                    currentUser?.let { user ->
+                        GameConfigDialogFragment(user).show(
                             parentFragmentManager,
                             "MatchConfigDialog"
                         )
@@ -103,8 +104,8 @@ class UserProfileDialogFragment : DialogFragment() {
                 }
 
                 buttonSecondaryAction.setOnClickListener {
-                    currentUsername?.let { username ->
-                        showDeleteFriendConfirmation(username)
+                    currentUser?.let { user ->
+                        showDeleteFriendConfirmation(user.username)
                     }
                 }
             }
@@ -117,14 +118,14 @@ class UserProfileDialogFragment : DialogFragment() {
                 buttonSecondaryAction.text = getString(R.string.reject)
 
                 buttonPrimaryAction.setOnClickListener {
-                    currentUsername?.let { username ->
-                        acceptFriendshipRequest(username)
+                    currentUser?.let { user ->
+                        acceptFriendshipRequest(user.username)
                     }
                 }
 
                 buttonSecondaryAction.setOnClickListener {
-                    currentUsername?.let { username ->
-                        rejectFriendshipRequest(username)
+                    currentUser?.let { user ->
+                        rejectFriendshipRequest(user.username)
                     }
                 }
 
@@ -137,8 +138,8 @@ class UserProfileDialogFragment : DialogFragment() {
                 buttonSecondaryAction.text = getString(R.string.cancel_request)
 
                 buttonSecondaryAction.setOnClickListener {
-                    currentUsername?.let { username ->
-                        cancelFriendshipRequest(username)
+                    currentUser?.let { user ->
+                        cancelFriendshipRequest(user.username)
                     }
                 }
             }
@@ -150,8 +151,8 @@ class UserProfileDialogFragment : DialogFragment() {
                 buttonPrimaryAction.text = getString(R.string.send_request)
 
                 buttonPrimaryAction.setOnClickListener {
-                    currentUsername?.let { username ->
-                        sendFriendRequest(username)
+                    currentUser?.let { user ->
+                        sendFriendRequest(user.username)
                     }
                 }
             }
@@ -203,7 +204,14 @@ class UserProfileDialogFragment : DialogFragment() {
 
     private fun bindProfile(profile: UserProfile) {
 
-        currentUsername = profile.username
+        currentUser = GamePlayerInfo(
+            id = profile.id,
+            username = profile.username,
+            avatar = profile.avatar,
+            pieceSkin = profile.pieceSkin,
+            boardSkin = profile.boardSkin,
+            winAnimation = profile.winAnimation
+        )
 
         txtProfileUsername.text = profile.username
         txtProfileLevel.text = "Nivel ${profile.level}"

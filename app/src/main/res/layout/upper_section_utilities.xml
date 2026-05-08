@@ -82,11 +82,11 @@
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
-            android:id="@+id/txtBadgeSolicitudes"
+            android:id="@+id/txtBadgePendingChallenges"
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:background="@drawable/bg_red_circle"
-            android:text="2"
+            android:text=""
             android:visibility="visible"
             android:textColor="@color/LCWhite"
             android:textSize="@dimen/text_medium"

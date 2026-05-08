@@ -2,16 +2,16 @@ package com.gracehopper.laserchessapp.data.model.game
 
 data class GameResume(
     val id: Long,
-    val p1_id: Long,
-    val p2_id: Long,
-    val p1_elo: Int,
-    val p2_elo: Int,
+    val p1Id: Long,
+    val p2Id: Long,
+    val p1Elo: Int,
+    val p2Elo: Int,
     val date: String,
     val winner: String,
     val termination: String,
-    val match_type: String,
+    val matchType: String,
     val board: String,
-    val movement_history: String,
-    val time_base: Int,
-    val time_increment: Int
+    val movementHistory: String,
+    val timeBase: Int,
+    val timeIncrement: Int
 )
