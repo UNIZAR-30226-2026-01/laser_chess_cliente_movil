@@ -15,7 +15,7 @@ object BoardParser {
      * @param board Tablero donde se insertarán las piezas
      * @param csv Representación del tablero en formato CSV
      */
-    fun boadFromCSV(board: Board, csv: String) {
+    fun boardFromCSV(board: Board, csv: String) {
         val csvRows = csv.split("\n")
 
         for (r in csvRows.indices) {
@@ -32,10 +32,9 @@ object BoardParser {
                      * - El CSV viene en formato horizontal (fila-columna)
                      * - Se transforma a coordenadas internas del tablero (orientación vertical)
                      */
-                    val boardRow = c
                     val boardCol = board.cols - 1 - r
 
-                    board.setPiece(boardRow, boardCol, piece)
+                    board.setPiece(row = c, col = boardCol, piece = piece)
                 }
             }
         }

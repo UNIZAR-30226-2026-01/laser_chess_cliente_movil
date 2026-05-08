@@ -18,11 +18,11 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <FrameLayout
-        android:id="@+id/boardContainer"
+        android:id="@+id/boardContainerHome"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:background="#2A2538"
+        android:background="@color/S3"
         app:layout_constraintDimensionRatio="4:5"
         app:layout_constraintTop_toBottomOf="@id/includeRankBadge"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +30,7 @@
         app:layout_constraintBottom_toTopOf="@id/layoutPlayButtons">
 
         <ImageView
-            android:id="@+id/imgBoardPlaceholder"
+            android:id="@+id/imgBoardPlaceholderHome"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
@@ -45,7 +45,7 @@
         android:layout_marginTop="24dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/boardContainer"
+        app:layout_constraintTop_toBottomOf="@id/boardContainerHome"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 

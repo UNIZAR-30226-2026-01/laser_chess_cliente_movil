@@ -17,7 +17,7 @@ import com.google.gson.annotations.SerializedName
  * @property timeIncrement Incremento de tiempo de la partida
  *
  */
-data class PausedMatchResponse(
+data class PausedGameResponse(
     @SerializedName("match_id")       val matchId: Long,
     @SerializedName("p1_id")         val p1Id: Long,
     @SerializedName("p2_id")         val p2Id: Long,

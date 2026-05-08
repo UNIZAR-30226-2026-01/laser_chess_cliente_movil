@@ -33,6 +33,7 @@ import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.manager.GameTimerManager
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
+import com.gracehopper.laserchessapp.data.model.game.GamePlayerInfo
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.utils.TimeUtils.formatTime
@@ -123,7 +124,7 @@ class GameActivity : AppCompatActivity() {
 
         // Rival: se intenta obtener del estado del manager.
         // Si no está disponible (reconexión o matchmaking), se resuelve por HTTP.
-        val opponent = ActiveGameManager.currentOpponentUsername
+        val opponent = ActiveGameManager.getOpponentUsername()
         nameEnemy.text = opponent ?: "Rival"
 
         if (opponent == null) {
@@ -182,7 +183,7 @@ class GameActivity : AppCompatActivity() {
             Log.d("RECONNECT", "CSV es null: ${csv == null}")
             if (csv != null) {
                 Log.d("RECONNECT", "Cargando tablero desde CSV (${csv.length} chars)")
-                BoardParser.boadFromCSV(boardM, csv)
+                BoardParser.boardFromCSV(boardM, csv)
             }
             // Si venimos de reconexión, el State llegó antes de que esta Activity
             // existiera. Aplicamos el log guardado ahora que el tablero está listo.
@@ -249,7 +250,7 @@ class GameActivity : AppCompatActivity() {
 
                             val csv = ActiveGameManager.intialBoardCSV
                             if (csv != null) {
-                                BoardParser.boadFromCSV(boardM, csv)
+                                BoardParser.boardFromCSV(boardM, csv)
                             }
 
                             val moveCount = applyStateLog(log)
@@ -420,7 +421,11 @@ class GameActivity : AppCompatActivity() {
                 onMove = { from, to -> movePiece(from, to) },
                 clearSelectionTrigger = clearTrigger,
                 laserPath = laserPath,
-                laserIsRed = laserIsRed
+                laserIsRed = laserIsRed,
+                myPieceSkin = CurrentUserManager.getMyCurrentPieceSkin(),
+                myBoardSkin = CurrentUserManager.getMyCurrentBoardSkin(),
+                opponentPieceSkin = ActiveGameManager.getOpponentPieceSkin(),
+                opponentBoardSkin = ActiveGameManager.getOpponentBoardSkin()
             )
         }
 
@@ -518,7 +523,15 @@ class GameActivity : AppCompatActivity() {
             onSuccess = { profile ->
                 runOnUiThread {
                     nameEnemy.text = profile.username
-                    ActiveGameManager.currentOpponentUsername = profile.username
+                    ActiveGameManager.setOpponentInfo(GamePlayerInfo(
+                            id = opponentId,
+                            username = profile.username,
+                            avatar = profile.avatar,
+                            pieceSkin = profile.pieceSkin,
+                            boardSkin = profile.boardSkin,
+                            winAnimation = profile.winAnimation
+                        )
+                    )
                 }
             },
             onError = { /* mantener "Rival" */ }

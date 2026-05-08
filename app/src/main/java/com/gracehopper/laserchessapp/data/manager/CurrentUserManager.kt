@@ -103,6 +103,28 @@ object CurrentUserManager {
     }
 
     /**
+     * Obtiene las skin de piezas del usuario actual.
+     *
+     * @return Skin de piezas del usuario actual, o default(1) si no se ha establecido.
+     */
+    fun getMyCurrentPieceSkin(): Int {
+        return _myProfile.value?.pieceSkin ?: 1
+    }
+
+    /**
+     * Obtiene las skin de tablero del usuario actual.
+     *
+     * @return Skin de tablero del usuario actual, o default(4) si no se ha establecido.
+     */
+    fun getMyCurrentBoardSkin(): Int {
+        return _myProfile.value?.boardSkin ?: 4
+    }
+
+    fun getMyCurrentWinAnimation(): Int {
+        return _myProfile.value?.winAnimation ?: 7
+    }
+
+    /**
      * Indica si el perfil actual del usuario ha sido cargado.
      *
      * @return true si el perfil ha sido cargado, false en caso contrario

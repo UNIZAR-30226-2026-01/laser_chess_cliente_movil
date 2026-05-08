@@ -152,7 +152,7 @@ class HistoryDialogFragment : DialogFragment() {
     private fun loadUsers(games: List<GameResume>) {
 
         val idsToFetch = games
-            .flatMap { listOf(it.p1_id, it.p2_id) }
+            .flatMap { listOf(it.p1Id, it.p2Id) }
             .toSet()
             .filter { !userCache.containsKey(it) }
 

@@ -7,6 +7,7 @@ import androidx.core.content.edit
 import com.google.gson.Gson
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.game.GameMessageType
+import com.gracehopper.laserchessapp.data.model.game.GamePlayerInfo
 import com.gracehopper.laserchessapp.data.model.game.WSServerMessage
 import com.gracehopper.laserchessapp.data.remote.websocket.FriendlyGameWebSocket
 import com.gracehopper.laserchessapp.data.remote.websocket.FriendlyGameWebSocketListener
@@ -39,8 +40,8 @@ object ActiveGameManager {
     var isFriendlyGame: Boolean = false
         private set
 
-    var currentOpponentUsername: String? = null
-        internal set
+    var currentOpponentInfo: GamePlayerInfo? = null
+        private set
 
     var currentBoard: Int? = null
         private set
@@ -324,6 +325,32 @@ object ActiveGameManager {
     }
 
     /**
+     * Establece la información del rival.
+     */
+    fun setOpponentInfo(info: GamePlayerInfo?) {
+        currentOpponentInfo = info
+    }
+
+    /**
+     * Elimina la información del rival.
+     */
+    fun clearOpponentInfo() {
+        currentOpponentInfo = null
+    }
+
+    fun getOpponentUsername() : String? {
+        return currentOpponentInfo?.username
+    }
+
+    fun getOpponentPieceSkin(): Int {
+        return currentOpponentInfo?.pieceSkin ?: 1
+    }
+
+    fun getOpponentBoardSkin(): Int {
+        return currentOpponentInfo?.boardSkin ?: 4
+    }
+
+    /**
      * Establece el tipo de partida.
      */
     fun setGameType(isFriendly: Boolean) {
@@ -345,7 +372,14 @@ object ActiveGameManager {
 
         setGameType(false)
 
-        currentOpponentUsername = "BOT"
+        currentOpponentInfo = GamePlayerInfo(
+            id = 1,
+            username = "BOT",
+            avatar = 1,
+            pieceSkin = CurrentUserManager.getMyCurrentPieceSkin(),
+            boardSkin = CurrentUserManager.getMyCurrentBoardSkin(),
+            winAnimation = CurrentUserManager.getMyCurrentWinAnimation()
+        )
         currentBoard = board
         currentStartingTime = startingTime
         currentTimeIncrement = timeIncrement
@@ -371,7 +405,7 @@ object ActiveGameManager {
      * Crea un reto contra otro jugador.
      */
     fun createChallenge(
-        challengedUsername: String,
+        opponentInfo: GamePlayerInfo,
         board: Int,
         startingTime: Int,
         timeIncrement: Int,
@@ -381,7 +415,8 @@ object ActiveGameManager {
         resetConnectionOnly()
 
         setGameType(true)                   // La partida es amistosa
-        currentOpponentUsername = challengedUsername
+        currentOpponentInfo = opponentInfo
+
         currentBoard = board
         currentStartingTime = startingTime
         currentTimeIncrement = timeIncrement
@@ -399,8 +434,11 @@ object ActiveGameManager {
 
         friendlyGameWebSocket = FriendlyGameWebSocket(listener)
         friendlyGameWebSocket?.createChallenge(
-            challengedUsername,
-            board, startingTime, timeIncrement, matchId
+            opponentInfo.username,
+            board,
+            startingTime,
+            timeIncrement,
+            matchId
         )
 
     }
@@ -426,7 +464,7 @@ object ActiveGameManager {
         currentBoard = board
         currentStartingTime = timeBase
         currentTimeIncrement = timeIncrement
-        currentOpponentUsername = null
+        currentOpponentInfo = null
         currentState = GameState.CONNECTING
         lastError = null
 
@@ -441,7 +479,7 @@ object ActiveGameManager {
      * Acepta un reto recibido.
      */
     fun acceptChallenge(
-        challengerUsername: String,
+        opponentInfo: GamePlayerInfo,
         board: Int,
         startingTime: Int,
         timeIncrement: Int
@@ -450,7 +488,8 @@ object ActiveGameManager {
         resetConnectionOnly()
 
         setGameType(true)                   // La partida es amistosa
-        currentOpponentUsername = challengerUsername
+        currentOpponentInfo = opponentInfo
+
         currentBoard = board
         currentStartingTime = startingTime / 1000
         currentTimeIncrement = timeIncrement
@@ -466,7 +505,7 @@ object ActiveGameManager {
         )
 
         friendlyGameWebSocket = FriendlyGameWebSocket(listener)
-        friendlyGameWebSocket?.acceptChallenge(challengerUsername)
+        friendlyGameWebSocket?.acceptChallenge(opponentInfo.username)
 
     }
 
@@ -477,7 +516,7 @@ object ActiveGameManager {
 
         resetConnectionOnly()
 
-        currentOpponentUsername = challengerUsername
+        currentOpponentInfo = null
         currentState = GameState.CONNECTING
         lastError = null
 
@@ -564,7 +603,7 @@ object ActiveGameManager {
         friendlyGameWebSocket?.close()
         friendlyGameWebSocket = null
 
-        currentOpponentUsername = null
+        currentOpponentInfo = null
         currentBoard = null
         currentStartingTime = null
         currentTimeIncrement = null

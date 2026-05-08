@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.game.BoardLayouts
 import com.gracehopper.laserchessapp.data.model.game.GameMode
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
@@ -140,9 +141,9 @@ class HomeFragment : Fragment() {
      * Configura el ComposeView para mostrar el tablero seleccionado.
      */
     private fun setupBoardPreview(view: View) {
-        val boardContainer = view.findViewById<ViewGroup>(R.id.boardContainer)
+        val boardContainer = view.findViewById<ViewGroup>(R.id.boardContainerHome)
 
-        view.findViewById<ImageView?>(R.id.imgBoardPlaceholder)?.visibility = View.GONE
+        view.findViewById<ImageView?>(R.id.imgBoardPlaceholderHome)?.visibility = View.GONE
         val composeView = ComposeView(requireContext()).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -158,10 +159,16 @@ class HomeFragment : Fragment() {
      * Parsea el CSV del tablero seleccionado y lo muestra en el ComposeView.
      */
     private fun renderBoard() {
+        val pieceSkin = CurrentUserManager.getMyCurrentPieceSkin()
+        val boardSkin = CurrentUserManager.getMyCurrentBoardSkin()
+
         boardComposeView?.setContent {
             val board = Board(rows = 10, cols = 8)
-            BoardParser.boadFromCSV(board, BoardLayouts.getCsvForBoard(selectedBoardName))
-            HomeBoardPreview(board = board)
+            BoardParser.boardFromCSV(board, BoardLayouts.getCsvForBoard(selectedBoardName))
+            HomeBoardPreview(
+                board = board,
+                pieceSkin = pieceSkin,
+                boardSkin = boardSkin)
         }
     }
 

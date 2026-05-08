@@ -47,6 +47,10 @@ fun GameReplayScreen(
     player1Time: String = "9:59",
     player2Time: String = "10:00",
     board: Board,
+    myPieceSkin: Int,
+    opponentPieceSkin: Int = 1,
+    myBoardSkin: Int,
+    opponentBoardSkin: Int = 1,
     onStepForward: () -> Unit = {},
     onStepBackward: () -> Unit = {},
     onFastForward: () -> Unit = {},
@@ -109,7 +113,11 @@ fun GameReplayScreen(
                     .clip(RoundedCornerShape(4.dp))
                     .background(BoardDarkCell)
             ) {
-                ReplayBoardUI(board = board)
+                ReplayBoardUI(
+                    board = board,
+                    myPieceSkin = myPieceSkin,
+                    opponentPieceSkin = opponentPieceSkin
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -187,7 +195,7 @@ fun AvatarWithBorder(color: Color) {
 }
 
 @Composable
-fun ReplayBoardUI(board: Board) {
+fun ReplayBoardUI(board: Board, myPieceSkin: Int, opponentPieceSkin: Int) {
     Column {
         for (row in 0 until 10) {
             Row(modifier = Modifier.weight(1f)) {
@@ -204,7 +212,13 @@ fun ReplayBoardUI(board: Board) {
                         piece?.let { p ->
                             val rotation = p.rotation.toFloat()
                             Image(
-                                painter = painterResource(id = p.getImageRes(imInternalRed = true)),
+                                painter = painterResource(
+                                    id = p.getImageRes(
+                                        imInternalRed = true,
+                                        myPieceSkin = myPieceSkin,
+                                        opponentPieceSkin = opponentPieceSkin
+                                    )
+                                ),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .fillMaxSize(0.8f)
@@ -305,10 +319,10 @@ fun ControlButton(
 @Composable
 fun GameReplayScreenPreview() {
     val board = Board(10, 8)
-    board.setPiece(0, 3, Piece(true, PieceType.DEFLECTOR).apply { rotation = 90 })
+    board.setPiece(0, 3, Piece(false, PieceType.DEFLECTOR).apply { rotation = 90 })
     board.setPiece(0, 4, Piece(true, PieceType.DEFLECTOR).apply { rotation = 180 })
     board.setPiece(0, 7, Piece(true, PieceType.KING))
     board.setPiece(9, 0, Piece(false, PieceType.KING))
-    
-    GameReplayScreen(board = board)
+
+    GameReplayScreen(board = board, myPieceSkin = 2, myBoardSkin = 5, opponentPieceSkin = 3)
 }

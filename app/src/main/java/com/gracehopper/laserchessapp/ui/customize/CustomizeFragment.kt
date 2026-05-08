@@ -5,9 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
+import com.gracehopper.laserchessapp.data.model.game.BoardLayouts
 import com.gracehopper.laserchessapp.data.model.shop.ItemType
 import com.gracehopper.laserchessapp.data.model.shop.ShopItem
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
@@ -15,6 +19,8 @@ import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.ItemRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.databinding.FragmentCustomizeBinding
+import com.gracehopper.laserchessapp.gameLogic.board.Board
+import com.gracehopper.laserchessapp.gameLogic.board.BoardParser
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 class CustomizeFragment : Fragment() {
@@ -40,6 +46,9 @@ class CustomizeFragment : Fragment() {
     private val animationsItems = mutableListOf<ShopItem>()
     private val avatarItems = mutableListOf<ShopItem>()
 
+    private var boardComposeView: ComposeView? = null
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,6 +60,7 @@ class CustomizeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupListeners()
+        setupBoardPreview(view)
     }
 
     override fun onResume() {
@@ -106,24 +116,28 @@ class CustomizeFragment : Fragment() {
         binding.btnPreviousPieces.setOnClickListener {
             piecesIndex = previousIndex(piecesIndex, piecesItems.size)
             renderPieces()
+            renderBoardPreview()
             savePiecesSelection()
         }
 
         binding.btnNextPieces.setOnClickListener {
             piecesIndex = nextIndex(piecesIndex, piecesItems.size)
             renderPieces()
+            renderBoardPreview()
             savePiecesSelection()
         }
 
         binding.btnPreviousBoard.setOnClickListener {
             boardIndex = previousIndex(boardIndex, boardItems.size)
             renderBoard()
+            renderBoardPreview()
             saveBoardSelection()
         }
 
         binding.btnNextBoard.setOnClickListener {
             boardIndex = nextIndex(boardIndex, boardItems.size)
             renderBoard()
+            renderBoardPreview()
             saveBoardSelection()
         }
 
@@ -157,6 +171,7 @@ class CustomizeFragment : Fragment() {
         renderBoard()
         renderAnimation()
         renderAvatar()
+        renderBoardPreview()
     }
 
     private fun renderPieces() {
@@ -258,10 +273,16 @@ class CustomizeFragment : Fragment() {
             dto,
             onSuccess = { profile ->
                 CurrentUserManager.setMyProfile(profile)
-                Toast.makeText(requireContext(), "Item equipado", Toast.LENGTH_SHORT).show()
+
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Item equipado", Toast.LENGTH_SHORT).show()
+                }
             },
             onError = {
-                Toast.makeText(requireContext(), "Error equipando item", Toast.LENGTH_SHORT).show()
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Error equipando item", Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         )
 
@@ -275,6 +296,43 @@ class CustomizeFragment : Fragment() {
     private fun previousIndex(current: Int, size: Int): Int {
         if (size == 0) return 0
         return if (current - 1 < 0) size - 1 else current - 1
+    }
+
+    /**
+     * Configura el ComposeView para mostrar el tablero seleccionado.
+     */
+    private fun setupBoardPreview(view: View) {
+        val boardContainer = view.findViewById<ViewGroup>(R.id.boardContainerCustomize)
+
+        view.findViewById<ImageView?>(R.id.imgBoardPlaceholderCustomize)?.visibility = View.GONE
+        val composeView = ComposeView(requireContext()).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        }
+        boardComposeView = composeView
+        boardContainer.addView(composeView)
+        renderBoardPreview()
+    }
+
+    /**
+     * Parsea el CSV del tablero y lo muestra en el ComposeView.
+     */
+    private fun renderBoardPreview() {
+        val pieceSkin = piecesItems.getOrNull(piecesIndex)?.itemId
+            ?: CurrentUserManager.getMyCurrentPieceSkin()
+        val boardSkin = boardItems.getOrNull(boardIndex)?.itemId
+            ?: CurrentUserManager.getMyCurrentBoardSkin()
+
+        boardComposeView?.setContent {
+            val board = Board(rows = 10, cols = 8)
+            BoardParser.boardFromCSV(board, BoardLayouts.getCsvForBoard("ACE"))
+            CustomizeBoardPreview(
+                board = board,
+                pieceSkin = pieceSkin,
+                boardSkin = boardSkin)
+        }
     }
 
     override fun onDestroyView() {
