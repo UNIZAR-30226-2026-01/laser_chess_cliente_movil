@@ -8,7 +8,7 @@
     <ImageButton
         android:id="@+id/btnShop"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="82dp"
         android:background="@color/selector_nav_background"
         android:scaleType="centerInside"
         android:src="@drawable/shopping_cart_48px"
@@ -23,7 +23,7 @@
     <ImageButton
         android:id="@+id/btnCustomize"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="82dp"
         android:src="@drawable/palette_48px"
         android:scaleType="centerInside"
         android:background="@color/selector_nav_background"
@@ -35,7 +35,7 @@
     <ImageButton
         android:id="@+id/btnHome"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="82dp"
         android:src="@drawable/stadia_controller_48px"
         android:scaleType="centerInside"
         android:background="@color/selector_nav_background"
@@ -47,7 +47,7 @@
     <ImageButton
         android:id="@+id/btnSocial"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="82dp"
         android:src="@drawable/group_48px"
         android:scaleType="centerInside"
         android:background="@color/selector_nav_background"
@@ -59,7 +59,7 @@
     <ImageButton
         android:id="@+id/btnRanking"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="82dp"
         android:src="@drawable/leaderboard_48px"
         android:scaleType="centerInside"
         android:background="@color/selector_nav_background"

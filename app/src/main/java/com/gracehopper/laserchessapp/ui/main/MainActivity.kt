@@ -1,12 +1,15 @@
 package com.gracehopper.laserchessapp.ui.main
 
 import android.Manifest
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -167,6 +170,29 @@ class MainActivity : AppCompatActivity() {
         loadMyProfileIfNeeded()
         setupProfileCard()
         setupAdditionalButtons()
+
+        val fondoAnimado = findViewById<ImageView>(R.id.img_background_animated)
+        val animHorizontal = ObjectAnimator.ofFloat(fondoAnimado, "translationX", -170f, 150f).apply {
+            duration = 30000 // 30 segundos
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.REVERSE
+            interpolator = LinearInterpolator()
+        }
+        val animVertical = ObjectAnimator.ofFloat(fondoAnimado, "translationY", -70f, 90f).apply {
+            duration = 20000 // Tiempo distinto para que el movimiento sea irregular y natural
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.REVERSE
+            interpolator = LinearInterpolator()
+        }
+        ObjectAnimator.ofFloat(fondoAnimado, "rotation", -3f, 3f).apply {
+            duration = 25000 // 25 segundos
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.REVERSE
+            start()
+        }
+
+        animHorizontal.start()
+        animVertical.start()
 
         handleNotificationIntent(intent)
 

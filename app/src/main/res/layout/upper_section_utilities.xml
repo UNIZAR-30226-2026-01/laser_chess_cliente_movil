@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/topRow"
     android:layout_width="match_parent"
-    android:layout_height="102dp"
+    android:layout_height="match_parent"
     android:layout_marginTop="16dp"
     android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
@@ -95,11 +95,9 @@
 
             app:layout_constraintTop_toTopOf="@+id/btnNotifications"
             app:layout_constraintBottom_toBottomOf="@+id/btnNotifications"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/btnSettings"
 
-
-            android:translationX="56dp"
-            android:translationY="-12dp" />
+            android:translationY="-10dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

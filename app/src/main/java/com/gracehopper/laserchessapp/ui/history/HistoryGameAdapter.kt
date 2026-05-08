@@ -66,10 +66,12 @@ class HistoryGameAdapter(
         holder.avatar1.setImageResource(
             ItemUtils.getItemDrawable(avatar1Id)
         )
+        holder.avatar1.clipToOutline = true
 
         holder.avatar2.setImageResource(
             ItemUtils.getItemDrawable(avatar2Id)
         )
+        holder.avatar2.clipToOutline = true
 
         holder.btnViewGame.setOnClickListener {
             onViewClick(game)
