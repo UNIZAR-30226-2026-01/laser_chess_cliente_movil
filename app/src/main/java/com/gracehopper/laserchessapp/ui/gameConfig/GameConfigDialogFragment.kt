@@ -13,11 +13,12 @@ import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.model.game.GameConfig
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
+import com.gracehopper.laserchessapp.data.model.game.GamePlayerInfo
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
 import com.gracehopper.laserchessapp.ui.game.WaitingGameDialogFragment
 
 class GameConfigDialogFragment(
-    private val challengedUsername: String
+    private val challengedUser: GamePlayerInfo
 ) : DialogFragment() {
 
     private lateinit var viewPager: ViewPager2
@@ -151,7 +152,7 @@ class GameConfigDialogFragment(
             )
 
             ActiveGameManager.createChallenge(
-                challengedUsername = challengedUsername,
+                opponentInfo = challengedUser,
                 board = gameConfig.boardId!!,
                 startingTime = gameConfig.startingTimeSeconds,
                 timeIncrement = gameConfig.incrementSeconds

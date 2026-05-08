@@ -7,6 +7,7 @@ import com.gracehopper.laserchessapp.data.model.user.TimeMode
  *
  * @property id Identificador único de la partida ?
  * @property myTime Tiempo actual del jugador
+ * @property opponentId Identificador de usuario del oponente
  * @property opponentUsername Nombre de usuario del oponente
  * @property opponentTime Tiempo actual del oponente
  * @property timeMode Modo de tiempo utilizado
@@ -15,6 +16,7 @@ import com.gracehopper.laserchessapp.data.model.user.TimeMode
 data class InProgressGameSummary(
     val id: String,
     val myTime: String,
+    val opponentId: Long,
     val opponentUsername: String,
     val opponentTime: String,
     val timeMode: TimeMode,

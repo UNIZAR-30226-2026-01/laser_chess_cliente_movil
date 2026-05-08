@@ -152,7 +152,7 @@ class HomeFragment : Fragment() {
 
         boardComposeView?.setContent {
             val board = Board(rows = 10, cols = 8)
-            BoardParser.boadFromCSV(board, BoardLayouts.getCsvForBoard(selectedBoardName))
+            BoardParser.boardFromCSV(board, BoardLayouts.getCsvForBoard(selectedBoardName))
             HomeBoardPreview(
                 board = board,
                 pieceSkin = pieceSkin,

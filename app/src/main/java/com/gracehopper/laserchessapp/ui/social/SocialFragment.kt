@@ -23,11 +23,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
+import com.gracehopper.laserchessapp.data.model.game.GamePlayerInfo
 import com.gracehopper.laserchessapp.data.model.game.InProgressGameSummary
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
-import com.gracehopper.laserchessapp.data.repository.MatchHistoryRepository
+import com.gracehopper.laserchessapp.data.repository.GameHistoryRepository
+import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.databinding.FragmentSocialBinding
 import com.gracehopper.laserchessapp.ui.game.WaitingGameDialogFragment
@@ -48,12 +50,16 @@ class SocialFragment : Fragment() {
 
     private lateinit var inProgressAdapter: InProgressAdapter
 
-    private val repository by lazy {
+    private val friendRepository by lazy {
         FriendRepository(NetworkUtils.getApiService())
     }
 
-    private val matchHistoryRepository by lazy {
-        MatchHistoryRepository(NetworkUtils.getApiService())
+    private val gameHistoryRepository by lazy {
+        GameHistoryRepository(NetworkUtils.getApiService())
+    }
+
+    private val userRepository by lazy {
+        UserRepository(NetworkUtils.getApiService())
     }
 
     private enum class SocialTab {
@@ -151,7 +157,7 @@ class SocialFragment : Fragment() {
 
     private fun loadFriends() {
 
-        repository.getFriends(onSuccess = { friends ->
+        friendRepository.getFriends(onSuccess = { friends ->
             val friendsList = friends ?: emptyList()
 
             if (friendsList.isEmpty()) {
@@ -180,7 +186,7 @@ class SocialFragment : Fragment() {
 
     private fun loadNumReceivedRequests() {
 
-        repository.getNumReceivedFriendshipRequests(
+        friendRepository.getNumReceivedFriendshipRequests(
             onSuccess = { response ->
 
                 if (response == 0) {
@@ -205,7 +211,7 @@ class SocialFragment : Fragment() {
         val userId = TokenManager.getUserId()
         if (userId == -1L) return
 
-        matchHistoryRepository.getPausedMatches(
+        gameHistoryRepository.getPausedGames(
             userId = userId,
             onSuccess = { games ->
                 if (games.isEmpty()) {
@@ -236,6 +242,50 @@ class SocialFragment : Fragment() {
             return
         }
 
+        userRepository.getUserProfile(
+            userId = game.opponentId,
+            onSuccess = { opponent ->
+                if (!isAdded) return@getUserProfile
+
+                val opponentInfo = GamePlayerInfo(
+                    id = opponent.id,
+                    username = opponent.username,
+                    avatar = opponent.avatar,
+                    pieceSkin = opponent.pieceSkin,
+                    boardSkin = opponent.boardSkin,
+                    winAnimation = opponent.winAnimation
+                )
+
+                requireActivity().runOnUiThread {
+                    setupResumeCallbacks()
+
+                    ActiveGameManager.createChallenge(
+                        opponentInfo = opponentInfo,
+                        board = 0,          // El backend ignora board/time cuando recibe match_id
+                        startingTime = 0,
+                        timeIncrement = 0,
+                        matchId = matchId
+                    )
+
+                }
+            },
+            onError = {
+                if (!isAdded) return@getUserProfile
+
+                requireActivity().runOnUiThread {
+                    Toast.makeText(
+                        requireContext(),
+                        "Error al cargar el perfil del oponente",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+        )
+
+    }
+
+    private fun setupResumeCallbacks() {
         ActiveGameManager.setCallbacks(
             onConnected = {
                 requireActivity().runOnUiThread {
@@ -260,14 +310,6 @@ class SocialFragment : Fragment() {
                 }
             },
             onClosed = {}
-        )
-
-        ActiveGameManager.createChallenge(
-            challengedUsername = game.opponentUsername,
-            board = 0,          // El backend ignora board/time cuando recibe match_id
-            startingTime = 0,
-            timeIncrement = 0,
-            matchId = matchId
         )
     }
 
@@ -385,7 +427,7 @@ class SocialFragment : Fragment() {
 
     private fun sendFriendRequest(username : String) {
 
-        repository.addFriend(username = username, onSuccess = {
+        friendRepository.addFriend(username = username, onSuccess = {
             Toast.makeText(requireContext(), "Solicitud enviada a $username", Toast.LENGTH_SHORT).show()
 
             loadFriends()

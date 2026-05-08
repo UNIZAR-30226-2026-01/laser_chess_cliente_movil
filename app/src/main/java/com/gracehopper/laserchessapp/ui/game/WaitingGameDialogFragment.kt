@@ -65,7 +65,7 @@ class WaitingGameDialogFragment : DialogFragment() {
     }
 
     private fun loadGameInfo() {
-        val opponent = ActiveGameManager.currentOpponentUsername
+        val opponent = ActiveGameManager.getOpponentUsername()
         val board = ActiveGameManager.currentBoard ?: 1
         val startingTime = ActiveGameManager.currentStartingTime ?: 300
         val increment = ActiveGameManager.currentTimeIncrement ?: 0

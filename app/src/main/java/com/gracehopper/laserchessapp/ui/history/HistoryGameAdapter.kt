@@ -43,17 +43,17 @@ class HistoryGameAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val game = games[position]
 
-        val player1 = userCache[game.p1_id]
-        val player2 = userCache[game.p2_id]
+        val player1 = userCache[game.p1Id]
+        val player2 = userCache[game.p2Id]
 
-        holder.textPlayer1Name.text = player1?.username ?: "Jugador ${game.p1_id}"
-        holder.textPlayer2Name.text = player2?.username ?: "Jugador ${game.p2_id}"
+        holder.textPlayer1Name.text = player1?.username ?: "Jugador ${game.p1Id}"
+        holder.textPlayer2Name.text = player2?.username ?: "Jugador ${game.p2Id}"
 
-        holder.textPlayer1Elo.text = game.p1_elo.toString()
-        holder.textPlayer2Elo.text = game.p2_elo.toString()
+        holder.textPlayer1Elo.text = game.p1Elo.toString()
+        holder.textPlayer2Elo.text = game.p2Elo.toString()
 
         holder.textBoard.text = game.board.uppercase()
-        holder.textMatchType.text = game.match_type.uppercase()
+        holder.textMatchType.text = game.matchType.uppercase()
 
         holder.textWinner.text =
             userCache[game.winner.toLongOrNull()]?.username ?: game.winner

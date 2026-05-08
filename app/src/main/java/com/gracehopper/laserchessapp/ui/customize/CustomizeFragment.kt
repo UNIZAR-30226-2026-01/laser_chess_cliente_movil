@@ -21,7 +21,6 @@ import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.databinding.FragmentCustomizeBinding
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.gameLogic.board.BoardParser
-import com.gracehopper.laserchessapp.ui.home.HomeBoardPreview
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 class CustomizeFragment : Fragment() {
@@ -328,7 +327,7 @@ class CustomizeFragment : Fragment() {
 
         boardComposeView?.setContent {
             val board = Board(rows = 10, cols = 8)
-            BoardParser.boadFromCSV(board, BoardLayouts.getCsvForBoard("ACE"))
+            BoardParser.boardFromCSV(board, BoardLayouts.getCsvForBoard("ACE"))
             CustomizeBoardPreview(
                 board = board,
                 pieceSkin = pieceSkin,

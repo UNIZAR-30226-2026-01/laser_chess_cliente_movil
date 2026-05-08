@@ -36,8 +36,10 @@ fun GameScreen(
     clearSelectionTrigger: Int,
     laserPath: List<Pair<Int, Int>>,
     laserIsRed: Boolean = false,
-    pieceSkin: Int,
-    boardSkin: Int
+    myPieceSkin: Int,
+    myBoardSkin: Int,
+    opponentPieceSkin: Int = 1,
+    opponentBoardSkin: Int = 4
 ) {
     var highlightedMoves by remember { mutableStateOf<List<Pair<Int, Int>>>(emptyList()) }
     var selectedPos by remember { mutableStateOf<Pair<Int, Int>?>(null) }
@@ -57,10 +59,10 @@ fun GameScreen(
     val visibleNumbers = if (isRedPlayer) numbers else numbers.reversed()
 
     // Colores del láser
-    val laserCore  = if (laserIsRed) Color(0xFFFF3333) else Color(0xFF3388FF)
+    val laserCore = if (laserIsRed) Color(0xFFFF3333) else Color(0xFF3388FF)
     val laserStrong = if (laserIsRed) Color(0xCCFF3C3C) else Color(0xCC3282FF)
-    val laserMid   = if (laserIsRed) Color(0x80FF1E1E) else Color(0x801E64FF)
-    val laserSoft  = if (laserIsRed) Color(0x40C80000) else Color(0x40003CC8)
+    val laserMid = if (laserIsRed) Color(0x80FF1E1E) else Color(0x801E64FF)
+    val laserSoft = if (laserIsRed) Color(0x40C80000) else Color(0x40003CC8)
 
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -72,7 +74,9 @@ fun GameScreen(
                 Spacer(modifier = Modifier.weight(1f))
                 for (num in visibleNumbers) {
                     Box(
-                        modifier = Modifier.weight(1f).aspectRatio(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(1f),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(text = num.toString())
@@ -90,7 +94,9 @@ fun GameScreen(
                 Column(modifier = Modifier.weight(1f)) {
                     for (letter in visibleLetters) {
                         Box(
-                            modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(1f),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(text = letter.toString(), color = colorResource(R.color.LCWhite))
@@ -127,14 +133,25 @@ fun GameScreen(
                                                 if (selected == null) {
                                                     if (clickedPiece != null && clickedPiece.isRed == isRedPlayer && isMyTurn) {
                                                         selectedPos = Pair(row, col)
-                                                        highlightedMoves = clickedPiece.getValidMoves(row, col, board)
+                                                        highlightedMoves =
+                                                            clickedPiece.getValidMoves(
+                                                                row,
+                                                                col,
+                                                                board
+                                                            )
                                                         onPieceSelected(selectedPos)
                                                     }
                                                 } else {
                                                     val (r2, c2) = selected
                                                     val selectedPiece = board.getPiece(r2, c2)
                                                     if (selectedPiece != null) {
-                                                        if (highlightedMoves.contains(Pair(row, col)) && selectedPiece.isRed == isRedPlayer && isMyTurn) {
+                                                        if (highlightedMoves.contains(
+                                                                Pair(
+                                                                    row,
+                                                                    col
+                                                                )
+                                                            ) && selectedPiece.isRed == isRedPlayer && isMyTurn
+                                                        ) {
                                                             onMove(Pair(r2, c2), Pair(row, col))
                                                         }
                                                     }
@@ -146,7 +163,7 @@ fun GameScreen(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         piece?.let { p ->
-                                            key(p) {
+                                            key(p, myPieceSkin, opponentPieceSkin) {
                                                 val visualRotation = if (isRedPlayer) p.rotation
                                                 else (p.rotation + 180) % 360
                                                 val rotation by animateFloatAsState(
@@ -154,15 +171,30 @@ fun GameScreen(
                                                     animationSpec = tween(200)
                                                 )
                                                 Image(
-                                                    painter = painterResource(id = p.getImageRes(isRedPlayer, pieceSkin)),
+                                                    painter = painterResource(
+                                                        id = p.getImageRes(
+                                                            isRedPlayer,
+                                                            myPieceSkin,
+                                                            opponentPieceSkin
+                                                        )
+                                                    ),
                                                     contentDescription = null,
-                                                    modifier = Modifier.fillMaxSize().graphicsLayer { rotationZ = rotation }
+                                                    modifier = Modifier
+                                                        .fillMaxSize()
+                                                        .graphicsLayer { rotationZ = rotation }
                                                 )
                                             }
                                         }
 
                                         if (isHighlighted) {
-                                            Box(modifier = Modifier.size(16.dp).background(Color(0xFFFF9800), shape = CircleShape))
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(16.dp)
+                                                    .background(
+                                                        Color(0xFFFF9800),
+                                                        shape = CircleShape
+                                                    )
+                                            )
                                         }
                                     }
                                 }
@@ -199,7 +231,10 @@ fun GameScreen(
                                     strokeWidth = 2.dp.toPx()
                                     strokeCap = StrokeCap.Round
                                     asFrameworkPaint().maskFilter =
-                                        android.graphics.BlurMaskFilter(20.dp.toPx(), android.graphics.BlurMaskFilter.Blur.NORMAL)
+                                        android.graphics.BlurMaskFilter(
+                                            20.dp.toPx(),
+                                            android.graphics.BlurMaskFilter.Blur.NORMAL
+                                        )
                                 })
                                 // Halo medio
                                 canvas.drawLine(p1, p2, Paint().apply {
@@ -207,7 +242,10 @@ fun GameScreen(
                                     strokeWidth = 2.dp.toPx()
                                     strokeCap = StrokeCap.Round
                                     asFrameworkPaint().maskFilter =
-                                        android.graphics.BlurMaskFilter(10.dp.toPx(), android.graphics.BlurMaskFilter.Blur.NORMAL)
+                                        android.graphics.BlurMaskFilter(
+                                            10.dp.toPx(),
+                                            android.graphics.BlurMaskFilter.Blur.NORMAL
+                                        )
                                 })
                                 // Halo fuerte
                                 canvas.drawLine(p1, p2, Paint().apply {
@@ -215,7 +253,10 @@ fun GameScreen(
                                     strokeWidth = 2.dp.toPx()
                                     strokeCap = StrokeCap.Round
                                     asFrameworkPaint().maskFilter =
-                                        android.graphics.BlurMaskFilter(4.dp.toPx(), android.graphics.BlurMaskFilter.Blur.NORMAL)
+                                        android.graphics.BlurMaskFilter(
+                                            4.dp.toPx(),
+                                            android.graphics.BlurMaskFilter.Blur.NORMAL
+                                        )
                                 })
                                 // Núcleo sólido
                                 canvas.drawLine(p1, p2, Paint().apply {

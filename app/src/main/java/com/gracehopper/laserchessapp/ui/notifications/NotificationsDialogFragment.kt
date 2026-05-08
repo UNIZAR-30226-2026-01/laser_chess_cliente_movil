@@ -19,9 +19,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
+import com.gracehopper.laserchessapp.data.model.game.GamePlayerInfo
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.ChallengeRepository
+import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 import com.gracehopper.laserchessapp.utils.AppEvents
 import kotlinx.coroutines.launch
@@ -32,6 +34,7 @@ import kotlinx.coroutines.launch
 class NotificationsDialogFragment : DialogFragment() {
 
     private lateinit var challengeRepository: ChallengeRepository
+    private lateinit var userRepository: UserRepository
     private lateinit var buttonClose: ImageButton
     private lateinit var recyclerChallenges: RecyclerView
     private lateinit var textEmptyState: TextView
@@ -42,6 +45,7 @@ class NotificationsDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         challengeRepository = ChallengeRepository(NetworkUtils.getApiService())
+        userRepository = UserRepository(NetworkUtils.getApiService())
         isCancelable = true
     }
 
@@ -136,6 +140,48 @@ class NotificationsDialogFragment : DialogFragment() {
 
     private fun acceptChallenge(challenge: PendingChallengeResponse) {
 
+        userRepository.getUserProfile(
+            userId = challenge.challengerId,
+            onSuccess = { opponent ->
+                if (!isAdded) return@getUserProfile
+
+                val opponentInfo = GamePlayerInfo(
+                    id = opponent.id,
+                    username = opponent.username,
+                    avatar = opponent.avatar,
+                    pieceSkin = opponent.pieceSkin,
+                    boardSkin = opponent.boardSkin,
+                    winAnimation = opponent.winAnimation
+                )
+
+                requireActivity().runOnUiThread {
+                    setupChallengeCallbacks()
+
+                    ActiveGameManager.acceptChallenge(
+                        opponentInfo = opponentInfo,
+                        board = challenge.board,
+                        startingTime = challenge.startingTime,
+                        timeIncrement = challenge.timeIncrement
+                    )
+
+                }
+            },
+            onError = {
+                if (!isAdded) return@getUserProfile
+
+                requireActivity().runOnUiThread {
+                    Toast.makeText(
+                        requireContext(),
+                        "Error al cargar el perfil del oponente",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        )
+
+    }
+
+    private fun setupChallengeCallbacks() {
         ActiveGameManager.setCallbacks(
             onConnected = {
                 requireActivity().runOnUiThread {
@@ -208,13 +254,6 @@ class NotificationsDialogFragment : DialogFragment() {
                 }
             }
         )
-
-        ActiveGameManager.acceptChallenge(challengerUsername = challenge.challengerUsername,
-            board = challenge.board,
-            startingTime = challenge.startingTime,
-            timeIncrement = challenge.timeIncrement
-        )
-
     }
 
     private fun rejectChallenge(challenge: PendingChallengeResponse) {

@@ -21,7 +21,7 @@ fun CustomizeBoardPreview(
         onMove = { _, _ -> },
         clearSelectionTrigger = 0,
         laserPath = emptyList(),
-        pieceSkin = pieceSkin,
-        boardSkin = boardSkin
+        myPieceSkin = pieceSkin,
+        myBoardSkin = boardSkin
     )
 }

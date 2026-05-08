@@ -51,9 +51,9 @@ class GameReplayActivity : AppCompatActivity() {
         boardM = Board(10, 8)
 
         val csv = BoardLayouts.getCsvForBoard(game.board)
-        BoardParser.boadFromCSV(boardM, csv)
+        BoardParser.boardFromCSV(boardM, csv)
 
-        movimientos = game.movement_history
+        movimientos = game.movementHistory
             ?.split(";")
             ?.filter { it.isNotBlank() }
             ?: emptyList()
@@ -96,6 +96,7 @@ class GameReplayActivity : AppCompatActivity() {
      */
     private fun renderBoard() {
         boardView.setContent {
+            // TODO AÑADIR COSAS DEL OPONENTE?
             GameScreen(
                 board = boardM,
                 isRedPlayer = true,
@@ -105,8 +106,8 @@ class GameReplayActivity : AppCompatActivity() {
                 clearSelectionTrigger = moveIndex,
                 laserPath = emptyList(),
                 renderCoordinates = true,
-                pieceSkin = CurrentUserManager.getMyCurrentPieceSkin(),
-                boardSkin = CurrentUserManager.getMyCurrentBoardSkin()
+                myPieceSkin = CurrentUserManager.getMyCurrentPieceSkin(),
+                myBoardSkin = CurrentUserManager.getMyCurrentBoardSkin()
             )
         }
     }
@@ -144,7 +145,7 @@ class GameReplayActivity : AppCompatActivity() {
     private fun rebuildBoard() {
         boardM.clear()
         val csv = BoardLayouts.getCsvForBoard(game.board)
-        BoardParser.boadFromCSV(boardM, csv)
+        BoardParser.boardFromCSV(boardM, csv)
 
         for (i in 0 until moveIndex) {
             applyStateMove(movimientos[i])

@@ -5,7 +5,7 @@ import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
 import com.gracehopper.laserchessapp.data.model.auth.LoginResponse
 import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
 import com.gracehopper.laserchessapp.data.model.game.GameResume
-import com.gracehopper.laserchessapp.data.model.game.PausedMatchResponse
+import com.gracehopper.laserchessapp.data.model.game.PausedGameResponse
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
 import com.gracehopper.laserchessapp.data.model.ranking.AllRatingsResponse
@@ -136,7 +136,7 @@ interface ApiService {
 
     // Endpoints de MATCH HISTORY
     @GET("api/match/history/{userID}/paused")
-    fun getPausedMatches(@Path("userID") userId: Long): Call<List<PausedMatchResponse>>
+    fun getPausedGames(@Path("userID") userId: Long): Call<List<PausedGameResponse>>
 
     // Endpoint de FINISHED GAMES (historial)
     @GET("api/match/history/{userID}")

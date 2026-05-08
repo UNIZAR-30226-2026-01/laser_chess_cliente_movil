@@ -2,7 +2,7 @@ package com.gracehopper.laserchessapp.data.repository
 
 import com.gracehopper.laserchessapp.data.model.game.BoardType
 import com.gracehopper.laserchessapp.data.model.game.InProgressGameSummary
-import com.gracehopper.laserchessapp.data.model.game.PausedMatchResponse
+import com.gracehopper.laserchessapp.data.model.game.PausedGameResponse
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import retrofit2.Call
@@ -14,7 +14,7 @@ import retrofit2.Response
  *
  * @property apiService Instancia de Retrofit para realizar peticiones a la API.
  */
-class MatchHistoryRepository(private val apiService: ApiService) {
+class GameHistoryRepository(private val apiService: ApiService) {
 
     /**
      * Obtiene las partidas pausadas del usuario dado su ID.
@@ -23,16 +23,16 @@ class MatchHistoryRepository(private val apiService: ApiService) {
      * @param onSuccess Callback con la lista de [InProgressGameSummary] mapeada.
      * @param onError Callback con el código de error HTTP o null si es error de red.
      */
-    fun getPausedMatches(
+    fun getPausedGames(
         userId: Long,
         onSuccess: (List<InProgressGameSummary>) -> Unit,
         onError: (Int?) -> Unit
     ) {
-        apiService.getPausedMatches(userId).enqueue(object : Callback<List<PausedMatchResponse>> {
+        apiService.getPausedGames(userId).enqueue(object : Callback<List<PausedGameResponse>> {
 
             override fun onResponse(
-                call: Call<List<PausedMatchResponse>>,
-                response: Response<List<PausedMatchResponse>>
+                call: Call<List<PausedGameResponse>>,
+                response: Response<List<PausedGameResponse>>
             ) {
                 if (response.isSuccessful) {
                     val paused = response.body().orEmpty()
@@ -43,16 +43,17 @@ class MatchHistoryRepository(private val apiService: ApiService) {
                 }
             }
 
-            override fun onFailure(call: Call<List<PausedMatchResponse>>, t: Throwable) {
+            override fun onFailure(call: Call<List<PausedGameResponse>>, t: Throwable) {
                 onError(null)
             }
         })
     }
 
 
-    private fun PausedMatchResponse.toInProgressGameSummary(myUserId: Long): InProgressGameSummary {
+    private fun PausedGameResponse.toInProgressGameSummary(myUserId: Long): InProgressGameSummary {
         val iAmP1 = (p1Id == myUserId)
 
+        val opponentId = if (iAmP1) p2Id else p1Id
         val opponentUsername = if (iAmP1) p2Username else p1Username
         val timeBaseSeconds = timeBase / 1000
         val myTimeStr   = formatSeconds(timeBaseSeconds)
@@ -64,6 +65,7 @@ class MatchHistoryRepository(private val apiService: ApiService) {
         return InProgressGameSummary(
             id              = matchId.toString(),
             myTime          = myTimeStr,
+            opponentId      = opponentId,
             opponentUsername = opponentUsername,
             opponentTime    = oppTimeStr,
             timeMode        = timeMode,

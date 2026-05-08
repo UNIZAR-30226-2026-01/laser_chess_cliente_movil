@@ -120,6 +120,10 @@ object CurrentUserManager {
         return _myProfile.value?.boardSkin ?: 4
     }
 
+    fun getMyCurrentWinAnimation(): Int {
+        return _myProfile.value?.winAnimation ?: 7
+    }
+
     /**
      * Indica si el perfil actual del usuario ha sido cargado.
      *
