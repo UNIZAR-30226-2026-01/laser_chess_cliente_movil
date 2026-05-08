@@ -2,7 +2,7 @@ package com.gracehopper.laserchessapp.data.repository
 
 import com.gracehopper.laserchessapp.data.model.game.BoardType
 import com.gracehopper.laserchessapp.data.model.game.InProgressGameSummary
-import com.gracehopper.laserchessapp.data.model.game.PausedMatchResponse
+import com.gracehopper.laserchessapp.data.model.game.PausedGameResponse
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -16,10 +16,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MatchHistoryRepositoryTest {
+class GameHistoryRepositoryTest {
 
     /**
-     * TEST 1: GET PAUSED MATCHES CON ÉXITO
+     * TEST 1: GET PAUSED GAMES CON ÉXITO
      *
      * Comprueba:
      * - la API devuelve éxito (200)
@@ -27,15 +27,15 @@ class MatchHistoryRepositoryTest {
      * -> llama a onSuccess con la lista transformada
      */
     @Test
-    fun getPausedMatches_exito_onSuccess() {
+    fun getPausedGames_exito_onSuccess() {
 
         val apiService = mock<ApiService>()
-        val call = mock<Call<List<PausedMatchResponse>>>()
+        val call = mock<Call<List<PausedGameResponse>>>()
 
-        val repository = MatchHistoryRepository(apiService)
+        val repository = GameHistoryRepository(apiService)
 
         val response = listOf(
-            PausedMatchResponse(
+            PausedGameResponse(
                 matchId = 1,
                 p1Id = 10,
                 p2Id = 20,
@@ -49,10 +49,10 @@ class MatchHistoryRepositoryTest {
             )
         )
 
-        whenever(apiService.getPausedMatches(10)).thenReturn(call)
+        whenever(apiService.getPausedGames(10)).thenReturn(call)
 
         doAnswer {
-            val callback = it.getArgument<Callback<List<PausedMatchResponse>>>(0)
+            val callback = it.getArgument<Callback<List<PausedGameResponse>>>(0)
             callback.onResponse(call, Response.success(response))
             null
         }.whenever(call).enqueue(any())
@@ -61,7 +61,7 @@ class MatchHistoryRepositoryTest {
         var errorCalled = false
         var receivedList: List<InProgressGameSummary>? = null
 
-        repository.getPausedMatches(
+        repository.getPausedGames(
             userId = 10,
             onSuccess = {
                 successCalled = true
@@ -85,7 +85,7 @@ class MatchHistoryRepositoryTest {
     }
 
     /**
-     * TEST 2: GET PAUSED MATCHES CON BODY NULO
+     * TEST 2: GET PAUSED GAMES CON BODY NULO
      *
      * Comprueba:
      * - la API devuelve éxito
@@ -93,17 +93,17 @@ class MatchHistoryRepositoryTest {
      * -> llama a onSuccess con lista vacía
      */
     @Test
-    fun getPausedMatches_bodyNull_onSuccess_emptyList() {
+    fun getPausedGames_bodyNull_onSuccess_emptyList() {
 
         val apiService = mock<ApiService>()
-        val call = mock<Call<List<PausedMatchResponse>>>()
+        val call = mock<Call<List<PausedGameResponse>>>()
 
-        val repository = MatchHistoryRepository(apiService)
+        val repository = GameHistoryRepository(apiService)
 
-        whenever(apiService.getPausedMatches(10)).thenReturn(call)
+        whenever(apiService.getPausedGames(10)).thenReturn(call)
 
         doAnswer {
-            val callback = it.getArgument<Callback<List<PausedMatchResponse>>>(0)
+            val callback = it.getArgument<Callback<List<PausedGameResponse>>>(0)
             callback.onResponse(call, Response.success(null))
             null
         }.whenever(call).enqueue(any())
@@ -112,7 +112,7 @@ class MatchHistoryRepositoryTest {
         var errorCalled = false
         var receivedList: List<InProgressGameSummary>? = null
 
-        repository.getPausedMatches(
+        repository.getPausedGames(
             userId = 10,
             onSuccess = {
                 successCalled = true
@@ -129,24 +129,24 @@ class MatchHistoryRepositoryTest {
     }
 
     /**
-     * TEST 3: GET PAUSED MATCHES ERROR HTTP
+     * TEST 3: GET PAUSED GAMES ERROR HTTP
      *
      * Comprueba:
      * - la API devuelve error HTTP
      * -> llama a onError con el código
      */
     @Test
-    fun getPausedMatches_httpError_onError() {
+    fun getPausedGames_httpError_onError() {
 
         val apiService = mock<ApiService>()
-        val call = mock<Call<List<PausedMatchResponse>>>()
+        val call = mock<Call<List<PausedGameResponse>>>()
 
-        val repository = MatchHistoryRepository(apiService)
+        val repository = GameHistoryRepository(apiService)
 
-        whenever(apiService.getPausedMatches(10)).thenReturn(call)
+        whenever(apiService.getPausedGames(10)).thenReturn(call)
 
         doAnswer {
-            val callback = it.getArgument<Callback<List<PausedMatchResponse>>>(0)
+            val callback = it.getArgument<Callback<List<PausedGameResponse>>>(0)
             callback.onResponse(
                 call,
                 Response.error(404, "error".toResponseBody())
@@ -158,7 +158,7 @@ class MatchHistoryRepositoryTest {
         var errorCalled = false
         var receivedError: Int? = null
 
-        repository.getPausedMatches(
+        repository.getPausedGames(
             userId = 10,
             onSuccess = {
                 successCalled = true
@@ -175,24 +175,24 @@ class MatchHistoryRepositoryTest {
     }
 
     /**
-     * TEST 4: GET PAUSED MATCHES FAILURE
+     * TEST 4: GET PAUSED GAMES FAILURE
      *
      * Comprueba:
      * - ocurre fallo de red
      * -> llama a onError con null
      */
     @Test
-    fun getPausedMatches_failure_onError_null() {
+    fun getPausedGames_failure_onError_null() {
 
         val apiService = mock<ApiService>()
-        val call = mock<Call<List<PausedMatchResponse>>>()
+        val call = mock<Call<List<PausedGameResponse>>>()
 
-        val repository = MatchHistoryRepository(apiService)
+        val repository = GameHistoryRepository(apiService)
 
-        whenever(apiService.getPausedMatches(10)).thenReturn(call)
+        whenever(apiService.getPausedGames(10)).thenReturn(call)
 
         doAnswer {
-            val callback = it.getArgument<Callback<List<PausedMatchResponse>>>(0)
+            val callback = it.getArgument<Callback<List<PausedGameResponse>>>(0)
             callback.onFailure(call, Throwable())
             null
         }.whenever(call).enqueue(any())
@@ -201,7 +201,7 @@ class MatchHistoryRepositoryTest {
         var errorCalled = false
         var receivedError: Int? = -1
 
-        repository.getPausedMatches(
+        repository.getPausedGames(
             userId = 10,
             onSuccess = {
                 successCalled = true
@@ -225,15 +225,15 @@ class MatchHistoryRepositoryTest {
      * -> usa BoardType. ACE por defecto
      */
     @Test
-    fun getPausedMatches_invalidBoard_usesAceDefault() {
+    fun getPausedGames_invalidBoard_usesAceDefault() {
 
         val apiService = mock<ApiService>()
-        val call = mock<Call<List<PausedMatchResponse>>>()
+        val call = mock<Call<List<PausedGameResponse>>>()
 
-        val repository = MatchHistoryRepository(apiService)
+        val repository = GameHistoryRepository(apiService)
 
         val response = listOf(
-            PausedMatchResponse(
+            PausedGameResponse(
                 matchId = 1,
                 p1Id = 10,
                 p2Id = 20,
@@ -247,17 +247,17 @@ class MatchHistoryRepositoryTest {
             )
         )
 
-        whenever(apiService.getPausedMatches(10)).thenReturn(call)
+        whenever(apiService.getPausedGames(10)).thenReturn(call)
 
         doAnswer {
-            val callback = it.getArgument<Callback<List<PausedMatchResponse>>>(0)
+            val callback = it.getArgument<Callback<List<PausedGameResponse>>>(0)
             callback.onResponse(call, Response.success(response))
             null
         }.whenever(call).enqueue(any())
 
         var receivedList: List<InProgressGameSummary>? = null
 
-        repository.getPausedMatches(
+        repository.getPausedGames(
             userId = 10,
             onSuccess = {
                 receivedList = it
@@ -276,15 +276,15 @@ class MatchHistoryRepositoryTest {
      * -> se mapea a EXTENDED
      */
     @Test
-    fun getPausedMatches_extendedTimeMode_ok() {
+    fun getPausedGames_extendedTimeMode_ok() {
 
         val apiService = mock<ApiService>()
-        val call = mock<Call<List<PausedMatchResponse>>>()
+        val call = mock<Call<List<PausedGameResponse>>>()
 
-        val repository = MatchHistoryRepository(apiService)
+        val repository = GameHistoryRepository(apiService)
 
         val response = listOf(
-            PausedMatchResponse(
+            PausedGameResponse(
                 matchId = 1,
                 p1Id = 10,
                 p2Id = 20,
@@ -298,17 +298,17 @@ class MatchHistoryRepositoryTest {
             )
         )
 
-        whenever(apiService.getPausedMatches(10)).thenReturn(call)
+        whenever(apiService.getPausedGames(10)).thenReturn(call)
 
         doAnswer {
-            val callback = it.getArgument<Callback<List<PausedMatchResponse>>>(0)
+            val callback = it.getArgument<Callback<List<PausedGameResponse>>>(0)
             callback.onResponse(call, Response.success(response))
             null
         }.whenever(call).enqueue(any())
 
         var receivedList: List<InProgressGameSummary>? = null
 
-        repository.getPausedMatches(
+        repository.getPausedGames(
             userId = 10,
             onSuccess = {
                 receivedList = it

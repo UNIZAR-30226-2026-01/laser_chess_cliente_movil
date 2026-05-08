@@ -17,7 +17,7 @@ class BoardParserTest {
     fun parse_piece_type_laser() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "LR")
+        BoardParser.boardFromCSV(board, "LR")
 
         val piece = board.getPiece(0, 7)
 
@@ -36,7 +36,7 @@ class BoardParserTest {
     fun parse_piece_type_king() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "KR")
+        BoardParser.boardFromCSV(board, "KR")
 
         val piece = board.getPiece(0, 7)
 
@@ -55,7 +55,7 @@ class BoardParserTest {
     fun parse_piece_type_deflector() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "DR")
+        BoardParser.boardFromCSV(board, "DR")
 
         val piece = board.getPiece(0, 7)
 
@@ -74,7 +74,7 @@ class BoardParserTest {
     fun parse_piece_type_defender() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "ER")
+        BoardParser.boardFromCSV(board, "ER")
 
         val piece = board.getPiece(0, 7)
 
@@ -93,7 +93,7 @@ class BoardParserTest {
     fun parse_piece_type_switcher() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "SR")
+        BoardParser.boardFromCSV(board, "SR")
 
         val piece = board.getPiece(0, 7)
 
@@ -112,7 +112,7 @@ class BoardParserTest {
     fun parse_team_red() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "DR")
+        BoardParser.boardFromCSV(board, "DR")
 
         val piece = board.getPiece(0, 7)
 
@@ -131,7 +131,7 @@ class BoardParserTest {
     fun parse_team_blue() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "DA")
+        BoardParser.boardFromCSV(board, "DA")
 
         val piece = board.getPiece(0, 7)
 
@@ -150,7 +150,7 @@ class BoardParserTest {
     fun parse_orientation_up() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "DRU")
+        BoardParser.boardFromCSV(board, "DRU")
 
         val piece = board.getPiece(0, 7)
 
@@ -169,7 +169,7 @@ class BoardParserTest {
     fun parse_orientation_right() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "DRR")
+        BoardParser.boardFromCSV(board, "DRR")
 
         val piece = board.getPiece(0, 7)
 
@@ -188,7 +188,7 @@ class BoardParserTest {
     fun parse_orientation_down() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "DRD")
+        BoardParser.boardFromCSV(board, "DRD")
 
         val piece = board.getPiece(0, 7)
 
@@ -207,7 +207,7 @@ class BoardParserTest {
     fun parse_orientation_left() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "DRL")
+        BoardParser.boardFromCSV(board, "DRL")
 
         val piece = board.getPiece(0, 7)
 
@@ -226,7 +226,7 @@ class BoardParserTest {
     fun parse_orientation_default_is_up() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "DR")
+        BoardParser.boardFromCSV(board, "DR")
 
         val piece = board.getPiece(0, 7)
 
@@ -245,7 +245,7 @@ class BoardParserTest {
     fun coordinate_transform_first_csv_row() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "DR")
+        BoardParser.boardFromCSV(board, "DR")
 
         val piece = board.getPiece(0, 7)
 
@@ -268,7 +268,7 @@ class BoardParserTest {
             append("DR")
         }
 
-        BoardParser.boadFromCSV(board, csv)
+        BoardParser.boardFromCSV(board, csv)
 
         val piece = board.getPiece(0, 0)
 
@@ -286,7 +286,7 @@ class BoardParserTest {
     fun coordinate_transform_second_csv_column() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, ",DR")
+        BoardParser.boardFromCSV(board, ",DR")
 
         val piece = board.getPiece(1, 7)
 
@@ -304,7 +304,7 @@ class BoardParserTest {
     fun empty_cell_not_placed_on_board() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, ",DR")
+        BoardParser.boardFromCSV(board, ",DR")
 
         val emptyCell = board.getPiece(0, 7)
 
@@ -322,7 +322,7 @@ class BoardParserTest {
     fun multiple_pieces_in_same_csv_row() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "DR,KA")
+        BoardParser.boardFromCSV(board, "DR,KA")
 
         val first = board.getPiece(0, 7)
         val second = board.getPiece(1, 7)
@@ -345,6 +345,6 @@ class BoardParserTest {
     fun invalid_piece_code_throws_exception() {
         val board = Board(10, 8)
 
-        BoardParser.boadFromCSV(board, "XR")
+        BoardParser.boardFromCSV(board, "XR")
     }
 }
