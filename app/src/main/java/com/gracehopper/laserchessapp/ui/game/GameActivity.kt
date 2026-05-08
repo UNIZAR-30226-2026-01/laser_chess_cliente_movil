@@ -87,7 +87,8 @@ class GameActivity : AppCompatActivity() {
     private var lastMoneyDiff: Int = 0
     private var lastEloDiff: Int? = null
     private var rewardsReceived = false
-    private var eloReceived = false
+    private var processingMove = false
+    private val pendingMoves = ArrayDeque<String>()
 
     /**
      * Trayectoria actual del láser para renderizar en UI.
@@ -95,7 +96,7 @@ class GameActivity : AppCompatActivity() {
     var laserPath by mutableStateOf<List<Pair<Int, Int>>>(emptyList())
 
     var opponentPieceSkinState by mutableIntStateOf(ActiveGameManager.getOpponentPieceSkin())
-    var opponentBoardSkinState  by mutableIntStateOf(ActiveGameManager.getOpponentBoardSkin())
+    var opponentBoardSkinState by mutableIntStateOf(ActiveGameManager.getOpponentBoardSkin())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,35 +121,36 @@ class GameActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_game)
 
-        val namePlayer  = findViewById<TextView>(R.id.namePlayer)
-        val nameEnemy   = findViewById<TextView>(R.id.nameEnemy)
+        val namePlayer = findViewById<TextView>(R.id.namePlayer)
+        val nameEnemy = findViewById<TextView>(R.id.nameEnemy)
         val timerPlayer = findViewById<TextView>(R.id.timePlayer)
-        val timerEnemy  = findViewById<TextView>(R.id.timeEnemy)
+        val timerEnemy = findViewById<TextView>(R.id.timeEnemy)
         val avatarPlayerView = findViewById<android.widget.ImageView>(R.id.avatarPlayer)
-        val avatarEnemyView  = findViewById<android.widget.ImageView>(R.id.avatarEnemy)
 
-        // Usuario actual
-        val myProfile = CurrentUserManager.getMyCurrentProfile()
-        namePlayer.text = myProfile?.username ?: "Tú"
+        CurrentUserManager.myProfile.observe(this) { profile ->
 
-        myProfile?.avatar?.takeIf { it > 0 }?.let {
-            avatarPlayerView?.setImageResource(com.gracehopper.laserchessapp.ui.utils.ItemUtils.getItemDrawable(it))
+            if (profile != null) {
+
+                namePlayer.text = profile.username
+
+                avatarPlayerView.setImageResource(
+                    com.gracehopper.laserchessapp.ui.utils.ItemUtils.getItemDrawable(
+                        profile.avatar.takeIf { it > 0 } ?: 1
+                    )
+                )
+            }
         }
 
-        // Rival: se intenta obtener del estado del manager.
-        // Si no está disponible (reconexión o matchmaking), se resuelve por HTTP.
+        val avatarEnemyView = findViewById<android.widget.ImageView>(R.id.avatarEnemy)
+
         val opponent = ActiveGameManager.getOpponentUsername()
         nameEnemy.text = opponent ?: "Rival"
-
-        ActiveGameManager.getOpponentPieceSkin().let { skin ->
-            // Avatar del rival: se actualizará cuando llegue MatchStart si no estaba disponible
-        }
 
         // Si el WaitingGameDialogFragment pasó las skins del rival en el Intent, usarlas ya
         val intentPieceSkin = intent.getIntExtra("OPPONENT_PIECE_SKIN", -1)
         val intentBoardSkin = intent.getIntExtra("OPPONENT_BOARD_SKIN", -1)
         if (intentPieceSkin != -1) opponentPieceSkinState = intentPieceSkin
-        if (intentBoardSkin != -1) opponentBoardSkinState  = intentBoardSkin
+        if (intentBoardSkin != -1) opponentBoardSkinState = intentBoardSkin
 
         if (opponent == null) {
             resolveOpponentName(nameEnemy)
@@ -194,13 +196,11 @@ class GameActivity : AppCompatActivity() {
         }
 
         Log.d("PLAYER", "Soy rojo interno: $imInternalRed")
-        Log.d("PLAYER", "CSV: ${ActiveGameManager.intialBoardCSV != null}")
 
         if (testMode) {
             loadTestBoard()
         } else {
             val csv = ActiveGameManager.intialBoardCSV
-            Log.d("RECONNECT", "CSV es null: ${csv == null}")
             if (csv != null) {
                 Log.d("RECONNECT", "Cargando tablero desde CSV (${csv.length} chars)")
                 BoardParser.boardFromCSV(boardM, csv)
@@ -208,13 +208,11 @@ class GameActivity : AppCompatActivity() {
             // Si venimos de reconexión, el State llegó antes de que esta Activity
             // existiera. Aplicamos el log guardado ahora que el tablero está listo.
             val pending = ActiveGameManager.pendingStateLog
-            Log.d("RECONNECT", "pendingStateLog es null: ${pending == null}, valor: '$pending'")
             if (pending != null) {
                 Log.d("RECONNECT", "Aplicando state log: '$pending'")
                 val moveCount = applyStateLog(pending)
                 recalculateTurnAfterStateLog(moveCount)
                 clearTrigger++
-                Log.d("RECONNECT", "State log aplicado, clearTrigger=$clearTrigger")
             }
         }
 
@@ -363,7 +361,7 @@ class GameActivity : AppCompatActivity() {
                         }
 
                         is GameEvent.MatchStart -> {
-                            val opponentId = event . opponentId ?: return@runOnUiThread
+                            val opponentId = event.opponentId ?: return@runOnUiThread
                             val userRepo = UserRepository(NetworkUtils.getApiService())
                             userRepo.getUserProfile(
                                 userId = opponentId,
@@ -405,9 +403,6 @@ class GameActivity : AppCompatActivity() {
                         }
 
                         is GameEvent.EloUpdate -> {
-
-                            eloReceived = true
-
                             lastEloDiff = event.eloDiff
 
                             tryShowGameResult()
@@ -591,14 +586,15 @@ class GameActivity : AppCompatActivity() {
                             profile.avatar.takeIf { it > 0 } ?: 1
                         )
                     )
-                    ActiveGameManager.setOpponentInfo(GamePlayerInfo(
-                        id = opponentId,
-                        username = profile.username,
-                        avatar = profile.avatar,
-                        pieceSkin = profile.pieceSkin,
-                        boardSkin = profile.boardSkin,
-                        winAnimation = profile.winAnimation
-                    )
+                    ActiveGameManager.setOpponentInfo(
+                        GamePlayerInfo(
+                            id = opponentId,
+                            username = profile.username,
+                            avatar = profile.avatar,
+                            pieceSkin = profile.pieceSkin,
+                            boardSkin = profile.boardSkin,
+                            winAnimation = profile.winAnimation
+                        )
                     )
                 }
             },
@@ -668,10 +664,29 @@ class GameActivity : AppCompatActivity() {
      * Aplica un movimiento recibido del servidor.
      */
     private fun applyServerMove(moveStr: String) {
+
+        if (processingMove) {
+
+            Log.e(
+                "TURN_DEBUG",
+                "MOVE ENCOLADO mientras otro sigue animando: $moveStr"
+            )
+
+            pendingMoves.addLast(moveStr)
+            return
+        }
+
+        processingMove = true
+
         val move = MoveParser.parseMove(moveStr)
         val timeFromBackend = move.timer
 
         val iMoved = waitingForServerConfirmation
+
+        Log.d(
+            "TURN_DEBUG",
+            "START move=$moveStr iMoved=$iMoved waiting=$waitingForServerConfirmation isMyTurn=$isMyTurn"
+        )
 
         if (iMoved) {
             GameTimerManager.syncTimers(
@@ -685,23 +700,11 @@ class GameActivity : AppCompatActivity() {
             )
         }
 
-        if (iMoved) {
-            waitingForServerConfirmation = false
-            waitingEndAfterMove = false
-        }
-
-        isMyTurn = !iMoved
-        GameTimerManager.setMyTurn(isMyTurn)
-
-
         val fromPos = CoordsConverter.notationToPosition(move.from)
         val piece = boardM.getPiece(fromPos.first, fromPos.second)
 
         when (move.type) {
 
-            /**
-             * Traslación
-             */
             'T' -> {
                 val toPos = CoordsConverter.notationToPosition(move.to!!)
                 val pieceTo = boardM.getPiece(toPos.first, toPos.second)
@@ -710,9 +713,6 @@ class GameActivity : AppCompatActivity() {
                 boardM.setPiece(fromPos.first, fromPos.second, pieceTo)
             }
 
-            /**
-             * Rotaciones
-             */
             'R' -> {
                 piece?.rotateRight()
             }
@@ -722,25 +722,28 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        /**
-         * Mostrar trayectoria del láser
-         */
         laserIsRed = !iMoved
         laserPath = LaserUtils.parseLaserPath(move.laserPath)
-        Log.d("LASER", "Laser path board cords: $laserPath")
 
-        /**
-         * Aplicar efectos tras 1 segundo (animación)
-         */
         Handler(Looper.getMainLooper()).postDelayed({
 
-            /**
-             * Eliminar pieza destruida
-             */
             move.destroyed?.let {
                 val destroyedPos = CoordsConverter.notationToPosition(it)
                 boardM.setPiece(destroyedPos.first, destroyedPos.second, null)
             }
+
+            if (iMoved) {
+                waitingForServerConfirmation = false
+                waitingEndAfterMove = false
+            }
+
+            Log.d(
+                "TURN_DEBUG",
+                "END move=$moveStr setTurn=${!iMoved} waiting=$waitingForServerConfirmation"
+            )
+
+            isMyTurn = !iMoved
+            GameTimerManager.setMyTurn(isMyTurn)
 
             if (waitingEndAfterMove && gameEnded && !gameResultShown) {
                 tryShowGameResult()
@@ -750,6 +753,21 @@ class GameActivity : AppCompatActivity() {
 
             controls.visibility = View.GONE
             clearTrigger++
+
+            processingMove = false
+
+            if (pendingMoves.isNotEmpty()) {
+
+                val nextMove = pendingMoves.removeFirst()
+
+                Log.d(
+                    "TURN_DEBUG",
+                    "PROCESS NEXT MOVE: $nextMove"
+                )
+
+                applyServerMove(nextMove)
+            }
+
         }, 1000)
     }
 
@@ -839,6 +857,17 @@ class GameActivity : AppCompatActivity() {
         gameResultShown = true
         GameTimerManager.stop()
         backCallback.isEnabled = false
+
+        val userRepository = UserRepository(NetworkUtils.getApiService())
+
+        userRepository.getMyProfile(
+            onSuccess = { profile ->
+                CurrentUserManager.setMyProfile(profile)
+            },
+            onError = {
+                Log.e("PROFILE", "No se pudo actualizar el perfil tras la partida")
+            }
+        )
 
         val dialog = GameResultDialogFragment(
             winner = winner,
