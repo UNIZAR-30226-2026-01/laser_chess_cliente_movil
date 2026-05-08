@@ -23,6 +23,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -108,7 +109,7 @@ class SettingsDialogFragment : DialogFragment() {
 
     private fun bindViews(view: View) {
 
-        buttonClose = view.findViewById(R.id.buttonCloseSettingsDialog)
+        buttonClose = view.findViewById(R.id.buttonCloseDialog)
         txtEmail = view.findViewById(R.id.txtEmailSettings)
         buttonEditMail = view.findViewById(R.id.btnEditEmail)
         txtChangePassword = view.findViewById(R.id.txtChangePassword)

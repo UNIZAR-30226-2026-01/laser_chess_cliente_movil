@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/dialogIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:contentDescription="@string/settings"
+        android:src="@drawable/settings_48px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/dialogTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/settings"
+        android:textColor="@color/LCWhite"
+        android:textSize="@dimen/text_medium_large"
+        android:textStyle="bold"
+        android:includeFontPadding="false"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toEndOf="@id/dialogIcon"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/buttonCloseDialog"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/bg_button"
+        android:src="@drawable/ic_cancel"
+        android:scaleType="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/LCRed" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="@color/S3"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/dialogTitle"
+        app:layout_constraintStart_toStartOf="@id/dialogIcon"
+        app:layout_constraintEnd_toEndOf="@id/buttonCloseDialog"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

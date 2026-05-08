@@ -40,7 +40,7 @@
 
     <string name="empty_friends_message">Aún no has empezado ninguna amistad...</string>
     <string name="add">AÑADIR</string>
-    <string name="write_username">Escribe su nombre de usuario:</string>
+    <string name="write_username">Usuario a añadir</string>
     <string name="send_request">ENVIAR SOLICITUD</string>
     <string name="wait_approval">Y espera a ser aceptad@.</string>
     <string name="send_link">Envíale el siguiente enlace:</string>

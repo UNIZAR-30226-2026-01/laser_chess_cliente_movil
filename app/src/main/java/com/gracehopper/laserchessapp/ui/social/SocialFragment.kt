@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -296,6 +297,11 @@ class SocialFragment : Fragment() {
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_add_friend, null)
 
+        val topIcon = dialogView.findViewById<ImageView>(R.id.dialogIcon)
+        val dialogTitle = dialogView.findViewById<TextView>(R.id.dialogTitle)
+        dialogTitle.text = "Agregar amigo"
+        topIcon.setImageResource(R.drawable.ic_person_bart)
+        topIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.LCWhite))
         val editTextUsername = dialogView.findViewById<EditText>(R.id.editTextFriendUsername)
         val buttonSendFriendRequest = dialogView.findViewById<Button>(R.id.buttonSendFriendRequest)
         val buttonCopyInvitationLink = dialogView.findViewById<Button>(R.id.buttonCopyInvitationLink)
