@@ -437,7 +437,7 @@ class MainActivity : AppCompatActivity() {
 
             onMessageReceived = { event ->
 
-                if (event is GameEvent.State) {
+                if (event is GameEvent.InitialState) {
                     runOnUiThread {
                         if (!isFinishing) {
                             startActivity(Intent(this, GameActivity::class.java))

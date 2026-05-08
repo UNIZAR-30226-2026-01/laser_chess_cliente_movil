@@ -834,20 +834,21 @@ class GameActivity : AppCompatActivity() {
     private fun showGameResult() {
         if (gameResultShown) return
 
+        val winner = lastWinner ?: return
+
         gameResultShown = true
         GameTimerManager.stop()
         backCallback.isEnabled = false
 
         val dialog = GameResultDialogFragment(
-            winner    = lastWinner ?: return,
-            cause     = lastCause,
-            xpDiff    = lastXpDiff,
+            winner = winner,
+            cause = lastCause,
+            xpDiff = lastXpDiff,
             moneyDiff = lastMoneyDiff,
-            eloDiff   = lastEloDiff
+            eloDiff = lastEloDiff
         )
 
-
-            dialog.show(supportFragmentManager, "GameResult")
+        dialog.show(supportFragmentManager, "GameResult")
     }
 
 }

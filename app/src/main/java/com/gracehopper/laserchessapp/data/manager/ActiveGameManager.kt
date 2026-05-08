@@ -287,22 +287,47 @@ object ActiveGameManager {
              * Rival reconectado
              */
             GameMessageType.RECONNECTION -> {
-                val myTimeMs = serverMsg.extra?.toLongOrNull()
-                if (myTimeMs != null) {
-                    // Es nuestra propia reconexión: content=ID rival, extra=tiempo restante ms
-                    currentStartingTime = (myTimeMs / 1000).toInt()
-                    reconnectingOpponentId = serverMsg.content?.toLongOrNull()
-                    // A partir de aquí esperamos InitialState + State antes de navegar
-                    awaitingReconnectMessages = true
-                    onMessageReceivedCallback?.invoke(
-                        GameEvent.Reconnected(
-                            opponentId = serverMsg.content,
-                            remainingTime = serverMsg.extra
+
+                val timers = serverMsg.extra?.split("%")
+
+                if (timers?.size == 2) {
+
+                    val myTimeMs = timers[0].toLongOrNull()
+                    val opponentTimeMs = timers[1].toLongOrNull()
+
+                    if (myTimeMs != null && opponentTimeMs != null) {
+
+                        currentStartingTime = (myTimeMs / 1000).toInt()
+
+                        reconnectingOpponentId = serverMsg.content?.toLongOrNull()
+
+                        // Sincronizar timers inmediatamente
+                        GameTimerManager.syncTimers(
+                            myTime = myTimeMs,
+                            opponentTime = opponentTimeMs
                         )
-                    )
+
+                        awaitingReconnectMessages = true
+
+                        onMessageReceivedCallback?.invoke(
+                            GameEvent.Reconnected(
+                                opponentId = serverMsg.content,
+                                remainingTime = serverMsg.extra
+                            )
+                        )
+
+                    } else {
+
+                        onMessageReceivedCallback?.invoke(
+                            GameEvent.OpponentReconnected
+                        )
+                    }
+
                 } else {
-                    // Es el rival quien se ha reconectado
-                    onMessageReceivedCallback?.invoke(GameEvent.OpponentReconnected)
+
+                    onMessageReceivedCallback?.invoke(
+                        GameEvent.OpponentReconnected
+                    )
                 }
             }
 
