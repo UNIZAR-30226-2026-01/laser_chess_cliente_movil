@@ -52,8 +52,8 @@ class HistoryGameAdapter(
         holder.textPlayer1Elo.text = game.p1Elo.toString()
         holder.textPlayer2Elo.text = game.p2Elo.toString()
 
-        holder.textBoard.text = game.board.uppercase()
-        holder.textMatchType.text = game.matchType.uppercase()
+        holder.textBoard.text = game.board.uppercase().ifEmpty { "—" }
+        holder.textMatchType.text = game.matchType.uppercase().ifEmpty { "—" }
 
         holder.textWinner.text =
             userCache[game.winner.toLongOrNull()]?.username ?: game.winner
