@@ -324,7 +324,7 @@ class HomeFragment : Fragment() {
 
     private fun iconFor(mode: GameMode): Int {
         return when (mode) {
-            GameMode.BOT -> R.drawable.robot_2_48px
+            GameMode.BOT -> R.drawable.smart_toy_48px
             GameMode.RANKED -> R.drawable.ic_ranked_mode
             GameMode.PUBLIC -> R.drawable.ic_casual_mode
         }

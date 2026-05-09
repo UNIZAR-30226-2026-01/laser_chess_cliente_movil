@@ -71,7 +71,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:background="@drawable/bg_dark_panel_rounded"
-            android:src="@drawable/robot_2_48px"
+            android:src="@drawable/smart_toy_48px"
             app:tint="@color/LCWhite"
             android:contentDescription="modo_juego"/>
     </LinearLayout>
