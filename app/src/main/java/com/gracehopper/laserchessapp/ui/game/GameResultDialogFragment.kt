@@ -53,7 +53,7 @@ class GameResultDialogFragment(
         val textElo     = view.findViewById<TextView>(R.id.textElo)
         val buttonExit  = view.findViewById<Button>(R.id.buttonExit)
 
-        val iWon = (winner == "P1_WINS") == GameActivity.imInternalRed
+        val iWon = (winner == "P1_WINS") == ActiveGameManager.imRedPlayer
 
         textResult.text = if (iWon) "¡Has ganado!" else "¡Has perdido!"
         textResult.setTextColor(
