@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.imageview.ShapeableImageView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.game.GameResume
 import com.gracehopper.laserchessapp.data.model.user.AccountResponse
@@ -28,8 +29,8 @@ class HistoryGameAdapter(
         val textWinner: TextView = view.findViewById(R.id.textWinner)
         val textDate: TextView = view.findViewById(R.id.textDate)
 
-        val avatar1: ImageView = view.findViewById(R.id.avatarPlayer1)
-        val avatar2: ImageView = view.findViewById(R.id.avatarPlayer2)
+        val avatar1: ShapeableImageView = view.findViewById(R.id.avatarPlayer1)
+        val avatar2: ShapeableImageView = view.findViewById(R.id.avatarPlayer2)
 
         val btnViewGame: Button = view.findViewById(R.id.btnViewGame)
     }
@@ -66,12 +67,10 @@ class HistoryGameAdapter(
         holder.avatar1.setImageResource(
             ItemUtils.getItemDrawable(avatar1Id)
         )
-        holder.avatar1.clipToOutline = true
 
         holder.avatar2.setImageResource(
             ItemUtils.getItemDrawable(avatar2Id)
         )
-        holder.avatar2.clipToOutline = true
 
         holder.btnViewGame.setOnClickListener {
             onViewClick(game)

@@ -1,196 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="#0D0D1A">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/blockTop"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.18"
-
+    <LinearLayout
+        android:id="@+id/top_action_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
             android:id="@+id/btnPause"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:src="@drawable/outline_autopause_24"
-            app:layout_constraintWidth_percent="0.06"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_margin="12dp"
-            android:visibility="gone"/>
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_button"
+            android:src="@drawable/ic_pause"
+            android:layout_marginEnd="16dp"
+            app:tint="@color/LCWhite"/>
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_button"
+            android:src="@drawable/ic_cancel"
+            app:tint="@color/LCWhite"/>
 
-        <ImageView
-            android:id="@+id/avatarEnemy"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:src="@drawable/ic_avatar"
-            app:layout_constraintWidth_percent="0.12"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="12dp"/>
-
-        <TextView
-            android:id="@+id/nameEnemy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Usuario"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            app:layout_constraintTop_toBottomOf="@id/avatarEnemy"
-            app:layout_constraintStart_toStartOf="@id/avatarEnemy" />
-
-        <TextView
-            android:id="@+id/timeEnemy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="13:00"
-            android:textSize="20sp"
-
-            app:layout_constraintStart_toEndOf="@id/avatarEnemy"
-            app:layout_constraintTop_toTopOf="@id/avatarEnemy"
-            app:layout_constraintBottom_toBottomOf="@id/nameEnemy"
-            android:layout_marginStart="24dp" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/blockMid"
-
+        android:id="@+id/own_card"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.64"
-
-        app:layout_constraintTop_toBottomOf="@id/blockTop"
+        android:layout_height="64dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_avatar_blue_border"
+        app:layout_constraintTop_toBottomOf="@id/top_action_buttons"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" >
-        
-        <androidx.compose.ui.platform.ComposeView
+        app:layout_constraintEnd_toStartOf="@+id/oponent_card">
 
-            android:id="@+id/board"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-
-            android:layout_margin="8dp"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-
-        android:id="@+id/blockBot"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.18"
-
-
-        app:layout_constraintTop_toBottomOf="@id/blockMid"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Botón temporal probar websocket -->
-        <!-- <Button
-            android:id="@+id/connect"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-
-            android:text="websocket"/> -->
-
-
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/avatarPlayer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
             android:src="@drawable/ic_avatar"
-            app:layout_constraintWidth_percent="0.12"
-            app:layout_constraintDimensionRatio="1:1"
-
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/CircleImage"
+            app:strokeWidth="3dp"
+            app:strokeColor="@color/LCBlue"
+            android:padding="3dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="48dp"
-            />
-
-        <TextView
-            android:id="@+id/namePlayer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Usuario"
-            android:textStyle="bold"
-            android:textSize="16sp"
-
-            app:layout_constraintEnd_toEndOf="@id/avatarPlayer"
-            app:layout_constraintStart_toStartOf="@id/avatarPlayer"
-            app:layout_constraintTop_toBottomOf="@id/avatarPlayer"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/timePlayer"
-            android:layout_width="70dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="13:00"
-            android:textSize="20sp"
-
-            app:layout_constraintEnd_toStartOf="@id/avatarPlayer"
-            app:layout_constraintTop_toTopOf="@id/avatarPlayer"
-
+            android:text="9:59"
+            android:textColor="@color/LCWhite"
+            android:textSize="@dimen/text_medium_large"
             android:textAlignment="center"
-            android:layout_marginEnd="12dp"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/avatarPlayer"
+            app:layout_constraintTop_toTopOf="@id/avatarPlayer" />
 
-        <LinearLayout
-            android:id="@+id/rotationButtons"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/namePlayer"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-
-
-
+            android:text="Tú"
+            android:textColor="@color/LCWhite"
+            android:textSize="@dimen/text_medium_small"
+            android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@id/timePlayer"
-            app:layout_constraintStart_toStartOf="@id/timePlayer"
-            app:layout_constraintEnd_toStartOf="@id/avatarPlayer"
-            app:layout_constraintBottom_toBottomOf="@id/namePlayer"
-
-            android:visibility="gone"
-
-            android:layout_marginTop="8dp">
-
-            <ImageButton
-                android:id="@+id/btnRotLeft"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:src="@drawable/ic_rotate_left"
-                android:padding="8dp"
-                android:scaleType="centerInside"
-                />
-
-            <ImageButton
-                android:id="@+id/btnRotRight"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:src="@drawable/ic_rotate_right"
-                android:padding="8dp"
-                android:scaleType="centerInside"
-                />
-
-        </LinearLayout>
-
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/avatarPlayer"
+            app:layout_constraintBottom_toBottomOf="@id/avatarPlayer"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/oponent_card"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_avatar_red_border"
+        app:layout_constraintTop_toBottomOf="@id/top_action_buttons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/own_card">
+
+        <TextView
+            android:id="@+id/timeEnemy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="10:00"
+            android:textColor="@color/LCWhite"
+            android:textSize="@dimen/text_medium_large"
+            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/avatarEnemy"
+            app:layout_constraintTop_toTopOf="@id/avatarEnemy" />
+
+        <TextView
+            android:id="@+id/nameEnemy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Op"
+            android:textColor="@color/LCWhite"
+            android:textSize="@dimen/text_medium_small"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@id/avatarEnemy"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/avatarEnemy"
+            app:layout_constraintTop_toBottomOf="@id/timeEnemy" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/avatarEnemy"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_avatar"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/CircleImage"
+            app:strokeWidth="3dp"
+            app:strokeColor="@color/LCRed"
+            android:padding="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/board"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintDimensionRatio="9:11"
+        app:layout_constraintTop_toBottomOf="@id/own_card"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/rotationButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/board"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btnRtLftLayout"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_button"
+            android:layout_marginEnd="6dp"
+            >
+            <ImageButton
+                android:id="@+id/btnRotLeft"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/ic_rotateleft"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="rotar izda"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:tint="@color/LCWhite" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btnRtRgtLayout"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_button"
+            android:layout_marginStart="6dp"
+            >
+            <ImageButton
+                android:id="@+id/btnRotRight"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:src="@drawable/ic_rotateright"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Rotar derecha"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:tint="@color/LCWhite" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
