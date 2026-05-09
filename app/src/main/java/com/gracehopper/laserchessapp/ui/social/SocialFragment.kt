@@ -366,7 +366,6 @@ class SocialFragment : Fragment() {
         val topSection = dialogView.findViewById<View>(R.id.dialog_top_section)
         val topIcon = topSection.findViewById<ImageView>(R.id.dialogIcon)
         val dialogTitle = topSection.findViewById<TextView>(R.id.dialogTitle)
-        val buttonCloseDialog = topSection.findViewById<ImageButton>(R.id.buttonCloseDialog)
 
         dialogTitle.text = "Agregar amigo"
         topIcon.setImageResource(R.drawable.ic_person_bart)

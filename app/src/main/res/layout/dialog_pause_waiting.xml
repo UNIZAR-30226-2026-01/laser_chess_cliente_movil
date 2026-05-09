@@ -13,7 +13,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="16dp"
         android:paddingVertical="10dp"
-        android:background="@drawable/bg_pause_dialog"
+        android:background="@drawable/bg_dark_panel_rounded"
         android:elevation="10dp"
 
         app:layout_constraintTop_toTopOf="parent"
@@ -25,7 +25,10 @@
             android:id="@+id/textWaiting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Esperando respuesta..."
+            android:textColor="@color/LCWhite"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="10dp"
+            android:text="Solicitud de pausa enviada..."
             android:textStyle="bold"
             android:layout_marginEnd="12dp"/>
 
@@ -35,6 +38,8 @@
             android:layout_height="40dp"
             android:padding="8dp"
             android:scaleType="centerInside"
+            app:tint="@color/LCWhite"
+            android:backgroundTint="@color/S1"
             android:src="@drawable/baseline_close_24"
             android:background="?attr/selectableItemBackgroundBorderless"/>
     </LinearLayout>
