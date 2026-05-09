@@ -46,6 +46,8 @@
     <string name="send_link">Envíale el siguiente enlace:</string>
     <string name="copy">COPIAR</string>
     <string name="close">Cerrar</string>
+    <string name="separator_or">O</string>
+    <string name="hint_username">Ej: Usuario123</string>
 
     <string name="request_match">SOLICITAR PARTIDA</string>
     <string name="delete">ELIMINAR</string>

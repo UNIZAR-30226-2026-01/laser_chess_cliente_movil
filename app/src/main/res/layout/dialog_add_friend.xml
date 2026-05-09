@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
@@ -13,121 +14,125 @@
 
         <include
             android:id="@+id/dialog_top_section"
-            layout="@layout/dialog_common_popup_frame"/>
+            layout="@layout/dialog_common_popup_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <TextView
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:text="@string/write_username"
-            android:textColor="@color/LCWhite"/>
-
-        <EditText
-            android:layout_marginTop="8dp"
-            android:id="@+id/editTextFriendUsername"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:textColorHint="@android:color/darker_gray"
-            android:inputType="textNoSuggestions"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
             android:textColor="@color/LCWhite"
             android:textSize="@dimen/text_medium"
-            android:background="@drawable/bg_text_field"/>
+            android:textStyle="bold"/>
 
+        <EditText
+            android:id="@+id/editTextFriendUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_text_field"
+            android:hint="@string/hint_username"
+            android:inputType="textNoSuggestions"
+            android:padding="12dp"
+            android:textColor="@color/LCWhite"
+            android:textColorHint="@color/LCGray"
+            android:textSize="@dimen/text_medium" />
 
         <Button
             android:id="@+id/buttonSendFriendRequest"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_red_button"
             android:text="@string/send_request"
-            android:textStyle="bold"
             android:textAllCaps="false"
-            android:textColor="@android:color/black"
-            android:background="@drawable/bg_box_border"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:layout_marginBottom="15dp" />
+            android:textColor="@color/LCWhite"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold"
+            app:backgroundTint="@null" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="@string/wait_approval"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="20dp" />
+            android:textAlignment="center"
+            android:textColor="@color/LCGray"
+            android:textSize="@dimen/text_medium_small" />
 
         <!-- Separador -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="24dp"
             android:gravity="center_vertical"
-            android:layout_marginBottom="20dp">
+            android:orientation="horizontal">
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="2dp"
+                android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="@android:color/black" />
+                android:background="@color/S3" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="o"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginHorizontal="12dp" />
+                android:layout_marginHorizontal="16dp"
+                android:text="@string/separator_or"
+                android:textColor="@color/LCGray"
+                android:textSize="@dimen/text_medium_small"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="2dp"
+                android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="@android:color/black" />
+                android:background="@color/S3" />
         </LinearLayout>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             android:text="@string/send_link"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="12dp" />
+            android:textColor="@color/LCWhite"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp" >
+            android:layout_marginBottom="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textInvitationLink"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/bg_box_border"
+                android:background="@drawable/bg_surface2_panel_rounded"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:paddingHorizontal="10dp"
+                android:paddingHorizontal="12dp"
                 android:paddingVertical="12dp"
-                android:textColor="@android:color/black"
-                android:textSize="14sp" />
+                android:textColor="@color/LCWhite"
+                android:textSize="@dimen/text_medium_small" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/buttonCopyInvitationLink"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_box_border"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="10dp"
-                android:text="@string/copy"
-                android:textAllCaps="false"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/bg_button"
+                android:contentDescription="@string/copy"
+                android:padding="12dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_edit"
+                app:tint="@color/LCWhite" />
         </LinearLayout>
 
     </LinearLayout>

@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ProgressBar
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,7 +55,17 @@ class HistoryDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        buttonClose = view.findViewById(R.id.buttonCloseHistory)
+        val topSection = view.findViewById<View>(R.id.dialog_top_section)
+        buttonClose = topSection.findViewById(R.id.buttonCloseDialog)
+        
+        val dialogTitle = topSection.findViewById<TextView>(R.id.dialogTitle)
+        val dialogIcon = topSection.findViewById<ImageView>(R.id.dialogIcon)
+        
+        dialogTitle.text = "Últimas partidas"
+        
+        dialogIcon.setImageResource(R.drawable.history_32px)
+        dialogIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.LCWhite))
+
         recyclerHistory = view.findViewById(R.id.recyclerHistory)
         textEmpty = view.findViewById(R.id.textHistoryEmpty)
         progressHistory = view.findViewById(R.id.progressHistory)

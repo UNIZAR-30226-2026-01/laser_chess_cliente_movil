@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -48,6 +49,15 @@ class RequestsDialogFragment : DialogFragment() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_friendship_requests, null)
 
         bindViews(dialogView)
+
+        // Configurar cabecera
+        val topSection = dialogView.findViewById<View>(R.id.dialog_top_section)
+        val dialogTitle = topSection.findViewById<TextView>(R.id.dialogTitle)
+        val dialogIcon = topSection.findViewById<ImageView>(R.id.dialogIcon)
+        dialogTitle.text = getString(R.string.requests)
+        dialogIcon.setImageResource(R.drawable.ic_friend_requests)
+        dialogIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.LCWhite))
+        buttonCloseDialog = topSection.findViewById(R.id.buttonCloseDialog)
 
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
@@ -91,8 +101,6 @@ class RequestsDialogFragment : DialogFragment() {
 
     private fun bindViews(dialogView: View) {
 
-        buttonCloseDialog = dialogView.findViewById(R.id.buttonCloseRequestsDialog)
-
         receivedContainer = dialogView.findViewById(R.id.layoutReceivedRequestsContainer)
         receivedTab = dialogView.findViewById(R.id.tabReceivedRequests)
         layoutReceivedContent = dialogView.findViewById(R.id.layoutReceivedRequestsContent)
@@ -133,11 +141,17 @@ class RequestsDialogFragment : DialogFragment() {
             layoutReceivedContent.visibility = View.VISIBLE
             layoutSentContent.visibility = View.GONE
 
+            receivedTab.isSelected = true
+            sentTab.isSelected = false
+            
             receivedTab.setBackgroundResource(R.drawable.bg_tab_selected)
             sentTab.setBackgroundResource(R.drawable.bg_tab_unselected)
         } else {
             layoutReceivedContent.visibility = View.GONE
             layoutSentContent.visibility = View.VISIBLE
+
+            receivedTab.isSelected = false
+            sentTab.isSelected = true
 
             receivedTab.setBackgroundResource(R.drawable.bg_tab_unselected)
             sentTab.setBackgroundResource(R.drawable.bg_tab_selected)

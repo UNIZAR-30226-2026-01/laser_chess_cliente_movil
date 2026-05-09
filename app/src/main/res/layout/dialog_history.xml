@@ -19,47 +19,11 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <LinearLayout
+            <include
+                android:id="@+id/dialog_top_section"
+                layout="@layout/dialog_common_popup_frame"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/buttonCloseHistory"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="Cerrar"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_close"
-                    app:tint="@color/LCWhite"/>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="10dp"
-                    android:text="Últimas partidas"
-                    android:textColor="@color/LCWhite"
-                    android:textSize="22sp"
-                    android:textStyle="bold"/>
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/history_32px"
-                    app:tint="@color/LCPurple"/>
-
-            </LinearLayout>
-
-            <!-- Separador -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="12dp"
-                android:background="@color/S3"/>
+                android:layout_height="wrap_content"/>
 
             <!-- Estado vacío -->
             <TextView

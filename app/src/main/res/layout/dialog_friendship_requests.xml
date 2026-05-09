@@ -2,36 +2,20 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_modal_border"
-        android:padding="24dp">
+        android:background="@drawable/bg_dark_panel_rounded"
+        android:padding="16dp">
 
-        <!-- Cerrar -->
-        <ImageButton
-            android:id="@+id/buttonCloseRequestsDialog"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:background="@drawable/bg_box_border"
-            android:src="@drawable/ic_close"
-            android:contentDescription="@string/close"
-            android:padding="8dp"
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:id="@+id/textRequestsDialogTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/requests"
-            android:textStyle="bold"
-            android:textSize="25sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="20dp" />
+        <include
+            android:id="@+id/dialog_top_section"
+            layout="@layout/dialog_common_popup_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <!-- Tabs -->
         <LinearLayout
@@ -39,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp">
 
             <TextView
@@ -50,7 +35,7 @@
                 android:gravity="center"
                 android:paddingVertical="10dp"
                 android:text="@string/received_requests"
-                android:textColor="@android:color/black"
+                android:textColor="@color/selector_tab_text_color"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -63,7 +48,7 @@
                 android:gravity="center"
                 android:paddingVertical="10dp"
                 android:text="@string/sent_requests"
-                android:textColor="@android:color/black"
+                android:textColor="@color/selector_tab_text_color"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -81,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/no_received_requests"
                 android:textSize="15sp"
-                android:textColor="@color/darker_gray"
+                android:textColor="@color/LCGray"
                 android:visibility="gone"
                 android:layout_marginBottom="10dp" />
 
@@ -106,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/no_sent_requests"
                 android:textSize="15sp"
-                android:textColor="@color/darker_gray"
+                android:textColor="@color/LCGray"
                 android:visibility="gone"
                 android:layout_marginBottom="10dp" />
 
