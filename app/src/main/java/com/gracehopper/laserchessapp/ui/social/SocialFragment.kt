@@ -369,8 +369,8 @@ class SocialFragment : Fragment() {
         topIcon.setImageResource(R.drawable.ic_person_bart)
         topIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.LCWhite))
         val editTextUsername = dialogView.findViewById<EditText>(R.id.editTextFriendUsername)
-        val buttonSendFriendRequest = dialogView.findViewById<Button>(R.id.buttonSendFriendRequest)
-        val buttonCopyInvitationLink = dialogView.findViewById<Button>(R.id.buttonCopyInvitationLink)
+        val buttonSendFriendRequest = dialogView.findViewById<ImageButton>(R.id.buttonSendFriendRequest)
+        val buttonCopyInvitationLink = dialogView.findViewById<ImageButton>(R.id.buttonCopyInvitationLink)
         val buttonCloseDialog = dialogView.findViewById<ImageButton>(R.id.buttonCloseDialog)
         val textInvitationLink = dialogView.findViewById<TextView>(R.id.textInvitationLink)
 

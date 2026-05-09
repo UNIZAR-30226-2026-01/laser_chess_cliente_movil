@@ -1,133 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
 
     <!-- Caja principal -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_dark_panel_rounded"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:background="@drawable/bg_dark_panel_rounded">
+        android:padding="16dp">
 
         <include
             android:id="@+id/dialog_top_section"
             layout="@layout/dialog_common_popup_frame"/>
 
+        <!-- Enviar solicitud-->
         <TextView
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/write_username"
-            android:textColor="@color/LCWhite"/>
+            android:textColor="@color/LCWhite" />
 
-        <EditText
-            android:layout_marginTop="8dp"
-            android:id="@+id/editTextFriendUsername"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:textColorHint="@android:color/darker_gray"
-            android:inputType="textNoSuggestions"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:textColor="@color/LCWhite"
-            android:textSize="@dimen/text_medium"
-            android:background="@drawable/bg_text_field"/>
-
-
-        <Button
-            android:id="@+id/buttonSendFriendRequest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/send_request"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:textColor="@android:color/black"
-            android:background="@drawable/bg_box_border"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:layout_marginBottom="15dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/wait_approval"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="20dp" />
-
-        <!-- Separador -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="20dp">
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp">
 
-            <View
+            <EditText
+                android:id="@+id/editTextFriendUsername"
                 android:layout_width="0dp"
-                android:layout_height="2dp"
-                android:layout_weight="1"
-                android:background="@android:color/black" />
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="o"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginHorizontal="12dp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="2dp"
                 android:layout_weight="1"
-                android:background="@android:color/black" />
+                android:background="@drawable/bg_text_field"
+                android:inputType="textNoSuggestions"
+                android:hint="Nombre de tu amigo..."
+                android:padding="12dp"
+                android:textColor="@color/LCWhite"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="@dimen/text_medium" />
+
+            <ImageButton
+                android:id="@+id/buttonSendFriendRequest"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_red_button"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:src="@drawable/ic_send"
+                android:tintMode="@color/LCWhite"
+                android:scaleType="center"
+               />
         </LinearLayout>
 
+        <!-- Enviar solicitud-->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/send_link"
-            android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="12dp" />
+            android:textColor="@color/LCWhite" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp" >
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal">
 
             <TextView
+                android:layout_marginTop="8dp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:id="@+id/textInvitationLink"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/bg_box_border"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="12dp"
-                android:textColor="@android:color/black"
-                android:textSize="14sp" />
+                android:background="@drawable/bg_text_field"
+                android:padding="12dp"
+                android:textColor="@color/LCWhite"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="@dimen/text_medium" />
 
-            <Button
+            <ImageButton
+                android:layout_marginTop="8dp"
                 android:id="@+id/buttonCopyInvitationLink"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_box_border"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="10dp"
-                android:text="@string/copy"
-                android:textAllCaps="false"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_blue_button"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:src="@drawable/ic_copy"
+                android:tintMode="@color/LCWhite"
+                android:scaleType="center"/>
         </LinearLayout>
 
     </LinearLayout>
