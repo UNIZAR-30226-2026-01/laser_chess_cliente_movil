@@ -449,14 +449,7 @@ object ActiveGameManager {
 
         setGameType(false)
 
-        currentOpponentInfo = GamePlayerInfo(
-            id = 1,
-            username = "BOT",
-            avatar = 1,
-            pieceSkin = CurrentUserManager.getMyCurrentPieceSkin(),
-            boardSkin = CurrentUserManager.getMyCurrentBoardSkin(),
-            winAnimation = CurrentUserManager.getMyCurrentWinAnimation()
-        )
+        currentOpponentInfo = null
         currentBoard = board
         currentStartingTime = startingTime
         currentTimeIncrement = timeIncrement
