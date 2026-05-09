@@ -67,9 +67,25 @@ class RankingEntryAdapter(
                 }
             }
 
-            if(entry.isCurrentUser){
-                cardRankingEntry.setCardBackgroundColor(ContextCompat.getColor(context, R.color.S3))
-                textRankingUsername.setTextColor(ContextCompat.getColor(context, R.color.white))
+            if (entry.isCurrentUser) {
+
+                cardRankingEntry.setCardBackgroundColor(
+                    ContextCompat.getColor(context, R.color.S3)
+                )
+
+                textRankingUsername.setTextColor(
+                    ContextCompat.getColor(context, R.color.white)
+                )
+
+            } else {
+
+                cardRankingEntry.setCardBackgroundColor(
+                    ContextCompat.getColor(context, R.color.S2)
+                )
+
+                textRankingUsername.setTextColor(
+                    ContextCompat.getColor(context, R.color.LCWhite)
+                )
             }
 
             root.setOnClickListener {

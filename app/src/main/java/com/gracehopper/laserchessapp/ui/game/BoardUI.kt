@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 @Composable
 fun GameScreen(
@@ -162,6 +164,31 @@ fun GameScreen(
                                             },
                                         contentAlignment = Alignment.Center
                                     ) {
+
+                                        val isRedRune =
+                                            row == 0 || (row == 8 && (col == 0 || col == 7))
+
+                                        val isBlueRune =
+                                            row == 9 || (row == 1 && (col == 0 || col == 7))
+
+                                        if (isRedRune || isBlueRune) {
+
+                                            val runeRes = when {
+
+                                                isRedRune -> ItemUtils.getRedRune(myBoardSkin)
+
+                                                else -> ItemUtils.getBlueRune(myBoardSkin)
+                                            }
+
+                                            Image(
+                                                painter = painterResource(runeRes),
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .fillMaxSize(0.72f)
+                                                    .alpha(0.28f)
+                                            )
+                                        }
+
                                         piece?.let { p ->
                                             key(p, myPieceSkin, opponentPieceSkin) {
                                                 val visualRotation = if (isRedPlayer) p.rotation
