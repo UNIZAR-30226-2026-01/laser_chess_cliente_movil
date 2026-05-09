@@ -2,6 +2,7 @@ package com.gracehopper.laserchessapp.gameLogic.board
 
 import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
+import android.util.Log
 
 /**
  * Objeto encargado de convertir un tablero en formato CSV
@@ -33,6 +34,11 @@ object BoardParser {
                      * - Se transforma a coordenadas internas del tablero (orientación vertical)
                      */
                     val boardCol = board.cols - 1 - r
+
+                    Log.d(
+                        "BOARD_PARSE",
+                        "piece=$cell -> row=$c col=$boardCol parsed=${piece != null}"
+                    )
 
                     board.setPiece(row = c, col = boardCol, piece = piece)
                 }
