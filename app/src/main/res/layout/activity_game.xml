@@ -22,14 +22,6 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_button"
             android:src="@drawable/ic_pause"
-            android:layout_marginEnd="16dp"
-            app:tint="@color/LCWhite"/>
-        <ImageButton
-            android:id="@+id/btnClose"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/bg_button"
-            android:src="@drawable/ic_cancel"
             app:tint="@color/LCWhite"/>
 
     </LinearLayout>
