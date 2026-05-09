@@ -127,4 +127,29 @@ object ItemUtils {
 
     }
 
+    fun getBlueRune(boardSkinId: Int): Int {
+
+        return when (boardSkinId) {
+
+            4 -> R.drawable.rune_b_classic
+            5 -> R.drawable.rune_b_soretro
+            6 -> R.drawable.rune_b_cats
+
+            else -> R.drawable.rune_b_classic
+        }
+    }
+
+    fun getRedRune(boardSkinId: Int): Int {
+
+        return when (boardSkinId) {
+
+            4 -> R.drawable.rune_r_classic
+            5 -> R.drawable.rune_r_soretro
+            6 -> R.drawable.rune_cats_r
+
+            else -> R.drawable.rune_r_classic
+        }
+    }
+
+
 }

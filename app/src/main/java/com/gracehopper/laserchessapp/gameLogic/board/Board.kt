@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.gameLogic.board
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 
@@ -17,6 +18,10 @@ class Board(val rows: Int, val cols: Int) {
 
     fun setPiece(row: Int, col: Int, piece: Piece?) {
         grid[row][col] = piece
+        Log.d(
+            "SET_PIECE",
+            "row=$row col=$col piece=${piece?.javaClass?.simpleName}"
+        )
     }
 
     fun clear() {

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -108,6 +109,7 @@ class GameReplayActivity : AppCompatActivity() {
 
         updateLaserForCurrentIndex()
         renderBoard()
+        updateProfileCard(imRedPlayer)
     }
 
     /**
@@ -191,6 +193,7 @@ class GameReplayActivity : AppCompatActivity() {
     private fun renderBoard() {
         // Actualizar timers en la UI si el movimiento contiene timer
         updateTimerDisplay()
+        updateProfileCard(isMyTurn())
 
         boardView.setContent {
             GameScreen(
@@ -227,13 +230,29 @@ class GameReplayActivity : AppCompatActivity() {
             val timeMs = move.timer
             val formatted = formatReplayTime(timeMs)
 
-            val moverIsLocalPlayer = ((moveIndex - 1) % 2 == 0) == imRedPlayer
-            if (moverIsLocalPlayer) {
+            if (isMyTurn()) {
                 timerPlayer.text = formatted
             } else {
                 timerEnemy.text = formatted
             }
         } catch (e: Exception) {
+        }
+    }
+
+    /* devuelve true si es el turno del jugador loggeado */
+    private fun isMyTurn(): Boolean{
+        return ((moveIndex - 1) % 2 == 0) == imRedPlayer
+    }
+
+    private fun updateProfileCard(myTurn: Boolean){
+        val myProfile = findViewById<LinearLayout>(R.id.pillPlayer)
+        val opProfile = findViewById<LinearLayout>(R.id.pillEnemy)
+        if(myTurn){
+            myProfile.setBackgroundResource(R.drawable.bg_avatar_blue_border)
+            opProfile.setBackgroundResource(R.drawable.bg_avatar_no_border)
+        }else{
+            myProfile.setBackgroundResource(R.drawable.bg_avatar_no_border)
+            opProfile.setBackgroundResource(R.drawable.bg_avatar_red_border)
         }
     }
 

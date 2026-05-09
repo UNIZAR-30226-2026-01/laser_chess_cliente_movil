@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -13,20 +14,22 @@
 
         <include
             android:id="@+id/dialog_top_section"
-            layout="@layout/dialog_common_popup_frame"/>
+            layout="@layout/dialog_common_popup_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <!-- Enviar solicitud-->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:text="@string/write_username"
             android:textColor="@color/LCWhite" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginBottom="24dp"
             android:gravity="center_vertical"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp">

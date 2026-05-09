@@ -287,22 +287,47 @@ object ActiveGameManager {
              * Rival reconectado
              */
             GameMessageType.RECONNECTION -> {
-                val myTimeMs = serverMsg.extra?.toLongOrNull()
-                if (myTimeMs != null) {
-                    // Es nuestra propia reconexión: content=ID rival, extra=tiempo restante ms
-                    currentStartingTime = (myTimeMs / 1000).toInt()
-                    reconnectingOpponentId = serverMsg.content?.toLongOrNull()
-                    // A partir de aquí esperamos InitialState + State antes de navegar
-                    awaitingReconnectMessages = true
-                    onMessageReceivedCallback?.invoke(
-                        GameEvent.Reconnected(
-                            opponentId = serverMsg.content,
-                            remainingTime = serverMsg.extra
+
+                val timers = serverMsg.extra?.split("%")
+
+                if (timers?.size == 2) {
+
+                    val myTimeMs = timers[0].toLongOrNull()
+                    val opponentTimeMs = timers[1].toLongOrNull()
+
+                    if (myTimeMs != null && opponentTimeMs != null) {
+
+                        currentStartingTime = (myTimeMs / 1000).toInt()
+
+                        reconnectingOpponentId = serverMsg.content?.toLongOrNull()
+
+                        // Sincronizar timers inmediatamente
+                        GameTimerManager.syncTimers(
+                            myTime = myTimeMs,
+                            opponentTime = opponentTimeMs
                         )
-                    )
+
+                        awaitingReconnectMessages = true
+
+                        onMessageReceivedCallback?.invoke(
+                            GameEvent.Reconnected(
+                                opponentId = serverMsg.content,
+                                remainingTime = serverMsg.extra
+                            )
+                        )
+
+                    } else {
+
+                        onMessageReceivedCallback?.invoke(
+                            GameEvent.OpponentReconnected
+                        )
+                    }
+
                 } else {
-                    // Es el rival quien se ha reconectado
-                    onMessageReceivedCallback?.invoke(GameEvent.OpponentReconnected)
+
+                    onMessageReceivedCallback?.invoke(
+                        GameEvent.OpponentReconnected
+                    )
                 }
             }
 
@@ -314,7 +339,59 @@ object ActiveGameManager {
             }
 
             GameMessageType.REWARDS -> {
-                // de momento ignorar
+
+                val xpDiff = serverMsg.content?.toIntOrNull()
+                val moneyDiff = serverMsg.extra?.toIntOrNull()
+
+                if (xpDiff != null && moneyDiff != null) {
+
+                    val event = GameEvent.Rewards(
+                        xpDiff = xpDiff,
+                        moneyDiff = moneyDiff
+                    )
+
+                    val cb = onMessageReceivedCallback
+
+                    if (cb != null) {
+                        cb.invoke(event)
+                    } else {
+                        pendingEvents.add(event)
+                    }
+
+                } else {
+
+                    Log.w(
+                        "WS",
+                        "Mensaje REWARDS inválido: content=${serverMsg.content}, extra=${serverMsg.extra}"
+                    )
+                }
+            }
+
+            GameMessageType.ELO_UPDATE -> {
+
+                val eloDiff = serverMsg.content?.toIntOrNull()
+
+                if (eloDiff != null) {
+
+                    val event = GameEvent.EloUpdate(
+                        eloDiff = eloDiff
+                    )
+
+                    val cb = onMessageReceivedCallback
+
+                    if (cb != null) {
+                        cb.invoke(event)
+                    } else {
+                        pendingEvents.add(event)
+                    }
+
+                } else {
+
+                    Log.w(
+                        "WS",
+                        "Mensaje ELO_UPDATE inválido: content=${serverMsg.content}"
+                    )
+                }
             }
 
             else -> {
@@ -372,14 +449,7 @@ object ActiveGameManager {
 
         setGameType(false)
 
-        currentOpponentInfo = GamePlayerInfo(
-            id = 1,
-            username = "BOT",
-            avatar = 1,
-            pieceSkin = CurrentUserManager.getMyCurrentPieceSkin(),
-            boardSkin = CurrentUserManager.getMyCurrentBoardSkin(),
-            winAnimation = CurrentUserManager.getMyCurrentWinAnimation()
-        )
+        currentOpponentInfo = null
         currentBoard = board
         currentStartingTime = startingTime
         currentTimeIncrement = timeIncrement

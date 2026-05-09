@@ -23,19 +23,17 @@ import com.gracehopper.laserchessapp.ui.main.MainActivity
  */
 class GameResultDialogFragment(
     private val winner: String,
-    private val cause: String?
+    private val cause: String?,
+    private val xpDiff: Int,
+    private val moneyDiff: Int,
+    private val eloDiff: Int?
 ) : DialogFragment() {
-
-    private lateinit var textResult: TextView
-    private lateinit var textCause: TextView
-    private lateinit var buttonRematch: Button
-    private lateinit var buttonExit: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         /**
-         * El diálogo no se puede cancelar (obligatorio interactuar)
+         * El diálogo no se puede cancelar
          */
         isCancelable = false
         setStyle(STYLE_NO_TITLE, android.R.style.Theme_Translucent_NoTitleBar)
@@ -50,47 +48,32 @@ class GameResultDialogFragment(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        textResult = view.findViewById(R.id.textResult)
-        textCause = view.findViewById(R.id.textCause)
-        buttonRematch = view.findViewById(R.id.buttonRematch)
-        buttonExit = view.findViewById(R.id.buttonExit)
+        val textResult  = view.findViewById<TextView>(R.id.textResult)
+        val textRewards = view.findViewById<TextView>(R.id.textRewards)
+        val textElo     = view.findViewById<TextView>(R.id.textElo)
+        val buttonExit  = view.findViewById<Button>(R.id.buttonExit)
 
-        val iAmRed = GameActivity.imInternalRed
+        val iWon = (winner == "P1_WINS") == ActiveGameManager.imRedPlayer
 
-        /**
-         * Determinar resultado desde la perspectiva del jugador
-         */
-        val resultText = when (winner) {
-            "P1_WINS" -> if (iAmRed) "VICTORIA" else "DERROTA"
-            else -> if (iAmRed) "DERROTA" else "VICTORIA"
+        textResult.text = if (iWon) "¡Has ganado!" else "¡Has perdido!"
+        textResult.setTextColor(
+            if (iWon) requireContext().getColor(R.color.LCWhite)
+            else      requireContext().getColor(R.color.LCWhite)
+        )
+
+        textRewards.text = "Has ganado $xpDiff XP y $moneyDiff monedas"
+
+        if (eloDiff != null) {
+            textElo.visibility = View.VISIBLE
+            val sign = if (eloDiff >= 0) "+" else ""
+            textElo.text = "Elo: $sign$eloDiff"
+        } else {
+            textElo.visibility = View.GONE
         }
 
-        /**
-         * Determinar causa de la victoria
-         */
-        val causeText = when (cause) {
-            "LASER" -> "Victoria por láser"
-            "TIME" -> "Victoria por tiempo"
-            else -> "Victoria por desconexión del rival"
-        }
-
-        textResult.text = resultText
-        textCause.text = causeText
-
-        /**
-         * Botón de revancha (pendiente de implementar)
-         */
-        buttonRematch.setOnClickListener {
-            //TODO: Revancha
-        }
-
-        /**
-         * Salir de la partida y volver al menú principal
-         */
         buttonExit.setOnClickListener {
             ActiveGameManager.closeConnection()
             ActiveGameManager.resetAll()
-
             val intent = Intent(requireContext(), MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
@@ -99,19 +82,14 @@ class GameResultDialogFragment(
 
     override fun onStart() {
         super.onStart()
-
-        /**
-         * Configuración visual del diálogo
-         */
         dialog?.window?.apply {
             setBackgroundDrawableResource(android.R.color.transparent)
             setDimAmount(0.6f)
-
-            val params = attributes
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            params.gravity = Gravity.CENTER
-            attributes = params
+            val p = attributes
+            p.width   = ViewGroup.LayoutParams.MATCH_PARENT
+            p.height  = ViewGroup.LayoutParams.WRAP_CONTENT
+            p.gravity = Gravity.CENTER
+            attributes = p
         }
     }
 }

@@ -6,7 +6,7 @@
     android:layout_marginBottom="12dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:background="@drawable/bg_box_border"
+    android:background="@drawable/bg_surface2_panel_rounded"
     android:padding="12dp">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -27,7 +27,7 @@
         android:text="@string/username"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black" />
+        android:textColor="@color/LCWhite" />
 
     <LinearLayout
         android:id="@+id/layoutRequestActions"
@@ -39,23 +39,22 @@
             android:id="@+id/buttonAcceptRequest"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:background="@drawable/bg_box_border"
+            android:background="@drawable/bg_button"
             android:src="@drawable/ic_accept"
-            android:contentDescription="@string/close"
+            android:contentDescription="@string/accept"
             android:padding="8dp"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginEnd="8dp"
+            app:tint="@color/LCGreen" />
 
         <ImageButton
             android:id="@+id/buttonRejectCancelRequest"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:background="@drawable/bg_box_border"
+            android:background="@drawable/bg_button"
             android:src="@drawable/ic_cancel"
-            android:contentDescription="@string/close"
+            android:contentDescription="@string/reject"
             android:padding="8dp"
-            android:layout_marginBottom="12dp" />
+            app:tint="@color/LCRed" />
     </LinearLayout>
 
 </LinearLayout>

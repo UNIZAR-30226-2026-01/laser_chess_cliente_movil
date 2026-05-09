@@ -120,7 +120,8 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_arrow_right"
+            android:src="@drawable/ic_arrow_left"
+            android:rotation="180"
             android:contentDescription="@string/next"
             app:tint="@color/LCWhite" />
 
@@ -191,7 +192,8 @@
                     android:layout_width="24dp"
                     android:layout_height="36dp"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_right"
+                    android:src="@drawable/ic_arrow_left"
+                    android:rotation="180"
                     android:contentDescription="@string/next"
                     app:tint="@color/LCWhite" />
 
@@ -250,7 +252,8 @@
                     android:layout_width="24dp"
                     android:layout_height="36dp"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_right"
+                    android:src="@drawable/ic_arrow_left"
+                    android:rotation="180"
                     android:contentDescription="@string/next"
                     app:tint="@color/LCWhite" />
 
@@ -309,7 +312,8 @@
                     android:layout_width="24dp"
                     android:layout_height="36dp"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/ic_arrow_right"
+                    android:src="@drawable/ic_arrow_left"
+                    android:rotation="180"
                     android:contentDescription="@string/next"
                     app:tint="@color/LCWhite" />
 

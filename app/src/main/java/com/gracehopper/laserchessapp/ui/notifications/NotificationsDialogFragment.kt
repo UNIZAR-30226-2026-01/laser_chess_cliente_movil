@@ -1,15 +1,15 @@
 package com.gracehopper.laserchessapp.ui.notifications
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -71,7 +71,15 @@ class NotificationsDialogFragment : DialogFragment() {
             }
         }
 
-        buttonClose = view.findViewById(R.id.buttonCloseNotifications)
+        val topSection = view.findViewById<View>(R.id.dialog_top_section)
+        buttonClose = topSection.findViewById(R.id.buttonCloseDialog)
+        val dialogTitle = topSection.findViewById<TextView>(R.id.dialogTitle)
+        val dialogIcon = topSection.findViewById<ImageView>(R.id.dialogIcon)
+
+        dialogTitle.text = "Retos pendientes"
+        dialogIcon.setImageResource(R.drawable.inbox_32px)
+        dialogIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.LCWhite))
+
         recyclerChallenges = view.findViewById(R.id.recyclerChallenges)
         textEmptyState = view.findViewById(R.id.textEmptyState)
 
@@ -82,7 +90,7 @@ class NotificationsDialogFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
     }
 
     private fun setupRecyclerView() {

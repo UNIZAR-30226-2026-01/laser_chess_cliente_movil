@@ -37,5 +37,7 @@ enum class GameMessageType {
     @SerializedName("Reconnection")
     RECONNECTION,
     @SerializedName("Rewards")
-    REWARDS
+    REWARDS,
+    @SerializedName("EloUpdate")
+    ELO_UPDATE
 }

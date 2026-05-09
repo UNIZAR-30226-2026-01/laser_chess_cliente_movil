@@ -113,5 +113,23 @@ sealed class GameEvent {
         val remainingTime: String?
     ) : GameEvent()
 
+    /**
+     * Recompensas al finalizar la partida
+     *
+     * @param xpDiff XP ganada
+     * @param moneyDiff Monedas ganadas
+     */
+    data class Rewards(
+        val xpDiff: Int,
+        val moneyDiff: Int
+    ) : GameEvent()
 
+    /**
+     * Actualización de elo (solo partidas ranked)
+     *
+     * @param eloDiff Diferencia de elo
+     */
+    data class EloUpdate(
+        val eloDiff: Int
+    ) : GameEvent()
 }

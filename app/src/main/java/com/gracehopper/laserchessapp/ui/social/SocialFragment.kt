@@ -363,11 +363,15 @@ class SocialFragment : Fragment() {
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_add_friend, null)
 
-        val topIcon = dialogView.findViewById<ImageView>(R.id.dialogIcon)
-        val dialogTitle = dialogView.findViewById<TextView>(R.id.dialogTitle)
+        val topSection = dialogView.findViewById<View>(R.id.dialog_top_section)
+        val topIcon = topSection.findViewById<ImageView>(R.id.dialogIcon)
+        val dialogTitle = topSection.findViewById<TextView>(R.id.dialogTitle)
+        val buttonCloseDialog = topSection.findViewById<ImageButton>(R.id.buttonCloseDialog)
+
         dialogTitle.text = "Agregar amigo"
         topIcon.setImageResource(R.drawable.ic_person_bart)
         topIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.LCWhite))
+        
         val editTextUsername = dialogView.findViewById<EditText>(R.id.editTextFriendUsername)
         val buttonSendFriendRequest = dialogView.findViewById<ImageButton>(R.id.buttonSendFriendRequest)
         val buttonCopyInvitationLink = dialogView.findViewById<ImageButton>(R.id.buttonCopyInvitationLink)
@@ -381,6 +385,10 @@ class SocialFragment : Fragment() {
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
             .create()
+
+        buttonCloseDialog.setOnClickListener {
+            dialog.dismiss()
+        }
 
         textInvitationLink.setOnClickListener {
             copyInvitationLink(invitationLink)
@@ -419,6 +427,7 @@ class SocialFragment : Fragment() {
             dialog.dismiss()
         }
 
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
     }
 
