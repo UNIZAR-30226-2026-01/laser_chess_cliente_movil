@@ -29,6 +29,8 @@ import android.os.Looper
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayoutStates
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.manager.GameTimerManager
@@ -555,6 +557,8 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
+        changeCardsBasedOnTurn(isMyTurn)
+
     }
 
     /**
@@ -749,6 +753,8 @@ class GameActivity : AppCompatActivity() {
 
             processingMove = false
 
+            changeCardsBasedOnTurn(isMyTurn)
+
             if (pendingMoves.isNotEmpty()) {
 
                 val nextMove = pendingMoves.removeFirst()
@@ -764,6 +770,18 @@ class GameActivity : AppCompatActivity() {
         }, 1000)
     }
 
+    private fun changeCardsBasedOnTurn(turn: Boolean){
+        val myProfileCard = findViewById<ConstraintLayout>(R.id.own_card)
+        val opProfileCard = findViewById<ConstraintLayout>(R.id.oponent_card)
+
+        if(turn){
+            myProfileCard.setBackgroundResource(R.drawable.bg_avatar_blue_border)
+            opProfileCard.setBackgroundResource(R.drawable.bg_avatar_no_border)
+        }else{
+            myProfileCard.setBackgroundResource(R.drawable.bg_avatar_no_border)
+            opProfileCard.setBackgroundResource(R.drawable.bg_avatar_red_border)
+        }
+    }
     private fun applyStateLog(log: String): Int {
 
         if (log.isBlank()) {
