@@ -27,6 +27,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:background="@drawable/bg_shop_section"
+            android:paddingVertical="12dp"
             android:paddingHorizontal="12dp">
 
             <ImageButton
@@ -53,7 +54,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_arrow_right"
+                android:src="@drawable/ic_arrow_left"
+                android:rotation="180"
                 android:contentDescription="@string/next" />
         </LinearLayout>
 
@@ -75,6 +77,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:background="@drawable/bg_shop_section"
+            android:paddingVertical="12dp"
             android:paddingHorizontal="12dp">
 
             <ImageButton
@@ -101,7 +104,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_arrow_right"
+                android:src="@drawable/ic_arrow_left"
+                android:rotation="180"
                 android:contentDescription="@string/next" />
         </LinearLayout>
 
@@ -123,6 +127,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:background="@drawable/bg_shop_section"
+            android:paddingVertical="12dp"
             android:paddingHorizontal="12dp">
 
             <ImageButton
@@ -149,7 +154,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_arrow_right"
+                android:src="@drawable/ic_arrow_left"
+                android:rotation="180"
                 android:contentDescription="@string/next" />
         </LinearLayout>
 
@@ -171,6 +177,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:background="@drawable/bg_shop_section"
+            android:paddingVertical="12dp"
             android:paddingHorizontal="12dp">
 
             <ImageButton
@@ -197,7 +204,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_arrow_right"
+                android:src="@drawable/ic_arrow_left"
+                android:rotation="180"
                 android:contentDescription="@string/next" />
         </LinearLayout>
 

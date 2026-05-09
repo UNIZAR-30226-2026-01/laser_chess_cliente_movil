@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text="Piezas · Cats"
         android:textColor="@color/LCWhite"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_medium_small"
         android:textStyle="bold"
         android:gravity="center"
         android:maxLines="1"
@@ -25,7 +25,7 @@
         android:id="@+id/imgShopProduct"
         android:layout_width="52dp"
         android:layout_height="52dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:src="@drawable/ic_piece_placeholder"
         android:contentDescription="@string/item" />
 
@@ -33,7 +33,7 @@
         android:id="@+id/layoutShopPrice"
         android:layout_width="match_parent"
         android:layout_height="28dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="2dp"
         android:orientation="horizontal"
         android:gravity="center"
         android:background="@drawable/bg_shop_price">
