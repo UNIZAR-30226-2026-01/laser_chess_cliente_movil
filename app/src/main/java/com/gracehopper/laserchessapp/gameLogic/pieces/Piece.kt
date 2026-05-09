@@ -3,6 +3,7 @@ package com.gracehopper.laserchessapp.gameLogic.pieces
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
@@ -162,7 +163,7 @@ class Piece(
                      * - No puede hacerlo con KING ni SWITCHER ni LASER
                      */
                 } else if (type == PieceType.SWITCHER && target.type != PieceType.SWITCHER && target.type != PieceType.KING && target.type != PieceType.LASER) {
-                    val imRed = GameActivity.imInternalRed
+                    val imRed = ActiveGameManager.imRedPlayer
 
                     if (target.isRed != imRed) {
                         val enemyForbidden = board.isForbiddenCell(row, col, target.isRed)

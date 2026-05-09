@@ -52,12 +52,6 @@ import com.gracehopper.laserchessapp.ui.utils.TimeUtils.formatTime
 class GameActivity : AppCompatActivity() {
 
     companion object {
-
-        /**
-         * Indica si el jugador interno es rojo.
-         */
-        var imInternalRed: Boolean = true
-
         /**
          * Indica si es el turno del jugador actual.
          */
@@ -174,8 +168,7 @@ class GameActivity : AppCompatActivity() {
         /**
          * Inicializar jugador y turno
          */
-        imInternalRed = ActiveGameManager.imRedPlayer
-        isMyTurn = imInternalRed
+        isMyTurn = ActiveGameManager.imRedPlayer
 
         val startingTime = ActiveGameManager.currentStartingTime ?: 300
 
@@ -195,7 +188,7 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        Log.d("PLAYER", "Soy rojo interno: $imInternalRed")
+        Log.d("PLAYER", "Soy rojo interno: ${ActiveGameManager.imRedPlayer}")
 
         if (testMode) {
             loadTestBoard()
@@ -451,7 +444,7 @@ class GameActivity : AppCompatActivity() {
         board.setContent {
             GameScreen(
                 board = boardM,
-                isRedPlayer = imInternalRed,
+                isRedPlayer = ActiveGameManager.imRedPlayer,
                 isMyTurn = isMyTurn,
                 renderCoordinates = true,
                 /**
@@ -468,10 +461,10 @@ class GameActivity : AppCompatActivity() {
                             controls.visibility = View.VISIBLE
 
                             btnLeft.visibility =
-                                if (piece.canRotateLeft(imInternalRed)) View.VISIBLE else View.GONE
+                                if (piece.canRotateLeft(ActiveGameManager.imRedPlayer)) View.VISIBLE else View.GONE
 
                             btnRight.visibility =
-                                if (piece.canRotateRight(imInternalRed)) View.VISIBLE else View.GONE
+                                if (piece.canRotateRight(ActiveGameManager.imRedPlayer)) View.VISIBLE else View.GONE
 
                         } else {
                             controls.visibility = View.GONE
@@ -794,11 +787,11 @@ class GameActivity : AppCompatActivity() {
      */
     private fun recalculateTurnAfterStateLog(moveCount: Int) {
         val isRedTurn = moveCount % 2 == 0
-        isMyTurn = (imInternalRed == isRedTurn)
+        isMyTurn = (ActiveGameManager.imRedPlayer == isRedTurn)
         GameTimerManager.setMyTurn(isMyTurn)
         Log.d(
             "RECONNECT",
-            "recalculateTurn: moveCount=$moveCount isRedTurn=$isRedTurn imRed=$imInternalRed → isMyTurn=$isMyTurn"
+            "recalculateTurn: moveCount=$moveCount isRedTurn=$isRedTurn imRed=${ActiveGameManager.imRedPlayer} → isMyTurn=$isMyTurn"
         )
     }
 
