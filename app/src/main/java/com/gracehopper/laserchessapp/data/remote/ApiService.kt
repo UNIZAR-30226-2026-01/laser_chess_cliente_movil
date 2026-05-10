@@ -8,6 +8,7 @@ import com.gracehopper.laserchessapp.data.model.game.GameResume
 import com.gracehopper.laserchessapp.data.model.game.PausedGameResponse
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
+import com.gracehopper.laserchessapp.data.model.notifications.RegisterDeviceRequest
 import com.gracehopper.laserchessapp.data.model.ranking.AllRatingsResponse
 import com.gracehopper.laserchessapp.data.model.ranking.RankingEntryResponse
 import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
@@ -141,5 +142,13 @@ interface ApiService {
     // Endpoint de FINISHED GAMES (historial)
     @GET("api/match/history/{userID}")
     fun getFinishedGames(@Path("userID") userId: Long): Call<List<GameResume>>
+
+    // Endpoints de NOTIFICACTIONS / DEVICES
+
+    @POST("api/device/register")
+    fun registerDevice(@Body request: RegisterDeviceRequest): Call<Unit>
+
+    @HTTP(method = "DELETE", path = "api/device/delete", hasBody = true)
+    fun deleteDevice(@Body request: RegisterDeviceRequest): Call<Unit>
 
 }
