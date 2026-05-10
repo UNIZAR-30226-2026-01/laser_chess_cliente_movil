@@ -1,15 +1,16 @@
 package com.gracehopper.laserchessapp.ui.game
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
@@ -52,6 +53,19 @@ class WaitingGameDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Configurar cabecera común
+        val topSection = view.findViewById<View>(R.id.dialog_top_section)
+        val dialogTitle = topSection.findViewById<TextView>(R.id.dialogTitle)
+        val dialogIcon = topSection.findViewById<ImageView>(R.id.dialogIcon)
+        val buttonClose = topSection.findViewById<View>(R.id.buttonCloseDialog)
+
+        dialogTitle.text = getString(R.string.searching_match)
+        dialogIcon.setImageResource(R.drawable.ic_clock) // O ic_versus si lo prefieres
+        dialogIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.LCWhite))
+        
+        // El botón de cerrar de la cabecera también cancela
+        buttonClose.setOnClickListener { cancelWaiting() }
+
         textOpponent = view.findViewById(R.id.textWaitingOpponent)
         textDetails = view.findViewById(R.id.textWaitingDetails)
         buttonCancel = view.findViewById(R.id.buttonCancelChallengeRequest)
@@ -65,7 +79,7 @@ class WaitingGameDialogFragment : DialogFragment() {
         super.onStart()
 
         dialog?.window?.apply {
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setBackgroundDrawableResource(android.R.color.transparent)
             setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
@@ -100,16 +114,20 @@ class WaitingGameDialogFragment : DialogFragment() {
 
     private fun setupListeners() {
         buttonCancel.setOnClickListener {
-            ActiveGameManager.closeConnection()
-
-            Toast.makeText(
-                requireContext(),
-                "Solicitud cancelada",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            dismiss()
+            cancelWaiting()
         }
+    }
+
+    private fun cancelWaiting() {
+        ActiveGameManager.closeConnection()
+
+        Toast.makeText(
+            requireContext(),
+            "Solicitud cancelada",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        dismiss()
     }
 
     private fun setupCallbacks() {

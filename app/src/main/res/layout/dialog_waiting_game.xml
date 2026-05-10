@@ -2,66 +2,67 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#80000000">
+    android:layout_height="match_parent">
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="24dp"
+        android:layout_margin="20dp"
         android:layout_gravity="center"
-        android:backgroundTint="@android:color/white"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="8dp">
+        android:background="@drawable/bg_dark_panel_rounded"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal">
 
-        <LinearLayout
+        <include
+            android:id="@+id/dialog_top_section"
+            layout="@layout/dialog_common_popup_frame"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progressWaitingGame"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp"
-            android:gravity="center_horizontal">
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:indeterminate="true"
+            app:indicatorSize="80dp"
+            app:trackThickness="8dp"
+            app:indicatorColor="@color/LCBlue" />
 
-            <TextView
-                android:id="@+id/textWaitingTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Buscando partida"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="20dp" />
+        <TextView
+            android:id="@+id/textWaitingOpponent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Esperando a que el rival acepte la partida"
+            android:textColor="@color/LCWhite"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="12dp" />
 
-            <ProgressBar
-                android:id="@+id/progressWaitingGame"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp" />
+        <TextView
+            android:id="@+id/textWaitingDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tablero 1 · 300s + 10s"
+            android:textColor="@color/LCGray"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="40dp" />
 
-            <TextView
-                android:id="@+id/textWaitingOpponent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Esperando a que el rival acepte la partida"
-                android:textSize="16sp"
-                android:gravity="center"
-                android:layout_marginBottom="10dp" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonCancelChallengeRequest"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_button"
+            android:text="@string/cancel_request"
+            android:textAllCaps="true"
+            android:textColor="@color/LCRed"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/textWaitingDetails"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tablero 1 · 300s + 10s"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:layout_marginBottom="24dp" />
-
-            <Button
-                android:id="@+id/buttonCancelChallengeRequest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cancelar" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
+    </LinearLayout>
 
 </FrameLayout>

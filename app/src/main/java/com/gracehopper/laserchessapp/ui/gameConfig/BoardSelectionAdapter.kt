@@ -5,8 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -66,17 +64,17 @@ class BoardSelectionAdapter(private val boards: List<BoardOption>,
                         BoardParser.boardFromCSV(it, BoardLayouts.getCsvForBoard(boardOption.name))
                     }
                 }
-                Box(modifier = Modifier.clickable {
-                    selectedBoardId = boardOption.id
-                    onBoardSelected(boardOption)
-                    notifyDataSetChanged()
-                }) {
-                    HomeBoardPreview(
-                        board = board,
-                        pieceSkin = pieceSkin,
-                        boardSkin = boardSkin
-                    )
-                }
+                HomeBoardPreview(
+                    board = board,
+                    pieceSkin = pieceSkin,
+                    boardSkin = boardSkin
+                )
+            }
+
+            composeBoardPreview.setOnClickListener {
+                selectedBoardId = boardOption.id
+                onBoardSelected(boardOption)
+                notifyDataSetChanged()
             }
 
             cardBoard.setOnClickListener {
