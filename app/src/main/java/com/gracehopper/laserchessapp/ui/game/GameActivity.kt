@@ -734,7 +734,15 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        laserIsRed = if (isThisMyMove) ActiveGameManager.imRedPlayer else !ActiveGameManager.imRedPlayer
+        val actualPieceColor = piece?.isRed
+
+        // Si la pieza fuera null por lo que sea
+        laserIsRed = actualPieceColor ?: if (isThisMyMove) {
+            ActiveGameManager.imRedPlayer
+        } else {
+            !ActiveGameManager.imRedPlayer
+        }
+
         laserPath = LaserUtils.parseLaserPath(move.laserPath)
 
         Handler(Looper.getMainLooper()).postDelayed({
