@@ -1,0 +1,63 @@
+package com.gracehopper.laserchessapp.data.repository
+
+import com.gracehopper.laserchessapp.data.model.notifications.RegisterDeviceRequest
+import com.gracehopper.laserchessapp.data.remote.ApiService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+class DeviceRepository(private val apiService: ApiService) {
+
+    fun registerDevice(
+        token: String,
+        onSuccess: () -> Unit = {},
+        onError: (Int?) -> Unit = {}
+    ) {
+
+        apiService.registerDevice(RegisterDeviceRequest(token)).enqueue(
+            object : Callback<Unit> {
+
+                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                    if (response.isSuccessful) {
+                        onSuccess()
+                    } else {
+                        onError(response.code())
+                    }
+                }
+
+                override fun onFailure(call: Call<Unit?>, t: Throwable) {
+                    onError(null)
+                }
+
+            }
+        )
+
+    }
+
+    fun deleteDevice(
+        token: String,
+        onSuccess: () -> Unit = {},
+        onError: (Int?) -> Unit = {}
+    ) {
+
+        apiService.deleteDevice(RegisterDeviceRequest(token)).enqueue(
+            object : Callback<Unit> {
+
+                override fun onResponse(call: Call<Unit?>, response: Response<Unit?>) {
+                    if (response.isSuccessful) {
+                        onSuccess()
+                    } else {
+                        onError(response.code())
+                    }
+                }
+
+                override fun onFailure(call: Call<Unit?>, t: Throwable) {
+                    onError(null)
+                }
+
+            }
+        )
+
+    }
+
+}
