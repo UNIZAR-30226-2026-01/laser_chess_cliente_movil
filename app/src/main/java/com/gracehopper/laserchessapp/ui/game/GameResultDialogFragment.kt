@@ -7,10 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import com.bumptech.glide.Glide
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.ui.main.MainActivity
 
 /**
@@ -52,6 +55,7 @@ class GameResultDialogFragment(
         val textRewards = view.findViewById<TextView>(R.id.textRewards)
         val textElo     = view.findViewById<TextView>(R.id.textElo)
         val buttonExit  = view.findViewById<Button>(R.id.buttonExit)
+        val imageResult = view.findViewById<ImageView>(R.id.imageResult)
 
         val iWon = (winner == "P1_WINS") == ActiveGameManager.imRedPlayer
 
@@ -62,6 +66,20 @@ class GameResultDialogFragment(
         )
 
         textRewards.text = "Has ganado $xpDiff XP y $moneyDiff monedas"
+
+        // Cargar animación GIF según lo equipado
+        val winAnimation = CurrentUserManager.getMyCurrentWinAnimation()
+        val gifResId = when (winAnimation) {
+            7 -> if (iWon) R.drawable.classic_win else R.drawable.classic_loose
+            8 -> if (iWon) R.drawable.soretro_win else R.drawable.soretro_loose
+            9 -> if (iWon) R.drawable.cats_win    else R.drawable.cats_loose
+            else -> if (iWon) R.drawable.classic_win else R.drawable.classic_loose
+        }
+
+        Glide.with(this)
+            .asGif()
+            .load(gifResId)
+            .into(imageResult)
 
         if (eloDiff != null) {
             textElo.visibility = View.VISIBLE

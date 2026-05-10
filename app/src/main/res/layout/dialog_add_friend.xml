@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,7 +9,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_dark_panel_rounded"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <include
             android:id="@+id/dialog_top_section"
@@ -18,20 +17,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Enviar solicitud-->
+        <!-- Buscar por nombre de usuario -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="@string/write_username"
-            android:textColor="@color/LCWhite" />
+            android:textColor="@color/LCWhite"
+            android:textSize="14sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginTop="8dp"
             android:gravity="center_vertical"
-            android:layout_marginTop="8dp">
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/editTextFriendUsername"
@@ -39,8 +39,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/bg_text_field"
+                android:hint="Nombre de usuario..."
                 android:inputType="textNoSuggestions"
-                android:hint="Nombre de tu amigo..."
                 android:padding="12dp"
                 android:textColor="@color/LCWhite"
                 android:textColorHint="@android:color/darker_gray"
@@ -51,55 +51,92 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="8dp"
-                android:background="@drawable/bg_red_button"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
+                android:background="@drawable/bg_blue_button"
+                android:contentDescription="@string/send_request"
+                android:padding="12dp"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_send"
-                android:tintMode="@color/LCWhite"
-                android:scaleType="center"
-               />
+                android:tint="@color/LCWhite" />
         </LinearLayout>
 
-        <!-- Enviar solicitud-->
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/send_link"
-            android:textColor="@color/LCWhite" />
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/wait_approval"
+            android:textColor="@color/LCGray"
+            android:textSize="12sp" />
 
+        <!-- Separador -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/S3" />
+
             <TextView
-                android:layout_marginTop="8dp"
-                android:maxLines="1"
-                android:ellipsize="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:text="o"
+                android:textColor="@color/LCGray"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/S3" />
+        </LinearLayout>
+
+        <!-- Compartir enlace de invitación -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/send_link"
+            android:textColor="@color/LCWhite"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
                 android:id="@+id/textInvitationLink"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/bg_text_field"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:padding="12dp"
                 android:textColor="@color/LCWhite"
-                android:textColorHint="@android:color/darker_gray"
-                android:textSize="@dimen/text_medium" />
+                android:textSize="14sp" />
 
             <ImageButton
-                android:layout_marginTop="8dp"
                 android:id="@+id/buttonCopyInvitationLink"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/bg_blue_button"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
+                android:contentDescription="@string/copy"
+                android:padding="12dp"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_copy"
-                android:tintMode="@color/LCWhite"
-                android:scaleType="center"/>
+                android:tint="@color/LCWhite" />
         </LinearLayout>
 
     </LinearLayout>

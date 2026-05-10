@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/imageResult"
-            android:layout_width="200dp"
-            android:layout_height="120dp"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
             android:src="@drawable/soretro_loose"
             android:scaleType="centerCrop"
             android:layout_marginBottom="20dp"/>
