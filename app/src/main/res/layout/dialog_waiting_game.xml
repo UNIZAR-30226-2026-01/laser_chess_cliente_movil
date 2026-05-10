@@ -2,33 +2,24 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#80000000">
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="24dp"
         android:layout_gravity="center"
         android:backgroundTint="@color/S1"
         app:cardCornerRadius="20dp"
         app:cardElevation="8dp">
 
-        <include
-            android:id="@+id/dialog_top_section"
-            layout="@layout/dialog_common_popup_frame"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/progressWaitingGame"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="32dp"
-            android:indeterminate="true"
-            app:indicatorSize="80dp"
-            app:trackThickness="8dp"
-            app:indicatorColor="@color/LCBlue" />
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center_horizontal">
 
             <TextView
                 android:id="@+id/textWaitingTitle"
@@ -50,13 +41,16 @@
                 android:gravity="center"
                 android:layout_marginBottom="10dp" />
 
-            <ProgressBar
+            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/progressWaitingGame"
-                android:progressTint="@color/LCBlue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="32dp"
+                android:indeterminate="true"
+                app:indicatorSize="80dp"
+                app:trackThickness="8dp"
+                app:indicatorColor="@color/LCBlue" />
 
             <TextView
                 android:id="@+id/textWaitingDetails"

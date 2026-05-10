@@ -449,7 +449,8 @@ object ActiveGameManager {
         level: Int
     ) {
 
-        resetConnectionOnly()
+        //resetConnectionOnly()
+        prepareForNewGame()
 
         setGameType(false)
 
@@ -486,7 +487,8 @@ object ActiveGameManager {
         matchId: Long? = null
     ) {
 
-        resetConnectionOnly()
+        //resetConnectionOnly()
+        prepareForNewGame()
 
         setGameType(true)                   // La partida es amistosa
         currentOpponentInfo = opponentInfo
@@ -531,7 +533,9 @@ object ActiveGameManager {
         timeIncrement: Int,
         ranked: Boolean
     ) {
-        resetConnectionOnly()
+        //resetConnectionOnly()
+        prepareForNewGame()
+
         setGameType(false)
         isMatchmakingGame = true
 
@@ -559,7 +563,8 @@ object ActiveGameManager {
         timeIncrement: Int
     ) {
 
-        resetConnectionOnly()
+        //resetConnectionOnly()
+        prepareForNewGame()
 
         setGameType(true)                   // La partida es amistosa
         currentOpponentInfo = opponentInfo
@@ -706,6 +711,38 @@ object ActiveGameManager {
     private fun resetConnectionOnly() {
         friendlyGameWebSocket?.close()
         friendlyGameWebSocket = null
+    }
+
+    /**
+     * Limpia los datos de partidas previas pero MANTIENE los callbacks
+     * actuales para no romper la comunicación con la UI que lanza la partida.
+     */
+    private fun prepareForNewGame() {
+        // Cerramos cualquier conexión persistente anterior
+        friendlyGameWebSocket?.close()
+        friendlyGameWebSocket = null
+
+        // Seteamos el estado inicial de juego
+        imRedPlayer = true
+        intialBoardCSV = null
+
+        // Limpiamos datos de oponente y partida
+        currentOpponentInfo = null
+        currentMatchId = null
+        reconnectingOpponentId = null
+        pendingStateLog = null
+
+        // Reseteamos flags de control
+        reconnectGotInitialState = false
+        reconnectGotState = false
+        awaitingReconnectMessages = false
+        isMatchmakingGame = false
+
+        // Limpiamos errores y eventos pendientes
+        lastError = null
+        pendingEvents.clear()
+
+        currentState = GameState.INACTIVE
     }
 
     /**
