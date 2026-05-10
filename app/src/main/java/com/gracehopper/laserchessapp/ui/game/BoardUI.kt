@@ -127,8 +127,7 @@ fun GameScreen(
                                             .weight(1f)
                                             .aspectRatio(1f)
                                             .background(getCellColor(row, col, isRedPlayer))
-                                            .border(getBorder(row, col, isRedPlayer))
-                                            .clickable {
+                                            .clickable(enabled = isMyTurn) {
                                                 val selected = selectedPos
                                                 val clickedPiece = board.getPiece(row, col)
 
@@ -307,50 +306,8 @@ fun GameScreen(
 }
 
 fun getCellColor(row: Int, col: Int, isRedPlayer: Boolean): Color {
-    val S3 = Color(0xFF3B2865)
     val S1 = Color(0xFF1A122B)
-    val LCRed_D = Color(0xFF86103C)
-    val LCBlue_D = Color(0xFF1B418A)
-    return if (isRedPlayer) {
-        when {
-            row == 0 -> LCRed_D
-            row == 8 && (col == 0 || col == 7) -> LCRed_D
-            row == 9 -> LCBlue_D
-            row == 1 && (col == 0 || col == 7) -> LCBlue_D
-            row % 2 == 0 && col % 2 == 0 || row % 2 != 0 && col % 2 != 0 -> S3
-            else -> S1
-        }
-    } else {
-        when {
-            row == 9 -> LCRed_D
-            row == 1 && (col == 0 || col == 7) -> LCRed_D
-            row == 0 -> LCBlue_D
-            row == 8 && (col == 0 || col == 7) -> LCBlue_D
-            row % 2 == 0 && col % 2 == 0 || row % 2 != 0 && col % 2 != 0 -> S3
-            else -> S1
-        }
-    }
-}
-
-fun getBorder(row: Int, col: Int, isRedPlayer: Boolean): BorderStroke {
     val S3 = Color(0xFF3B2865)
-    val stroke = BorderStroke(1.dp, S3)
-    val none = BorderStroke(0.dp, S3)
-    return if (isRedPlayer) {
-        when {
-            row == 0 -> stroke
-            row == 8 && (col == 0 || col == 7) -> stroke
-            row == 9 -> stroke
-            row == 1 && (col == 0 || col == 7) -> stroke
-            else -> none
-        }
-    } else {
-        when {
-            row == 9 -> stroke
-            row == 1 && (col == 0 || col == 7) -> stroke
-            row == 0 -> stroke
-            row == 8 && (col == 0 || col == 7) -> stroke
-            else -> none
-        }
-    }
+
+    return if ((row + col) % 2 == 0) S3 else S1
 }
