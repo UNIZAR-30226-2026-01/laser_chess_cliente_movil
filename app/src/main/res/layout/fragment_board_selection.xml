@@ -10,6 +10,7 @@
         android:text="Selecciona un tablero"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="@color/LCWhite"
         android:layout_marginBottom="12dp" />
 
     <androidx.recyclerview.widget.RecyclerView

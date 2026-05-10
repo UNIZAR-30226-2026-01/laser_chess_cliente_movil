@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
@@ -63,6 +64,17 @@ class MyProfileDialogFragment : DialogFragment() {
             .inflate(R.layout.dialog_my_profile, null)
 
         bindViews(dialogView)
+
+        // Configurar cabecera común
+        val topSection = dialogView.findViewById<View>(R.id.dialog_top_section)
+        val dialogTitle = topSection.findViewById<TextView>(R.id.dialogTitle)
+        val dialogIcon = topSection.findViewById<ImageView>(R.id.dialogIcon)
+        buttonClose = topSection.findViewById(R.id.buttonCloseDialog)
+
+        dialogTitle.text = "Mi perfil"
+        dialogIcon.setImageResource(R.drawable.ic_person_bart)
+        dialogIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.LCWhite))
+
         setupCloseButton()
         setupEditButtons()
         loadMyProfile()
@@ -97,8 +109,6 @@ class MyProfileDialogFragment : DialogFragment() {
         buttonEditAvatar = dialogView.findViewById(R.id.buttonEditAvatar)
         buttonEditUsername = dialogView.findViewById(R.id.buttonEditUsername)
         buttonEditEquipped = dialogView.findViewById(R.id.buttonEditEquipped)
-
-        buttonClose = dialogView.findViewById(R.id.buttonCloseMyProfileDialog)
 
     }
 

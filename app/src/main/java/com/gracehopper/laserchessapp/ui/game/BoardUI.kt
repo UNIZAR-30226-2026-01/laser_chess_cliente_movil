@@ -127,7 +127,7 @@ fun GameScreen(
                                             .weight(1f)
                                             .aspectRatio(1f)
                                             .background(getCellColor(row, col, isRedPlayer))
-                                            .clickable {
+                                            .clickable(enabled = isMyTurn) {
                                                 val selected = selectedPos
                                                 val clickedPiece = board.getPiece(row, col)
 

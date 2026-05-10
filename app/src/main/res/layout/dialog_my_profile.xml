@@ -2,28 +2,21 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="20dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- Caja principal -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_modal_border"
-        android:padding="24dp">
+        android:background="@drawable/bg_dark_panel_rounded"
+        android:padding="16dp">
 
-        <!-- Botón cerrar -->
-        <ImageButton
-            android:id="@+id/buttonCloseMyProfileDialog"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:background="@drawable/bg_box_border"
-            android:src="@drawable/ic_close"
-            android:contentDescription="@string/close"
-            android:padding="8dp"
-            android:layout_marginBottom="12dp" />
+        <include
+            android:id="@+id/dialog_top_section"
+            layout="@layout/dialog_common_popup_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <!-- Cabecera perfil -->
         <LinearLayout
@@ -31,6 +24,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="top"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="8dp">
 
            <!-- Avatar + editar avatar -->
@@ -54,10 +48,11 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_gravity="top|end"
-                    android:background="@drawable/bg_box_border"
+                    android:background="@drawable/bg_button"
                     android:contentDescription="@string/edit_avatar"
                     android:padding="5dp"
-                    android:src="@drawable/ic_edit" />
+                    android:src="@drawable/ic_edit"
+                    app:tint="@color/LCWhite" />
 
             </FrameLayout>
 
@@ -83,7 +78,7 @@
                         android:textSize="26sp"
                         android:textStyle="bold"
                         android:maxLines="1"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/LCWhite"
                         android:ellipsize="end" />
 
                     <ImageButton
@@ -91,10 +86,11 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginStart="8dp"
-                        android:background="@drawable/bg_box_border"
+                        android:background="@drawable/bg_button"
                         android:contentDescription="@string/edit_username"
                         android:padding="5dp"
-                        android:src="@drawable/ic_edit" />
+                        android:src="@drawable/ic_edit"
+                        app:tint="@color/LCWhite" />
 
                 </LinearLayout>
 
@@ -112,7 +108,7 @@
                         android:text=""
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@color/LCGray" />
 
                     <ProgressBar
                         android:id="@+id/progressMyProfileXp"
@@ -130,7 +126,7 @@
                         android:layout_marginStart="10dp"
                         android:text=""
                         android:textSize="13sp"
-                        android:textColor="@android:color/black"/>
+                        android:textColor="@color/LCGray"/>
 
                 </LinearLayout>
             </LinearLayout>
@@ -152,7 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textColor="@android:color/black"
+                android:textColor="@color/LCYellow"
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
@@ -179,7 +175,7 @@
                 android:text="@string/time_mode"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/LCWhite" />
 
             <ImageView
                 android:layout_width="0dp"
@@ -197,7 +193,7 @@
                 android:text="@string/rank"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black"
+                android:textColor="@color/LCWhite"
                 android:gravity="center" />
 
         </LinearLayout>
@@ -215,7 +211,7 @@
                 android:layout_weight="1.4"
                 android:text="@string/time_mode_blitz"
                 android:textSize="18sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/LCGray" />
 
             <TextView
                 android:id="@+id/txtBlitzMyElo"
@@ -224,7 +220,7 @@
                 android:layout_weight="0.8"
                 android:text=""
                 android:textSize="18sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/LCGray"
                 android:gravity="center" />
 
             <ImageView
@@ -250,7 +246,7 @@
                 android:layout_weight="1.4"
                 android:text="@string/time_mode_rapid"
                 android:textSize="18sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/LCGray" />
 
             <TextView
                 android:id="@+id/txtRapidMyElo"
@@ -259,7 +255,7 @@
                 android:layout_weight="0.8"
                 android:text=""
                 android:textSize="18sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/LCGray"
                 android:gravity="center" />
 
             <ImageView
@@ -286,7 +282,7 @@
                 android:layout_weight="1.4"
                 android:text="@string/time_mode_classic"
                 android:textSize="18sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/LCGray" />
 
             <TextView
                 android:id="@+id/txtClassicMyElo"
@@ -295,7 +291,7 @@
                 android:layout_weight="0.8"
                 android:text=""
                 android:textSize="18sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/LCGray"
                 android:gravity="center" />
 
             <ImageView
@@ -321,7 +317,7 @@
                 android:layout_weight="1.4"
                 android:text="@string/time_mode_extended"
                 android:textSize="18sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/LCGray" />
 
             <TextView
                 android:id="@+id/txtExtendedMyElo"
@@ -330,7 +326,7 @@
                 android:layout_weight="0.8"
                 android:text=""
                 android:textSize="18sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/LCGray"
                 android:gravity="center" />
 
             <ImageView
@@ -357,17 +353,18 @@
                 android:text="@string/equipped"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/LCWhite" />
 
             <ImageButton
                 android:id="@+id/buttonEditEquipped"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_marginStart="10dp"
-                android:background="@drawable/bg_box_border"
+                android:background="@drawable/bg_button"
                 android:contentDescription="@string/edit_equipped"
                 android:padding="5dp"
-                android:src="@drawable/ic_edit" />
+                android:src="@drawable/ic_edit"
+                app:tint="@color/LCWhite" />
 
         </LinearLayout>
 
@@ -382,7 +379,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@drawable/bg_box_border"
+                android:background="@drawable/bg_surface2_panel_rounded"
                 android:padding="12dp"
                 android:layout_marginEnd="20dp">
 
@@ -398,7 +395,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/piece_skin"
                     android:textSize="11sp"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/LCWhite"
                     android:layout_marginTop="8dp" />
             </LinearLayout>
 
@@ -407,7 +404,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@drawable/bg_box_border"
+                android:background="@drawable/bg_surface2_panel_rounded"
                 android:padding="12dp"
                 android:layout_marginEnd="20dp">
 
@@ -423,7 +420,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/board_skin"
                     android:textSize="11sp"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/LCWhite"
                     android:layout_marginTop="8dp" />
             </LinearLayout>
 
@@ -432,7 +429,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@drawable/bg_box_border"
+                android:background="@drawable/bg_surface2_panel_rounded"
                 android:padding="12dp" >
 
                 <ImageView
@@ -447,7 +444,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/animation"
                     android:textSize="11sp"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/LCWhite"
                     android:layout_marginTop="8dp" />
             </LinearLayout>
         </LinearLayout>

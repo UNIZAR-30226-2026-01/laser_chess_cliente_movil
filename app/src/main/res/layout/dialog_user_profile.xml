@@ -2,28 +2,21 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="20dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- Caja principal -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_modal_border"
-        android:padding="24dp">
+        android:background="@drawable/bg_dark_panel_rounded"
+        android:padding="16dp">
 
-        <!-- Botón cerrar -->
-        <ImageButton
-            android:id="@+id/buttonCloseProfileDialog"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:background="@drawable/bg_box_border"
-            android:src="@drawable/ic_close"
-            android:contentDescription="@string/close"
-            android:padding="8dp"
-            android:layout_marginBottom="12dp" />
+        <include
+            android:id="@+id/dialog_top_section"
+            layout="@layout/dialog_common_popup_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <!-- Cabecera perfil -->
         <LinearLayout
@@ -31,6 +24,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp">
 
             <com.google.android.material.imageview.ShapeableImageView
@@ -56,7 +50,7 @@
                     android:text="@string/username"
                     android:textSize="26sp"
                     android:textStyle="bold"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/LCWhite"
                     android:layout_marginBottom="8dp" />
 
                 <LinearLayout
@@ -72,7 +66,7 @@
                         android:text="Nivel 77"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/LCGray"
                         android:layout_marginEnd="10dp" />
 
                     <ProgressBar
@@ -90,7 +84,7 @@
                         android:layout_height="wrap_content"
                         android:text="123 xp"
                         android:textSize="13sp"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/LCGray"
                         android:layout_marginStart="10dp" />
                 </LinearLayout>
             </LinearLayout>
@@ -104,30 +98,28 @@
             android:gravity="center"
             android:layout_marginBottom="24dp">
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonPrimaryAction"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/request_match"
                 android:textStyle="bold"
                 android:textAllCaps="false"
-                android:textColor="@android:color/black"
-                android:background="@drawable/bg_box_border"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="8dp"
-                android:layout_marginEnd="16dp" />
+                android:textColor="@color/LCWhite"
+                android:background="@drawable/bg_button"
+                android:layout_marginEnd="12dp" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonSecondaryAction"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/delete"
                 android:textStyle="bold"
                 android:textAllCaps="false"
-                android:textColor="@android:color/black"
-                android:background="@drawable/bg_box_border"
-                android:paddingHorizontal="20dp"
-                android:paddingVertical="8dp" />
+                android:textColor="@color/LCRed"
+                android:background="@drawable/bg_button" />
         </LinearLayout>
 
         <!-- Encabezado tabla rankings -->
@@ -144,7 +136,7 @@
                 android:text="@string/time_mode"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/LCWhite" />
 
             <ImageView
                 android:layout_width="0dp"
@@ -159,10 +151,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.8"
-                android:text="RANGO"
+                android:text="@string/rank"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black"
+                android:textColor="@color/LCWhite"
                 android:gravity="center" />
         </LinearLayout>
 
@@ -179,7 +171,7 @@
                 android:layout_weight="1.4"
                 android:text="@string/time_mode_blitz"
                 android:textSize="18sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/LCGray" />
 
             <TextView
                 android:id="@+id/txtBlitzElo"
@@ -188,7 +180,7 @@
                 android:layout_weight="0.8"
                 android:text="123"
                 android:textSize="18sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/LCGray"
                 android:gravity="center" />
 
             <ImageView
@@ -197,7 +189,7 @@
                 android:layout_height="24dp"
                 android:layout_weight="0.8"
                 android:src="@drawable/ic_rank_placeholder"
-                android:contentDescription="Rango Blitz"
+                android:contentDescription="@string/blitz_rank"
                 android:adjustViewBounds="true" />
         </LinearLayout>
 
@@ -214,7 +206,7 @@
                 android:layout_weight="1.4"
                 android:text="@string/time_mode_rapid"
                 android:textSize="18sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/LCGray" />
 
             <TextView
                 android:id="@+id/txtRapidElo"
@@ -223,7 +215,7 @@
                 android:layout_weight="0.8"
                 android:text="122"
                 android:textSize="18sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/LCGray"
                 android:gravity="center" />
 
             <ImageView
@@ -232,7 +224,7 @@
                 android:layout_height="24dp"
                 android:layout_weight="0.8"
                 android:src="@drawable/ic_rank_placeholder"
-                android:contentDescription="Rango Rapid"
+                android:contentDescription="@string/rapid_rank"
                 android:adjustViewBounds="true" />
         </LinearLayout>
 
@@ -249,7 +241,7 @@
                 android:layout_weight="1.4"
                 android:text="@string/time_mode_classic"
                 android:textSize="18sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/LCGray" />
 
             <TextView
                 android:id="@+id/txtClassicElo"
@@ -258,7 +250,7 @@
                 android:layout_weight="0.8"
                 android:text="110"
                 android:textSize="18sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/LCGray"
                 android:gravity="center" />
 
             <ImageView
@@ -267,7 +259,7 @@
                 android:layout_height="24dp"
                 android:layout_weight="0.8"
                 android:src="@drawable/ic_rank_placeholder"
-                android:contentDescription="Rango Classic"
+                android:contentDescription="@string/classic_rank"
                 android:adjustViewBounds="true" />
         </LinearLayout>
 
@@ -284,7 +276,7 @@
                 android:layout_weight="1.4"
                 android:text="@string/time_mode_extended"
                 android:textSize="18sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/LCGray" />
 
             <TextView
                 android:id="@+id/txtExtendedElo"
@@ -293,7 +285,7 @@
                 android:layout_weight="0.8"
                 android:text="153"
                 android:textSize="18sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/LCGray"
                 android:gravity="center" />
 
             <ImageView
@@ -302,7 +294,7 @@
                 android:layout_height="24dp"
                 android:layout_weight="0.8"
                 android:src="@drawable/ic_rank_placeholder"
-                android:contentDescription="Rango Extended"
+                android:contentDescription="@string/extended_rank"
                 android:adjustViewBounds="true" />
         </LinearLayout>
 
@@ -310,10 +302,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="EQUIPADO"
+            android:text="@string/equipped"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
+            android:textColor="@color/LCWhite"
             android:layout_marginBottom="16dp" />
 
         <LinearLayout
@@ -327,7 +319,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@drawable/bg_box_border"
+                android:background="@drawable/bg_surface2_panel_rounded"
                 android:padding="12dp"
                 android:layout_marginEnd="20dp">
 
@@ -336,14 +328,14 @@
                     android:layout_width="52dp"
                     android:layout_height="52dp"
                     android:src="@drawable/ic_piece_placeholder"
-                    android:contentDescription="Skin piezas" />
+                    android:contentDescription="@string/piece_skin_desc" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Piezas"
+                    android:text="@string/piece_skin"
                     android:textSize="11sp"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/LCWhite"
                     android:layout_marginTop="8dp" />
             </LinearLayout>
 
@@ -352,7 +344,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@drawable/bg_box_border"
+                android:background="@drawable/bg_surface2_panel_rounded"
                 android:padding="12dp"
                 android:layout_marginEnd="20dp">
 
@@ -361,14 +353,14 @@
                     android:layout_width="52dp"
                     android:layout_height="52dp"
                     android:src="@drawable/ic_board_placeholder"
-                    android:contentDescription="Skin tablero" />
+                    android:contentDescription="@string/board_skin_desc" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tablero"
+                    android:text="@string/board_skin"
                     android:textSize="11sp"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/LCWhite"
                     android:layout_marginTop="8dp" />
             </LinearLayout>
 
@@ -377,7 +369,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@drawable/bg_box_border"
+                android:background="@drawable/bg_surface2_panel_rounded"
                 android:padding="12dp" >
 
                 <ImageView
@@ -385,14 +377,14 @@
                     android:layout_width="52dp"
                     android:layout_height="52dp"
                     android:src="@drawable/ic_piece_placeholder"
-                    android:contentDescription="Skin piezas" />
+                    android:contentDescription="@string/animation_desc" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Animación"
-                    android:textSize="11dp"
-                    android:textColor="@android:color/black"
+                    android:text="@string/animation"
+                    android:textSize="11sp"
+                    android:textColor="@color/LCWhite"
                     android:layout_marginTop="8dp" />
             </LinearLayout>
         </LinearLayout>

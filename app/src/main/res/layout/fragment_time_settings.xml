@@ -14,40 +14,50 @@
             android:text="Configura el tiempo"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="@color/LCWhite"
             android:layout_marginBottom="12dp" />
 
         <TextView
+            android:id="@+id/textLabelTimeMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Modo de tiempo" />
+            android:text="Modo de tiempo"
+            android:textColor="@color/selector_edit_text_color" />
 
         <Spinner
             android:id="@+id/spinnerTimeMode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="12dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
         <TextView
+            android:id="@+id/textLabelIncrement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Incremento" />
+            android:text="Incremento"
+            android:textColor="@color/selector_edit_text_color" />
 
         <Spinner
             android:id="@+id/spinnerIncrement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
         <CheckBox
             android:id="@+id/checkboxCustomConfig"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Configuración personalizada" />
+            android:text="Configuración personalizada"
+            android:textColor="@color/LCWhite"
+            android:buttonTint="@color/LCWhite" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tiempo base (minutos, máx. 180)"
+            android:textColor="@color/LCWhite"
             android:layout_marginTop="12dp" />
 
         <EditText
@@ -55,12 +65,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:inputType="number" />
+            android:inputType="number"
+            android:textColor="@color/selector_edit_text_color"
+            android:textColorHint="@color/LCGray"
+            android:background="@drawable/bg_text_field"
+            android:padding="10dp"
+            android:layout_marginTop="4dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Incremento (segundos, máx. 60)"
+            android:textColor="@color/LCWhite"
             android:layout_marginTop="12dp" />
 
         <EditText
@@ -68,7 +84,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:inputType="number" />
+            android:inputType="number"
+            android:textColor="@color/selector_edit_text_color"
+            android:textColorHint="@color/LCGray"
+            android:background="@drawable/bg_text_field"
+            android:padding="10dp"
+            android:layout_marginTop="4dp" />
 
     </LinearLayout>
 </ScrollView>
