@@ -52,13 +52,7 @@ import com.gracehopper.laserchessapp.ui.utils.TimeUtils.formatTime
  */
 class GameActivity : AppCompatActivity() {
 
-    companion object {
-        /**
-         * Indica si es el turno del jugador actual.
-         */
-        var isMyTurn by mutableStateOf(true)
-    }
-
+    private var isMyTurn by mutableStateOf(true)
     private var waitingForServerConfirmation = false
 
     private val testMode = false
@@ -225,6 +219,26 @@ class GameActivity : AppCompatActivity() {
                         is GameEvent.Move -> {
                             val moveData = event.moveAndTime ?: return@runOnUiThread
                             applyServerMove(moveData)
+                        }
+
+                        /**
+                         * Estado inicial de la partida
+                         */
+                        /**
+                         * Estado inicial de la partida
+                         */
+                        is GameEvent.InitialState -> {
+                            val csv = event.boardCsv
+                            if (csv != null) {
+                                Log.d("GAME", "Actualizando tablero desde InitialState")
+                                boardM.clear()
+                                BoardParser.boardFromCSV(boardM, csv)
+                            }
+                            
+                            isMyTurn = ActiveGameManager.imRedPlayer
+                            GameTimerManager.setMyTurn(isMyTurn)
+                            changeCardsBasedOnTurn(isMyTurn)
+                            clearTrigger++
                         }
 
                         /**
@@ -677,14 +691,19 @@ class GameActivity : AppCompatActivity() {
         val move = MoveParser.parseMove(moveStr)
         val timeFromBackend = move.timer
 
-        val iMoved = waitingForServerConfirmation
+        val fromPos = CoordsConverter.notationToPosition(move.from)
+        val piece = boardM.getPiece(fromPos.first, fromPos.second)
+
+        // Determinar si el movimiento es del jugador actual o del rival
+        val isThisMyMove = piece?.isRed == ActiveGameManager.imRedPlayer
 
         Log.d(
             "TURN_DEBUG",
-            "START move=$moveStr iMoved=$iMoved waiting=$waitingForServerConfirmation isMyTurn=$isMyTurn"
+            "START move=$moveStr isThisMyMove=$isThisMyMove waiting=$waitingForServerConfirmation isMyTurn=$isMyTurn"
         )
 
-        if (iMoved) {
+        if (isThisMyMove) {
+            waitingForServerConfirmation = false
             GameTimerManager.syncTimers(
                 myTime = timeFromBackend,
                 opponentTime = GameTimerManager.opponentTimer.value?.timeLeftMillis ?: 0
@@ -695,9 +714,6 @@ class GameActivity : AppCompatActivity() {
                 opponentTime = timeFromBackend
             )
         }
-
-        val fromPos = CoordsConverter.notationToPosition(move.from)
-        val piece = boardM.getPiece(fromPos.first, fromPos.second)
 
         when (move.type) {
 
@@ -718,7 +734,7 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        laserIsRed = !iMoved
+        laserIsRed = if (isThisMyMove) ActiveGameManager.imRedPlayer else !ActiveGameManager.imRedPlayer
         laserPath = LaserUtils.parseLaserPath(move.laserPath)
 
         Handler(Looper.getMainLooper()).postDelayed({
@@ -728,17 +744,16 @@ class GameActivity : AppCompatActivity() {
                 boardM.setPiece(destroyedPos.first, destroyedPos.second, null)
             }
 
-            if (iMoved) {
-                waitingForServerConfirmation = false
+            if (isThisMyMove) {
                 waitingEndAfterMove = false
             }
 
             Log.d(
                 "TURN_DEBUG",
-                "END move=$moveStr setTurn=${!iMoved} waiting=$waitingForServerConfirmation"
+                "END move=$moveStr setTurn=${!isThisMyMove}"
             )
 
-            isMyTurn = !iMoved
+            isMyTurn = !isThisMyMove
             GameTimerManager.setMyTurn(isMyTurn)
 
             if (waitingEndAfterMove && gameEnded && !gameResultShown) {

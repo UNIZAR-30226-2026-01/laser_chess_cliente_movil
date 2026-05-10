@@ -159,11 +159,15 @@ object ActiveGameManager {
                 intialBoardCSV = serverMsg.content
 
                 val redPlayerId = serverMsg.extra?.toLongOrNull()
-                val myId = TokenManager.getUserId()
+                if (redPlayerId != null && redPlayerId != -1L) {
+                    val myId = TokenManager.getUserId()
+                    imRedPlayer = (redPlayerId == myId)
+                } else {
+                    // Por defecto en bot/matchmaking si no hay ID, el primer jugador suele ser el humano
+                    // o mantenemos el valor por defecto (true) seteado en resetAll
+                }
 
-                imRedPlayer = (redPlayerId == myId)
-                Log.d("PLAYER", "Mi id: $myId")
-                Log.d("PLAYER", "Id de red player: $redPlayerId")
+                Log.d("PLAYER", "Soy rojo: $imRedPlayer (ID Red: $redPlayerId)")
 
                 if (awaitingReconnectMessages) {
                     // Reconexión: guardar y esperar a tener ambos mensajes
@@ -687,6 +691,9 @@ object ActiveGameManager {
         currentState = GameState.INACTIVE
         lastError = null
         pendingEvents.clear()
+        
+        intialBoardCSV = null
+        imRedPlayer = true
 
         setGameType(false)
 
