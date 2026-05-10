@@ -9,10 +9,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_gravity="center"
-        android:background="@drawable/bg_dark_panel_rounded"
-        android:orientation="vertical"
-        android:padding="20dp"
-        android:gravity="center_horizontal">
+        android:backgroundTint="@color/S1"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp">
 
         <include
             android:id="@+id/dialog_top_section"
@@ -31,38 +30,56 @@
             app:trackThickness="8dp"
             app:indicatorColor="@color/LCBlue" />
 
-        <TextView
-            android:id="@+id/textWaitingOpponent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Esperando a que el rival acepte la partida"
-            android:textColor="@color/LCWhite"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginBottom="12dp" />
+            <TextView
+                android:id="@+id/textWaitingTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/LCWhite"
+                android:text="Buscando partida"
+                android:textSize="@dimen/text_medium_large"
+                android:textStyle="bold"
+                android:layout_marginBottom="1dp" />
 
-        <TextView
-            android:id="@+id/textWaitingDetails"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tablero 1 · 300s + 10s"
-            android:textColor="@color/LCGray"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:layout_marginBottom="40dp" />
+            <TextView
+                android:id="@+id/textWaitingOpponent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/LCWhite"
+                android:text="Esperando a que el rival acepte la partida"
+                android:textSize="@dimen/text_medium_small"
+                android:gravity="center"
+                android:layout_marginBottom="10dp" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/buttonCancelChallengeRequest"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@drawable/bg_button"
-            android:text="@string/cancel_request"
-            android:textAllCaps="true"
-            android:textColor="@color/LCRed"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            <ProgressBar
+                android:id="@+id/progressWaitingGame"
+                android:progressTint="@color/LCBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textWaitingDetails"
+                android:textColor="@color/LCWhite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(...)"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_marginBottom="24dp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/buttonCancelChallengeRequest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Cancelar"
+                android:textSize="16sp"
+                android:textColor="@color/LCWhite"
+                android:background="@drawable/bg_red_button"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </FrameLayout>
