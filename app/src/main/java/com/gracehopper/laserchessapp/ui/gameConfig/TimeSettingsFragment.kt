@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.user.TimeMode
@@ -22,6 +23,8 @@ class TimeSettingsFragment : Fragment() {
     private lateinit var checkboxCustom: CheckBox
     private lateinit var editCustomTimeMinutes: EditText
     private lateinit var editCustomIncrementSeconds: EditText
+    private lateinit var textLabelTimeMode: TextView
+    private lateinit var textLabelIncrement: TextView
 
     private val parentConfigDialog: GameConfigDialogFragment?
         get() = parentFragment as? GameConfigDialogFragment
@@ -44,6 +47,8 @@ class TimeSettingsFragment : Fragment() {
         checkboxCustom = view.findViewById(R.id.checkboxCustomConfig)
         editCustomTimeMinutes = view.findViewById(R.id.editCustomTimeMinutes)
         editCustomIncrementSeconds = view.findViewById(R.id.editCustomIncrementSeconds)
+        textLabelTimeMode = view.findViewById(R.id.textLabelTimeMode)
+        textLabelIncrement = view.findViewById(R.id.textLabelIncrement)
 
         setupModeSpinner()
         setupCustomConfig()
@@ -56,9 +61,11 @@ class TimeSettingsFragment : Fragment() {
 
         spinnerMode.adapter = ArrayAdapter(
             requireContext(),
-            android.R.layout.simple_spinner_dropdown_item,
+            R.layout.spinner_item_dark,
             modeNames
-        )
+        ).apply {
+            setDropDownViewResource(R.layout.spinner_item_dark)
+        }
 
         spinnerMode.setSelection(0)
         updateIncrementSpinner(TimeMode.BLITZ)
@@ -70,9 +77,11 @@ class TimeSettingsFragment : Fragment() {
 
         spinnerIncrement.adapter = ArrayAdapter(
             requireContext(),
-            android.R.layout.simple_spinner_dropdown_item,
+            R.layout.spinner_item_dark,
             increments
-        )
+        ).apply {
+            setDropDownViewResource(R.layout.spinner_item_dark)
+        }
 
         spinnerIncrement.setSelection(0)
         pushCurrentConfigToParent()
@@ -82,6 +91,9 @@ class TimeSettingsFragment : Fragment() {
         checkboxCustom.setOnCheckedChangeListener { _, isChecked ->
             spinnerMode.isEnabled = !isChecked
             spinnerIncrement.isEnabled = !isChecked
+            
+            textLabelTimeMode.isEnabled = !isChecked
+            textLabelIncrement.isEnabled = !isChecked
 
             editCustomTimeMinutes.isEnabled = isChecked
             editCustomIncrementSeconds.isEnabled = isChecked

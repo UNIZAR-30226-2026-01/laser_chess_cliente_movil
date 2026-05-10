@@ -122,46 +122,52 @@ fun GameScreen(
                                     val piece = board.getPiece(row, col)
                                     val isHighlighted = highlightedMoves.contains(Pair(row, col))
 
-                                    Box(
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .aspectRatio(1f)
-                                            .background(getCellColor(row, col, isRedPlayer))
-                                            .border(getBorder(row, col, isRedPlayer))
-                                            .clickable {
-                                                val selected = selectedPos
-                                                val clickedPiece = board.getPiece(row, col)
+                                    val cellModifier = Modifier
+                                        .weight(1f)
+                                        .aspectRatio(1f)
+                                        .background(getCellColor(row, col, isRedPlayer))
 
-                                                if (selected == null) {
-                                                    if (clickedPiece != null && clickedPiece.isRed == isRedPlayer && isMyTurn) {
-                                                        selectedPos = Pair(row, col)
-                                                        highlightedMoves =
-                                                            clickedPiece.getValidMoves(
-                                                                row,
-                                                                col,
-                                                                board
-                                                            )
-                                                        onPieceSelected(selectedPos)
-                                                    }
-                                                } else {
-                                                    val (r2, c2) = selected
-                                                    val selectedPiece = board.getPiece(r2, c2)
-                                                    if (selectedPiece != null) {
-                                                        if (highlightedMoves.contains(
-                                                                Pair(
-                                                                    row,
-                                                                    col
-                                                                )
-                                                            ) && selectedPiece.isRed == isRedPlayer && isMyTurn
-                                                        ) {
-                                                            onMove(Pair(r2, c2), Pair(row, col))
-                                                        }
-                                                    }
-                                                    selectedPos = null
-                                                    highlightedMoves = emptyList()
-                                                    onPieceSelected(null)
+                                    val finalModifier = if (isMyTurn) {
+                                        cellModifier.clickable {
+                                            val selected = selectedPos
+                                            val clickedPiece = board.getPiece(row, col)
+
+                                            if (selected == null) {
+                                                if (clickedPiece != null && clickedPiece.isRed == isRedPlayer) {
+                                                    selectedPos = Pair(row, col)
+                                                    highlightedMoves =
+                                                        clickedPiece.getValidMoves(
+                                                            row,
+                                                            col,
+                                                            board
+                                                        )
+                                                    onPieceSelected(selectedPos)
                                                 }
-                                            },
+                                            } else {
+                                                val (r2, c2) = selected
+                                                val selectedPiece = board.getPiece(r2, c2)
+                                                if (selectedPiece != null) {
+                                                    if (highlightedMoves.contains(
+                                                            Pair(
+                                                                row,
+                                                                col
+                                                            )
+                                                        ) && selectedPiece.isRed == isRedPlayer
+                                                    ) {
+                                                        onMove(Pair(r2, c2), Pair(row, col))
+                                                    }
+                                                }
+                                                selectedPos = null
+                                                highlightedMoves = emptyList()
+                                                onPieceSelected(null)
+                                            }
+                                        }
+                                    } else {
+                                        cellModifier
+                                    }
+
+                                    Box(
+                                        modifier = finalModifier,
                                         contentAlignment = Alignment.Center
                                     ) {
 
@@ -307,50 +313,8 @@ fun GameScreen(
 }
 
 fun getCellColor(row: Int, col: Int, isRedPlayer: Boolean): Color {
-    val S3 = Color(0xFF3B2865)
     val S1 = Color(0xFF1A122B)
-    val LCRed_D = Color(0xFF86103C)
-    val LCBlue_D = Color(0xFF1B418A)
-    return if (isRedPlayer) {
-        when {
-            row == 0 -> LCRed_D
-            row == 8 && (col == 0 || col == 7) -> LCRed_D
-            row == 9 -> LCBlue_D
-            row == 1 && (col == 0 || col == 7) -> LCBlue_D
-            row % 2 == 0 && col % 2 == 0 || row % 2 != 0 && col % 2 != 0 -> S3
-            else -> S1
-        }
-    } else {
-        when {
-            row == 9 -> LCRed_D
-            row == 1 && (col == 0 || col == 7) -> LCRed_D
-            row == 0 -> LCBlue_D
-            row == 8 && (col == 0 || col == 7) -> LCBlue_D
-            row % 2 == 0 && col % 2 == 0 || row % 2 != 0 && col % 2 != 0 -> S3
-            else -> S1
-        }
-    }
-}
-
-fun getBorder(row: Int, col: Int, isRedPlayer: Boolean): BorderStroke {
     val S3 = Color(0xFF3B2865)
-    val stroke = BorderStroke(1.dp, S3)
-    val none = BorderStroke(0.dp, S3)
-    return if (isRedPlayer) {
-        when {
-            row == 0 -> stroke
-            row == 8 && (col == 0 || col == 7) -> stroke
-            row == 9 -> stroke
-            row == 1 && (col == 0 || col == 7) -> stroke
-            else -> none
-        }
-    } else {
-        when {
-            row == 9 -> stroke
-            row == 1 && (col == 0 || col == 7) -> stroke
-            row == 0 -> stroke
-            row == 8 && (col == 0 || col == 7) -> stroke
-            else -> none
-        }
-    }
+
+    return if ((row + col) % 2 == 0) S3 else S1
 }

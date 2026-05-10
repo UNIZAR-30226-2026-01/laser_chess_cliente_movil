@@ -1,12 +1,13 @@
 package com.gracehopper.laserchessapp.ui.gameConfig
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.viewpager2.widget.ViewPager2
 import com.gracehopper.laserchessapp.R
@@ -47,7 +48,17 @@ class GameConfigDialogFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewPager = view.findViewById(R.id.viewPagerMatchConfig)
-        buttonClose = view.findViewById(R.id.buttonCloseMatchConfig)
+        
+        // Configurar cabecera común
+        val topSection = view.findViewById<View>(R.id.dialog_top_section)
+        buttonClose = topSection.findViewById(R.id.buttonCloseDialog)
+        val dialogTitle = topSection.findViewById<TextView>(R.id.dialogTitle)
+        val dialogIcon = topSection.findViewById<ImageView>(R.id.dialogIcon)
+        
+        dialogTitle.text = getString(R.string.configure_match)
+        dialogIcon.setImageResource(R.drawable.ic_tablero)
+        dialogIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.LCWhite))
+
         buttonBack = view.findViewById(R.id.buttonBackStep)
         buttonNext = view.findViewById(R.id.buttonNextStep)
         buttonConfirm = view.findViewById(R.id.buttonConfirmMatchConfig)
@@ -62,7 +73,7 @@ class GameConfigDialogFragment(
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setBackgroundDrawableResource(android.R.color.transparent)
             setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT

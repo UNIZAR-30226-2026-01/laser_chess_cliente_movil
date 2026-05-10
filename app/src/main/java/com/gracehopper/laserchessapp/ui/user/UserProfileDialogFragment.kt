@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.game.GamePlayerInfo
@@ -56,6 +57,17 @@ class UserProfileDialogFragment : DialogFragment() {
             .inflate(R.layout.dialog_user_profile, null)
 
         bindViews(dialogView)
+
+        // Configurar cabecera común
+        val topSection = dialogView.findViewById<View>(R.id.dialog_top_section)
+        val dialogTitle = topSection.findViewById<TextView>(R.id.dialogTitle)
+        val dialogIcon = topSection.findViewById<ImageView>(R.id.dialogIcon)
+        buttonClose = topSection.findViewById(R.id.buttonCloseDialog)
+
+        dialogTitle.text = "Perfil de usuario"
+        dialogIcon.setImageResource(R.drawable.ic_person_bart)
+        dialogIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.LCWhite))
+
         setupCloseButton()
 
         val userId = requireArguments().getLong(ARG_FRIEND_ID, -1L)
@@ -177,7 +189,6 @@ class UserProfileDialogFragment : DialogFragment() {
         imgBoardSkin = dialogView.findViewById(R.id.imageBoardSkin)
         imgWinAnimation = dialogView.findViewById(R.id.imageWinAnimation)
 
-        buttonClose = dialogView.findViewById(R.id.buttonCloseProfileDialog)
         buttonPrimaryAction = dialogView.findViewById(R.id.buttonPrimaryAction)
         buttonSecondaryAction = dialogView.findViewById(R.id.buttonSecondaryAction)
 
