@@ -741,14 +741,16 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        val actualPieceColor = piece?.isRed
-
-        // Si la pieza fuera null por lo que sea
-        laserIsRed = actualPieceColor ?: if (isThisMyMove) {
-            ActiveGameManager.imRedPlayer
+        // Determinar el color del láser. 
+        // Si la pieza existe (rotación o traslación), usamos su color.
+        // Si no (por ejemplo, pieza destruida que ya no está), inferimos el color por quién ha movido.
+        laserIsRed = if (piece != null) {
+            piece.isRed
         } else {
-            !ActiveGameManager.imRedPlayer
+            if (isThisMyMove) ActiveGameManager.imRedPlayer else !ActiveGameManager.imRedPlayer
         }
+
+        Log.d("LASER_DEBUG", "Move by player. pieceIsRed=${piece?.isRed} imRed=${ActiveGameManager.imRedPlayer} isThisMyMove=$isThisMyMove -> laserIsRed=$laserIsRed")
 
         laserPath = LaserUtils.parseLaserPath(move.laserPath)
 

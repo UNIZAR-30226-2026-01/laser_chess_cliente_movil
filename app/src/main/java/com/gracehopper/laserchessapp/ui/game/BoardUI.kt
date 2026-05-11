@@ -61,10 +61,15 @@ fun GameScreen(
     val visibleNumbers = if (isRedPlayer) numbers else numbers.reversed()
 
     // Colores del láser
-    val laserCore = if (laserIsRed) Color(0xFFFF3333) else Color(0xFF3388FF)
-    val laserStrong = if (laserIsRed) Color(0xCCFF3C3C) else Color(0xCC3282FF)
-    val laserMid = if (laserIsRed) Color(0x80FF1E1E) else Color(0x801E64FF)
-    val laserSoft = if (laserIsRed) Color(0x40C80000) else Color(0x40003CC8)
+    // Para el jugador local, sus piezas son azules visualmente, por tanto su láser es azul (laserIsRed == false)
+    // Para el rival, sus piezas son rojas visualmente, por tanto su láser es rojo (laserIsRed == true)
+    // Comparamos el color del láser con el bando interno (isRedPlayer) para determinar la visualización
+    val isVisualRedLaser = (laserIsRed != isRedPlayer)
+
+    val laserCore = if (isVisualRedLaser) Color(0xFFFF3333) else Color(0xFF3388FF)
+    val laserStrong = if (isVisualRedLaser) Color(0xCCFF3C3C) else Color(0xCC3282FF)
+    val laserMid = if (isVisualRedLaser) Color(0x80FF1E1E) else Color(0x801E64FF)
+    val laserSoft = if (isVisualRedLaser) Color(0x40C80000) else Color(0x40003CC8)
 
     Column(modifier = Modifier.fillMaxWidth()) {
 
