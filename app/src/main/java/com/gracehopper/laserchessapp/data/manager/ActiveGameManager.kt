@@ -160,7 +160,7 @@ object ActiveGameManager {
 
                 val redPlayerId = serverMsg.extra?.toLongOrNull()
                 if (redPlayerId != null && redPlayerId != -1L) {
-                    val myId = TokenManager.getUserId()
+                    val myId = CurrentUserManager.getMyCurrentId() ?: TokenManager.getUserId()
                     imRedPlayer = (redPlayerId == myId)
                 } else {
                     // Por defecto en bot/matchmaking si no hay ID, el primer jugador suele ser el humano
@@ -647,7 +647,7 @@ object ActiveGameManager {
             onMessageReceivedCallback?.invoke(
                 GameEvent.InitialState(
                     boardCsv = intialBoardCSV,
-                    redPlayerId = if (imRedPlayer) TokenManager.getUserId() else null
+                    redPlayerId = if (imRedPlayer) (CurrentUserManager.getMyCurrentId() ?: TokenManager.getUserId()) else null
                 )
             )
         }

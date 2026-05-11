@@ -416,6 +416,10 @@ class GameActivity : AppCompatActivity() {
                             tryShowGameResult()
                         }
 
+                        is GameEvent.Reconnected -> {
+                            Log.d("GAME", "Evento Reconnected recibido")
+                        }
+
                         else -> {
                             // ignorar otros eventos
                         }
@@ -540,6 +544,7 @@ class GameActivity : AppCompatActivity() {
                     waitingForServerConfirmation = true
                     isMyTurn = false
                     GameTimerManager.setMyTurn(false)
+                    changeCardsBasedOnTurn(false)
                 }
 
                 selectedPos = null
@@ -562,6 +567,7 @@ class GameActivity : AppCompatActivity() {
                     waitingForServerConfirmation = true
                     isMyTurn = false
                     GameTimerManager.setMyTurn(false)
+                    changeCardsBasedOnTurn(false)
                 }
 
                 selectedPos = null
@@ -644,6 +650,7 @@ class GameActivity : AppCompatActivity() {
             waitingForServerConfirmation = true
             isMyTurn = false
             GameTimerManager.setMyTurn(false)
+            changeCardsBasedOnTurn(false)
         }
 
         selectedPos = null
@@ -829,6 +836,7 @@ class GameActivity : AppCompatActivity() {
         val isRedTurn = moveCount % 2 == 0
         isMyTurn = (ActiveGameManager.imRedPlayer == isRedTurn)
         GameTimerManager.setMyTurn(isMyTurn)
+        changeCardsBasedOnTurn(isMyTurn)
         Log.d(
             "RECONNECT",
             "recalculateTurn: moveCount=$moveCount isRedTurn=$isRedTurn imRed=${ActiveGameManager.imRedPlayer} → isMyTurn=$isMyTurn"

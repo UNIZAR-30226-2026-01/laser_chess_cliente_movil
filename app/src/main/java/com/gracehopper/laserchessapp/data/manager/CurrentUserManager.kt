@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.model.user.UserRatings
+import com.gracehopper.laserchessapp.utils.TokenManager
 
 /**
  * Objeto singleton que almacena el perfil actual del usuario.
@@ -24,6 +25,7 @@ object CurrentUserManager {
     fun setMyProfile(profile: MyProfile) {
         _myProfile.postValue(profile)
         _sessionExpired.postValue(false)
+        TokenManager.saveUserId(profile.id)
     }
 
     /**
