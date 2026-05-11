@@ -21,6 +21,7 @@ import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.gameConfig.GameConfigDialogFragment
+import com.gracehopper.laserchessapp.ui.home.RankUtils
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 class UserProfileDialogFragment : DialogFragment() {
@@ -38,6 +39,11 @@ class UserProfileDialogFragment : DialogFragment() {
     private lateinit var txtProfileRapidElo: TextView
     private lateinit var txtProfileClassicElo: TextView
     private lateinit var txtProfileExtendedElo: TextView
+
+    private lateinit var imgBlitzRank: ImageView
+    private lateinit var imgRapidRank: ImageView
+    private lateinit var imgClassicRank: ImageView
+    private lateinit var imgExtendedRank: ImageView
 
     private lateinit var imgPieceSkin: ImageView
     private lateinit var imgBoardSkin: ImageView
@@ -185,6 +191,11 @@ class UserProfileDialogFragment : DialogFragment() {
         txtProfileClassicElo = dialogView.findViewById(R.id.txtClassicElo)
         txtProfileExtendedElo = dialogView.findViewById(R.id.txtExtendedElo)
 
+        imgBlitzRank = dialogView.findViewById(R.id.imageBlitzRank)
+        imgRapidRank = dialogView.findViewById(R.id.imageRapidRank)
+        imgClassicRank = dialogView.findViewById(R.id.imageClassicRank)
+        imgExtendedRank = dialogView.findViewById(R.id.imageExtendedRank)
+
         imgPieceSkin = dialogView.findViewById(R.id.imagePieceSkin)
         imgBoardSkin = dialogView.findViewById(R.id.imageBoardSkin)
         imgWinAnimation = dialogView.findViewById(R.id.imageWinAnimation)
@@ -232,6 +243,16 @@ class UserProfileDialogFragment : DialogFragment() {
         txtProfileRapidElo.text = profile.ratings.rapid.toString()
         txtProfileClassicElo.text = profile.ratings.classic.toString()
         txtProfileExtendedElo.text = profile.ratings.extended.toString()
+
+        val blitzRank = RankUtils.getRankInfo(profile.ratings.blitz)
+        val rapidRank = RankUtils.getRankInfo(profile.ratings.rapid)
+        val classicRank = RankUtils.getRankInfo(profile.ratings.classic)
+        val extendedRank = RankUtils.getRankInfo(profile.ratings.extended)
+
+        imgBlitzRank.setImageResource(blitzRank.drawableRes)
+        imgRapidRank.setImageResource(rapidRank.drawableRes)
+        imgClassicRank.setImageResource(classicRank.drawableRes)
+        imgExtendedRank.setImageResource(extendedRank.drawableRes)
 
         imageProfileAvatar.setImageResource(ItemUtils.getItemDrawable(profile.avatar))
 

@@ -127,6 +127,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginBottom="12dp">
 
             <TextView
@@ -142,7 +143,10 @@
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="0.8"
-                android:src="@drawable/ic_elo"
+
+                android:src="@drawable/ic_crown"
+                app:tint="@color/LCYellow"
+
                 android:contentDescription="@string/elo"
                 android:scaleType="fitCenter"
                 android:layout_gravity="center_vertical" />
@@ -163,6 +167,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginBottom="8dp">
 
             <TextView
@@ -186,8 +191,12 @@
             <ImageView
                 android:id="@+id/imageBlitzRank"
                 android:layout_width="0dp"
-                android:layout_height="24dp"
+                android:layout_height="48dp"
                 android:layout_weight="0.8"
+
+                android:scaleType="fitCenter"
+                android:layout_gravity="center_vertical"
+
                 android:src="@drawable/ic_rank_placeholder"
                 android:contentDescription="@string/blitz_rank"
                 android:adjustViewBounds="true" />
@@ -198,6 +207,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginBottom="8dp">
 
             <TextView
@@ -221,8 +231,12 @@
             <ImageView
                 android:id="@+id/imageRapidRank"
                 android:layout_width="0dp"
-                android:layout_height="24dp"
+                android:layout_height="48dp"
                 android:layout_weight="0.8"
+
+                android:scaleType="fitCenter"
+                android:layout_gravity="center_vertical"
+
                 android:src="@drawable/ic_rank_placeholder"
                 android:contentDescription="@string/rapid_rank"
                 android:adjustViewBounds="true" />
@@ -233,6 +247,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginBottom="8dp">
 
             <TextView
@@ -256,8 +271,12 @@
             <ImageView
                 android:id="@+id/imageClassicRank"
                 android:layout_width="0dp"
-                android:layout_height="24dp"
+                android:layout_height="48dp"
                 android:layout_weight="0.8"
+
+                android:scaleType="fitCenter"
+                android:layout_gravity="center_vertical"
+
                 android:src="@drawable/ic_rank_placeholder"
                 android:contentDescription="@string/classic_rank"
                 android:adjustViewBounds="true" />
@@ -268,6 +287,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginBottom="24dp">
 
             <TextView
@@ -291,8 +311,12 @@
             <ImageView
                 android:id="@+id/imageExtendedRank"
                 android:layout_width="0dp"
-                android:layout_height="24dp"
+                android:layout_height="48dp"
                 android:layout_weight="0.8"
+
+                android:scaleType="fitCenter"
+                android:layout_gravity="center_vertical"
+
                 android:src="@drawable/ic_rank_placeholder"
                 android:contentDescription="@string/extended_rank"
                 android:adjustViewBounds="true" />

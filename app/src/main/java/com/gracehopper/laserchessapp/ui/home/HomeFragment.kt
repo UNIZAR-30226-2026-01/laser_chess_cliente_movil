@@ -129,7 +129,7 @@ class HomeFragment : Fragment() {
         checkAiMode()
 
         rankBadgeView = view.findViewById(R.id.includeRankBadge)
-        observeElo()
+        observeProfile()
         return view
     }
 
@@ -368,16 +368,21 @@ class HomeFragment : Fragment() {
         refreshMainButton(btnMain)
     }
 
-    private fun observeElo() {
+    private fun observeProfile() {
+
         CurrentUserManager.myProfile.observe(viewLifecycleOwner) { profile ->
+
             val elo = when (selectedTimeMode) {
-                TimeMode.BLITZ    -> profile?.ratings?.blitz    ?: 0
-                TimeMode.RAPID    -> profile?.ratings?.rapid    ?: 0
-                TimeMode.CLASSIC  -> profile?.ratings?.classic  ?: 0
+                TimeMode.BLITZ    -> profile?.ratings?.blitz ?: 0
+                TimeMode.RAPID    -> profile?.ratings?.rapid ?: 0
+                TimeMode.CLASSIC  -> profile?.ratings?.classic ?: 0
                 TimeMode.EXTENDED -> profile?.ratings?.extended ?: 0
-                else              -> profile?.ratings?.blitz    ?: 0
+                else              -> profile?.ratings?.blitz ?: 0
             }
+
             updateRankBadge(elo)
+
+            renderBoard()
         }
     }
 
