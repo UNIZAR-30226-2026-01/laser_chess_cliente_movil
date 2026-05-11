@@ -47,9 +47,23 @@ class ShopFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupAdapters()
         setupArrowButtons()
+        observeProfile()
         loadShopItems()
+    }
+
+    private fun observeProfile() {
+        CurrentUserManager.myProfile.observe(viewLifecycleOwner) { profile ->
+            profile?.let {
+                val money = it.money
+                piecesAdapter.updateUserMoney(money)
+                boardsAdapter.updateUserMoney(money)
+                animationsAdapter.updateUserMoney(money)
+                avatarsAdapter.updateUserMoney(money)
+            }
+        }
     }
 
     private fun setupAdapters() {
@@ -157,10 +171,12 @@ class ShopFragment : Fragment() {
                     "Piezas=${pieces.size}, tableros=${boards.size}, animaciones=${animations.size}, avatares=${avatars.size}"
                 )
 
-                piecesAdapter.updateData(pieces)
-                boardsAdapter.updateData(boards)
-                animationsAdapter.updateData(animations)
-                avatarsAdapter.updateData(avatars)
+                val userMoney = CurrentUserManager.myProfile.value?.money ?: 0
+
+                piecesAdapter.updateData(pieces, userMoney)
+                boardsAdapter.updateData(boards, userMoney)
+                animationsAdapter.updateData(animations, userMoney)
+                avatarsAdapter.updateData(avatars, userMoney)
             },
             onError = { error ->
                 Log.e("SHOP_FRAGMENT", "Error cargando tienda: $error")

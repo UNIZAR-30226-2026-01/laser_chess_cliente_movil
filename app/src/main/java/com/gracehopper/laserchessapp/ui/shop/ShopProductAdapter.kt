@@ -13,6 +13,8 @@ class ShopProductAdapter(
     private val onClick: (ShopProduct) -> Unit
 ) : RecyclerView.Adapter<ShopProductAdapter.ShopProductViewHolder>() {
 
+    private var userMoney: Int = 0
+
     inner class ShopProductViewHolder(
         private val binding: ItemShopProductBinding
     ) : RecyclerView.ViewHolder(binding.root) {
@@ -38,10 +40,17 @@ class ShopProductAdapter(
             } else {
                 binding.txtShopProductPrice.text = product.price.toString()
                 binding.imgShopCoin.visibility = View.VISIBLE
-                binding.root.isEnabled = true
-                binding.root.alpha = 1f
-                binding.root.setOnClickListener {
-                    onClick(product)
+
+                if (userMoney >= product.price) {
+                    binding.root.isEnabled = true
+                    binding.root.alpha = 1f
+                    binding.root.setOnClickListener {
+                        onClick(product)
+                    }
+                } else {
+                    binding.root.isEnabled = false
+                    binding.root.alpha = 0.6f
+                    binding.root.setOnClickListener(null)
                 }
             }
         }
@@ -63,8 +72,14 @@ class ShopProductAdapter(
 
     override fun getItemCount(): Int = products.size
 
-    fun updateData(newProducts: List<ShopProduct>) {
+    fun updateData(newProducts: List<ShopProduct>, newUserMoney: Int = userMoney) {
         products = newProducts
+        userMoney = newUserMoney
+        notifyDataSetChanged()
+    }
+
+    fun updateUserMoney(newUserMoney: Int) {
+        userMoney = newUserMoney
         notifyDataSetChanged()
     }
 
