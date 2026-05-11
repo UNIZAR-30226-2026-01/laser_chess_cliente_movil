@@ -219,24 +219,42 @@ class GameReplayActivity : AppCompatActivity() {
      * que acaba de mover (en milisegundos).
      */
     private fun updateTimerDisplay() {
+
         val timerPlayer = findViewById<TextView>(R.id.timePlayer) ?: return
         val timerEnemy  = findViewById<TextView>(R.id.timeEnemy) ?: return
 
-        if (moveIndex == 0 || movimientos.isEmpty()) return
+        // Tiempo inicial de ambos jugadores
+        var redTime = game.timeBase.toLong()
+        var blueTime = game.timeBase.toLong()
 
-        try {
-            val lastMoveStr = movimientos[moveIndex - 1]
-            val move = MoveParser.parseMove(lastMoveStr)
-            val timeMs = move.timer
-            val formatted = formatReplayTime(timeMs)
+        // Recorremos TODOS los movimientos hasta el estado actual
+        for (i in 0 until moveIndex) {
 
-            if (isMyTurn()) {
-                timerPlayer.text = formatted
-            } else {
-                timerEnemy.text = formatted
+            try {
+
+                val move = MoveParser.parseMove(movimientos[i])
+
+                // El movimiento guarda el tiempo restante
+                val remainingTime = move.timer
+
+                val moverIsRed = (i % 2 == 0)
+
+                if (moverIsRed) {
+                    redTime = remainingTime
+                } else {
+                    blueTime = remainingTime
+                }
+
+            } catch (_: Exception) {
             }
-        } catch (e: Exception) {
         }
+
+        // Convertir según perspectiva local
+        val myTime = if (imRedPlayer) redTime else blueTime
+        val enemyTime = if (imRedPlayer) blueTime else redTime
+
+        timerPlayer.text = formatReplayTime(myTime)
+        timerEnemy.text = formatReplayTime(enemyTime)
     }
 
     /* devuelve true si es el turno del jugador loggeado */

@@ -56,8 +56,40 @@ class HistoryGameAdapter(
         holder.textBoard.text = game.board.uppercase().ifEmpty { "—" }
         holder.textMatchType.text = game.matchType.uppercase().ifEmpty { "—" }
 
-        holder.textWinner.text =
-            userCache[game.winner.toLongOrNull()]?.username ?: game.winner
+        holder.textWinner.text = when (game.winner.uppercase()) {
+
+            "P1_WINS" -> player1?.username ?: "Jugador 1"
+
+            "P2_WINS" -> player2?.username ?: "Jugador 2"
+
+            "DRAW" -> "Tablas"
+
+            else -> {
+                userCache[game.winner.toLongOrNull()]?.username
+                    ?: game.winner
+            }
+        }
+
+        when (game.winner.uppercase()) {
+
+            "P1_WINS", "P2_WINS" -> {
+                holder.textWinner.setTextColor(
+                    holder.itemView.context.getColor(R.color.LCGreen)
+                )
+            }
+
+            "DRAW" -> {
+                holder.textWinner.setTextColor(
+                    holder.itemView.context.getColor(R.color.LCYellow)
+                )
+            }
+
+            else -> {
+                holder.textWinner.setTextColor(
+                    holder.itemView.context.getColor(R.color.LCGray)
+                )
+            }
+        }
 
         holder.textDate.text = formatDate(game.date)
 
