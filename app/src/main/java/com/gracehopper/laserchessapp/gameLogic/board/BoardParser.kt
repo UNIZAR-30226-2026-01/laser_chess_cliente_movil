@@ -35,11 +35,6 @@ object BoardParser {
                      */
                     val boardCol = board.cols - 1 - r
 
-                    Log.d(
-                        "BOARD_PARSE",
-                        "piece=$cell -> row=$c col=$boardCol parsed=${piece != null}"
-                    )
-
                     board.setPiece(row = c, col = boardCol, piece = piece)
                 }
             }
