@@ -37,8 +37,6 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
 
         super.onMessageReceived(message)
 
-        AppNotificationHelper.createChannels(applicationContext)
-
         val eventType = message.data["event_type"]
         val data = message.data["data"]
 
