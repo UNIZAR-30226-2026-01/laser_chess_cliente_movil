@@ -31,14 +31,15 @@ object ActiveGameManager {
         ERROR
     }
 
+    enum class MatchType {
+        PRIVATE,
+        RANKED,
+        CASUAL,
+        BOTS
+    }
+
     private var friendlyGameWebSocket: FriendlyGameWebSocket? = null
     private var isReconnecting = false
-
-    var isMatchmakingGame: Boolean = false
-        private set
-
-    var isFriendlyGame: Boolean = false
-        private set
 
     var currentOpponentInfo: GamePlayerInfo? = null
         private set
@@ -54,7 +55,8 @@ object ActiveGameManager {
 
     var currentMatchId: Long? = null
         private set
-
+    var currentMatchType: MatchType? = null
+        private set
     var reconnectingOpponentId: Long? = null
         private set
 
@@ -63,6 +65,7 @@ object ActiveGameManager {
 
     private var reconnectGotInitialState = false
     private var reconnectGotState = false
+    private var reconnectGotMatchType = false
     private var awaitingReconnectMessages = false
 
     var intialBoardCSV: String? = null
@@ -86,15 +89,6 @@ object ActiveGameManager {
 
     // Buffer de eventos que llegaron antes de que el Fragment registrara su callback
     private val pendingEvents = mutableListOf<GameEvent>()
-
-    private const val PREF_NAME = "active_game_prefs"
-    private const val KEY_IS_FRIENDLY = "is_friendly_game"
-    private lateinit var prefs: SharedPreferences
-
-    fun init(context: Context) {
-        prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        isFriendlyGame = prefs.getBoolean(KEY_IS_FRIENDLY, false)  // restaurar al arrancar
-    }
 
     /**
      * Establece los callbacks de la conexión.
@@ -342,6 +336,28 @@ object ActiveGameManager {
                 if (cb != null) cb.invoke(event) else pendingEvents.add(event)
             }
 
+            GameMessageType.MATCH_TYPE -> {
+
+                currentMatchType = try {
+
+                    MatchType.valueOf(
+                        serverMsg.content.orEmpty().uppercase()
+                    )
+
+                } catch (e: Exception) {
+
+                    null
+                }
+
+                Log.d("MATCH_TYPE", "Tipo partida: $currentMatchType")
+
+                if (awaitingReconnectMessages) {
+
+                    reconnectGotMatchType = true
+                    dispatchReconnectIfReady()
+                }
+            }
+
             GameMessageType.REWARDS -> {
 
                 val xpDiff = serverMsg.content?.toIntOrNull()
@@ -419,7 +435,7 @@ object ActiveGameManager {
         currentOpponentInfo = null
     }
 
-    fun getOpponentUsername() : String? {
+    fun getOpponentUsername(): String? {
         return currentOpponentInfo?.username
     }
 
@@ -429,14 +445,6 @@ object ActiveGameManager {
 
     fun getOpponentBoardSkin(): Int {
         return currentOpponentInfo?.boardSkin ?: 4
-    }
-
-    /**
-     * Establece el tipo de partida.
-     */
-    fun setGameType(isFriendly: Boolean) {
-        isFriendlyGame = isFriendly
-        prefs.edit { putBoolean(KEY_IS_FRIENDLY, isFriendly) }
     }
 
     /**
@@ -452,7 +460,7 @@ object ActiveGameManager {
         //resetConnectionOnly()
         prepareForNewGame()
 
-        setGameType(false)
+        currentMatchType = MatchType.BOTS
 
         currentOpponentInfo = null
         currentBoard = board
@@ -489,8 +497,8 @@ object ActiveGameManager {
 
         //resetConnectionOnly()
         prepareForNewGame()
+        currentMatchType = MatchType.PRIVATE
 
-        setGameType(true)                   // La partida es amistosa
         currentOpponentInfo = opponentInfo
 
         currentBoard = board
@@ -535,9 +543,9 @@ object ActiveGameManager {
     ) {
         //resetConnectionOnly()
         prepareForNewGame()
-
-        setGameType(false)
-        isMatchmakingGame = true
+        currentMatchType =
+            if (ranked) MatchType.RANKED
+            else MatchType.CASUAL
 
         currentBoard = board
         currentStartingTime = timeBase
@@ -565,8 +573,7 @@ object ActiveGameManager {
 
         //resetConnectionOnly()
         prepareForNewGame()
-
-        setGameType(true)                   // La partida es amistosa
+        currentMatchType = MatchType.PRIVATE
         currentOpponentInfo = opponentInfo
 
         currentBoard = board
@@ -640,14 +647,19 @@ object ActiveGameManager {
             "RECONNECT",
             "dispatchReconnectIfReady: gotInitial=$reconnectGotInitialState gotState=$reconnectGotState pendingLog='$pendingStateLog' csv=${intialBoardCSV != null}"
         )
-        if (reconnectGotInitialState && reconnectGotState) {
+        if (
+            reconnectGotInitialState &&
+            reconnectGotState &&
+            reconnectGotMatchType
+        ) {
             Log.d("RECONNECT", "Ambos recibidos → navegando a GameActivity")
             awaitingReconnectMessages = false
             currentState = GameState.IN_GAME
             onMessageReceivedCallback?.invoke(
                 GameEvent.InitialState(
                     boardCsv = intialBoardCSV,
-                    redPlayerId = if (imRedPlayer) (CurrentUserManager.getMyCurrentId() ?: TokenManager.getUserId()) else null
+                    redPlayerId = if (imRedPlayer) (CurrentUserManager.getMyCurrentId()
+                        ?: TokenManager.getUserId()) else null
                 )
             )
         }
@@ -662,6 +674,7 @@ object ActiveGameManager {
 
         isReconnecting = true
         reconnectGotInitialState = false
+        reconnectGotMatchType = false
         reconnectGotState = false
         pendingStateLog = null
         awaitingReconnectMessages = false
@@ -692,15 +705,13 @@ object ActiveGameManager {
         reconnectGotInitialState = false
         reconnectGotState = false
         awaitingReconnectMessages = false
-        isMatchmakingGame = false
+        reconnectGotMatchType = false
         currentState = GameState.INACTIVE
         lastError = null
         pendingEvents.clear()
-        
+
         intialBoardCSV = null
         imRedPlayer = true
-
-        setGameType(false)
 
         clearCallbacks()
     }
@@ -736,7 +747,8 @@ object ActiveGameManager {
         reconnectGotInitialState = false
         reconnectGotState = false
         awaitingReconnectMessages = false
-        isMatchmakingGame = false
+        reconnectGotMatchType = false
+        currentMatchType = null
 
         // Limpiamos errores y eventos pendientes
         lastError = null

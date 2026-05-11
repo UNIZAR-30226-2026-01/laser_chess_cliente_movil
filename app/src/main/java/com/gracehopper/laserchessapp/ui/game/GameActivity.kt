@@ -156,11 +156,12 @@ class GameActivity : AppCompatActivity() {
 
         val btnPause = findViewById<ImageButton>(R.id.btnPause)
 
-        if (ActiveGameManager.isFriendlyGame) {
-            btnPause.visibility = View.VISIBLE
-        } else {
-            btnPause.visibility = View.GONE
-        }
+        btnPause.visibility =
+            if (ActiveGameManager.currentMatchType == ActiveGameManager.MatchType.PRIVATE) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
 
         boardM = Board(rows, cols)
 
@@ -395,6 +396,12 @@ class GameActivity : AppCompatActivity() {
                                                 winAnimation = profile.winAnimation
                                             )
                                         )
+
+                                        Log.d(
+                                            "MATCH_TYPE",
+                                            "Partida iniciada tipo=${ActiveGameManager.currentMatchType}"
+                                        )
+
                                         // Actualizar los State para que Compose recomponga el tablero
                                         opponentPieceSkinState = profile.pieceSkin
                                         opponentBoardSkinState = profile.boardSkin
@@ -626,7 +633,9 @@ class GameActivity : AppCompatActivity() {
         super.onDestroy()
 
         GameTimerManager.stop()
-        ActiveGameManager.resetAll()
+        if (isFinishing) {
+            ActiveGameManager.resetAll()
+        }
     }
 
 
@@ -885,11 +894,14 @@ class GameActivity : AppCompatActivity() {
             return
         }
 
-        if (!rewardsReceived) {
+        if (!rewardsReceived ) {
             return
         }
 
-        if (ActiveGameManager.isMatchmakingGame && lastEloDiff == null) {
+        if (
+            ActiveGameManager.currentMatchType == ActiveGameManager.MatchType.RANKED &&
+            lastEloDiff == null
+        ) {
             return
         }
 

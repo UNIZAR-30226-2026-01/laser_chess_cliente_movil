@@ -18,7 +18,6 @@ class LaserChessApplication : Application() {
 
         NetworkUtils.init(this)
         TokenManager.init(this)
-        ActiveGameManager.init(this)
 
         clearSessionIfUrlChanged()
     }

@@ -80,20 +80,39 @@ class WaitingGameDialogFragment : DialogFragment() {
         val startingTime = ActiveGameManager.currentStartingTime ?: 300
         val increment = ActiveGameManager.currentTimeIncrement ?: 0
 
-        when {
-            ActiveGameManager.isMatchmakingGame -> {
+        when (ActiveGameManager.currentMatchType) {
+
+            ActiveGameManager.MatchType.RANKED,
+            ActiveGameManager.MatchType.CASUAL -> {
+
                 textOpponent.text = "Buscando rival en el matchmaking..."
                 textDetails.text = "Tablero $board · ${startingTime}s + ${increment}s"
             }
 
-            ActiveGameManager.currentMatchId != null -> {
-                textOpponent.text = "Esperando al otro jugador"
-                textDetails.text = "Retomando partida con ${opponent ?: "rival"}"
+            ActiveGameManager.MatchType.BOTS -> {
+
+                textOpponent.text = "Preparando partida contra IA..."
+                textDetails.text = "Tablero $board · ${startingTime}s + ${increment}s"
             }
 
-            else -> {
-                textOpponent.text = "Esperando al otro jugador"
-                textDetails.text = "Partida con ${opponent ?: "rival"}"
+            ActiveGameManager.MatchType.PRIVATE -> {
+
+                if (ActiveGameManager.currentMatchId != null) {
+
+                    textOpponent.text = "Esperando al otro jugador"
+                    textDetails.text = "Retomando partida con ${opponent ?: "rival"}"
+
+                } else {
+
+                    textOpponent.text = "Esperando al otro jugador"
+                    textDetails.text = "Partida con ${opponent ?: "rival"}"
+                }
+            }
+
+            null -> {
+
+                textOpponent.text = "Preparando partida..."
+                textDetails.text = "Conectando..."
             }
         }
     }
