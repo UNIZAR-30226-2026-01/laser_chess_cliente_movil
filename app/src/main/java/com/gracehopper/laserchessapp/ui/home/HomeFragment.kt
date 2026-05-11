@@ -42,6 +42,8 @@ class HomeFragment : Fragment() {
 
     private var boardComposeView: ComposeView? = null
     private var txtTimeIncrementTitle: TextView? = null
+    private var rankBadgeView: View? = null
+    private var selectedTimeModeForElo: TimeMode = TimeMode.BLITZ
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -126,6 +128,8 @@ class HomeFragment : Fragment() {
         setupSelectors(view)
         checkAiMode()
 
+        rankBadgeView = view.findViewById(R.id.includeRankBadge)
+        observeElo()
         return view
     }
 
@@ -265,6 +269,21 @@ class HomeFragment : Fragment() {
                         txtTimeIncrementTitle?.text = "+${selectedTimeIncrement}s"
                     }
                     targetView.text = TimeModeConfig.getName(mode)
+
+                    val profile = CurrentUserManager.getMyCurrentProfile()
+                    val elo = when (mode) {
+                        TimeMode.BLITZ    -> profile?.ratings?.blitz    ?: 0
+                        TimeMode.RAPID    -> profile?.ratings?.rapid    ?: 0
+                        TimeMode.CLASSIC  -> profile?.ratings?.classic  ?: 0
+                        TimeMode.EXTENDED -> profile?.ratings?.extended ?: 0
+                        else              -> 0
+                    }
+
+                    rankBadgeView?.findViewById<com.google.android.material.progressindicator.CircularProgressIndicator>(
+                        R.id.rankProgressBar
+                    )?.progress = 0
+
+                    updateRankBadge(elo)
                 }
             }
         }
@@ -347,5 +366,37 @@ class HomeFragment : Fragment() {
         expanded = false
         popup.visibility = View.GONE
         refreshMainButton(btnMain)
+    }
+
+    private fun observeElo() {
+        CurrentUserManager.myProfile.observe(viewLifecycleOwner) { profile ->
+            val elo = when (selectedTimeMode) {
+                TimeMode.BLITZ    -> profile?.ratings?.blitz    ?: 0
+                TimeMode.RAPID    -> profile?.ratings?.rapid    ?: 0
+                TimeMode.CLASSIC  -> profile?.ratings?.classic  ?: 0
+                TimeMode.EXTENDED -> profile?.ratings?.extended ?: 0
+                else              -> profile?.ratings?.blitz    ?: 0
+            }
+            updateRankBadge(elo)
+        }
+    }
+
+    private fun updateRankBadge(elo: Int) {
+        val badgeView = rankBadgeView ?: return
+        val rank    = RankUtils.getRankInfo(elo)
+        val percent = RankUtils.getProgressPercent(elo)
+        val nextMin = RankUtils.RANK_TABLE.find { it.min > elo }?.min ?: elo
+
+        badgeView.findViewById<TextView>(R.id.txtLeagueName).text =
+            "${rank.name.uppercase()} · $elo / $nextMin"
+
+        val progressBar = badgeView.findViewById<com.google.android.material.progressindicator.CircularProgressIndicator>(
+            R.id.rankProgressBar
+        )
+        progressBar.progress = 0
+        progressBar.postDelayed({ progressBar.setProgressCompat(percent, true) }, 50)
+
+        badgeView.findViewById<ImageView>(R.id.rankBadgeIcon)
+            .setImageResource(rank.drawableRes)
     }
 }
