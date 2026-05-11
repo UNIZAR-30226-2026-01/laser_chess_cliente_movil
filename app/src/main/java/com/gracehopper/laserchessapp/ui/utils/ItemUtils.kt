@@ -31,9 +31,9 @@ object ItemUtils {
             5 -> ItemMetadata("Soretro", R.drawable.bg_soretro)
             6 -> ItemMetadata("Cats", R.drawable.bg_cats)
 
-            // WIN_ANIMATION TODO: CAMBIAR CUANDO HAYA LOL
-            7 -> ItemMetadata("Classic", R.drawable.kin_r_cats)
-            8 -> ItemMetadata("Soretro", R.drawable.kin_r_cats)
+            // WIN_ANIMATION
+            7 -> ItemMetadata("Classic", R.drawable.kin_r_classic)
+            8 -> ItemMetadata("Soretro", R.drawable.kin_r_soretro)
             9 -> ItemMetadata("Cats", R.drawable.kin_r_cats)
 
             // AVATAR TODO: CAMBIAR NOMBRES CUANDO SE DECIDAN
