@@ -38,6 +38,7 @@ import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragmen
 import com.gracehopper.laserchessapp.ui.social.RequestsDialogFragment
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
+import com.gracehopper.laserchessapp.ui.utils.BackgroundUtils
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 import com.gracehopper.laserchessapp.utils.AppEvents
 import com.gracehopper.laserchessapp.utils.AppNotificationHelper
@@ -113,6 +114,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnNotifications: ImageButton
     private lateinit var btnHistory: ImageButton
 
+    private lateinit var imgBackground: ImageView
+
 
 
     /**
@@ -171,31 +174,7 @@ class MainActivity : AppCompatActivity() {
         setupProfileCard()
         setupAdditionalButtons()
 
-        val fondoAnimado = findViewById<ImageView>(R.id.img_background_animated)
-        val animHorizontal = ObjectAnimator.ofFloat(fondoAnimado, "translationX", -170f, 150f).apply {
-            duration = 30000 // 30 segundos
-            repeatCount = ValueAnimator.INFINITE
-            repeatMode = ValueAnimator.REVERSE
-            interpolator = LinearInterpolator()
-        }
-        val animVertical = ObjectAnimator.ofFloat(fondoAnimado, "translationY", -70f, 90f).apply {
-            duration = 20000 // Tiempo distinto para que el movimiento sea irregular y natural
-            repeatCount = ValueAnimator.INFINITE
-            repeatMode = ValueAnimator.REVERSE
-            interpolator = LinearInterpolator()
-        }
-        ObjectAnimator.ofFloat(fondoAnimado, "rotation", -3f, 3f).apply {
-            duration = 25000 // 25 segundos
-            repeatCount = ValueAnimator.INFINITE
-            repeatMode = ValueAnimator.REVERSE
-            start()
-        }
-
-        animHorizontal.start()
-        animVertical.start()
-
         handleNotificationIntent(intent)
-
     }
 
     private fun setupAdditionalButtons() {
@@ -380,6 +359,7 @@ class MainActivity : AppCompatActivity() {
         progressProfileXP = findViewById(R.id.progressMyProfileXp)
         profileCardContainer = findViewById(R.id.profileCardInclude)
         txtNumCoins = findViewById(R.id.numCoins)
+        imgBackground = findViewById(R.id.img_background_animated)
 
     }
 
@@ -432,6 +412,8 @@ class MainActivity : AppCompatActivity() {
         progressProfileXP.progress = profile.xpLevel
 
         txtNumCoins.text = profile.money.toString()
+
+        BackgroundUtils.setupBackground(imgBackground, profile.boardSkin)
 
     }
 

@@ -37,6 +37,7 @@ import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.game.GamePlayerInfo
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
+import com.gracehopper.laserchessapp.ui.utils.BackgroundUtils
 import com.gracehopper.laserchessapp.ui.utils.TimeUtils.formatTime
 
 
@@ -115,6 +116,7 @@ class GameActivity : AppCompatActivity() {
         val timerPlayer = findViewById<TextView>(R.id.timePlayer)
         val timerEnemy = findViewById<TextView>(R.id.timeEnemy)
         val avatarPlayerView = findViewById<android.widget.ImageView>(R.id.avatarPlayer)
+        val imgBackground = findViewById<android.widget.ImageView>(R.id.img_background_animated)
 
         CurrentUserManager.myProfile.observe(this) { profile ->
 
@@ -127,6 +129,8 @@ class GameActivity : AppCompatActivity() {
                         profile.avatar.takeIf { it > 0 } ?: 1
                     )
                 )
+
+                BackgroundUtils.setupBackground(imgBackground, profile.boardSkin)
             }
         }
 
