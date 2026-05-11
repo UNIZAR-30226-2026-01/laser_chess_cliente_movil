@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="500dp"
         android:orientation="vertical"
         android:background="@drawable/bg_dark_panel_rounded"
         android:padding="16dp">
@@ -15,7 +15,7 @@
             android:id="@+id/dialog_top_section"
             layout="@layout/dialog_common_popup_frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"/>
 
         <!-- Tabs -->
         <LinearLayout
@@ -57,7 +57,8 @@
         <LinearLayout
             android:id="@+id/layoutReceivedRequestsContent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
@@ -70,18 +71,26 @@
                 android:visibility="gone"
                 android:layout_marginBottom="10dp" />
 
-            <LinearLayout
-                android:id="@+id/layoutReceivedRequestsContainer"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false">
+
+                <LinearLayout
+                    android:id="@+id/layoutReceivedRequestsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
         </LinearLayout>
 
         <!-- Contenido ENVIADAS -->
         <LinearLayout
             android:id="@+id/layoutSentRequestsContent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -95,11 +104,18 @@
                 android:visibility="gone"
                 android:layout_marginBottom="10dp" />
 
-            <LinearLayout
-                android:id="@+id/layoutSentRequestsContainer"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false">
+
+                <LinearLayout
+                    android:id="@+id/layoutSentRequestsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
         </LinearLayout>
 
     </LinearLayout>

@@ -390,6 +390,14 @@ class RequestsDialogFragment : DialogFragment() {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+    }
+
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         parentFragmentManager.setFragmentResult("requests_dialog_closed", Bundle())
