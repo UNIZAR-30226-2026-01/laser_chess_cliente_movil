@@ -27,6 +27,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import com.google.firebase.messaging.FirebaseMessaging
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
@@ -34,8 +35,10 @@ import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.AuthRepository
+import com.gracehopper.laserchessapp.data.repository.DeviceRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.main.MainActivity
+import com.gracehopper.laserchessapp.utils.NotificationPreferences
 import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.utils.redirectToLogin
 import com.gracehopper.laserchessapp.utils.validation.MailValidationResult
@@ -46,12 +49,13 @@ import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
 
 /**
- * Diálogo de notificaciones de retos de partidas amistosas
+ * Diálogo de ajustes de la aplicación
  */
 class SettingsDialogFragment : DialogFragment() {
 
     private lateinit var userRepository: UserRepository
     private lateinit var authRepository: AuthRepository
+    private lateinit var deviceRepository: DeviceRepository
 
     private lateinit var buttonClose: ImageButton
     private lateinit var txtEmail: TextView
@@ -71,15 +75,34 @@ class SettingsDialogFragment : DialogFragment() {
         val apiService = NetworkUtils.getApiService()
         userRepository = UserRepository(apiService)
         authRepository = AuthRepository(apiService)
+        deviceRepository = DeviceRepository(apiService)
 
         notificationPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-                if (!granted) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Notificaciones desactivadas",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                if (granted) {
+
+                    NotificationPreferences.setEnabled(requireContext(), true)
+                    registerFcmToken()
+
+                } else {
+
+                    NotificationPreferences.setEnabled(requireContext(), false)
+
+                    val permanentlyDenied =
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !shouldShowRequestPermissionRationale(
+                            Manifest.permission.POST_NOTIFICATIONS
+                        )
+
+                    if (permanentlyDenied) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Activa las notificaciones desde ajustes",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        openAppNotificationSettings()
+                    }
+
                 }
 
                 syncNotificationCheck()
@@ -94,7 +117,8 @@ class SettingsDialogFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         return inflater.inflate(
-            R.layout.dialog_settings, container, false)
+            R.layout.dialog_settings, container, false
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -173,7 +197,8 @@ class SettingsDialogFragment : DialogFragment() {
 
         txtEliminateAccount.setOnClickListener {
             openEliminateAccountDialog()
-            Toast.makeText(requireContext(),
+            Toast.makeText(
+                requireContext(),
                 "Eliminar cuenta",
                 Toast.LENGTH_SHORT
             ).show()
@@ -184,15 +209,9 @@ class SettingsDialogFragment : DialogFragment() {
             if (changingNotificationCheckProgrammatically) return@setOnCheckedChangeListener
 
             if (isChecked) {
-                requestNotificationPermission()
+                enableNotifications()
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Para desactivar las notificaciones, cambia el permiso en ajustes",
-                    Toast.LENGTH_LONG
-                ).show()
-
-                openAppNotificationSettings()
+                disableNotifications()
             }
 
         }
@@ -204,8 +223,6 @@ class SettingsDialogFragment : DialogFragment() {
     }
 
     private fun openEditMailDialog() {
-        // AlertDialog temporal para salir del paso
-        // TODO Dialog en nueva pantalla de editar email
 
         val editText = EditText(requireContext()).apply {
             setText(currentMail.orEmpty())
@@ -245,23 +262,29 @@ class SettingsDialogFragment : DialogFragment() {
         when (MailValidator.validate(newMail)) {
 
             MailValidationResult.EmptyMail -> {
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     "El mail no puede estar vacío",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
             MailValidationResult.InvalidMail -> {
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     "El mail no es válido",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
             MailValidationResult.Valid -> {
 
                 if (newMail == currentMail) {
-                    Toast.makeText(requireContext(),
+                    Toast.makeText(
+                        requireContext(),
                         "El nuevo mail debe ser distinto al actual",
-                        Toast.LENGTH_SHORT).show()
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return
                 }
 
@@ -273,33 +296,46 @@ class SettingsDialogFragment : DialogFragment() {
                         currentMail = profile.mail
                         txtEmail.text = profile.mail
 
-                        Toast.makeText(requireContext(),
+                        Toast.makeText(
+                            requireContext(),
                             "Mail actualizado",
-                            Toast.LENGTH_SHORT).show()
+                            Toast.LENGTH_SHORT
+                        ).show()
                         dialog.dismiss()
                     },
                     onError = { code ->
                         requireActivity().runOnUiThread {
                             when (code) {
                                 409 -> {
-                                    Toast.makeText(requireContext(),
+                                    Toast.makeText(
+                                        requireContext(),
                                         "El mail ya está en uso",
-                                        Toast.LENGTH_SHORT).show()
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
+
                                 400 -> {
-                                    Toast.makeText(requireContext(),
+                                    Toast.makeText(
+                                        requireContext(),
                                         "El mail no es válido",
-                                        Toast.LENGTH_SHORT).show()
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
+
                                 null -> {
-                                    Toast.makeText(requireContext(),
+                                    Toast.makeText(
+                                        requireContext(),
                                         "Error de conexión al actualizar tu mail",
-                                        Toast.LENGTH_SHORT).show()
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
+
                                 else -> {
-                                    Toast.makeText(requireContext(),
+                                    Toast.makeText(
+                                        requireContext(),
                                         "Error al actualizar tu mail",
-                                        Toast.LENGTH_SHORT).show()
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                         }
@@ -313,8 +349,6 @@ class SettingsDialogFragment : DialogFragment() {
     }
 
     private fun openChangePasswordDialog() {
-        // AlertDialog temporal para salir del paso
-        // TODO Dialog en nueva pantalla de change password
 
         val container = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.VERTICAL
@@ -371,30 +405,34 @@ class SettingsDialogFragment : DialogFragment() {
         dialog.show()
     }
 
-    private fun validateAndChangePassword(currentPassword: String,
-                                          newPassword: String,
-                                          repeatPassword: String,
-                                          dialog: AlertDialog
+    private fun validateAndChangePassword(
+        currentPassword: String,
+        newPassword: String,
+        repeatPassword: String,
+        dialog: AlertDialog
     ) {
 
         when (PasswordValidator.validate(currentPassword)) {
 
             PasswordValidationResult.EmptyPassword -> {
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     "Contraseña actual vacía",
                     Toast.LENGTH_SHORT
                 ).show()
             }
 
             PasswordValidationResult.ShortPassword -> {
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     "Mínimo ${PasswordValidator.MIN_LENGTH} caracteres",
                     Toast.LENGTH_SHORT
                 ).show()
             }
 
             PasswordValidationResult.LongPassword -> {
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     "Máximo ${PasswordValidator.MAX_LENGTH} caracteres",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -405,21 +443,24 @@ class SettingsDialogFragment : DialogFragment() {
                 when (PasswordValidator.validate(newPassword)) {
 
                     PasswordValidationResult.EmptyPassword -> {
-                        Toast.makeText(requireContext(),
+                        Toast.makeText(
+                            requireContext(),
                             "Nueva contraseña vacía",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
 
                     PasswordValidationResult.ShortPassword -> {
-                        Toast.makeText(requireContext(),
+                        Toast.makeText(
+                            requireContext(),
                             "Mínimo ${PasswordValidator.MIN_LENGTH} caracteres",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
 
                     PasswordValidationResult.LongPassword -> {
-                        Toast.makeText(requireContext(),
+                        Toast.makeText(
+                            requireContext(),
                             "Máximo ${PasswordValidator.MAX_LENGTH} caracteres",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -430,21 +471,24 @@ class SettingsDialogFragment : DialogFragment() {
                         when (PasswordValidator.validate(repeatPassword)) {
 
                             PasswordValidationResult.EmptyPassword -> {
-                                Toast.makeText(requireContext(),
+                                Toast.makeText(
+                                    requireContext(),
                                     "Repite la contraseña nueva",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
 
                             PasswordValidationResult.ShortPassword -> {
-                                Toast.makeText(requireContext(),
+                                Toast.makeText(
+                                    requireContext(),
                                     "Mínimo ${PasswordValidator.MIN_LENGTH} caracteres",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
 
                             PasswordValidationResult.LongPassword -> {
-                                Toast.makeText(requireContext(),
+                                Toast.makeText(
+                                    requireContext(),
                                     "Máximo ${PasswordValidator.MAX_LENGTH} caracteres",
                                     Toast.LENGTH_SHORT
                                 ).show()
@@ -456,14 +500,16 @@ class SettingsDialogFragment : DialogFragment() {
                                 when {
 
                                     newPassword != repeatPassword -> {
-                                        Toast.makeText(requireContext(),
+                                        Toast.makeText(
+                                            requireContext(),
                                             "Las contraseñas no coinciden",
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
 
                                     currentPassword == newPassword -> {
-                                        Toast.makeText(requireContext(),
+                                        Toast.makeText(
+                                            requireContext(),
                                             "La nueva contraseña debe ser distinta a la actual",
                                             Toast.LENGTH_SHORT
                                         ).show()
@@ -493,9 +539,10 @@ class SettingsDialogFragment : DialogFragment() {
 
     }
 
-    private fun changePassword(currentPassword: String,
-                               newPassword: String,
-                               dialog: AlertDialog
+    private fun changePassword(
+        currentPassword: String,
+        newPassword: String,
+        dialog: AlertDialog
     ) {
 
         userRepository.changePassword(
@@ -550,8 +597,10 @@ class SettingsDialogFragment : DialogFragment() {
     private fun openEliminateAccountDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Eliminar cuenta")
-            .setMessage("¿Estás seguro de que quieres eliminar tu cuenta?\n"
-                        + "Esta acción no se puede deshacer")
+            .setMessage(
+                "¿Estás seguro de que quieres eliminar tu cuenta?\n"
+                        + "Esta acción no se puede deshacer"
+            )
             .setPositiveButton("Sí") { _, _ ->
 
                 userRepository.deleteMyAccount(
@@ -595,7 +644,85 @@ class SettingsDialogFragment : DialogFragment() {
 
     }
 
+    private fun enableNotifications() {
+
+        NotificationPreferences.setEnabled(requireContext(), true)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            val granted = ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if (!granted) {
+                requestNotificationPermission()
+                return
+            }
+
+        }
+
+        registerFcmToken()
+
+    }
+
+    private fun disableNotifications() {
+
+        NotificationPreferences.setEnabled(requireContext(), false)
+
+        FirebaseMessaging.getInstance().token
+            .addOnSuccessListener { token ->
+                deviceRepository.deleteDevice(
+                    token = token,
+                    onSuccess = {
+                        Toast.makeText(
+                            requireContext(),
+                            "Notificaciones desactivadas",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
+                    onError = {
+                        Toast.makeText(
+                            requireContext(),
+                            "Error al desactivar notificaciones",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                )
+            }
+
+    }
+
+    private fun registerFcmToken() {
+
+        FirebaseMessaging.getInstance().token
+            .addOnSuccessListener { token ->
+                deviceRepository.registerDevice(
+                    token = token,
+                    onSuccess = {
+                        Toast.makeText(
+                            requireContext(),
+                            "Notificaciones activadas",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
+                    onError = {
+                        Toast.makeText(
+                            requireContext(),
+                            "Error al activar notificaciones",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        NotificationPreferences.setEnabled(requireContext(), false)
+                        syncNotificationCheck()
+                    }
+                )
+            }
+
+    }
+
     private fun syncNotificationCheck() {
+
         val notificationsEnabled = NotificationManagerCompat
             .from(requireContext())
             .areNotificationsEnabled()
@@ -610,38 +737,35 @@ class SettingsDialogFragment : DialogFragment() {
                 true
             }
 
+        val appPreferenceEnabled = NotificationPreferences.isEnabled(requireContext())
+
         changingNotificationCheckProgrammatically = true
-        checkNotifications.isChecked = notificationsEnabled && permissionGranted
+        checkNotifications.isChecked =
+            notificationsEnabled && permissionGranted && appPreferenceEnabled
         changingNotificationCheckProgrammatically = false
     }
 
     private fun requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val granted = ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
 
-            if (granted) {
-                syncNotificationCheck()
-                return
-            }
-
-            if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Activa las notificaciones desde ajustes",
-                    Toast.LENGTH_LONG
-                ).show()
-
-                openAppNotificationSettings()
-                syncNotificationCheck()
-            }
-        } else {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            registerFcmToken()
             syncNotificationCheck()
+            return
         }
+
+        val granted = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (granted) {
+            registerFcmToken()
+            syncNotificationCheck()
+            return
+        }
+
+        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+
     }
 
     private fun openAppNotificationSettings() {
@@ -724,4 +848,5 @@ class SettingsDialogFragment : DialogFragment() {
             return SettingsDialogFragment()
         }
     }
+
 }
