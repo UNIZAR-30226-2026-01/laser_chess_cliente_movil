@@ -31,6 +31,7 @@ import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
+import com.gracehopper.laserchessapp.data.repository.ChallengeRepository
 import com.gracehopper.laserchessapp.ui.settings.SettingsDialogFragment
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 import com.gracehopper.laserchessapp.ui.history.HistoryDialogFragment
@@ -42,6 +43,9 @@ import com.gracehopper.laserchessapp.ui.utils.BackgroundUtils
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 import com.gracehopper.laserchessapp.utils.AppEvents
 import com.gracehopper.laserchessapp.utils.AppNotificationHelper
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
 
 /**
  * Activity principal de la aplicación.
@@ -62,6 +66,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
+     * Repositorio para gestionar retos
+     */
+    private val challengeRepository by lazy {
+        ChallengeRepository(NetworkUtils.getApiService())
+    }
+
+    /**
      * Manager de eventos SSE (Server-Sent Events)
      */
     private val sseManager = SseManager(
@@ -72,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                     applicationContext,
                     challengerUsername
                 )
+                loadChallengeCount()
             }
         },
         onFriendRequestReceived = { requestUsername ->
@@ -113,6 +125,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSettings: ImageButton
     private lateinit var btnNotifications: ImageButton
     private lateinit var btnHistory: ImageButton
+    private lateinit var txtBadgePendingChallenges: TextView
 
     private lateinit var imgBackground: ImageView
 
@@ -181,6 +194,7 @@ class MainActivity : AppCompatActivity() {
         btnSettings = findViewById(R.id.btnSettings)
         btnNotifications = findViewById(R.id.btnNotifications)
         btnHistory = findViewById(R.id.btnHistory)
+        txtBadgePendingChallenges = findViewById(R.id.txtBadgePendingChallenges)
 
         btnSettings.setOnClickListener {
             val dialog = SettingsDialogFragment()
@@ -196,6 +210,36 @@ class MainActivity : AppCompatActivity() {
             val dialog = HistoryDialogFragment()
             dialog.show(supportFragmentManager, "HistoryDialog")
         }
+
+        // Observar eventos de retos para actualizar el contador
+        lifecycleScope.launch {
+            AppEvents.challengeReceived.collectLatest {
+                loadChallengeCount()
+            }
+        }
+    }
+
+    /**
+     * Carga el número de retos pendientes y actualiza el badge.
+     */
+    private fun loadChallengeCount() {
+        challengeRepository.getChallengeCount(
+            onSuccess = { count ->
+                runOnUiThread {
+                    if (count > 0) {
+                        txtBadgePendingChallenges.visibility = View.VISIBLE
+                        txtBadgePendingChallenges.text = count.toString()
+                    } else {
+                        txtBadgePendingChallenges.visibility = View.GONE
+                    }
+                }
+            },
+            onError = {
+                runOnUiThread {
+                    txtBadgePendingChallenges.visibility = View.GONE
+                }
+            }
+        )
     }
 
     override fun onStart() {
@@ -203,6 +247,7 @@ class MainActivity : AppCompatActivity() {
 
         Log.d("MAIN_ACTIVITY", "onStart -> connect SSE")
         sseManager.reconnect()
+        loadChallengeCount()
 
         if (ActiveGameManager.currentState == ActiveGameManager.GameState.INACTIVE) {
             setupGameReconnection()

@@ -4,6 +4,7 @@ import com.gracehopper.laserchessapp.data.model.auth.RegisterResponse
 import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
 import com.gracehopper.laserchessapp.data.model.auth.LoginResponse
 import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
+import com.gracehopper.laserchessapp.data.model.game.ChallengeCountResponse
 import com.gracehopper.laserchessapp.data.model.game.GameResume
 import com.gracehopper.laserchessapp.data.model.game.PausedGameResponse
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
@@ -133,6 +134,9 @@ interface ApiService {
     // Endpoint de CHALLENGE
     @GET("api/rt/challenges")
     fun getPendingChallenges(): Call<List<PendingChallengeResponse>>
+
+    @GET("api/rt/challenges/count")
+    fun getChallengeCount(): Call<ChallengeCountResponse>
 
     // Endpoints de MATCH HISTORY
     @GET("api/match/history/{userID}/paused")

@@ -163,7 +163,6 @@ class NotificationsDialogFragment : DialogFragment() {
                 )
 
                 requireActivity().runOnUiThread {
-                    setupChallengeCallbacks()
 
                     ActiveGameManager.acceptChallenge(
                         opponentInfo = opponentInfo,
@@ -171,6 +170,8 @@ class NotificationsDialogFragment : DialogFragment() {
                         startingTime = challenge.startingTime,
                         timeIncrement = challenge.timeIncrement
                     )
+
+                    setupChallengeCallbacks()
 
                 }
             },
@@ -211,6 +212,7 @@ class NotificationsDialogFragment : DialogFragment() {
                                 "La partida ha comenzado",
                                 Toast.LENGTH_SHORT).show()
 
+                            AppEvents.challengeReceived.tryEmit(Unit)
                             dismiss()
 
                             val intent = Intent(requireContext(), GameActivity::class.java)
@@ -237,6 +239,7 @@ class NotificationsDialogFragment : DialogFragment() {
 
                             ActiveGameManager.resetAll()
                             loadPendingChallenges()
+                            AppEvents.challengeReceived.tryEmit(Unit)
                         }
 
                         is GameEvent.ConnectionClosed -> {
@@ -286,6 +289,7 @@ class NotificationsDialogFragment : DialogFragment() {
 
                             ActiveGameManager.resetAll()
                             loadPendingChallenges()
+                            AppEvents.challengeReceived.tryEmit(Unit)
                         }
 
                         is GameEvent.Error -> {
@@ -317,6 +321,7 @@ class NotificationsDialogFragment : DialogFragment() {
             onClosed = {
                 requireActivity().runOnUiThread {
                     loadPendingChallenges()
+                    AppEvents.challengeReceived.tryEmit(Unit)
                 }
             }
         )

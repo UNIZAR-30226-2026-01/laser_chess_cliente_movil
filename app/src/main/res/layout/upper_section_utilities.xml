@@ -87,7 +87,7 @@
             android:layout_height="22dp"
             android:background="@drawable/bg_red_circle"
             android:text=""
-            android:visibility="visible"
+            android:visibility="gone"
             android:textColor="@color/LCWhite"
             android:textSize="@dimen/text_medium"
             android:textStyle="bold"

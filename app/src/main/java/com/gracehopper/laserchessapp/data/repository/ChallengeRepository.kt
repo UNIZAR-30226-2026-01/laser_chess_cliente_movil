@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.data.repository
 
+import com.gracehopper.laserchessapp.data.model.game.ChallengeCountResponse
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import retrofit2.Call
@@ -45,6 +46,35 @@ class ChallengeRepository(private val apiService: ApiService) {
             }
         )
 
+    }
+
+    /**
+     * Obtiene el número de retos pendientes.
+     */
+    fun getChallengeCount(onSuccess: (Int) -> Unit,
+                          onError: (Int?) -> Unit) {
+
+        apiService.getChallengeCount()
+            .enqueue(object : Callback<ChallengeCountResponse> {
+
+                override fun onResponse(
+                    call: Call<ChallengeCountResponse>,
+                    response: Response<ChallengeCountResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        onSuccess(response.body()?.count ?: 0)
+                    } else {
+                        onError(response.code())
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<ChallengeCountResponse>,
+                    t: Throwable
+                ) {
+                    onError(null)
+                }
+            })
     }
 
 }
