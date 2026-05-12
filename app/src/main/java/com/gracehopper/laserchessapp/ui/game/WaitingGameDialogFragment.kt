@@ -186,6 +186,7 @@ class WaitingGameDialogFragment : DialogFragment() {
                         }
 
                         is GameEvent.InitialState -> {
+                            ActiveGameManager.initialStateConsumed = true
                             ActiveGameManager.markInGame()
 
                             if (opponentProfileReady) {

@@ -89,6 +89,7 @@ object ActiveGameManager {
 
     // Buffer de eventos que llegaron antes de que el Fragment registrara su callback
     private val pendingEvents = mutableListOf<GameEvent>()
+    var initialStateConsumed = false
 
     /**
      * Establece los callbacks de la conexión.
@@ -655,6 +656,9 @@ object ActiveGameManager {
             Log.d("RECONNECT", "Ambos recibidos → navegando a GameActivity")
             awaitingReconnectMessages = false
             currentState = GameState.IN_GAME
+
+            initialStateConsumed = true
+
             onMessageReceivedCallback?.invoke(
                 GameEvent.InitialState(
                     boardCsv = intialBoardCSV,
@@ -678,6 +682,7 @@ object ActiveGameManager {
         reconnectGotState = false
         pendingStateLog = null
         awaitingReconnectMessages = false
+        initialStateConsumed = false
         currentState = GameState.CONNECTING
 
         val listener = buildListener(
@@ -709,6 +714,7 @@ object ActiveGameManager {
         currentState = GameState.INACTIVE
         lastError = null
         pendingEvents.clear()
+        initialStateConsumed = false
 
         intialBoardCSV = null
         imRedPlayer = true
@@ -732,6 +738,7 @@ object ActiveGameManager {
         // Cerramos cualquier conexión persistente anterior
         friendlyGameWebSocket?.close()
         friendlyGameWebSocket = null
+        initialStateConsumed = false
 
         // Seteamos el estado inicial de juego
         imRedPlayer = true

@@ -79,6 +79,7 @@ class GameActivity : AppCompatActivity() {
     private var rewardsReceived = false
     private var processingMove = false
     private val pendingMoves = ArrayDeque<String>()
+    private var initialStateConsumed = false
 
     /**
      * Trayectoria actual del láser para renderizar en UI.
@@ -233,13 +234,34 @@ class GameActivity : AppCompatActivity() {
                          * Estado inicial de la partida
                          */
                         is GameEvent.InitialState -> {
+
+                            Log.d(
+                                "GAME",
+                                "InitialState recibido. consumed=${ActiveGameManager.initialStateConsumed}"
+                            )
+
+                            if (ActiveGameManager.initialStateConsumed) {
+
+                                Log.d(
+                                    "GAME",
+                                    "InitialState ignorado: ya consumido"
+                                )
+
+                                return@runOnUiThread
+                            }
+
+                            ActiveGameManager.initialStateConsumed = true
+
                             val csv = event.boardCsv
+
                             if (csv != null) {
+
                                 Log.d("GAME", "Actualizando tablero desde InitialState")
+
                                 boardM.clear()
                                 BoardParser.boardFromCSV(boardM, csv)
                             }
-                            
+
                             isMyTurn = ActiveGameManager.imRedPlayer
                             GameTimerManager.setMyTurn(isMyTurn)
                             changeCardsBasedOnTurn(isMyTurn)

@@ -206,6 +206,7 @@ class NotificationsDialogFragment : DialogFragment() {
 
                         is GameEvent.InitialState -> {
 
+                            ActiveGameManager.initialStateConsumed = true
                             ActiveGameManager.markInGame()
 
                             Toast.makeText(requireContext(),
