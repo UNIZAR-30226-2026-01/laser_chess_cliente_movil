@@ -41,6 +41,11 @@ class NotificationsDialogFragment : DialogFragment() {
 
     private lateinit var adapter: PendingChallengesAdapter
 
+    private var opponentId: Long? = null
+    private var opponentAvatar: Int = 1
+    private var opponentPieceSkin: Int = 1
+    private var opponentBoardSkin: Int = 4
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -164,6 +169,11 @@ class NotificationsDialogFragment : DialogFragment() {
 
                 requireActivity().runOnUiThread {
 
+                    opponentId = opponent.id
+                    opponentAvatar = opponent.avatar.takeIf { it > 0 } ?: 1
+                    opponentPieceSkin = opponent.pieceSkin
+                    opponentBoardSkin = opponent.boardSkin
+
                     ActiveGameManager.acceptChallenge(
                         opponentInfo = opponentInfo,
                         board = challenge.board,
@@ -216,7 +226,12 @@ class NotificationsDialogFragment : DialogFragment() {
                             AppEvents.challengeReceived.tryEmit(Unit)
                             dismiss()
 
-                            val intent = Intent(requireContext(), GameActivity::class.java)
+                            val intent = Intent(requireContext(), GameActivity::class.java).apply {
+                                opponentId?.let { putExtra("OPPONENT_ID", it) }
+                                putExtra("OPPONENT_AVATAR", opponentAvatar)
+                                putExtra("OPPONENT_PIECE_SKIN", opponentPieceSkin)
+                                putExtra("OPPONENT_BOARD_SKIN", opponentBoardSkin)
+                            }
                             startActivity(intent)
 
                         }

@@ -439,7 +439,9 @@ object ActiveGameManager {
     fun getOpponentUsername(): String? {
         return currentOpponentInfo?.username
     }
-
+    fun getOpponentId(): Long? {
+        return currentOpponentInfo?.id
+    }
     fun getOpponentPieceSkin(): Int {
         return currentOpponentInfo?.pieceSkin ?: 1
     }
@@ -512,6 +514,7 @@ object ActiveGameManager {
         reconnectGotInitialState = false
         reconnectGotState = false
         pendingStateLog = null
+        reconnectGotMatchType = true
 
         val listener = buildListener(
             onOpenState = GameState.WAITING_ACCEPTANCE
@@ -585,6 +588,7 @@ object ActiveGameManager {
 
         reconnectGotInitialState = false
         reconnectGotState = false
+        reconnectGotMatchType = true
         pendingStateLog = null
 
         val listener = buildListener(

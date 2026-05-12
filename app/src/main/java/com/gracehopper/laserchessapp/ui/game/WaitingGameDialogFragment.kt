@@ -31,6 +31,7 @@ class WaitingGameDialogFragment : DialogFragment() {
     private var opponentProfileReady = false
     private var opponentPieceSkin: Int = 1
     private var opponentBoardSkin: Int = 4
+    private var opponentAvatar: Int = 1
 
     @Volatile
     private var waitingForProfile = false
@@ -147,30 +148,13 @@ class WaitingGameDialogFragment : DialogFragment() {
                     when (event) {
 
                         is GameEvent.MatchStart -> {
+
                             pendingOpponentId = event.opponentId
+
                             textOpponent.text = "¡Rival encontrado!"
 
-                            event.opponentId?.let { opponentId ->
-                                val userRepo = UserRepository(NetworkUtils.getApiService())
-                                userRepo.getUserProfile(
-                                    userId = opponentId,
-                                    onSuccess = { profile ->
-                                        opponentPieceSkin = profile.pieceSkin
-                                        opponentBoardSkin = profile.boardSkin
-                                        opponentProfileReady = true
-                                        if (waitingForProfile) {
-                                            val act = activity ?: return@getUserProfile
-                                            act.runOnUiThread { navigateToGame() }
-                                        }
-                                    },
-                                    onError = {
-                                        opponentProfileReady = true
-                                        if (waitingForProfile) {
-                                            val act = activity ?: return@getUserProfile
-                                            act.runOnUiThread { navigateToGame() }
-                                        }
-                                    }
-                                )
+                            event.opponentId?.let {
+                                loadOpponentProfile(it)
                             }
                         }
 
@@ -267,7 +251,39 @@ class WaitingGameDialogFragment : DialogFragment() {
             pendingOpponentId?.let { putExtra("OPPONENT_ID", it) }
             putExtra("OPPONENT_PIECE_SKIN", opponentPieceSkin)
             putExtra("OPPONENT_BOARD_SKIN", opponentBoardSkin)
+            putExtra("OPPONENT_AVATAR", opponentAvatar)
         }
         startActivity(intent)
+    }
+
+    private fun loadOpponentProfile(opponentId: Long) {
+
+        val userRepo = UserRepository(NetworkUtils.getApiService())
+
+        userRepo.getUserProfile(
+            userId = opponentId,
+            onSuccess = { profile ->
+
+                opponentPieceSkin = profile.pieceSkin
+                opponentBoardSkin = profile.boardSkin
+                opponentAvatar = profile.avatar.takeIf { it > 0 } ?: 1
+
+                opponentProfileReady = true
+
+                if (waitingForProfile) {
+                    val act = activity ?: return@getUserProfile
+                    act.runOnUiThread { navigateToGame() }
+                }
+            },
+            onError = {
+
+                opponentProfileReady = true
+
+                if (waitingForProfile) {
+                    val act = activity ?: return@getUserProfile
+                    act.runOnUiThread { navigateToGame() }
+                }
+            }
+        )
     }
 }
