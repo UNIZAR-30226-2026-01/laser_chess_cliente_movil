@@ -84,7 +84,7 @@
             android:id="@+id/rankProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:progress="60"
+            android:progress="0"
             app:indicatorColor="@color/LCBlue"
             app:indicatorDirectionCircular="clockwise"
             app:indicatorSize="68dp"
