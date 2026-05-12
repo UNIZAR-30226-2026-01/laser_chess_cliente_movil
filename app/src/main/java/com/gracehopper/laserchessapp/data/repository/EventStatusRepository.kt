@@ -5,9 +5,16 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * Repositorio encargado de gestionar las operaciones relacionadas con el estado del usuario.
+ */
 class EventStatusRepository(
     private val apiService: ApiService
 ) {
+
+    /**
+     * Marca al usuario como online.
+     */
     fun markOnline() {
         apiService.markOnline().enqueue(object : Callback<Unit> {
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {}
@@ -16,6 +23,9 @@ class EventStatusRepository(
         })
     }
 
+    /**
+     * Marca al usuario como offline.
+     */
     fun markOffline() {
         apiService.markOffline().enqueue(object : Callback<Unit> {
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {}
