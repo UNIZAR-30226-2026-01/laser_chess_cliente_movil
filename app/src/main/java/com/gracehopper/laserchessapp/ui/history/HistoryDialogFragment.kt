@@ -16,10 +16,14 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.game.GameResume
 import com.gracehopper.laserchessapp.data.model.user.AccountResponse
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.repository.FriendRepository
+import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
+import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 import com.gracehopper.laserchessapp.utils.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,6 +33,7 @@ class HistoryDialogFragment : DialogFragment() {
 
     private lateinit var apiService: ApiService
     private lateinit var buttonClose: ImageButton
+    private lateinit var friendRepository: FriendRepository
     private lateinit var recyclerHistory: RecyclerView
     private lateinit var textEmpty: TextView
     private lateinit var progressHistory: ProgressBar
@@ -41,6 +46,7 @@ class HistoryDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         apiService = NetworkUtils.getApiService()
+        friendRepository = FriendRepository(apiService)
         isCancelable = true
     }
 
@@ -81,23 +87,29 @@ class HistoryDialogFragment : DialogFragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = HistoryGameAdapter(emptyList(), userCache) { game ->
+        adapter = HistoryGameAdapter(
+            games = emptyList(),
+            userCache = userCache,
+            onViewClick = { game ->
+                val json = com.google.gson.Gson().toJson(game)
 
-            val json = com.google.gson.Gson().toJson(game)
+                requireContext()
+                    .getSharedPreferences("app", android.content.Context.MODE_PRIVATE)
+                    .edit()
+                    .putString("historyGame", json)
+                    .apply()
 
-            requireContext()
-                .getSharedPreferences("app", android.content.Context.MODE_PRIVATE)
-                .edit()
-                .putString("historyGame", json)
-                .apply()
-
-            startActivity(
-                android.content.Intent(
-                    requireContext(),
-                    com.gracehopper.laserchessapp.ui.game.GameReplayActivity::class.java
+                startActivity(
+                    android.content.Intent(
+                        requireContext(),
+                        com.gracehopper.laserchessapp.ui.game.GameReplayActivity::class.java
+                    )
                 )
-            )
-        }
+            },
+            onRivalClick = { game ->
+                openRivalProfile(game)
+            }
+        )
 
         recyclerHistory.layoutManager = LinearLayoutManager(requireContext())
         recyclerHistory.adapter = adapter
@@ -203,6 +215,36 @@ class HistoryDialogFragment : DialogFragment() {
         progressHistory.visibility = View.GONE
         recyclerHistory.visibility = View.GONE
         textEmpty.visibility = View.VISIBLE
+    }
+
+    private fun openRivalProfile(game: GameResume) {
+        val myId = CurrentUserManager.getMyCurrentId()
+
+        val rivalId = if (game.p1Id == myId) game.p2Id else game.p1Id
+
+        val rivalAccount = userCache[rivalId]
+        if (rivalAccount == null) {
+            Toast.makeText(requireContext(), "No se pudo obtener el perfil del rival", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        friendRepository.getFriendshipStatus(
+            myId = myId,
+            username = rivalAccount.username,
+            onSuccess = { status ->
+                activity?.runOnUiThread {
+                    UserProfileDialogFragment.newInstance(
+                        friendId = rivalId,
+                        mode = status
+                    ).show(parentFragmentManager, "UserProfileDialog")
+                }
+            },
+            onError = {
+                activity?.runOnUiThread {
+                    Toast.makeText(requireContext(), "No se pudo cargar el estado de amistad", Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
     }
 
     private fun showGames() {

@@ -118,6 +118,8 @@ class GameReplayActivity : AppCompatActivity() {
     private fun bindLocalPlayer() {
         val myProfile = CurrentUserManager.getMyCurrentProfile()
         val avatarView = findViewById<ImageView>(R.id.avatarPlayer)
+        val nameView = findViewById<TextView>(R.id.textPlayerName)
+        nameView.text = myProfile?.username ?: "Player"
 
         val avatarId = myProfile?.avatar?.takeIf { it > 0 } ?: 1
         avatarView.setImageResource(ItemUtils.getItemDrawable(avatarId))
@@ -135,6 +137,8 @@ class GameReplayActivity : AppCompatActivity() {
                     runOnUiThread {
                         val avatarView = findViewById<ImageView>(R.id.avatarEnemy)
                         val avatarId = account.avatar.takeIf { it > 0 } ?: 1
+                        val enemyName = findViewById<TextView>(R.id.textEnemyName)
+                        enemyName.text = account.username
                         avatarView.setImageResource(ItemUtils.getItemDrawable(avatarId))
                         renderBoard()
                     }
