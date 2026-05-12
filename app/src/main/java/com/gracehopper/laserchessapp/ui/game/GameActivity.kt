@@ -315,7 +315,6 @@ class GameActivity : AppCompatActivity() {
                         }
 
                         is GameEvent.PauseRequest -> {
-                            // TODO: Diálogo de aceptar/rechazar pausa
                             val dialog = PauseRequestDialogFragment(
                                 onAccept = {
                                     gameRepository.sendPause()
@@ -329,7 +328,6 @@ class GameActivity : AppCompatActivity() {
                         }
 
                         is GameEvent.PauseReject -> {
-                            // TODO: Diálogo de rechazo de pausa ??
                             pauseDialog?.dismiss()
                             pauseDialog = null
 
@@ -355,7 +353,6 @@ class GameActivity : AppCompatActivity() {
                         }
 
                         is GameEvent.Paused -> {
-                            // TODO: Diálogo de pausa
                             pauseRequested = false
 
                             pauseDialog?.dismiss()
