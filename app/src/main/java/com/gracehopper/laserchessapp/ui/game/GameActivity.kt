@@ -79,7 +79,6 @@ class GameActivity : AppCompatActivity() {
     private var rewardsReceived = false
     private var processingMove = false
     private val pendingMoves = ArrayDeque<String>()
-    private var initialStateConsumed = false
 
     /**
      * Trayectoria actual del láser para renderizar en UI.
@@ -105,8 +104,8 @@ class GameActivity : AppCompatActivity() {
         /**
          * Ocultar barras del sistema (pantalla completa)
          */
-        val controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
-        controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE)
+        val controller = WindowCompat.getInsetsController(window, window.decorView)
+        controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         controller.hide(WindowInsetsCompat.Type.systemBars())
 
 
@@ -157,7 +156,7 @@ class GameActivity : AppCompatActivity() {
         }
 
         val board = findViewById<ComposeView>(R.id.board)
-        controls = findViewById<LinearLayout>(R.id.rotationButtons)
+        controls = findViewById(R.id.rotationButtons)
         val btnLeft = findViewById<ImageButton>(R.id.btnRotLeft)
         val btnRight = findViewById<ImageButton>(R.id.btnRotRight)
 
@@ -200,7 +199,7 @@ class GameActivity : AppCompatActivity() {
         if (testMode) {
             loadTestBoard()
         } else {
-            val csv = ActiveGameManager.intialBoardCSV
+            val csv = ActiveGameManager.initialBoardCSV
             if (csv != null) {
                 Log.d("RECONNECT", "Cargando tablero desde CSV (${csv.length} chars)")
                 BoardParser.boardFromCSV(boardM, csv)
@@ -304,7 +303,7 @@ class GameActivity : AppCompatActivity() {
 
                             boardM.clear()
 
-                            val csv = ActiveGameManager.intialBoardCSV
+                            val csv = ActiveGameManager.initialBoardCSV
                             if (csv != null) {
                                 BoardParser.boardFromCSV(boardM, csv)
                             }
@@ -535,8 +534,7 @@ class GameActivity : AppCompatActivity() {
                 laserIsRed = laserIsRed,
                 myPieceSkin = CurrentUserManager.getMyCurrentPieceSkin(),
                 myBoardSkin = CurrentUserManager.getMyCurrentBoardSkin(),
-                opponentPieceSkin = opponentPieceSkinState,
-                opponentBoardSkin = opponentBoardSkinState
+                opponentPieceSkin = opponentPieceSkinState
             )
         }
 
@@ -779,14 +777,9 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        // Determinar el color del láser. 
-        // Si la pieza existe (rotación o traslación), usamos su color.
-        // Si no (por ejemplo, pieza destruida que ya no está), inferimos el color por quién ha movido.
-        laserIsRed = if (piece != null) {
-            piece.isRed
-        } else {
-            if (isThisMyMove) ActiveGameManager.imRedPlayer else !ActiveGameManager.imRedPlayer
-        }
+        // Determinar el color del láser.
+        laserIsRed = piece?.isRed
+            ?: !ActiveGameManager.imRedPlayer
 
         Log.d("LASER_DEBUG", "Move by player. pieceIsRed=${piece?.isRed} imRed=${ActiveGameManager.imRedPlayer} isThisMyMove=$isThisMyMove -> laserIsRed=$laserIsRed")
 
