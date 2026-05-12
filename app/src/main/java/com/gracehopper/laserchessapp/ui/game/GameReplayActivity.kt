@@ -233,7 +233,7 @@ class GameReplayActivity : AppCompatActivity() {
         var blueTime = game.timeBase.toLong()
 
         // Recorremos TODOS los movimientos hasta el estado actual
-        for (i in 0..moveIndex) {
+        for (i in 0 until moveIndex) {
 
             try {
 
@@ -317,7 +317,7 @@ class GameReplayActivity : AppCompatActivity() {
         val csv = BoardLayouts.getCsvForBoard(game.board)
         BoardParser.boardFromCSV(boardM, csv)
 
-        for (i in 0..moveIndex) {
+        for (i in  0 until moveIndex) {
             applyStateMove(movimientos[i])
         }
 
