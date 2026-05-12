@@ -13,6 +13,11 @@ import retrofit2.Response
  */
 class DeviceRepository(private val apiService: ApiService) {
 
+    /**
+     * Registra el dispositivo en el servidor.
+     *
+     * @param token Token del dispositivo
+     */
     fun registerDevice(
         token: String,
         onSuccess: () -> Unit = {},
@@ -39,6 +44,11 @@ class DeviceRepository(private val apiService: ApiService) {
 
     }
 
+    /**
+     * Elimina el dispositivo del servidor.
+     *
+     * @param token Token del dispositivo
+     */
     fun deleteDevice(
         token: String,
         onSuccess: () -> Unit = {},
