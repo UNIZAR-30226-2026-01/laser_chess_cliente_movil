@@ -84,7 +84,6 @@ class MainActivity : AppCompatActivity() {
     private val sseManager = SseManager(
         onChallengeReceived = { challengerUsername ->
             runOnUiThread {
-                loadChallengeCount()
                 if (NotificationPreferences.isEnabled(applicationContext)) {
                     AppEvents.challengeReceived.tryEmit(Unit)
                     AppNotificationHelper.showChallengeNotification(
@@ -195,6 +194,7 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         observeCurrentUserProfile()
+        observeChallengeCount()
         loadMyProfileIfNeeded()
         setupProfileCard()
         setupAdditionalButtons()
@@ -237,21 +237,26 @@ class MainActivity : AppCompatActivity() {
     private fun loadChallengeCount() {
         challengeRepository.getChallengeCount(
             onSuccess = { count ->
-                runOnUiThread {
-                    if (count > 0) {
-                        txtBadgePendingChallenges.visibility = View.VISIBLE
-                        txtBadgePendingChallenges.text = count.toString()
-                    } else {
-                        txtBadgePendingChallenges.visibility = View.GONE
-                    }
-                }
+                CurrentUserManager.setPendingChallengesCount(count)
             },
             onError = {
-                runOnUiThread {
-                    txtBadgePendingChallenges.visibility = View.GONE
-                }
+                CurrentUserManager.setPendingChallengesCount(0)
             }
         )
+    }
+
+    /**
+     * Observa cambios en el número de retos pendientes
+     */
+    private fun observeChallengeCount() {
+        CurrentUserManager.pendingChallengesCount.observe(this) { count ->
+            if (count > 0) {
+                txtBadgePendingChallenges.visibility = View.VISIBLE
+                txtBadgePendingChallenges.text = count.toString()
+            } else {
+                txtBadgePendingChallenges.visibility = View.GONE
+            }
+        }
     }
 
     override fun onStart() {

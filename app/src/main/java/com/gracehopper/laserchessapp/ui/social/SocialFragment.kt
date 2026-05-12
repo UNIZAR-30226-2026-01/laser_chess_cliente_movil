@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
+import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.game.GamePlayerInfo
 import com.gracehopper.laserchessapp.data.model.game.InProgressGameSummary
@@ -128,6 +129,7 @@ class SocialFragment : Fragment() {
         recyclerFriends = view.findViewById(R.id.recyclerFriends)
 
         setupRecycler()
+        observeFriendshipRequests()
         loadFriends()
         loadNumReceivedRequests()
         loadPausedGames()
@@ -135,6 +137,17 @@ class SocialFragment : Fragment() {
 
         setupListeners()
         selectTab(SocialTab.SOCIAL)
+    }
+
+    private fun observeFriendshipRequests() {
+        CurrentUserManager.pendingFriendshipRequestsCount.observe(viewLifecycleOwner) { count ->
+            if (count == 0) {
+                binding.txtNumSolicitudes.visibility = View.GONE
+            } else {
+                binding.txtNumSolicitudes.visibility = View.VISIBLE
+                binding.txtNumSolicitudes.text = count.toString()
+            }
+        }
     }
 
     private fun showUserProfileDialog(friend: FriendSummary) {
@@ -189,17 +202,10 @@ class SocialFragment : Fragment() {
 
         friendRepository.getNumReceivedFriendshipRequests(
             onSuccess = { response ->
-
-                if (response == 0) {
-                    binding.txtNumSolicitudes.visibility = View.GONE
-                } else {
-                    binding.txtNumSolicitudes.visibility = View.VISIBLE
-                    binding.txtNumSolicitudes.text = response.toString()
-                }
-
+                CurrentUserManager.setPendingFriendshipRequestsCount(response)
             },
             onError = {
-                binding.txtNumSolicitudes.visibility = View.GONE
+                CurrentUserManager.setPendingFriendshipRequestsCount(0)
                 Toast.makeText(requireContext(),
                     "Error al cargar el número de solicitudes",
                     Toast.LENGTH_SHORT).show()

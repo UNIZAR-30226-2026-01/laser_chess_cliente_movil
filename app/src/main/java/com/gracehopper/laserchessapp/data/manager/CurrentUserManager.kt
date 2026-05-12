@@ -17,6 +17,12 @@ object CurrentUserManager {
     private val _sessionExpired = MutableLiveData(false)
     val sessionExpired: LiveData<Boolean> = _sessionExpired
 
+    private val _pendingChallengesCount = MutableLiveData<Int>(0)
+    val pendingChallengesCount: LiveData<Int> = _pendingChallengesCount
+
+    private val _pendingFriendshipRequestsCount = MutableLiveData<Int>(0)
+    val pendingFriendshipRequestsCount: LiveData<Int> = _pendingFriendshipRequestsCount
+
     /**
      * Establece el perfil actual del usuario.
      *
@@ -26,6 +32,24 @@ object CurrentUserManager {
         _myProfile.postValue(profile)
         _sessionExpired.postValue(false)
         TokenManager.saveUserId(profile.id)
+    }
+
+    /**
+     * Establece el número de retos pendientes.
+     *
+     * @param count Número de retos pendientes.
+     */
+    fun setPendingChallengesCount(count: Int) {
+        _pendingChallengesCount.postValue(count)
+    }
+
+    /**
+     * Establece el número de solicitudes de amistad recibidas.
+     *
+     * @param count Número de solicitudes de amistad.
+     */
+    fun setPendingFriendshipRequestsCount(count: Int) {
+        _pendingFriendshipRequestsCount.postValue(count)
     }
 
     /**
