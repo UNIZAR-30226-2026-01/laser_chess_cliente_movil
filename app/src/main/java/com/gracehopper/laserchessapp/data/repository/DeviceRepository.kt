@@ -6,6 +6,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * Repositorio encargado de gestionar las operaciones relacionadas con el dispositivo.
+ *
+ * @property apiService Instancia de la interfaz de Retrofit para realizar las peticiones a la API
+ */
 class DeviceRepository(private val apiService: ApiService) {
 
     fun registerDevice(
