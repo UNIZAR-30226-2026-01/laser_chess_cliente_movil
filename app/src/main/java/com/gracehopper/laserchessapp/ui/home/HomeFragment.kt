@@ -179,9 +179,9 @@ class HomeFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun setupSelectors(view: View) {
-        val LCRed  = ContextCompat.getColor(requireContext(), R.color.LCRed)
-        val LCBlue = ContextCompat.getColor(requireContext(), R.color.LCBlue)
-        val LCGreen = ContextCompat.getColor(requireContext(), R.color.LCGreen)
+        val lcRed  = ContextCompat.getColor(requireContext(), R.color.LCRed)
+        val lcBlue = ContextCompat.getColor(requireContext(), R.color.LCBlue)
+        val lcGreen = ContextCompat.getColor(requireContext(), R.color.LCGreen)
 
         // Selector de tablero
         val includeBoardSelector = view.findViewById<View>(R.id.includeBoardSelector)
@@ -189,9 +189,9 @@ class HomeFragment : Fragment() {
         val imgBoardIcon  = includeBoardSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
         txtBoardTitle.text = selectedBoardName
         imgBoardIcon.setImageResource(R.drawable.ic_tablero)
-        imgBoardIcon.setColorFilter(LCRed)
+        imgBoardIcon.setColorFilter(lcRed)
         includeBoardSelector.setOnClickListener {
-            showBoardBottomSheet(LCRed, txtBoardTitle)
+            showBoardBottomSheet(lcRed, txtBoardTitle)
         }
 
         // Selector de modo de tiempo
@@ -200,9 +200,9 @@ class HomeFragment : Fragment() {
         val imgTimeIcon  = includeTimeSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
         txtTimeTitle.text = TimeModeConfig.getName(selectedTimeMode)
         imgTimeIcon.setImageResource(R.drawable.ic_tiempo)
-        imgTimeIcon.setColorFilter(LCBlue)
+        imgTimeIcon.setColorFilter(lcBlue)
         includeTimeSelector.setOnClickListener {
-            showTimeModeBottomSheet(LCGreen, txtTimeTitle)
+            showTimeModeBottomSheet(lcGreen, txtTimeTitle)
         }
 
         // Selector de incremento de tiempo
@@ -212,9 +212,9 @@ class HomeFragment : Fragment() {
         txtTimeIncrementTitle = txtIncrementTitle
         txtIncrementTitle.text = "+${selectedTimeIncrement}s"
         imgIncrementIcon.setImageResource(R.drawable.ic_time_increment)
-        imgIncrementIcon.setColorFilter(LCBlue)
+        imgIncrementIcon.setColorFilter(lcBlue)
         includeIncrementSelector.setOnClickListener {
-            showIncrementBottomSheet(LCBlue, txtIncrementTitle)
+            showIncrementBottomSheet(lcBlue, txtIncrementTitle)
         }
 
         // Selector de nivel de IA
@@ -223,9 +223,9 @@ class HomeFragment : Fragment() {
         val imgAiLevelIcon  = includeAiLevelSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
         txtAiLevelTitle.text = "$selectedAiLevel"
         imgAiLevelIcon.setImageResource(R.drawable.ic_ai_level)
-        imgAiLevelIcon.setColorFilter(LCRed)
+        imgAiLevelIcon.setColorFilter(lcRed)
         includeAiLevelSelector.setOnClickListener {
-            showAiLevelBottomSheet(LCRed, txtAiLevelTitle)
+            showAiLevelBottomSheet(lcRed, txtAiLevelTitle)
         }
 
     }

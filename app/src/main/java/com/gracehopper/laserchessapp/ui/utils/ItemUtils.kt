@@ -31,9 +31,9 @@ object ItemUtils {
             6 -> ItemMetadata("Cats", R.drawable.bg_cats)
 
             // WIN_ANIMATION
-            7 -> ItemMetadata("Classic", R.drawable.kin_r_classic)
-            8 -> ItemMetadata("Soretro", R.drawable.kin_r_soretro)
-            9 -> ItemMetadata("Cats", R.drawable.kin_r_cats)
+            7 -> ItemMetadata("Classic", R.drawable.classic_win)
+            8 -> ItemMetadata("Soretro", R.drawable.soretro_win)
+            9 -> ItemMetadata("Cats", R.drawable.cats_win)
 
             // AVATAR
             10 -> ItemMetadata("grace", R.drawable.bot1)
