@@ -3,7 +3,10 @@ package com.gracehopper.laserchessapp.data.remote.fcm
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.repository.DeviceRepository
 import com.gracehopper.laserchessapp.utils.AppNotificationHelper
+import com.gracehopper.laserchessapp.utils.TokenManager
 
 /**
  * Servicio de Firebase para recibir y manejar notificaciones push.
@@ -19,9 +22,10 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
         super.onNewToken(token)
         Log.d("FCM", "Nuevo token FCM: $token")
 
-        // TODO:
-        // 1) guardarlo localmente ?
-        // 2) enviarlo al backend (endpoint)
+        if (TokenManager.isLoggedIn()) {
+            DeviceRepository(NetworkUtils.getApiService())
+                .registerDevice(token)
+        }
     }
 
     /**

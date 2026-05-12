@@ -9,6 +9,7 @@ import com.gracehopper.laserchessapp.data.model.game.GameResume
 import com.gracehopper.laserchessapp.data.model.game.PausedGameResponse
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
+import com.gracehopper.laserchessapp.data.model.notifications.RegisterDeviceRequest
 import com.gracehopper.laserchessapp.data.model.ranking.AllRatingsResponse
 import com.gracehopper.laserchessapp.data.model.ranking.RankingEntryResponse
 import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
@@ -53,6 +54,9 @@ interface ApiService {
 
     @GET("api/account/xp")
     fun getXPInfo(): Call<XPInfoResponse>
+
+    @GET("api/account/xp/{id}")
+    fun getXPInfoByID(@Path("id") id: Long): Call<XPInfoResponse>
 
     @POST("api/account/update")
     fun updateMyAccount(@Body request: UpdateAccountRequest): Call<MyAccountResponse>
@@ -145,5 +149,18 @@ interface ApiService {
     // Endpoint de FINISHED GAMES (historial)
     @GET("api/match/history/{userID}")
     fun getFinishedGames(@Path("userID") userId: Long): Call<List<GameResume>>
+
+    // Endpoints de NOTIFICACTIONS / DEVICES
+    @POST("api/events/online")
+    fun markOnline(): Call<Unit>
+
+    @POST("api/events/offline")
+    fun markOffline(): Call<Unit>
+
+    @POST("api/device/register")
+    fun registerDevice(@Body request: RegisterDeviceRequest): Call<Unit>
+
+    @HTTP(method = "DELETE", path = "api/device/delete", hasBody = true)
+    fun deleteDevice(@Body request: RegisterDeviceRequest): Call<Unit>
 
 }

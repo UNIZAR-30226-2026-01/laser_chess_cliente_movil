@@ -30,6 +30,7 @@ import com.gracehopper.laserchessapp.data.manager.SseManager
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
+import com.gracehopper.laserchessapp.data.repository.EventStatusRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.data.repository.ChallengeRepository
 import com.gracehopper.laserchessapp.ui.settings.SettingsDialogFragment
@@ -43,6 +44,7 @@ import com.gracehopper.laserchessapp.ui.utils.BackgroundUtils
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 import com.gracehopper.laserchessapp.utils.AppEvents
 import com.gracehopper.laserchessapp.utils.AppNotificationHelper
+import com.gracehopper.laserchessapp.utils.NotificationPreferences
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collectLatest
@@ -65,6 +67,10 @@ class MainActivity : AppCompatActivity() {
         UserRepository(NetworkUtils.getApiService())
     }
 
+    private val eventStatusRepository by lazy {
+        EventStatusRepository(NetworkUtils.getApiService())
+    }
+
     /**
      * Repositorio para gestionar retos
      */
@@ -78,30 +84,36 @@ class MainActivity : AppCompatActivity() {
     private val sseManager = SseManager(
         onChallengeReceived = { challengerUsername ->
             runOnUiThread {
-                AppEvents.challengeReceived.tryEmit(Unit)
-                AppNotificationHelper.showChallengeNotification(
-                    applicationContext,
-                    challengerUsername
-                )
                 loadChallengeCount()
+                if (NotificationPreferences.isEnabled(applicationContext)) {
+                    AppEvents.challengeReceived.tryEmit(Unit)
+                    AppNotificationHelper.showChallengeNotification(
+                        applicationContext,
+                        challengerUsername
+                    )
+                }
             }
         },
         onFriendRequestReceived = { requestUsername ->
             runOnUiThread {
-                AppEvents.friendRequestReceived.tryEmit(Unit)
-                AppNotificationHelper.showFriendRequestNotification(
-                    applicationContext,
-                    requestUsername
-                )
+                if (NotificationPreferences.isEnabled(applicationContext)) {
+                    AppEvents.friendRequestReceived.tryEmit(Unit)
+                    AppNotificationHelper.showFriendRequestNotification(
+                        applicationContext,
+                        requestUsername
+                    )
+                }
             }
         },
         onNewFriendshipReceived = { newFriendUsername ->
             runOnUiThread {
-                AppEvents.newFriendshipReceived.tryEmit(Unit)
-                AppNotificationHelper.showNewFriendshipNotification(
-                    applicationContext,
-                    newFriendUsername
-                )
+                if (NotificationPreferences.isEnabled(applicationContext)) {
+                    AppEvents.newFriendshipReceived.tryEmit(Unit)
+                    AppNotificationHelper.showNewFriendshipNotification(
+                        applicationContext,
+                        newFriendUsername
+                    )
+                }
             }
         },
         onError = {
@@ -245,20 +257,27 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        Log.d("MAIN_ACTIVITY", "onStart -> connect SSE")
-        sseManager.reconnect()
-        loadChallengeCount()
+        Log.d("MAIN_ACTIVITY", "onStart -> online + connect SSE")
+        eventStatusRepository.markOnline()
+
+        if (NotificationPreferences.isEnabled(applicationContext)) {
+            sseManager.reconnect()
+        }
 
         if (ActiveGameManager.currentState == ActiveGameManager.GameState.INACTIVE) {
             setupGameReconnection()
         }
+
+        loadChallengeCount()
     }
 
     override fun onStop() {
         super.onStop()
 
 
-        Log.d("MAIN_ACTIVITY", "onStop -> disconnect SSE")
+        Log.d("MAIN_ACTIVITY", "onStop -> offline + disconnect SSE")
+
+        eventStatusRepository.markOffline()
         sseManager.disconnect()
     }
 

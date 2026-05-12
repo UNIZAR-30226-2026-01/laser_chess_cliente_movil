@@ -6,17 +6,19 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.messaging.FirebaseMessaging
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.auth.LoginRequest
 import com.gracehopper.laserchessapp.data.model.auth.RegisterRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.AuthRepository
+import com.gracehopper.laserchessapp.data.repository.DeviceRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.main.MainActivity
+import com.gracehopper.laserchessapp.utils.NotificationPreferences
 import com.gracehopper.laserchessapp.utils.TokenManager
 import com.gracehopper.laserchessapp.utils.validation.PasswordValidator
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
@@ -26,7 +28,6 @@ import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
  */
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var loadingLayout: LinearLayout
     private lateinit var loginLayout: View
     private lateinit var registerLayout: View
     private lateinit var loginCredential: EditText
@@ -236,6 +237,28 @@ class LoginActivity : AppCompatActivity() {
                 TokenManager.saveUserCredential(credential)
 
                 Log.d("LoginActivity", "Token guardado: ${loginResponse.accessToken}")
+
+                FirebaseMessaging.getInstance().token
+                    .addOnSuccessListener { token ->
+
+                        Log.d("FCM", "Token obtenido: $token")
+
+                        if (NotificationPreferences.isEnabled(this)) {
+                            DeviceRepository(NetworkUtils.getApiService())
+                                .registerDevice(
+                                    token = token,
+                                    onSuccess = {
+                                        Log.d("FCM", "Token registrado")
+                                    },
+                                    onError = { code ->
+                                        Log.e("FCM", "Error al registrar token: $code")
+                                    }
+                                )
+                        }
+                    }
+                    .addOnFailureListener { error ->
+                        Log.e("FCM", "Error al obtener token", error)
+                    }
 
                 loginLayout.visibility = View.GONE
                 registerLayout.visibility = View.GONE

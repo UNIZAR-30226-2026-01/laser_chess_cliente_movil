@@ -122,7 +122,6 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
 
     fun reconnect() {
 
-
         val request = Request.Builder()
             .url(RECONNECT_URL)
             .build()
