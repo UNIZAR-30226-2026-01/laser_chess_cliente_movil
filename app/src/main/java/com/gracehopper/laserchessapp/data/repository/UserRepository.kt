@@ -46,8 +46,7 @@ class UserRepository(private val apiService: ApiService) {
                     getUserRatings(
                         userId = myAccount.accountId,
                         onSuccess = { ratings ->
-                            getUserXpInfo(
-                                userId = myAccount.accountId,
+                            getMyUserXpInfo(
                                 onSuccess = { xpInfo ->
                                     val profile = MyProfile(
                                         id = myAccount.accountId,
@@ -109,18 +108,27 @@ class UserRepository(private val apiService: ApiService) {
                     getUserRatings(
                         userId = userId,
                         onSuccess = { ratings ->
-                            val profile = UserProfile(
-                                id = account.accountId,
-                                username = account.username,
-                                avatar = account.avatar,
-                                level = account.level,
-                                xp = account.xp,
-                                boardSkin = account.boardSkin,
-                                pieceSkin = account.pieceSkin,
-                                winAnimation = account.winAnimation,
-                                ratings = ratings
+                            getUserXpInfo(
+                                userId = userId,
+                                onSuccess = { xpInfo ->
+                                    val profile = UserProfile(
+                                        id = account.accountId,
+                                        username = account.username,
+                                        avatar = account.avatar,
+                                        level = account.level,
+                                        xpTotal = account.xp,
+                                        xpLevel = xpInfo.xp,
+                                        xpRequired = xpInfo.requiredXp,
+                                        boardSkin = account.boardSkin,
+                                        pieceSkin = account.pieceSkin,
+                                        winAnimation = account.winAnimation,
+                                        ratings = ratings
+                                    )
+                                    onSuccess(profile)
+                                }, onError = {
+                                    onError()
+                                }
                             )
-                            onSuccess(profile)
                         }, onError = {
                             onError()
                         }
@@ -175,11 +183,41 @@ class UserRepository(private val apiService: ApiService) {
 
     }
 
-    private fun getUserXpInfo (userId: Long,
-                              onSuccess: (XPInfoResponse) -> Unit,
-                              onError: () -> Unit) {
+    private fun getMyUserXpInfo (
+        onSuccess: (XPInfoResponse) -> Unit,
+        onError: () -> Unit) {
 
         apiService.getXPInfo().enqueue(
+            object : Callback<XPInfoResponse> {
+
+                override fun onResponse(
+                    call: Call<XPInfoResponse>,
+                    response: Response<XPInfoResponse>
+                ) {
+                    val xpInfo = response.body()
+                    if (!response.isSuccessful || xpInfo == null) {
+                        onError()
+                        return
+                    }
+
+                    onSuccess(xpInfo)
+
+                }
+
+                override fun onFailure(call: Call<XPInfoResponse>, t: Throwable) {
+                    onError()
+                }
+            }
+        )
+
+    }
+
+    private fun getUserXpInfo (
+        userId: Long,
+        onSuccess: (XPInfoResponse) -> Unit,
+        onError: () -> Unit) {
+
+        apiService.getXPInfoByID(userId).enqueue(
             object : Callback<XPInfoResponse> {
 
                 override fun onResponse(

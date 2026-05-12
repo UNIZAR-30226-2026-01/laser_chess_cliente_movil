@@ -7,7 +7,7 @@ package com.gracehopper.laserchessapp.data.model.user
  * @property username Nombre de usuario
  * @property avatar Skin de avatar
  * @property level Nivel del usuario
- * @property xp Puntos de experiencia del usuario
+ * @property xpTotal Puntos de experiencia del usuario
  * @property boardSkin Skin del tablero
  * @property pieceSkin Skin de las piezas
  * @property winAnimation Animación de fin de partida
@@ -18,7 +18,9 @@ data class UserProfile(
     val username: String,
     val avatar: Int,
     val level: Int,
-    val xp: Int,
+    val xpLevel: Int,
+    val xpRequired: Int,
+    val xpTotal: Int,
     val boardSkin: Int,
     val pieceSkin: Int,
     val winAnimation: Int,

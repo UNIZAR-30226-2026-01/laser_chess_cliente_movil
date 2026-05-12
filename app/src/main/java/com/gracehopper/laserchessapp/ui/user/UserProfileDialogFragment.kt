@@ -236,8 +236,8 @@ class UserProfileDialogFragment : DialogFragment() {
         )
 
         txtProfileUsername.text = profile.username
-        txtProfileLevel.text = "Nivel ${profile.level}"
-        txtProfileXp.text = "${profile.xp} XP"
+        txtProfileLevel.text = getString(R.string.profile_card_level_format,
+            profile.level, profile.xpLevel, profile.xpRequired)
 
         txtProfileBlitzElo.text = profile.ratings.blitz.toString()
         txtProfileRapidElo.text = profile.ratings.rapid.toString()
@@ -256,8 +256,8 @@ class UserProfileDialogFragment : DialogFragment() {
 
         imageProfileAvatar.setImageResource(ItemUtils.getItemDrawable(profile.avatar))
 
-        progressProfileXP.max = 100
-        progressProfileXP.progress = profile.xp % 100
+        progressProfileXP.max = profile.xpRequired
+        progressProfileXP.progress = profile.xpLevel
 
         imgPieceSkin.setImageResource(ItemUtils.getItemDrawable(profile.pieceSkin))
         imgBoardSkin.setImageResource(ItemUtils.getItemDrawable(profile.boardSkin))
