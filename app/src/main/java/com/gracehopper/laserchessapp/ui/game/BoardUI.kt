@@ -40,9 +40,7 @@ fun GameScreen(
     laserIsRed: Boolean = false,
     myPieceSkin: Int,
     myBoardSkin: Int,
-    opponentPieceSkin: Int = 1,
-    opponentBoardSkin: Int = 4
-) {
+    opponentPieceSkin: Int = 1) {
     var highlightedMoves by remember { mutableStateOf<List<Pair<Int, Int>>>(emptyList()) }
     var selectedPos by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
@@ -61,9 +59,6 @@ fun GameScreen(
     val visibleNumbers = if (isRedPlayer) numbers else numbers.reversed()
 
     // Colores del láser
-    // Para el jugador local, sus piezas son azules visualmente, por tanto su láser es azul (laserIsRed == false)
-    // Para el rival, sus piezas son rojas visualmente, por tanto su láser es rojo (laserIsRed == true)
-    // Comparamos el color del láser con el bando interno (isRedPlayer) para determinar la visualización
     val isVisualRedLaser = (laserIsRed != isRedPlayer)
 
     val laserCore = if (isVisualRedLaser) Color(0xFFFF3333) else Color(0xFF3388FF)
@@ -124,13 +119,11 @@ fun GameScreen(
                         Row(modifier = Modifier.fillMaxWidth()) {
                             for (col in colRange) {
                                 key(row, col) {
-                                    val piece = board.getPiece(row, col)
-                                    val isHighlighted = highlightedMoves.contains(Pair(row, col))
 
                                     val cellModifier = Modifier
                                         .weight(1f)
                                         .aspectRatio(1f)
-                                        .background(getCellColor(row, col, isRedPlayer))
+                                        .background(getCellColor(row, col))
 
                                     val finalModifier = if (isMyTurn) {
                                         cellModifier.clickable {
@@ -348,9 +341,9 @@ fun GameScreen(
     }
 }
 
-fun getCellColor(row: Int, col: Int, isRedPlayer: Boolean): Color {
-    val S1 = Color(0xFF1A122B)
-    val S3 = Color(0xFF3B2865)
+fun getCellColor(row: Int, col: Int): Color {
+    val s1 = Color(0xFF1A122B)
+    val s3 = Color(0xFF3B2865)
 
-    return if ((row + col) % 2 == 0) S3 else S1
+    return if ((row + col) % 2 == 0) s3 else s1
 }

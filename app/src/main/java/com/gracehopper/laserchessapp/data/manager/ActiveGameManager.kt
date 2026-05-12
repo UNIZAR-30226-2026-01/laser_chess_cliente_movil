@@ -1,9 +1,6 @@
 package com.gracehopper.laserchessapp.data.manager
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
-import androidx.core.content.edit
 import com.google.gson.Gson
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.game.GameMessageType
@@ -68,7 +65,7 @@ object ActiveGameManager {
     private var reconnectGotMatchType = false
     private var awaitingReconnectMessages = false
 
-    var intialBoardCSV: String? = null
+    var initialBoardCSV: String? = null
         private set
 
     var imRedPlayer: Boolean = true
@@ -138,11 +135,6 @@ object ActiveGameManager {
         val gson = Gson()
         val serverMsg = gson.fromJson(message, WSServerMessage::class.java)
 
-        if (serverMsg.type == null) {
-            Log.w("WS", "Mensaje con type null: $message")
-            return
-        }
-
         when (serverMsg.type) {
 
             /**
@@ -151,15 +143,12 @@ object ActiveGameManager {
              * - Se determina si el jugador es rojo
              */
             GameMessageType.INITIAL_STATE -> {
-                intialBoardCSV = serverMsg.content
+                initialBoardCSV = serverMsg.content
 
                 val redPlayerId = serverMsg.extra?.toLongOrNull()
                 if (redPlayerId != null && redPlayerId != -1L) {
                     val myId = CurrentUserManager.getMyCurrentId() ?: TokenManager.getUserId()
                     imRedPlayer = (redPlayerId == myId)
-                } else {
-                    // Por defecto en bot/matchmaking si no hay ID, el primer jugador suele ser el humano
-                    // o mantenemos el valor por defecto (true) seteado en resetAll
                 }
 
                 Log.d("PLAYER", "Soy rojo: $imRedPlayer (ID Red: $redPlayerId)")
@@ -176,7 +165,7 @@ object ActiveGameManager {
                 } else {
                     // Partida en curso normal
                     val event = GameEvent.InitialState(
-                        boardCsv = intialBoardCSV,
+                        boardCsv = initialBoardCSV,
                         redPlayerId = redPlayerId
                     )
                     val cb = onMessageReceivedCallback
@@ -345,8 +334,7 @@ object ActiveGameManager {
                         serverMsg.content.orEmpty().uppercase()
                     )
 
-                } catch (e: Exception) {
-
+                } catch (_: Exception) {
                     null
                 }
 
@@ -429,19 +417,10 @@ object ActiveGameManager {
         currentOpponentInfo = info
     }
 
-    /**
-     * Elimina la información del rival.
-     */
-    fun clearOpponentInfo() {
-        currentOpponentInfo = null
-    }
-
     fun getOpponentUsername(): String? {
         return currentOpponentInfo?.username
     }
-    fun getOpponentId(): Long? {
-        return currentOpponentInfo?.id
-    }
+
     fun getOpponentPieceSkin(): Int {
         return currentOpponentInfo?.pieceSkin ?: 1
     }
@@ -650,7 +629,7 @@ object ActiveGameManager {
     private fun dispatchReconnectIfReady() {
         Log.d(
             "RECONNECT",
-            "dispatchReconnectIfReady: gotInitial=$reconnectGotInitialState gotState=$reconnectGotState pendingLog='$pendingStateLog' csv=${intialBoardCSV != null}"
+            "dispatchReconnectIfReady: gotInitial=$reconnectGotInitialState gotState=$reconnectGotState pendingLog='$pendingStateLog' csv=${initialBoardCSV != null}"
         )
         if (
             reconnectGotInitialState &&
@@ -665,7 +644,7 @@ object ActiveGameManager {
 
             onMessageReceivedCallback?.invoke(
                 GameEvent.InitialState(
-                    boardCsv = intialBoardCSV,
+                    boardCsv = initialBoardCSV,
                     redPlayerId = if (imRedPlayer) (CurrentUserManager.getMyCurrentId()
                         ?: TokenManager.getUserId()) else null
                 )
@@ -720,7 +699,7 @@ object ActiveGameManager {
         pendingEvents.clear()
         initialStateConsumed = false
 
-        intialBoardCSV = null
+        initialBoardCSV = null
         imRedPlayer = true
 
         clearCallbacks()
@@ -735,7 +714,7 @@ object ActiveGameManager {
     }
 
     /**
-     * Limpia los datos de partidas previas pero MANTIENE los callbacks
+     * Limpia los datos de partidas previas, pero MANTIENE los callbacks
      * actuales para no romper la comunicación con la UI que lanza la partida.
      */
     private fun prepareForNewGame() {
@@ -744,9 +723,9 @@ object ActiveGameManager {
         friendlyGameWebSocket = null
         initialStateConsumed = false
 
-        // Seteamos el estado inicial de juego
+        // Set del estado inicial de juego
         imRedPlayer = true
-        intialBoardCSV = null
+        initialBoardCSV = null
 
         // Limpiamos datos de oponente y partida
         currentOpponentInfo = null
