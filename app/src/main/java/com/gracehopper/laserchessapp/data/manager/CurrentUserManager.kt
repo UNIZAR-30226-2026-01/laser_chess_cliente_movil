@@ -3,7 +3,6 @@ package com.gracehopper.laserchessapp.data.manager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
-import com.gracehopper.laserchessapp.data.model.user.UserRatings
 import com.gracehopper.laserchessapp.utils.TokenManager
 
 /**
