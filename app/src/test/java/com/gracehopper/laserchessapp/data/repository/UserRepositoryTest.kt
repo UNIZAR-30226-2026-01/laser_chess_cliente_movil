@@ -165,14 +165,142 @@ class UserRepositoryTest {
     }
 
     /**
-     * TEST 3: FALLO RED AL RECUPERAR RATINGS
+     * TEST 3: BODY NULO AL RECUPERAR RATINGS
+     *
+     * Comprueba:
+     * - respuesta con body nulo
+     * -> llama a onError
+     */
+    @Test
+    fun getMyProfile_error_ratings_body_nulo_onError() {
+
+        val apiService = mock<ApiService>()
+        val accountCall = mock<Call<MyAccountResponse>>()
+        val ratingsCall = mock<Call<AllRatingsResponse>>()
+
+        val repository = UserRepository(apiService)
+
+        val myAccount = MyAccountResponse(
+            accountId = 1L,
+            mail = "mail@test.ts",
+            username = "username",
+            avatar = 1,
+            level = 1,
+            xp = 100,
+            money = 100,
+            boardSkin = 1,
+            pieceSkin = 1,
+            winAnimation = 1
+        )
+
+        whenever(apiService.getMyAccount()).thenReturn(accountCall)
+        whenever(apiService.getRatings(1L)).thenReturn(ratingsCall)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<MyAccountResponse>>(0)
+            callback.onResponse(accountCall, Response.success(myAccount))
+            null
+        }.whenever(accountCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<AllRatingsResponse>>(0)
+            callback.onResponse(ratingsCall, Response.success(null))
+            null
+        }.whenever(ratingsCall).enqueue(any())
+
+        var successCalled = false
+        var errorCalled = false
+
+        repository.getMyProfile(
+            onSuccess = { successCalled = true },
+            onError = { errorCalled = true }
+        )
+
+        assertFalse(successCalled)
+        assertTrue(errorCalled)
+    }
+
+    /**
+     * TEST 4: BODY NULO AL RECUPERAR XP_INFO
+     *
+     * Comprueba:
+     * - respuesta con body nulo
+     * -> llama a onError
+     */
+    @Test
+    fun getMyProfile_error_xpInfo_body_nulo_onError() {
+
+        val apiService = mock<ApiService>()
+        val accountCall = mock<Call<MyAccountResponse>>()
+        val ratingsCall = mock<Call<AllRatingsResponse>>()
+        val xpCall = mock<Call<XPInfoResponse>>()
+
+        val repository = UserRepository(apiService)
+
+        val myAccount = MyAccountResponse(
+            accountId = 1L,
+            mail = "mail@test.ts",
+            username = "username",
+            avatar = 1,
+            level = 1,
+            xp = 100,
+            money = 100,
+            boardSkin = 1,
+            pieceSkin = 1,
+            winAnimation = 1
+        )
+
+        val ratings = AllRatingsResponse(
+            userId = 1L,
+            blitz = 1100,
+            rapid = 1200,
+            classic = 1300,
+            extended = 1400
+        )
+
+        whenever(apiService.getMyAccount()).thenReturn(accountCall)
+        whenever(apiService.getRatings(1L)).thenReturn(ratingsCall)
+        whenever(apiService.getXPInfo()).thenReturn(xpCall)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<MyAccountResponse>>(0)
+            callback.onResponse(accountCall, Response.success(myAccount))
+            null
+        }.whenever(accountCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<AllRatingsResponse>>(0)
+            callback.onResponse(ratingsCall, Response.success(ratings))
+            null
+        }.whenever(ratingsCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<XPInfoResponse>>(0)
+            callback.onResponse(xpCall, Response.success(null))
+            null
+        }.whenever(xpCall).enqueue(any())
+
+        var successCalled = false
+        var errorCalled = false
+
+        repository.getMyProfile(
+            onSuccess = { successCalled = true },
+            onError = { errorCalled = true }
+        )
+
+        assertFalse(successCalled)
+        assertTrue(errorCalled)
+    }
+
+    /**
+     * TEST 5: FALLO RED AL RECUPERAR RATINGS
      *
      * Comprueba:
      * - falla la conexión (onFailure) al recuperar ratings
-     * -> llama a onError(null)
+     * -> llama a onError
      */
     @Test
-    fun getMyProfile_error_ratings_fallo_red_onError_null() {
+    fun getMyProfile_error_ratings_fallo_red_onError() {
 
         val apiService = mock<ApiService>()
         val accountCall = mock<Call<MyAccountResponse>>()
@@ -226,7 +354,116 @@ class UserRepositoryTest {
     }
 
     /**
-     * TEST 4: ÉXITO AL RECUPERAR EL PERFIL
+     * TEST 6: FALLO RED AL RECUPERAR XPINFO EN GET MY PROFILE
+     *
+     * Comprueba:
+     * - cuenta y ratings correctos
+     * - falla XP info
+     * -> llama a onError
+     */
+    @Test
+    fun getMyProfile_error_xpInfo_fallo_red_onError() {
+
+        val apiService = mock<ApiService>()
+        val accountCall = mock<Call<MyAccountResponse>>()
+        val ratingsCall = mock<Call<AllRatingsResponse>>()
+        val xpCall = mock<Call<XPInfoResponse>>()
+
+        val repository = UserRepository(apiService)
+
+        val myAccount = MyAccountResponse(
+            accountId = 1L,
+            mail = "mail@test.ts",
+            username = "username",
+            avatar = 1,
+            level = 1,
+            xp = 100,
+            money = 100,
+            boardSkin = 1,
+            pieceSkin = 1,
+            winAnimation = 1
+        )
+
+        val ratings = AllRatingsResponse(
+            userId = 1L,
+            blitz = 1100,
+            rapid = 1200,
+            classic = 1300,
+            extended = 1400
+        )
+
+        whenever(apiService.getMyAccount()).thenReturn(accountCall)
+        whenever(apiService.getRatings(1L)).thenReturn(ratingsCall)
+        whenever(apiService.getXPInfo()).thenReturn(xpCall)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<MyAccountResponse>>(0)
+            callback.onResponse(accountCall, Response.success(myAccount))
+            null
+        }.whenever(accountCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<AllRatingsResponse>>(0)
+            callback.onResponse(ratingsCall, Response.success(ratings))
+            null
+        }.whenever(ratingsCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<XPInfoResponse>>(0)
+            callback.onFailure(xpCall, RuntimeException("Network error"))
+            null
+        }.whenever(xpCall).enqueue(any())
+
+        var successCalled = false
+        var errorCalled = false
+
+        repository.getMyProfile(
+            onSuccess = { successCalled = true },
+            onError = { errorCalled = true }
+        )
+
+        assertFalse(successCalled)
+        assertTrue(errorCalled)
+
+    }
+
+    /**
+     * TEST 7: FALLO RED AL RECUPERAR EL PERFIL
+     *
+     * Comprueba:
+     * - falla la conexión (onFailure) al recuperar el perfil
+     * -> llama a onError
+     */
+    @Test
+    fun getMyProfile_error_myAccount_fallo_red_onError() {
+
+        val apiService = mock<ApiService>()
+        val accountCall = mock<Call<MyAccountResponse>>()
+
+        val repository = UserRepository(apiService)
+
+        whenever(apiService.getMyAccount()).thenReturn(accountCall)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<MyAccountResponse>>(0)
+            callback.onFailure(accountCall, RuntimeException("Network error"))
+            null
+        }.whenever(accountCall).enqueue(any())
+
+        var successCalled = false
+        var errorCalled = false
+
+        repository.getMyProfile(
+            onSuccess = { successCalled = true },
+            onError = { errorCalled = true }
+        )
+
+        assertFalse(successCalled)
+        assertTrue(errorCalled)
+    }
+
+    /**
+     * TEST 8: ÉXITO AL RECUPERAR EL PERFIL
      *
      * Comprueba:
      * - respuesta correcta
@@ -238,6 +475,7 @@ class UserRepositoryTest {
         val apiService = mock<ApiService>()
         val accountCall = mock<Call<AccountResponse>>()
         val ratingsCall = mock<Call<AllRatingsResponse>>()
+        val xpCall = mock<Call<XPInfoResponse>>()
 
         val repository = UserRepository(apiService)
 
@@ -260,8 +498,14 @@ class UserRepositoryTest {
             extended = 1400
         )
 
+        val xpInfo = XPInfoResponse(
+            xp = 20,
+            requiredXp = 200
+        )
+
         whenever(apiService.getAccount(2L)).thenReturn(accountCall)
         whenever(apiService.getRatings(2L)).thenReturn(ratingsCall)
+        whenever(apiService.getXPInfoByID(2L)).thenReturn(xpCall)
 
         doAnswer {
             val callback = it.getArgument<Callback<AccountResponse>>(0)
@@ -274,6 +518,12 @@ class UserRepositoryTest {
             callback.onResponse(ratingsCall, Response.success(ratings))
             null
         }.whenever(ratingsCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<XPInfoResponse>>(0)
+            callback.onResponse(xpCall, Response.success(xpInfo))
+            null
+        }.whenever(xpCall).enqueue(any())
 
         var successCalled = false
         var errorCalled = false
@@ -295,11 +545,13 @@ class UserRepositoryTest {
         assertEquals(2L, receivedProfile?.id)
         assertEquals("username2", receivedProfile?.username)
         assertEquals(UserRatings(1100, 1200, 1300, 1400), receivedProfile?.ratings)
+        assertEquals(20, receivedProfile?.xpLevel)
+        assertEquals(200, receivedProfile?.xpRequired)
 
     }
 
     /**
-     * TEST 5: ERROR AL RECUPERAR EL PERFIL
+     * TEST 9: ERROR AL RECUPERAR EL PERFIL
      *
      * Comprueba:
      * - respuesta con error
@@ -340,7 +592,114 @@ class UserRepositoryTest {
     }
 
     /**
-     * TEST 6: ÉXITO AL ACTUALIZAR EL PERFIL RECUPERANDO RATINGS
+     * TEST 10: FALLO RED AL RECUPERAR EL PERFIL
+     *
+     * Comprueba:
+     * - falla la conexión (onFailure) al recuperar el perfil
+     * -> llama a onError
+     */
+    @Test
+    fun getUserProfile_fallo_red_account_onError() {
+
+        val apiService = mock<ApiService>()
+        val accountCall = mock<Call<AccountResponse>>()
+
+        val repository = UserRepository(apiService)
+
+        whenever(apiService.getAccount(2L)).thenReturn(accountCall)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<AccountResponse>>(0)
+            callback.onFailure(accountCall, RuntimeException("Network error"))
+            null
+        }.whenever(accountCall).enqueue(any())
+
+        var successCalled = false
+        var errorCalled = false
+
+        repository.getUserProfile(
+            userId = 2L,
+            onSuccess = { successCalled = true },
+            onError = { errorCalled = true }
+        )
+
+        assertFalse(successCalled)
+        assertTrue(errorCalled)
+    }
+
+    /**
+     * TEST 11: FALLO RED AL RECUPERAR EL PERFIL
+     *
+     * Comprueba:
+     * - falla la conexión (onFailure) al recuperar el perfil
+     * -> llama a onError
+     */
+    @Test
+    fun getUserProfile_error_xpInfo_fallo_red_onError() {
+
+        val apiService = mock<ApiService>()
+        val accountCall = mock<Call<AccountResponse>>()
+        val ratingsCall = mock<Call<AllRatingsResponse>>()
+        val xpCall = mock<Call<XPInfoResponse>>()
+
+        val repository = UserRepository(apiService)
+
+        val account = AccountResponse(
+            accountId = 2L,
+            username = "username2",
+            avatar = 2,
+            level = 2,
+            xp = 200,
+            boardSkin = 2,
+            pieceSkin = 2,
+            winAnimation = 2
+        )
+
+        val ratings = AllRatingsResponse(
+            userId = 2L,
+            blitz = 1100,
+            rapid = 1200,
+            classic = 1300,
+            extended = 1400
+        )
+
+        whenever(apiService.getAccount(2L)).thenReturn(accountCall)
+        whenever(apiService.getRatings(2L)).thenReturn(ratingsCall)
+        whenever(apiService.getXPInfoByID(2L)).thenReturn(xpCall)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<AccountResponse>>(0)
+            callback.onResponse(accountCall, Response.success(account))
+            null
+        }.whenever(accountCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<AllRatingsResponse>>(0)
+            callback.onResponse(ratingsCall, Response.success(ratings))
+            null
+        }.whenever(ratingsCall).enqueue(any())
+
+        doAnswer {
+            val callback = it.getArgument<Callback<XPInfoResponse>>(0)
+            callback.onFailure(xpCall, RuntimeException("Network error"))
+            null
+        }.whenever(xpCall).enqueue(any())
+
+        var successCalled = false
+        var errorCalled = false
+
+        repository.getUserProfile(
+            userId = 2L,
+            onSuccess = { successCalled = true },
+            onError = { errorCalled = true }
+        )
+
+        assertFalse(successCalled)
+        assertTrue(errorCalled)
+    }
+
+    /**
+     * TEST 12: ÉXITO AL ACTUALIZAR EL PERFIL RECUPERANDO RATINGS
      *
      * Comprueba:
      * - respuesta correcta
@@ -431,7 +790,7 @@ class UserRepositoryTest {
     }
 
     /**
-     * TEST 7: ERROR AL ACTUALIZAR EL PERFIL
+     * TEST 13: ERROR AL ACTUALIZAR EL PERFIL
      *
      * Comprueba:
      * - respuesta con error
@@ -472,7 +831,7 @@ class UserRepositoryTest {
     }
 
     /**
-     * TEST 8: FALLO RED AL ACTUALIZAR EL PERFIL
+     * TEST 14: FALLO RED AL ACTUALIZAR EL PERFIL
      *
      * Comprueba:
      * - falla la conexión (onFailure) al actualizar
@@ -513,204 +872,7 @@ class UserRepositoryTest {
     }
 
     /**
-     * TEST 9: ÉXITO AL ELIMINAR LA CUENTA
-     *
-     * Comprueba:
-     * - respuesta correcta
-     * -> llama a onSuccess
-     */
-    @Test
-    fun deleteMyAccount_exito_onSuccess() {
-
-        val apiService = mock<ApiService>()
-        val deleteCall = mock<Call<Unit>>()
-
-        val repository = UserRepository(apiService)
-
-        whenever(apiService.deleteMyAccount()).thenReturn(deleteCall)
-
-        doAnswer {
-            val callback = it.getArgument<Callback<Unit>>(0)
-            callback.onResponse(deleteCall, Response.success(Unit))
-            null
-        }.whenever(deleteCall).enqueue(any())
-
-        var successCalled = false
-        var errorCalled = false
-
-
-        repository.deleteMyAccount(
-            onSuccess = {
-                successCalled = true
-            },
-            onError = {
-                errorCalled = true
-            }
-        )
-
-        assertTrue(successCalled)
-        assertFalse(errorCalled)
-
-    }
-
-    /**
-     * TEST 10: ERROR AL ELIMINAR LA CUENTA
-     *
-     * Comprueba:
-     * - respuesta con error
-     * -> llama a onError
-     */
-    @Test
-    fun deleteMyAccount_error_500_onError() {
-
-        val apiService = mock<ApiService>()
-        val deleteCall = mock<Call<Unit>>()
-
-        val repository = UserRepository(apiService)
-
-        whenever(apiService.deleteMyAccount()).thenReturn(deleteCall)
-
-        doAnswer {
-            val callback = it.getArgument<Callback<Unit>>(0)
-            callback.onResponse(deleteCall, Response.error(500, "Server error".toResponseBody()))
-            null
-        }.whenever(deleteCall).enqueue(any())
-
-        var successCalled = false
-        var errorCode: Int? = null
-
-
-        repository.deleteMyAccount(
-            onSuccess = {
-                successCalled = true
-            },
-            onError = {
-                errorCode = it
-            }
-        )
-
-        assertFalse(successCalled)
-        assertEquals(500, errorCode)
-
-    }
-
-    /**
-     * TEST 11: FALLO RED AL ELIMINAR LA CUENTA
-     *
-     * Comprueba:
-     * - falla la conexión (onFailure) al eliminar
-     * -> llama a onError(null)
-     */
-    @Test
-    fun deleteMyAccount_fallo_red_onError_null() {
-
-        val apiService = mock<ApiService>()
-        val deleteCall = mock<Call<Unit>>()
-
-        val repository = UserRepository(apiService)
-
-        whenever(apiService.deleteMyAccount()).thenReturn(deleteCall)
-
-        doAnswer {
-            val callback = it.getArgument<Callback<Unit>>(0)
-            callback.onFailure(deleteCall, RuntimeException("Network error"))
-            null
-        }.whenever(deleteCall).enqueue(any())
-
-        var successCalled = false
-        var errorCode: Int? = 999
-
-
-        repository.deleteMyAccount(
-            onSuccess = {
-                successCalled = true
-            },
-            onError = {
-                errorCode = it
-            }
-        )
-
-        assertFalse(successCalled)
-        assertNull(errorCode)
-
-    }
-
-    /**
-     * TEST 12: FALLO RED AL RECUPERAR XPINFO EN GET MY PROFILE
-     *
-     * Comprueba:
-     * - cuenta y ratings correctos
-     * - falla XP info
-     * -> llama a onError
-     */
-    @Test
-    fun getMyProfile_error_xpInfo_fallo_red_onError() {
-
-        val apiService = mock<ApiService>()
-        val accountCall = mock<Call<MyAccountResponse>>()
-        val ratingsCall = mock<Call<AllRatingsResponse>>()
-        val xpCall = mock<Call<XPInfoResponse>>()
-
-        val repository = UserRepository(apiService)
-
-        val myAccount = MyAccountResponse(
-            accountId = 1L,
-            mail = "mail@test.ts",
-            username = "username",
-            avatar = 1,
-            level = 1,
-            xp = 100,
-            money = 100,
-            boardSkin = 1,
-            pieceSkin = 1,
-            winAnimation = 1
-        )
-
-        val ratings = AllRatingsResponse(
-            userId = 1L,
-            blitz = 1100,
-            rapid = 1200,
-            classic = 1300,
-            extended = 1400
-        )
-
-        whenever(apiService.getMyAccount()).thenReturn(accountCall)
-        whenever(apiService.getRatings(1L)).thenReturn(ratingsCall)
-        whenever(apiService.getXPInfo()).thenReturn(xpCall)
-
-        doAnswer {
-            val callback = it.getArgument<Callback<MyAccountResponse>>(0)
-            callback.onResponse(accountCall, Response.success(myAccount))
-            null
-        }.whenever(accountCall).enqueue(any())
-
-        doAnswer {
-            val callback = it.getArgument<Callback<AllRatingsResponse>>(0)
-            callback.onResponse(ratingsCall, Response.success(ratings))
-            null
-        }.whenever(ratingsCall).enqueue(any())
-
-        doAnswer {
-            val callback = it.getArgument<Callback<XPInfoResponse>>(0)
-            callback.onFailure(xpCall, RuntimeException("Network error"))
-            null
-        }.whenever(xpCall).enqueue(any())
-
-        var successCalled = false
-        var errorCalled = false
-
-        repository.getMyProfile(
-            onSuccess = { successCalled = true },
-            onError = { errorCalled = true }
-        )
-
-        assertFalse(successCalled)
-        assertTrue(errorCalled)
-
-    }
-
-    /**
-     * TEST 13: FALLO RED AL RECUPERAR RATINGS EN UPDATE
+     * TEST 15: FALLO RED AL RECUPERAR RATINGS EN UPDATE
      *
      * Comprueba:
      * - update correcto
@@ -769,7 +931,7 @@ class UserRepositoryTest {
     }
 
     /**
-     * TEST 14: FALLO RED AL RECUPERAR XPINFO EN UPDATE
+     * TEST 16: FALLO RED AL RECUPERAR XPINFO EN UPDATE
      *
      * Comprueba:
      * - update y ratings correctos
@@ -844,7 +1006,130 @@ class UserRepositoryTest {
     }
 
     /**
-     * TEST 15: CHANGE PASSWORD CON ÉXITO
+     * TEST 17: ÉXITO AL ELIMINAR LA CUENTA
+     *
+     * Comprueba:
+     * - respuesta correcta
+     * -> llama a onSuccess
+     */
+    @Test
+    fun deleteMyAccount_exito_onSuccess() {
+
+        val apiService = mock<ApiService>()
+        val deleteCall = mock<Call<Unit>>()
+
+        val repository = UserRepository(apiService)
+
+        whenever(apiService.deleteMyAccount()).thenReturn(deleteCall)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<Unit>>(0)
+            callback.onResponse(deleteCall, Response.success(Unit))
+            null
+        }.whenever(deleteCall).enqueue(any())
+
+        var successCalled = false
+        var errorCalled = false
+
+
+        repository.deleteMyAccount(
+            onSuccess = {
+                successCalled = true
+            },
+            onError = {
+                errorCalled = true
+            }
+        )
+
+        assertTrue(successCalled)
+        assertFalse(errorCalled)
+
+    }
+
+    /**
+     * TEST 18: ERROR AL ELIMINAR LA CUENTA
+     *
+     * Comprueba:
+     * - respuesta con error
+     * -> llama a onError
+     */
+    @Test
+    fun deleteMyAccount_error_500_onError() {
+
+        val apiService = mock<ApiService>()
+        val deleteCall = mock<Call<Unit>>()
+
+        val repository = UserRepository(apiService)
+
+        whenever(apiService.deleteMyAccount()).thenReturn(deleteCall)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<Unit>>(0)
+            callback.onResponse(deleteCall, Response.error(500, "Server error".toResponseBody()))
+            null
+        }.whenever(deleteCall).enqueue(any())
+
+        var successCalled = false
+        var errorCode: Int? = null
+
+
+        repository.deleteMyAccount(
+            onSuccess = {
+                successCalled = true
+            },
+            onError = {
+                errorCode = it
+            }
+        )
+
+        assertFalse(successCalled)
+        assertEquals(500, errorCode)
+
+    }
+
+    /**
+     * TEST 19: FALLO RED AL ELIMINAR LA CUENTA
+     *
+     * Comprueba:
+     * - falla la conexión (onFailure) al eliminar
+     * -> llama a onError(null)
+     */
+    @Test
+    fun deleteMyAccount_fallo_red_onError_null() {
+
+        val apiService = mock<ApiService>()
+        val deleteCall = mock<Call<Unit>>()
+
+        val repository = UserRepository(apiService)
+
+        whenever(apiService.deleteMyAccount()).thenReturn(deleteCall)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<Unit>>(0)
+            callback.onFailure(deleteCall, RuntimeException("Network error"))
+            null
+        }.whenever(deleteCall).enqueue(any())
+
+        var successCalled = false
+        var errorCode: Int? = 999
+
+
+        repository.deleteMyAccount(
+            onSuccess = {
+                successCalled = true
+            },
+            onError = {
+                errorCode = it
+            }
+        )
+
+        assertFalse(successCalled)
+        assertNull(errorCode)
+
+    }
+
+    /**
+     * TEST 20: CHANGE PASSWORD CON ÉXITO
      *
      * Comprueba:
      * - respuesta correcta
@@ -886,7 +1171,7 @@ class UserRepositoryTest {
     }
 
     /**
-     * TEST 16: CHANGE PASSWORD CON ERROR 400
+     * TEST 21: CHANGE PASSWORD CON ERROR 400
      *
      * Comprueba:
      * - respuesta con error
@@ -928,7 +1213,7 @@ class UserRepositoryTest {
     }
 
     /**
-     * TEST 17: CHANGE PASSWORD CON FALLO DE RED
+     * TEST 22: CHANGE PASSWORD CON FALLO DE RED
      *
      * Comprueba:
      * - falla la conexión

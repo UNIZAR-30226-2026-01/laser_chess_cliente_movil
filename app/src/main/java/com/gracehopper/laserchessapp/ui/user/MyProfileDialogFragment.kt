@@ -98,7 +98,6 @@ class MyProfileDialogFragment : DialogFragment() {
         imageProfileAvatar = dialogView.findViewById(R.id.imageMyProfileAvatar)
         txtProfileUsername = dialogView.findViewById(R.id.txtMyProfileUsername)
         txtProfileLevel = dialogView.findViewById(R.id.txtMyProfileLevel)
-        txtProfileXp = dialogView.findViewById(R.id.txtMyProfileXp)
         progressProfileXP = dialogView.findViewById(R.id.progressMyProfileXp)
         txtProfileCoins = dialogView.findViewById(R.id.txtMyProfileCoins)
 
@@ -282,8 +281,8 @@ class MyProfileDialogFragment : DialogFragment() {
         currentProfile = profile
 
         txtProfileUsername.text = profile.username
-        txtProfileLevel.text = "Nivel ${profile.level}"
-        txtProfileXp.text = "${profile.xpTotal} XP"
+        txtProfileLevel.text = getString(R.string.profile_card_level_format,
+            profile.level, profile.xpLevel, profile.xpRequired)
         txtProfileCoins.text = profile.money.toString()
 
         txtProfileBlitzElo.text = profile.ratings.blitz.toString()

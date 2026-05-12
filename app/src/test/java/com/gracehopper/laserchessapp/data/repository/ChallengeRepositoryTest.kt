@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.data.repository
 
+import com.gracehopper.laserchessapp.data.model.game.ChallengeCountResponse
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -188,6 +189,152 @@ class ChallengeRepositoryTest {
             onError = {
                 errorCode = it
             }
+        )
+
+        assertFalse(successCalled)
+        assertNull(errorCode)
+
+    }
+
+    /**
+     * TEST 5: ÉXITO AL RECUPERAR EL NÚMERO DE CHALLENGES
+     *
+     * Comprueba:
+     * - cuenta correcta
+     * -> llama a onSuccess con la cuenta
+     */
+    @Test
+    fun getChallengeCount_exito_onSuccess() {
+
+        val apiService = mock<ApiService>()
+        val call = mock<Call<ChallengeCountResponse>>()
+
+        val repository = ChallengeRepository(apiService)
+
+        val response = ChallengeCountResponse(count = 5)
+
+        whenever(apiService.getChallengeCount()).thenReturn(call)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<ChallengeCountResponse>>(0)
+            callback.onResponse(call, Response.success(response))
+            null
+        }.whenever(call).enqueue(any())
+
+        var successValue: Int? = null
+        var errorCode: Int? = null
+
+        repository.getChallengeCount(
+            onSuccess = { successValue = it },
+            onError = { errorCode = it }
+        )
+
+        assertEquals(5, successValue)
+        assertNull(errorCode)
+
+    }
+
+    /**
+     * TEST 6: ÉXITO AL RECUPERAR EL NÚMERO DE CHALLENGES (BODY NULO)
+     *
+     * Comprueba:
+     * - respuesta con body nulo
+     * -> llama a onSuccess con 0
+     */
+    @Test
+    fun getChallengeCount_exito_body_nulo_onSuccess_0() {
+
+        val apiService = mock<ApiService>()
+        val call = mock<Call<ChallengeCountResponse>>()
+
+        val repository = ChallengeRepository(apiService)
+
+        whenever(apiService.getChallengeCount()).thenReturn(call)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<ChallengeCountResponse>>(0)
+            callback.onResponse(call, Response.success(null))
+            null
+        }.whenever(call).enqueue(any())
+
+        var successValue: Int? = null
+        var errorCode: Int? = null
+
+        repository.getChallengeCount(
+            onSuccess = { successValue = it },
+            onError = { errorCode = it }
+        )
+
+        assertEquals(0, successValue)
+        assertNull(errorCode)
+
+    }
+
+    /**
+     * TEST 7: ERROR 500 AL RECUPERAR EL NÚMERO DE CHALLENGES
+     *
+     * Comprueba:
+     * - error 500
+     * -> llama a onError(500)
+     */
+    @Test
+    fun getChallengeCount_error_500_onError() {
+
+        val apiService = mock<ApiService>()
+        val call = mock<Call<ChallengeCountResponse>>()
+
+        val repository = ChallengeRepository(apiService)
+
+        whenever(apiService.getChallengeCount()).thenReturn(call)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<ChallengeCountResponse>>(0)
+            callback.onResponse(call, Response.error(500, "Server error".toResponseBody()))
+            null
+        }.whenever(call).enqueue(any())
+
+        var successCalled = false
+        var errorCode: Int? = null
+
+        repository.getChallengeCount(
+            onSuccess = { successCalled = true },
+            onError = { errorCode = it }
+        )
+
+        assertFalse(successCalled)
+        assertEquals(500, errorCode)
+
+    }
+
+    /**
+     * TEST 8: FALLO DE RED AL RECUPERAR EL NÚMERO DE CHALLENGES
+     *
+     * Comprueba:
+     * - falla la conexión (onFailure)
+     * -> llama a onError(null)
+     */
+    @Test
+    fun getChallengeCount_fallo_red_onError_null() {
+
+        val apiService = mock<ApiService>()
+        val call = mock<Call<ChallengeCountResponse>>()
+
+        val repository = ChallengeRepository(apiService)
+
+        whenever(apiService.getChallengeCount()).thenReturn(call)
+
+        doAnswer {
+            val callback = it.getArgument<Callback<ChallengeCountResponse>>(0)
+            callback.onFailure(call, RuntimeException("Network error"))
+            null
+        }.whenever(call).enqueue(any())
+
+        var successCalled = false
+        var errorCode: Int? = 999
+
+        repository.getChallengeCount(
+            onSuccess = { successCalled = true },
+            onError = { errorCode = it }
         )
 
         assertFalse(successCalled)

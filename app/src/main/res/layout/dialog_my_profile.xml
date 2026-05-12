@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Caja principal -->
     <LinearLayout
@@ -63,12 +64,13 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
+                <!-- Username -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="8dp" >
+                    android:layout_marginBottom="6dp" >
                     <TextView
                         android:id="@+id/txtMyProfileUsername"
                         android:layout_width="0dp"
@@ -94,41 +96,45 @@
 
                 </LinearLayout>
 
+                <!-- LEVEL -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="end|center_vertical"
+                    android:layout_marginBottom="4dp">
 
                     <TextView
                         android:id="@+id/txtMyProfileLevel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="10dp"
-                        android:text=""
-                        android:textSize="14sp"
+                        android:textColor="@color/LCWhite"
+                        android:textSize="@dimen/text_medium_small"
                         android:textStyle="bold"
-                        android:textColor="@color/LCGray" />
-
-                    <ProgressBar
-                        android:id="@+id/progressMyProfileXp"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:max="100"
-                        android:progress="0" />
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="LVL 24 - 170/300" />
 
                     <TextView
                         android:id="@+id/txtMyProfileXp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:text=""
-                        android:textSize="13sp"
-                        android:textColor="@color/LCGray"/>
+                        android:text="XP"
+                        android:textColor="@color/LCGreen"
+                        android:textSize="@dimen/text_medium_small"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
+
+                <!-- PROGRESSBAR -->
+                <ProgressBar
+                    android:id="@+id/progressMyProfileXp"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="14dp"
+                    android:progressDrawable="@drawable/custom_level_progressbar"
+                    tools:progress="75" />
+
             </LinearLayout>
 
         </LinearLayout>

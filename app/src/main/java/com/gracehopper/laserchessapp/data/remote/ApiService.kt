@@ -73,18 +73,6 @@ interface ApiService {
     @GET("api/rating/{userID}")
     fun getRatings(@Path("userID") userId: Long): Call<AllRatingsResponse>
 
-    @GET("api/rating/{userID}/blitz")
-    fun getBlitzElo(@Path("userID") userId: Long): Call<RatingResponse>
-
-    @GET("api/rating/{userID}/rapid")
-    fun getRapidElo(@Path("userID") userId: Long): Call<RatingResponse>
-
-    @GET("api/rating/{userID}/classic")
-    fun getClassicElo(@Path("userID") userId: Long): Call<RatingResponse>
-
-    @GET("api/rating/{userID}/extended")
-    fun getExtendedElo(@Path("userID") userId: Long): Call<RatingResponse>
-
     @GET("api/rating/ranking/{eloType}/{id}")
     fun getRankById(
         @Path("eloType") eloType: String,
