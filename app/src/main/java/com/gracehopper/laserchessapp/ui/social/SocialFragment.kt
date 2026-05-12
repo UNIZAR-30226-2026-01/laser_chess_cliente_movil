@@ -129,7 +129,6 @@ class SocialFragment : Fragment() {
         recyclerFriends = view.findViewById(R.id.recyclerFriends)
 
         setupRecycler()
-        observeFriendshipRequests()
         loadFriends()
         loadNumReceivedRequests()
         loadPausedGames()
@@ -137,17 +136,6 @@ class SocialFragment : Fragment() {
 
         setupListeners()
         selectTab(SocialTab.SOCIAL)
-    }
-
-    private fun observeFriendshipRequests() {
-        CurrentUserManager.pendingFriendshipRequestsCount.observe(viewLifecycleOwner) { count ->
-            if (count == 0) {
-                binding.txtNumSolicitudes.visibility = View.GONE
-            } else {
-                binding.txtNumSolicitudes.visibility = View.VISIBLE
-                binding.txtNumSolicitudes.text = count.toString()
-            }
-        }
     }
 
     private fun showUserProfileDialog(friend: FriendSummary) {
@@ -202,10 +190,15 @@ class SocialFragment : Fragment() {
 
         friendRepository.getNumReceivedFriendshipRequests(
             onSuccess = { response ->
-                CurrentUserManager.setPendingFriendshipRequestsCount(response)
+                if (response == 0) {
+                    binding.txtNumSolicitudes.visibility = View.GONE
+                } else {
+                    binding.txtNumSolicitudes.visibility = View.VISIBLE
+                    binding.txtNumSolicitudes.text = response.toString()
+                }
             },
             onError = {
-                CurrentUserManager.setPendingFriendshipRequestsCount(0)
+                binding.txtNumSolicitudes.visibility = View.GONE
                 Toast.makeText(requireContext(),
                     "Error al cargar el número de solicitudes",
                     Toast.LENGTH_SHORT).show()

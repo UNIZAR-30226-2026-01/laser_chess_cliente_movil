@@ -17,7 +17,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.gracehopper.laserchessapp.R
-import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
@@ -171,7 +170,6 @@ class RequestsDialogFragment : DialogFragment() {
 
         repository.getReceivedFriendshipRequests(
             onSuccess = { receivedRequests ->
-                CurrentUserManager.setPendingFriendshipRequestsCount(receivedRequests.size)
                 if (receivedRequests.isEmpty()) {
                     emptyReceived.visibility = View.VISIBLE
                 } else {

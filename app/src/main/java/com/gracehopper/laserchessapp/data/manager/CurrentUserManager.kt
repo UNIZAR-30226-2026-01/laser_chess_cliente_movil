@@ -17,9 +17,6 @@ object CurrentUserManager {
     private val _sessionExpired = MutableLiveData(false)
     val sessionExpired: LiveData<Boolean> = _sessionExpired
 
-    private val _pendingChallengesCount = MutableLiveData<Int>(0)
-    val pendingChallengesCount: LiveData<Int> = _pendingChallengesCount
-
     private val _pendingFriendshipRequestsCount = MutableLiveData<Int>(0)
     val pendingFriendshipRequestsCount: LiveData<Int> = _pendingFriendshipRequestsCount
 
@@ -32,24 +29,6 @@ object CurrentUserManager {
         _myProfile.postValue(profile)
         _sessionExpired.postValue(false)
         TokenManager.saveUserId(profile.id)
-    }
-
-    /**
-     * Establece el número de retos pendientes.
-     *
-     * @param count Número de retos pendientes.
-     */
-    fun setPendingChallengesCount(count: Int) {
-        _pendingChallengesCount.postValue(count)
-    }
-
-    /**
-     * Establece el número de solicitudes de amistad recibidas.
-     *
-     * @param count Número de solicitudes de amistad.
-     */
-    fun setPendingFriendshipRequestsCount(count: Int) {
-        _pendingFriendshipRequestsCount.postValue(count)
     }
 
     /**
@@ -117,24 +96,6 @@ object CurrentUserManager {
      */
     fun getMyCurrentLevel(): Int? {
         return _myProfile.value?.level
-    }
-
-    /**
-     * Obtiene la xp por nivel del usuario actual.
-     *
-     * @return Xp por nivel del usuario actual, o null si no se ha establecido
-     */
-    fun getMyCurrentXpLevel(): Int? {
-        return _myProfile.value?.xpLevel
-    }
-
-    /**
-     * Obtiene la xp requerida para completar el nivel del usuario actual.
-     *
-     * @return Xp requerida para completar el nivel del usuario actual, o null si no se ha establecido.
-     */
-    fun getMyCurrentMaxXpLevel(): Int? {
-        return _myProfile.value?.xpRequired
     }
 
     /**

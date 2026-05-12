@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
-import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.model.game.GamePlayerInfo
 import com.gracehopper.laserchessapp.data.model.game.PendingChallengeResponse
@@ -27,7 +26,6 @@ import com.gracehopper.laserchessapp.data.repository.ChallengeRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 import com.gracehopper.laserchessapp.utils.AppEvents
-import com.gracehopper.laserchessapp.utils.AppNotificationHelper
 import kotlinx.coroutines.launch
 
 /**
@@ -126,7 +124,6 @@ class NotificationsDialogFragment : DialogFragment() {
             onSuccess = { challenges ->
                 activity?.runOnUiThread {
                     showChallenges(challenges)
-                    CurrentUserManager.setPendingChallengesCount(challenges.size)
                 }
             },
             onError = {

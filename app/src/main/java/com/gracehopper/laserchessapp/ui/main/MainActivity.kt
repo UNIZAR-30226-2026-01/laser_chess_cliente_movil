@@ -140,8 +140,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var imgBackground: ImageView
 
-
-
     /**
      * Launcher para solicitar permiso de notificaciones
      */
@@ -194,7 +192,6 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         observeCurrentUserProfile()
-        observeChallengeCount()
         loadMyProfileIfNeeded()
         setupProfileCard()
         setupAdditionalButtons()
@@ -223,40 +220,6 @@ class MainActivity : AppCompatActivity() {
             dialog.show(supportFragmentManager, "HistoryDialog")
         }
 
-        // Observar eventos de retos para actualizar el contador
-        lifecycleScope.launch {
-            AppEvents.challengeReceived.collectLatest {
-                loadChallengeCount()
-            }
-        }
-    }
-
-    /**
-     * Carga el número de retos pendientes y actualiza el badge.
-     */
-    private fun loadChallengeCount() {
-        challengeRepository.getChallengeCount(
-            onSuccess = { count ->
-                CurrentUserManager.setPendingChallengesCount(count)
-            },
-            onError = {
-                CurrentUserManager.setPendingChallengesCount(0)
-            }
-        )
-    }
-
-    /**
-     * Observa cambios en el número de retos pendientes
-     */
-    private fun observeChallengeCount() {
-        CurrentUserManager.pendingChallengesCount.observe(this) { count ->
-            if (count > 0) {
-                txtBadgePendingChallenges.visibility = View.VISIBLE
-                txtBadgePendingChallenges.text = count.toString()
-            } else {
-                txtBadgePendingChallenges.visibility = View.GONE
-            }
-        }
     }
 
     override fun onStart() {
@@ -273,7 +236,6 @@ class MainActivity : AppCompatActivity() {
             setupGameReconnection()
         }
 
-        loadChallengeCount()
     }
 
     override fun onStop() {
