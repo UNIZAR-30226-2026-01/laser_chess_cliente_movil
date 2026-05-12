@@ -135,12 +135,6 @@ class WaitingGameDialogFragment : DialogFragment() {
         buttonCancel.setOnClickListener {
             ActiveGameManager.closeConnection()
 
-            Toast.makeText(
-                requireContext(),
-                "Solicitud cancelada",
-                Toast.LENGTH_SHORT
-            ).show()
-
             dismiss()
         }
     }
@@ -259,7 +253,6 @@ class WaitingGameDialogFragment : DialogFragment() {
 
     private fun navigateToGame() {
         if (!isAdded) return
-        Toast.makeText(requireContext(), "La partida ha comenzado", Toast.LENGTH_SHORT).show()
         dismiss()
         val intent = Intent(requireContext(), GameActivity::class.java).apply {
             pendingOpponentId?.let { putExtra("OPPONENT_ID", it) }

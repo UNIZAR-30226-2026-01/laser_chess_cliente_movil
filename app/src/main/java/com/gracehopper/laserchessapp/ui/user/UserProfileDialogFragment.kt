@@ -271,10 +271,6 @@ class UserProfileDialogFragment : DialogFragment() {
 
         friendRepository.addFriend(username = username,
             onSuccess = {
-                Toast.makeText(requireContext(),
-                    "Solicitud enviada a $username",
-                    Toast.LENGTH_SHORT
-                ).show()
                 parentFragmentManager.setFragmentResult("requests_updated", Bundle())
                 dismiss()
             }, onError = { errorCode ->
@@ -311,8 +307,6 @@ class UserProfileDialogFragment : DialogFragment() {
 
         friendRepository.deleteFriendship(username = username,
             onSuccess = {
-                Toast.makeText(requireContext(), "Amig@ eliminado",
-                    Toast.LENGTH_SHORT).show()
                 parentFragmentManager.setFragmentResult("friend_removed", Bundle())
                 dismiss()
             },
@@ -328,7 +322,6 @@ class UserProfileDialogFragment : DialogFragment() {
         friendRepository.acceptFriendship(
             username = username,
             onSuccess = {
-                Toast.makeText(requireContext(), "Solicitud aceptada", Toast.LENGTH_SHORT).show()
                 parentFragmentManager.setFragmentResult("requests_updated", Bundle())
                 dismiss()
             },

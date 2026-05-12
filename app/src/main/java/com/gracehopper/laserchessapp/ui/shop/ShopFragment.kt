@@ -187,31 +187,16 @@ class ShopFragment : Fragment() {
     private fun buyProduct(product: ShopProduct) {
 
         if (product.isOwned) {
-            Toast.makeText(
-                requireContext(),
-                "Ya tienes ${product.name}",
-                Toast.LENGTH_SHORT
-            ).show()
             return
         }
 
         if (product.isLevelLocked) {
-            Toast.makeText(
-                requireContext(),
-                "Necesitas nivel ${product.levelRequisite} para comprar ${product.name}",
-                Toast.LENGTH_SHORT
-            ).show()
             return
         }
 
         itemRepository.buyItem(
             itemId = product.itemId,
             onSuccess = {
-                Toast.makeText(
-                    requireContext(),
-                    "Has comprado ${product.name}",
-                    Toast.LENGTH_SHORT
-                ).show()
 
                 refreshCurrentUser()
                 loadShopItems()

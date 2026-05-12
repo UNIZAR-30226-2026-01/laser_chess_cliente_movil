@@ -265,7 +265,6 @@ class LoginActivity : AppCompatActivity() {
                 loginLayout.visibility = View.GONE
                 registerLayout.visibility = View.GONE
 
-                Toast.makeText(this, "¡Bienvenid@!", Toast.LENGTH_SHORT).show()
                 goToMain()
             },
             onError = { errorCode ->
@@ -422,8 +421,6 @@ class LoginActivity : AppCompatActivity() {
             restoreRegisterButton()
 
             TokenManager.saveUserId(account.accountId)
-
-            Toast.makeText(this, "¡Registro exitoso!", Toast.LENGTH_SHORT).show()
 
             showLogin()
             clearRegisterForm()

@@ -278,10 +278,6 @@ class CustomizeFragment : Fragment() {
             dto,
             onSuccess = { profile ->
                 CurrentUserManager.setMyProfile(profile)
-
-                requireActivity().runOnUiThread {
-                    Toast.makeText(requireContext(), "Item equipado", Toast.LENGTH_SHORT).show()
-                }
             },
             onError = {
                 requireActivity().runOnUiThread {

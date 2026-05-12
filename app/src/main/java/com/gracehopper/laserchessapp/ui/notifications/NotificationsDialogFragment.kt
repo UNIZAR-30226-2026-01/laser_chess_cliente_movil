@@ -201,11 +201,6 @@ class NotificationsDialogFragment : DialogFragment() {
     private fun setupChallengeCallbacks() {
         ActiveGameManager.setCallbacks(
             onConnected = {
-                requireActivity().runOnUiThread {
-                    Toast.makeText(requireContext(),
-                        "Reto aceptado. Conectando partida...",
-                        Toast.LENGTH_SHORT).show()
-                }
             },
             onMessageReceived = { event ->
                 requireActivity().runOnUiThread {

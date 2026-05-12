@@ -193,11 +193,6 @@ class SettingsDialogFragment : DialogFragment() {
 
         txtEliminateAccount.setOnClickListener {
             openEliminateAccountDialog()
-            Toast.makeText(
-                requireContext(),
-                "Eliminar cuenta",
-                Toast.LENGTH_SHORT
-            ).show()
         }
 
         checkNotifications.setOnCheckedChangeListener { _, isChecked ->

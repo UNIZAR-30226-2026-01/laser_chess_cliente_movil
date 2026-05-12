@@ -313,11 +313,6 @@ class RequestsDialogFragment : DialogFragment() {
             onSuccess = {
                 if (!isAdded) return@acceptFriendship
                 requireActivity().runOnUiThread {
-                    Toast.makeText(
-                        requireContext(), "Solicitud aceptada",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
                     reloadRequests()
                 }
             },
