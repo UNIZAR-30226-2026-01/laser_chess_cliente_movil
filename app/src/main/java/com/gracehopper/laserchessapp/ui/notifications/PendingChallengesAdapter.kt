@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.notifications
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ class PendingChallengesAdapter(
     private val onRejectClicked: (PendingChallengeResponse) -> Unit
 ) : RecyclerView.Adapter<PendingChallengesAdapter.PendingChallengeViewHolder>() {
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateChallenges(newChallenges: List<PendingChallengeResponse>) {
         challenges = newChallenges
         notifyDataSetChanged()
@@ -38,6 +40,7 @@ class PendingChallengesAdapter(
         private val buttonAccept: Button = itemView.findViewById(R.id.buttonAcceptChallenge)
         private val buttonReject: Button = itemView.findViewById(R.id.buttonRejectChallenge)
 
+        @SuppressLint("SetTextI18n")
         fun bind(challenge: PendingChallengeResponse) {
             val isResume = challenge.startingTime == 0
             if (isResume) {

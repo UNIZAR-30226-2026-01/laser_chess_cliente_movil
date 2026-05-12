@@ -1,7 +1,7 @@
 package com.gracehopper.laserchessapp.ui.ranking
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -96,6 +96,7 @@ class RankingEntryAdapter(
 
     override fun getItemCount(): Int = entries.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newEntries: List<RankingEntry>) {
         entries = newEntries
         notifyDataSetChanged()

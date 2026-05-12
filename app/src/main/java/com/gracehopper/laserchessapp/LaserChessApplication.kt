@@ -1,11 +1,10 @@
 package com.gracehopper.laserchessapp
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
-import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.utils.TokenManager
+import androidx.core.content.edit
 
 /**
  * Clase global que se ejecuta antes que cualquier Activity.
@@ -24,7 +23,7 @@ class LaserChessApplication : Application() {
 
     private fun clearSessionIfUrlChanged() {
 
-        val prefs = getSharedPreferences("app_environment", Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences("app_environment", MODE_PRIVATE)
 
         val lastEnvironment = prefs.getString("last_environment", null)
         val currentEnvironment = "${NetworkUtils.BASE_URL}|${NetworkUtils.WS_BASE_URL}"
@@ -37,9 +36,9 @@ class LaserChessApplication : Application() {
             NetworkUtils.clearSession()
         }
 
-        prefs.edit()
-            .putString("last_environment", currentEnvironment)
-            .apply()
+        prefs.edit {
+            putString("last_environment", currentEnvironment)
+        }
     }
 
 }

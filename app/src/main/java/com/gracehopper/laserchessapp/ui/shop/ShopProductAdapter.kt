@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.shop
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ class ShopProductAdapter(
         private val binding: ItemShopProductBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("SetTextI18n")
         fun bind(product: ShopProduct) {
             binding.txtShopProductName.text = product.name
             binding.imgShopProduct.setImageResource(
@@ -72,12 +74,14 @@ class ShopProductAdapter(
 
     override fun getItemCount(): Int = products.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newProducts: List<ShopProduct>, newUserMoney: Int = userMoney) {
         products = newProducts
         userMoney = newUserMoney
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateUserMoney(newUserMoney: Int) {
         userMoney = newUserMoney
         notifyDataSetChanged()

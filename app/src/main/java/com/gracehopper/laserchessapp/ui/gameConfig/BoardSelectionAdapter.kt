@@ -1,12 +1,12 @@
 package com.gracehopper.laserchessapp.ui.gameConfig
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.recyclerview.widget.RecyclerView
@@ -50,6 +50,7 @@ class BoardSelectionAdapter(private val boards: List<BoardOption>,
             )
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         fun bind(boardOption: BoardOption) {
             textBoardName.text = boardOption.name
 

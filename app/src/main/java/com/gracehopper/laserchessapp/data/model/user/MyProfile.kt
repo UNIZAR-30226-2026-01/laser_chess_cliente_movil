@@ -8,7 +8,9 @@ package com.gracehopper.laserchessapp.data.model.user
  * @property username Nombre de usuario
  * @property avatar Skin de avatar
  * @property level Nivel del usuario
- * @property xp Puntos de experiencia del usuario
+ * @property xpLevel Nivel de experiencia del usuario
+ * @property xpRequired Experiencia requerida para el siguiente nivel
+ * @property xpTotal Puntos de experiencia del usuario
  * @property money Monedas virtuales del usuario
  * @property boardSkin Skin del tablero
  * @property pieceSkin Skin de las piezas

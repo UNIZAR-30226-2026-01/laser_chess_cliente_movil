@@ -295,8 +295,6 @@ class GameActivity : AppCompatActivity() {
                             }
                         }
 
-                        // TODO: REVISAR NUEVOS MENSAJES (de aquí para abajo) ----------------------
-
                         is GameEvent.State -> {
 
                             val log = event.log ?: return@runOnUiThread
@@ -948,7 +946,6 @@ class GameActivity : AppCompatActivity() {
 
         val dialog = GameResultDialogFragment(
             winner = winner,
-            cause = lastCause,
             xpDiff = lastXpDiff,
             moneyDiff = lastMoneyDiff,
             eloDiff = lastEloDiff

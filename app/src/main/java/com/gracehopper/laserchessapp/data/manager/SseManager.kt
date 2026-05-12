@@ -69,7 +69,7 @@ class SseManager(
                     return
                 }
 
-                Log.e("SSE", "onFailure manuallyClosed=$manuallyClosed HTTP=${response?.code}", t)
+                Log.e("SSE", "onFailure manuallyClosed=${false} HTTP=${response?.code}", t)
                 onError?.invoke(t)
             }
 

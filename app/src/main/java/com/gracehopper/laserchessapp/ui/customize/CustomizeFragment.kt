@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.customize
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -53,7 +54,7 @@ class CustomizeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentCustomizeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -174,6 +175,7 @@ class CustomizeFragment : Fragment() {
         renderBoardPreview()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderPieces() {
         if (piecesItems.isEmpty()) {
             binding.txtPiecesTitle.text = "Piezas · Sin items"
@@ -193,6 +195,7 @@ class CustomizeFragment : Fragment() {
         binding.imgPiecePreview5.setImageResource(imageRes[4])
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderBoard() {
         if (boardItems.isEmpty()) {
             binding.txtBoardSkinTitle.text = "Tablero · Sin items"
@@ -207,6 +210,7 @@ class CustomizeFragment : Fragment() {
         binding.imgBoardPreview.setImageResource(imageRes)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderAnimation() {
         if (animationsItems.isEmpty()) {
             binding.txtAnimationTitle.text = "Animación · Sin items"
@@ -221,6 +225,7 @@ class CustomizeFragment : Fragment() {
         binding.imgAnimationPreview.setImageResource(imageRes)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderAvatar() {
         if (avatarItems.isEmpty()) {
             binding.txtAvatarTitle.text = "Avatar · Sin items"

@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.user
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
@@ -19,14 +20,14 @@ import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
-import com.gracehopper.laserchessapp.ui.home.RankUtils
+import com.gracehopper.laserchessapp.ui.utils.RankUtils
 import com.gracehopper.laserchessapp.ui.main.MainActivity
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
 import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
 
 /**
- * DialogFragment que muestra el perfil del usuario loggeado.
+ * DialogFragment que muestra el perfil del usuario logueado.
  */
 class MyProfileDialogFragment : DialogFragment() {
 
@@ -35,7 +36,6 @@ class MyProfileDialogFragment : DialogFragment() {
     private lateinit var imageProfileAvatar: ImageView
     private lateinit var txtProfileUsername: TextView
     private lateinit var txtProfileLevel: TextView
-    private lateinit var txtProfileXp: TextView
     private lateinit var progressProfileXP: ProgressBar
     private lateinit var txtProfileCoins: TextView
 
@@ -61,6 +61,7 @@ class MyProfileDialogFragment : DialogFragment() {
     private lateinit var imgClassicRank: ImageView
     private lateinit var imgExtendedRank: ImageView
 
+    @SuppressLint("UseGetLayoutInflater", "SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         userRepository = UserRepository(NetworkUtils.getApiService())

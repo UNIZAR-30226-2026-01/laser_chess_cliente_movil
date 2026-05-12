@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.social
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -7,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -72,7 +72,7 @@ class SocialFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSocialBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -116,7 +116,7 @@ class SocialFragment : Fragment() {
             loadNumReceivedRequests()
         }
 
-        // cada vez que el dialogo se cierre, se vuelve a cargar la lista de amigos
+        // cada vez que el diálogo se cierre, se vuelve a cargar la lista de amigos
         parentFragmentManager.setFragmentResultListener(
             "requests_dialog_closed",
             viewLifecycleOwner
@@ -359,6 +359,7 @@ class SocialFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showAddFriendDialog() {
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_add_friend, null)
@@ -404,7 +405,7 @@ class SocialFragment : Fragment() {
             when (UsernameValidator.validate(username)) {
 
                 UsernameValidationResult.Valid -> {
-                    if (username.equals("Hopper")) {
+                    if (username == "Hopper") {
                         editTextUsername.error = "No le puedes enviar solicitud de amistad a Hopper"
                     } else {
                         sendFriendRequest(username)

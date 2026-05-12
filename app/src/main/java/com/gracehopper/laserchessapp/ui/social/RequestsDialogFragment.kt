@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.social
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -24,6 +25,7 @@ import com.gracehopper.laserchessapp.data.model.user.UserFriendshipStatus
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 import com.gracehopper.laserchessapp.utils.AppEvents
 import kotlinx.coroutines.launch
+import androidx.core.view.isEmpty
 
 
 class RequestsDialogFragment : DialogFragment() {
@@ -164,6 +166,7 @@ class RequestsDialogFragment : DialogFragment() {
         loadSentRequests()
     }
 
+    @SuppressLint("UseGetLayoutInflater")
     private fun loadReceivedRequests() {
 
         receivedContainer.removeAllViews()
@@ -206,7 +209,7 @@ class RequestsDialogFragment : DialogFragment() {
                             // UI OPTIMISTA
                             receivedContainer.removeView(itemView)
                             emptyReceived.visibility =
-                                if (receivedContainer.childCount == 0) View.VISIBLE else View.GONE
+                                if (receivedContainer.isEmpty()) View.VISIBLE else View.GONE
 
                             acceptFriendshipRequest(request.username)
                         }
@@ -218,7 +221,7 @@ class RequestsDialogFragment : DialogFragment() {
                             // UI OPTIMISTA
                             receivedContainer.removeView(itemView)
                             emptyReceived.visibility =
-                                if (receivedContainer.childCount == 0) View.VISIBLE else View.GONE
+                                if (receivedContainer.isEmpty()) View.VISIBLE else View.GONE
 
                             rejectFriendshipRequest(request.username)
                         }
@@ -238,6 +241,7 @@ class RequestsDialogFragment : DialogFragment() {
         )
     }
 
+    @SuppressLint("UseGetLayoutInflater")
     private fun loadSentRequests() {
 
         sentContainer.removeAllViews()
@@ -280,7 +284,7 @@ class RequestsDialogFragment : DialogFragment() {
                             // UI OPTIMISTA
                             sentContainer.removeView(itemView)
                             emptySent.visibility =
-                                if (sentContainer.childCount == 0) View.VISIBLE else View.GONE
+                                if (sentContainer.isEmpty()) View.VISIBLE else View.GONE
 
                             cancelSentFriendshipRequest(request.username)
                         }

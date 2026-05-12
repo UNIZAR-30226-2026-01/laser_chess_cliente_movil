@@ -1,15 +1,12 @@
 package com.gracehopper.laserchessapp.ui.main
 
 import android.Manifest
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.animation.LinearInterpolator
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -39,7 +36,6 @@ import com.gracehopper.laserchessapp.ui.history.HistoryDialogFragment
 import com.gracehopper.laserchessapp.ui.notifications.NotificationsDialogFragment
 import com.gracehopper.laserchessapp.ui.social.RequestsDialogFragment
 import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
-import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 import com.gracehopper.laserchessapp.ui.utils.BackgroundUtils
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 import com.gracehopper.laserchessapp.utils.AppEvents
@@ -47,7 +43,6 @@ import com.gracehopper.laserchessapp.utils.AppNotificationHelper
 import com.gracehopper.laserchessapp.utils.NotificationPreferences
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.collectLatest
 
 /**
  * Activity principal de la aplicación.
@@ -189,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         viewPager2 = findViewById(R.id.viewPager2)
         viewPager2.adapter = ViewPagerAdapter(this)
 
-        // registramos el callback de cambiar de pagina
+        // registramos el callback de cambiar de página
         viewPager2.registerOnPageChangeCallback(pageChangeCallback)
 
         setupBottomNavigation()

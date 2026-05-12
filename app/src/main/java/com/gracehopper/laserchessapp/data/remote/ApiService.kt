@@ -16,7 +16,6 @@ import com.gracehopper.laserchessapp.data.model.social.CreateFriendshipRequest
 import com.gracehopper.laserchessapp.data.model.social.FriendSummary
 import com.gracehopper.laserchessapp.data.model.social.FriendshipStatusResponse
 import com.gracehopper.laserchessapp.data.model.user.AccountResponse
-import com.gracehopper.laserchessapp.data.model.ranking.RatingResponse
 import com.gracehopper.laserchessapp.data.model.shop.BuyItemRequest
 import com.gracehopper.laserchessapp.data.model.shop.ShopItem
 import com.gracehopper.laserchessapp.data.model.social.ReceivedRequestsResponse
@@ -138,7 +137,7 @@ interface ApiService {
     @GET("api/match/history/{userID}")
     fun getFinishedGames(@Path("userID") userId: Long): Call<List<GameResume>>
 
-    // Endpoints de NOTIFICACTIONS / DEVICES
+    // Endpoints de NOTIFICATIONS / DEVICES
     @POST("api/events/online")
     fun markOnline(): Call<Unit>
 

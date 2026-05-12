@@ -1,6 +1,6 @@
 package com.gracehopper.laserchessapp.ui.game
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -62,14 +62,14 @@ class GameReplayActivity : AppCompatActivity() {
 
         // Pantalla completa
         val controller = WindowCompat.getInsetsController(window, window.decorView)
-        controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE)
+        controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         controller.hide(WindowInsetsCompat.Type.systemBars())
 
         setContentView(R.layout.activity_game_replay)
 
         apiService = NetworkUtils.getApiService()
 
-        val json = getSharedPreferences("app", Context.MODE_PRIVATE)
+        val json = getSharedPreferences("app", MODE_PRIVATE)
             .getString("historyGame", null)
 
         if (json == null) {
@@ -115,6 +115,7 @@ class GameReplayActivity : AppCompatActivity() {
     /**
      * Rellena el bloque inferior con los datos del jugador local (ya disponibles en memoria).
      */
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun bindLocalPlayer() {
         val myProfile = CurrentUserManager.getMyCurrentProfile()
         val avatarView = findViewById<ImageView>(R.id.avatarPlayer)
@@ -232,7 +233,7 @@ class GameReplayActivity : AppCompatActivity() {
         var blueTime = game.timeBase.toLong()
 
         // Recorremos TODOS los movimientos hasta el estado actual
-        for (i in 0 until moveIndex) {
+        for (i in 0..moveIndex) {
 
             try {
 
@@ -261,7 +262,7 @@ class GameReplayActivity : AppCompatActivity() {
         timerEnemy.text = formatReplayTime(enemyTime)
     }
 
-    /* devuelve true si es el turno del jugador loggeado */
+    /* devuelve true si es el turno del jugador logueado */
     private fun isMyTurn(): Boolean{
         return ((moveIndex - 1) % 2 == 0) == imRedPlayer
     }
@@ -316,7 +317,7 @@ class GameReplayActivity : AppCompatActivity() {
         val csv = BoardLayouts.getCsvForBoard(game.board)
         BoardParser.boardFromCSV(boardM, csv)
 
-        for (i in 0 until moveIndex) {
+        for (i in 0..moveIndex) {
             applyStateMove(movimientos[i])
         }
 

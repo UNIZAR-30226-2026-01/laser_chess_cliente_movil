@@ -2,7 +2,6 @@ package com.gracehopper.laserchessapp.gameLogic.board
 
 import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 import com.gracehopper.laserchessapp.gameLogic.pieces.PieceType
-import android.util.Log
 
 /**
  * Objeto encargado de convertir un tablero en formato CSV

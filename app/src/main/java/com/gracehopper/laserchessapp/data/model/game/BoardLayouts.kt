@@ -2,7 +2,7 @@ package com.gracehopper.laserchessapp.data.model.game
 
 /**
  * Configuraciones CSV de los tableros disponibles.
- * Formato: cada celda es [Tipo][Equipo][Orientación]
+ * Formato: cada celda es Tipo-Equipo-Orientación.
  *   Tipo: L=Laser, K=King, S=Switcher, D=Deflector, E=Defender
  *   Equipo: A=Azul, R=Rojo
  *   Orientación: U=Arriba, R=Derecha, D=Abajo, L=Izquierda

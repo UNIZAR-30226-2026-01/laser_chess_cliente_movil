@@ -1,7 +1,7 @@
 package com.gracehopper.laserchessapp.ui.history
 
+import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,12 +22,13 @@ import com.gracehopper.laserchessapp.data.model.user.AccountResponse
 import com.gracehopper.laserchessapp.data.remote.ApiService
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
-import com.gracehopper.laserchessapp.ui.user.MyProfileDialogFragment
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
 import com.gracehopper.laserchessapp.utils.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.content.edit
 
 class HistoryDialogFragment : DialogFragment() {
 
@@ -58,6 +59,7 @@ class HistoryDialogFragment : DialogFragment() {
         return inflater.inflate(R.layout.dialog_history, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -83,7 +85,7 @@ class HistoryDialogFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
     }
 
     private fun setupRecyclerView() {
@@ -95,9 +97,9 @@ class HistoryDialogFragment : DialogFragment() {
 
                 requireContext()
                     .getSharedPreferences("app", android.content.Context.MODE_PRIVATE)
-                    .edit()
-                    .putString("historyGame", json)
-                    .apply()
+                    .edit {
+                        putString("historyGame", json)
+                    }
 
                 startActivity(
                     android.content.Intent(
@@ -120,10 +122,7 @@ class HistoryDialogFragment : DialogFragment() {
     }
 
     private fun loadHistory() {
-        val myId = TokenManager.getUserId() ?: run {
-            showEmpty()
-            return
-        }
+        val myId = TokenManager.getUserId()
 
         showLoading()
 
@@ -171,7 +170,7 @@ class HistoryDialogFragment : DialogFragment() {
     }
 
     /**
-     * Carga usuarios y actualiza progresivamente
+     * Carga usuaria y actualiza progresivamente
      */
     private fun loadUsers(games: List<GameResume>) {
 

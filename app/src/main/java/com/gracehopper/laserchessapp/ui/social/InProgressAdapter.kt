@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.social
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -34,6 +35,7 @@ class InProgressAdapter(private var games: List<InProgressGameSummary>,
 
     override fun getItemCount(): Int = games.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newGames: List<InProgressGameSummary>) {
         games = newGames
         notifyDataSetChanged()

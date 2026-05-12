@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.history
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -119,6 +120,7 @@ class HistoryGameAdapter(
 
     override fun getItemCount(): Int = games.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newGames: List<GameResume>, newCache: Map<Long, AccountResponse>) {
         games = newGames
         userCache = newCache
@@ -130,7 +132,7 @@ class HistoryGameAdapter(
             val datePart = dateStr.substringBefore("T")
             val parts = datePart.split("-")
             if (parts.size >= 3) "${parts[2]}/${parts[1]}" else dateStr
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             dateStr
         }
     }

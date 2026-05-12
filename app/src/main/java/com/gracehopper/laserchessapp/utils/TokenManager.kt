@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 
-//Se necesita para manejar la nueva logica de los tokens
+//Se necesita para manejar la nueva lógica de los tokens
 object TokenManager {
     private const val PREF_NAME = "auth_prefs"
     private const val KEY_ACCESS_TOKEN = "access_token"
@@ -26,7 +26,7 @@ object TokenManager {
     }
 
     fun saveUserId(id: Long) {
-        sharedPreferences.edit().putLong(KEY_USER_ID, id).apply()
+        sharedPreferences.edit { putLong(KEY_USER_ID, id) }
     }
 
     fun getUserId(): Long {
@@ -34,7 +34,7 @@ object TokenManager {
     }
 
     fun saveUserCredential(credential: String) {
-        sharedPreferences.edit().putString(KEY_USER_CREDENTIAL, credential).apply()
+        sharedPreferences.edit { putString(KEY_USER_CREDENTIAL, credential) }
     }
 
     fun isLoggedIn(): Boolean {
@@ -42,6 +42,6 @@ object TokenManager {
     }
 
     fun clear() {
-        sharedPreferences.edit().clear().apply()
+        sharedPreferences.edit { clear() }
     }
 }

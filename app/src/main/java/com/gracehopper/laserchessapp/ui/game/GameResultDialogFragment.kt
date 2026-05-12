@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.game
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
@@ -26,7 +27,6 @@ import com.gracehopper.laserchessapp.ui.main.MainActivity
  */
 class GameResultDialogFragment(
     private val winner: String,
-    private val cause: String?,
     private val xpDiff: Int,
     private val moneyDiff: Int,
     private val eloDiff: Int?
@@ -50,6 +50,7 @@ class GameResultDialogFragment(
         return inflater.inflate(R.layout.dialog_game_result, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val textResult  = view.findViewById<TextView>(R.id.textResult)
         val textRewards = view.findViewById<TextView>(R.id.textRewards)

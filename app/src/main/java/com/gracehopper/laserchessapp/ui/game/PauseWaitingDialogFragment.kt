@@ -42,8 +42,8 @@ class PauseWaitingDialogFragment (
             requireActivity().window.decorView
         )
 
-        controller?.hide(WindowInsetsCompat.Type.systemBars())
-        controller?.systemBarsBehavior =
+        controller.hide(WindowInsetsCompat.Type.systemBars())
+        controller.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
         dialog?.window?.apply {

@@ -224,7 +224,7 @@ class FriendRepository(private val apiService: ApiService) {
                             UserFriendshipStatus.RECEIVED_REQUEST
                         }
 
-                        // La emito yo pero no la ha aceptado? y la otra persona sí
+                        // La emito yo, ¿pero no la ha aceptado? Y la otra persona sí
                         imSender && status.receiverAccept -> {
                             UserFriendshipStatus.RECEIVED_REQUEST
                         }

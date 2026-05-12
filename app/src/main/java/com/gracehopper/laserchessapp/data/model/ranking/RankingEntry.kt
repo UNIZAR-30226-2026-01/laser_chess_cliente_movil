@@ -1,7 +1,5 @@
 package com.gracehopper.laserchessapp.data.model.ranking
 
-import com.google.gson.annotations.SerializedName
-
 /**
  * Clase que representa un perfil del ranking.
  *
