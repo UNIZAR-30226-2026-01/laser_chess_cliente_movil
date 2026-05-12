@@ -6,12 +6,6 @@ enum class GameMessageType {
 
     @SerializedName("Move")
     MOVE,
-    @SerializedName("GetState")
-    GET_STATE,
-    @SerializedName("GetInitialState")
-    GET_INITIAL_STATE,
-    @SerializedName("Pause")
-    PAUSE,
     @SerializedName("PauseReject")
     PAUSE_REJECT,
 

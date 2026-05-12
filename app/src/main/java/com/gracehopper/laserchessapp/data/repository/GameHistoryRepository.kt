@@ -94,7 +94,7 @@ class GameHistoryRepository(private val apiService: ApiService) {
     private fun parseBoardType(board: String): BoardType {
         return try {
             BoardType.valueOf(board.uppercase())
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             BoardType.ACE
         }
     }

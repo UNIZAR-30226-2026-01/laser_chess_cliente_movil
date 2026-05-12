@@ -11,13 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.shop.ItemType
-import com.gracehopper.laserchessapp.data.model.shop.ShopItem
 import com.gracehopper.laserchessapp.data.model.shop.ShopProduct
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.ItemRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.databinding.FragmentShopBinding
-import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 class ShopFragment : Fragment() {
 
@@ -41,7 +39,7 @@ class ShopFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentShopBinding.inflate(inflater, container, false)
         return binding.root
     }

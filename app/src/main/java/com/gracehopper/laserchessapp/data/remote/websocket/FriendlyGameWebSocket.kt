@@ -14,10 +14,10 @@ import okhttp3.WebSocketListener
 class FriendlyGameWebSocket(private val listener: WebSocketListener) {
 
     private var webSocket: WebSocket? = null
-    private val CHALLENGE_URL = NetworkUtils.WS_BASE_URL + "challenge"
-    private val BOT_URL = NetworkUtils.WS_BASE_URL + "bot"
-    private val RECONNECT_URL = NetworkUtils.WS_BASE_URL + "reconnect"
-    private val MATCHMAKING_URL = NetworkUtils.WS_BASE_URL + "matchmaking"
+    private val challengeUrl = NetworkUtils.WS_BASE_URL + "challenge"
+    private val botUrl = NetworkUtils.WS_BASE_URL + "bot"
+    private val reconnectUrl = NetworkUtils.WS_BASE_URL + "reconnect"
+    private val matchmakingUrl = NetworkUtils.WS_BASE_URL + "matchmaking"
 
 
     /**
@@ -31,7 +31,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
     ) {
 
         val url =
-            BOT_URL +
+            botUrl +
                     "?board=$board" +
                     "&starting_time=$startingTime" +
                     "&time_increment=$timeIncrement" +
@@ -58,7 +58,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
         timeIncrement: Int,
         ranked: Int
     ) {
-        val url = MATCHMAKING_URL +
+        val url = matchmakingUrl +
                 "?board=$board" +
                 "&time_base=$timeBase" +
                 "&time_increment=$timeIncrement" +
@@ -81,7 +81,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
         startingTime: Int, timeIncrement: Int, matchId: Long? = null
     ) {
 
-        val base = "$CHALLENGE_URL?username=$username&board=$board&starting_time=$startingTime&time_increment=$timeIncrement"
+        val base = "$challengeUrl?username=$username&board=$board&starting_time=$startingTime&time_increment=$timeIncrement"
         val url = if (matchId != null) "$base&match_id=$matchId" else base
 
         val request = Request.Builder()
@@ -94,7 +94,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
     }
 
     private fun openChallengeReplySocket(action: String, username: String) {
-        val url = "$CHALLENGE_URL/$action?username=$username"
+        val url = "$challengeUrl/$action?username=$username"
 
         val request = Request.Builder()
             .url(url)
@@ -123,7 +123,7 @@ class FriendlyGameWebSocket(private val listener: WebSocketListener) {
     fun reconnect() {
 
         val request = Request.Builder()
-            .url(RECONNECT_URL)
+            .url(reconnectUrl)
             .build()
 
         val client = NetworkUtils.getWebSocketClient()

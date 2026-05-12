@@ -18,7 +18,7 @@ object GameTimerManager {
     val opponentTimer: LiveData<PlayerTimer> = _opponentTimer
 
     private val handler = Handler(Looper.getMainLooper())
-    private val tickRate = 100L //ms
+    private const val tickRate = 100L //ms
 
     private val timerRunnable = object : Runnable {
         override fun run() {

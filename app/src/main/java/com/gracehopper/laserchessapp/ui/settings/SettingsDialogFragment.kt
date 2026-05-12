@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Paint
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -23,7 +22,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -31,7 +29,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest
-import com.gracehopper.laserchessapp.data.model.user.MyProfile
 import com.gracehopper.laserchessapp.data.model.user.UpdateAccountRequest
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.AuthRepository
@@ -45,8 +42,7 @@ import com.gracehopper.laserchessapp.utils.validation.MailValidationResult
 import com.gracehopper.laserchessapp.utils.validation.MailValidator
 import com.gracehopper.laserchessapp.utils.validation.PasswordValidationResult
 import com.gracehopper.laserchessapp.utils.validation.PasswordValidator
-import com.gracehopper.laserchessapp.utils.validation.UsernameValidationResult
-import com.gracehopper.laserchessapp.utils.validation.UsernameValidator
+import androidx.core.net.toUri
 
 /**
  * Diálogo de ajustes de la aplicación
@@ -775,7 +771,7 @@ class SettingsDialogFragment : DialogFragment() {
             }
         } else {
             Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                data = Uri.parse("package:${requireContext().packageName}")
+                data = "package:${requireContext().packageName}".toUri()
             }
         }
 

@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.user
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
@@ -21,7 +22,7 @@ import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.gameConfig.GameConfigDialogFragment
-import com.gracehopper.laserchessapp.ui.home.RankUtils
+import com.gracehopper.laserchessapp.ui.utils.RankUtils
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 class UserProfileDialogFragment : DialogFragment() {
@@ -55,6 +56,7 @@ class UserProfileDialogFragment : DialogFragment() {
 
     private var currentUser: GamePlayerInfo? = null
 
+    @SuppressLint("UseGetLayoutInflater", "SetTextI18n")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         userRepository = UserRepository(NetworkUtils.getApiService())
         friendRepository = FriendRepository(NetworkUtils.getApiService())
@@ -90,7 +92,7 @@ class UserProfileDialogFragment : DialogFragment() {
             dialogModeName ?: UserFriendshipStatus.FRIEND.name
         )
 
-        setupActionButtons(dialogMode, userId)
+        setupActionButtons(dialogMode)
 
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
@@ -101,7 +103,7 @@ class UserProfileDialogFragment : DialogFragment() {
 
     }
 
-    private fun setupActionButtons(mode: UserFriendshipStatus, userId: Long) {
+    private fun setupActionButtons(mode: UserFriendshipStatus) {
 
         when(mode) {
 

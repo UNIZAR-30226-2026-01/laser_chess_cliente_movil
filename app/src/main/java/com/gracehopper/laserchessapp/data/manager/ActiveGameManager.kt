@@ -402,11 +402,6 @@ object ActiveGameManager {
                     )
                 }
             }
-
-            else -> {
-                // ignorar
-            }
-
         }
     }
 

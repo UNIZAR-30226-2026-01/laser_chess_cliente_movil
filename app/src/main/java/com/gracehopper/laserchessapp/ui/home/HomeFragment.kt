@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.home
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -25,6 +26,7 @@ import com.gracehopper.laserchessapp.gameLogic.board.Board
 import com.gracehopper.laserchessapp.gameLogic.board.BoardParser
 import com.gracehopper.laserchessapp.ui.game.GameActivity
 import com.gracehopper.laserchessapp.ui.game.WaitingGameDialogFragment
+import com.gracehopper.laserchessapp.ui.utils.RankUtils
 
 class HomeFragment : Fragment() {
 
@@ -43,7 +45,6 @@ class HomeFragment : Fragment() {
     private var boardComposeView: ComposeView? = null
     private var txtTimeIncrementTitle: TextView? = null
     private var rankBadgeView: View? = null
-    private var selectedTimeModeForElo: TimeMode = TimeMode.BLITZ
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -176,6 +177,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupSelectors(view: View) {
         val LCRed  = ContextCompat.getColor(requireContext(), R.color.LCRed)
         val LCBlue = ContextCompat.getColor(requireContext(), R.color.LCBlue)
@@ -219,7 +221,7 @@ class HomeFragment : Fragment() {
         val includeAiLevelSelector = view.findViewById<View>(R.id.includeAiLevelSelector)
         val txtAiLevelTitle = includeAiLevelSelector.findViewById<TextView>(R.id.txtSelectorTitle)
         val imgAiLevelIcon  = includeAiLevelSelector.findViewById<ImageView>(R.id.imgSelectorIcon)
-        txtAiLevelTitle.text = "${selectedAiLevel}"
+        txtAiLevelTitle.text = "$selectedAiLevel"
         imgAiLevelIcon.setImageResource(R.drawable.ic_ai_level)
         imgAiLevelIcon.setColorFilter(LCRed)
         includeAiLevelSelector.setOnClickListener {
@@ -228,6 +230,7 @@ class HomeFragment : Fragment() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showAiLevelBottomSheet(color: Int, targetView: TextView) {
         val dialog = buildBottomSheet("Nivel de dificultad de la IA", color) { container, dlg ->
             val AiLevels = arrayOf("LVL 1", "LVL 2", "LVL 3")
@@ -259,9 +262,10 @@ class HomeFragment : Fragment() {
         dialog.show()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showTimeModeBottomSheet(color: Int, targetView: TextView) {
         val dialog = buildBottomSheet("Modo de tiempo", color) { container, dlg ->
-            TimeMode.values().filter { it != TimeMode.CUSTOM }.forEach { mode ->
+            TimeMode.entries.filter { it != TimeMode.CUSTOM }.forEach { mode ->
                 addButton(container, dlg, TimeModeConfig.getName(mode)) {
                     if (selectedTimeMode != mode) {
                         selectedTimeMode = mode
@@ -290,6 +294,7 @@ class HomeFragment : Fragment() {
         dialog.show()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showIncrementBottomSheet(color: Int, targetView: TextView) {
         val dialog = buildBottomSheet("Incremento", color) { container, dlg ->
             TimeModeConfig.getAllowedIncrements(selectedTimeMode).forEach { inc ->
@@ -302,6 +307,7 @@ class HomeFragment : Fragment() {
         dialog.show()
     }
 
+    @SuppressLint("InflateParams")
     private fun buildBottomSheet(
         titulo: String,
         colorTitulo: Int,
@@ -354,7 +360,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun showModes(popup: View, btnTop: ImageButton, btnMiddle: ImageButton) {
-        val others = GameMode.values().filter { it != currentMode }
+        val others = GameMode.entries.filter { it != currentMode }
         topMode = others[0]
         middleMode = others[1]
         btnTop.setImageResource(iconFor(topMode))
@@ -386,6 +392,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateRankBadge(elo: Int) {
         val badgeView = rankBadgeView ?: return
         val rank    = RankUtils.getRankInfo(elo)

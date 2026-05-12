@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.auth
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -174,6 +175,7 @@ class LoginActivity : AppCompatActivity() {
         loginPassword.text?.clear()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun performLogin() {
         val credential = loginCredential.text.toString().trim()
         val password = loginPassword.text.toString().trim()
@@ -223,7 +225,7 @@ class LoginActivity : AppCompatActivity() {
 
         }
 
-        // Por si acaso apago el boton
+        // Por si acaso apago el botón
         loginButton.isEnabled = false
         loginButton.text = "Iniciando sesión..."
         val request = LoginRequest(credential, password)
@@ -300,6 +302,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     // Validar registro
+    @SuppressLint("SetTextI18n")
     private fun performRegister() {
         val username = registerUsername.text.toString().trim()
         val mail = registerEmail.text.toString().trim()
@@ -457,11 +460,13 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun restoreLoginButton() {
         loginButton.isEnabled = true
         loginButton.text = "Continuar"
     }
 
+    @SuppressLint("SetTextI18n")
     private fun restoreRegisterButton() {
         registerButton.isEnabled = true
         registerButton.text = "Confirmar"

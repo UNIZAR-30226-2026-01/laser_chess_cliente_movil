@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.gameLogic.board.Board
-import com.gracehopper.laserchessapp.ui.game.GameActivity
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 
 /**

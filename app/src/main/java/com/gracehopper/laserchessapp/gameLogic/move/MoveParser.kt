@@ -12,7 +12,7 @@ object MoveParser {
      * Formato esperado:
      * - Tipo: T (traslación), R (rotación derecha), L (rotación izquierda)
      * - Movimiento: Tfrom:to
-     * - Captura: xcasilla
+     * - Captura: xCasilla
      * - Timer: %{valor}
      *
      * @param moveStr Movimiento en formato string

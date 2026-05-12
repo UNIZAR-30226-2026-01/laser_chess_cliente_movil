@@ -49,8 +49,6 @@ fun GameReplayScreen(
     board: Board,
     myPieceSkin: Int,
     opponentPieceSkin: Int = 1,
-    myBoardSkin: Int,
-    opponentBoardSkin: Int = 1,
     onStepForward: () -> Unit = {},
     onStepBackward: () -> Unit = {},
     onFastForward: () -> Unit = {},
@@ -324,5 +322,5 @@ fun GameReplayScreenPreview() {
     board.setPiece(0, 7, Piece(true, PieceType.KING))
     board.setPiece(9, 0, Piece(false, PieceType.KING))
 
-    GameReplayScreen(board = board, myPieceSkin = 2, myBoardSkin = 5, opponentPieceSkin = 3)
+    GameReplayScreen(board = board, myPieceSkin = 2, opponentPieceSkin = 3)
 }

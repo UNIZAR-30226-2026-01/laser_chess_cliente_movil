@@ -1,6 +1,5 @@
 package com.gracehopper.laserchessapp.data.repository
 
-import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.ranking.AllRatingsResponse
 import com.gracehopper.laserchessapp.data.model.user.AccountResponse
 import com.gracehopper.laserchessapp.data.model.user.ChangePasswordRequest

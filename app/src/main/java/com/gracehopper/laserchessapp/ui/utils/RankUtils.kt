@@ -1,4 +1,4 @@
-package com.gracehopper.laserchessapp.ui.home
+package com.gracehopper.laserchessapp.ui.utils
 
 import com.gracehopper.laserchessapp.R
 

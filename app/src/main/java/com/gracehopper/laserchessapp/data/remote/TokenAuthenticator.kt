@@ -78,7 +78,7 @@ class TokenAuthenticator : Authenticator {
             } else {
                 refreshResponse.body()?.accessToken
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
 

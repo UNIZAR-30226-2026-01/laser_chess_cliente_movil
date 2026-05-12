@@ -97,7 +97,7 @@ object AppNotificationHelper {
     ) {
 
         // si la version de android es menor a TIRAMISU(13) no es necesario
-        // si no lo es y no se ha concedido el permiso no es necesario mostrar la notificacion
+        // si no lo es y no se ha concedido el permiso no es necesario mostrar la notificación
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             && (ContextCompat.checkSelfPermission(
                 context,

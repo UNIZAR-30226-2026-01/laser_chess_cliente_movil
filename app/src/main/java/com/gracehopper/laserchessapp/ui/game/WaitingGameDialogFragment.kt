@@ -1,8 +1,8 @@
 package com.gracehopper.laserchessapp.ui.game
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +16,7 @@ import com.gracehopper.laserchessapp.data.manager.ActiveGameManager
 import com.gracehopper.laserchessapp.data.model.game.GameEvent
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.UserRepository
+import androidx.core.graphics.drawable.toDrawable
 
 class WaitingGameDialogFragment : DialogFragment() {
 
@@ -66,7 +67,7 @@ class WaitingGameDialogFragment : DialogFragment() {
         super.onStart()
 
         dialog?.window?.apply {
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
             setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
@@ -75,6 +76,7 @@ class WaitingGameDialogFragment : DialogFragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun loadGameInfo() {
         val opponent = ActiveGameManager.getOpponentUsername()
         val board = ActiveGameManager.currentBoard ?: 1
@@ -143,6 +145,7 @@ class WaitingGameDialogFragment : DialogFragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupCallbacks() {
         ActiveGameManager.setCallbacks(
             onConnected = {

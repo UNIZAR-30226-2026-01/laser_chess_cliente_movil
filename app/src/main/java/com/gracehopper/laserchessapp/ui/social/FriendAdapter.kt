@@ -1,5 +1,6 @@
 package com.gracehopper.laserchessapp.ui.social
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +34,7 @@ class FriendAdapter (private var friends: List<FriendSummary>,
 
     override fun getItemCount(): Int = friends.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateFriends(newFriends: List<FriendSummary>) {
         friends = newFriends
         notifyDataSetChanged() // para avisar a RecyclerView

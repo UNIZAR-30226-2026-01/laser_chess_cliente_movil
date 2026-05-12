@@ -2,7 +2,6 @@ package com.gracehopper.laserchessapp.ui.utils
 
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.model.shop.ItemMetadata
-import com.gracehopper.laserchessapp.data.model.shop.ItemType
 
 /**
  * Objeto utilitario para obtener recursos de ítems

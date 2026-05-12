@@ -14,10 +14,6 @@ object CurrentUserManager {
     val myProfile: LiveData<MyProfile?> = _myProfile
 
     private val _sessionExpired = MutableLiveData(false)
-    val sessionExpired: LiveData<Boolean> = _sessionExpired
-
-    private val _pendingFriendshipRequestsCount = MutableLiveData<Int>(0)
-    val pendingFriendshipRequestsCount: LiveData<Int> = _pendingFriendshipRequestsCount
 
     /**
      * Establece el perfil actual del usuario.
@@ -46,7 +42,7 @@ object CurrentUserManager {
     }
 
     /**
-     * Resetea la flag de expiración de sesión.
+     * Resetea el flag de expiración de sesión.
      */
     fun resetSessionExpiredFlag() {
         _sessionExpired.postValue(false)
