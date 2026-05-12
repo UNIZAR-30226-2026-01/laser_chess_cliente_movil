@@ -143,8 +143,14 @@ class GameActivity : AppCompatActivity() {
         // Si el WaitingGameDialogFragment pasó las skins del rival en el Intent, usarlas ya
         val intentPieceSkin = intent.getIntExtra("OPPONENT_PIECE_SKIN", -1)
         val intentBoardSkin = intent.getIntExtra("OPPONENT_BOARD_SKIN", -1)
+        val intentAvatar = intent.getIntExtra("OPPONENT_AVATAR", -1)
         if (intentPieceSkin != -1) opponentPieceSkinState = intentPieceSkin
         if (intentBoardSkin != -1) opponentBoardSkinState = intentBoardSkin
+        if (intentAvatar != -1) {
+            avatarEnemyView.setImageResource(
+                com.gracehopper.laserchessapp.ui.utils.ItemUtils.getItemDrawable(intentAvatar)
+            )
+        }
 
         if (opponent == null) {
             resolveOpponentName(nameEnemy)

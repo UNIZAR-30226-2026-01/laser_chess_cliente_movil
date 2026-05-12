@@ -199,41 +199,6 @@ fun GameScreen(
                                                     .alpha(0.28f)
                                             )
                                         }
-
-                                        piece?.let { p ->
-                                            key(p, myPieceSkin, opponentPieceSkin) {
-                                                val visualRotation = if (isRedPlayer) p.rotation
-                                                else (p.rotation + 180) % 360
-                                                val rotation by animateFloatAsState(
-                                                    targetValue = visualRotation.toFloat(),
-                                                    animationSpec = tween(200)
-                                                )
-                                                Image(
-                                                    painter = painterResource(
-                                                        id = p.getImageRes(
-                                                            isRedPlayer,
-                                                            myPieceSkin,
-                                                            opponentPieceSkin
-                                                        )
-                                                    ),
-                                                    contentDescription = null,
-                                                    modifier = Modifier
-                                                        .fillMaxSize()
-                                                        .graphicsLayer { rotationZ = rotation }
-                                                )
-                                            }
-                                        }
-
-                                        if (isHighlighted) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(16.dp)
-                                                    .background(
-                                                        Color(0xFFFF9800),
-                                                        shape = CircleShape
-                                                    )
-                                            )
-                                        }
                                     }
                                 }
                             }
@@ -308,6 +273,72 @@ fun GameScreen(
                                     strokeWidth = 0.8.dp.toPx()
                                     strokeCap = StrokeCap.Round
                                 })
+                            }
+                        }
+                    }
+                }
+                Column(
+                    modifier = Modifier.matchParentSize()
+                ) {
+
+                    for ((_, row) in rowRange.withIndex()) {
+
+                        Row(modifier = Modifier.fillMaxWidth()) {
+
+                            for (col in colRange) {
+
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .aspectRatio(1f),
+                                    contentAlignment = Alignment.Center
+                                ) {
+
+                                    val piece = board.getPiece(row, col)
+                                    val isHighlighted = highlightedMoves.contains(Pair(row, col))
+
+                                    piece?.let { p ->
+
+                                        key(p, myPieceSkin, opponentPieceSkin) {
+
+                                            val visualRotation =
+                                                if (isRedPlayer) p.rotation
+                                                else (p.rotation + 180) % 360
+
+                                            val rotation by animateFloatAsState(
+                                                targetValue = visualRotation.toFloat(),
+                                                animationSpec = tween(200)
+                                            )
+
+                                            Image(
+                                                painter = painterResource(
+                                                    id = p.getImageRes(
+                                                        isRedPlayer,
+                                                        myPieceSkin,
+                                                        opponentPieceSkin
+                                                    )
+                                                ),
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .graphicsLayer {
+                                                        rotationZ = rotation
+                                                    }
+                                            )
+                                        }
+                                    }
+
+                                    if (isHighlighted) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(16.dp)
+                                                .background(
+                                                    Color(0xFFFF9800),
+                                                    shape = CircleShape
+                                                )
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
