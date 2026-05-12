@@ -44,14 +44,31 @@
                 android:padding="2dp"
                 android:layout_marginEnd="10dp"/>
 
-            <TextView
-                android:id="@+id/timePlayer"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="10:00"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/LCWhite"/>
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textPlayerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Player"
+                    android:textColor="@color/LCWhite"
+                    android:textStyle="bold"
+                    android:textSize="13sp"
+                    android:maxLines="1"/>
+
+                <TextView
+                    android:id="@+id/timePlayer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10:00"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/LCWhite"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -70,15 +87,33 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <TextView
-                android:id="@+id/timeEnemy"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="10:00"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/LCWhite"
-                android:layout_marginEnd="10dp"/>
+                android:orientation="vertical"
+                android:gravity="end"
+                android:layout_marginEnd="10dp">
+
+                <TextView
+                    android:id="@+id/textEnemyName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Enemy"
+                    android:textColor="@color/LCWhite"
+                    android:textStyle="bold"
+                    android:textSize="13sp"
+                    android:maxLines="1"/>
+
+                <TextView
+                    android:id="@+id/timeEnemy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10:00"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/LCWhite"/>
+
+            </LinearLayout>
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/avatarEnemy"
@@ -101,8 +136,8 @@
             android:background="@drawable/bg_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            >
+            app:layout_constraintBottom_toBottomOf="parent">
+
             <ImageButton
                 android:id="@+id/btnBack"
                 android:layout_width="0dp"
@@ -116,9 +151,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:tint="@color/LCWhite" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -157,7 +191,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Ir al inicio -->
         <ImageButton
             android:id="@+id/btnStart"
             android:layout_width="48dp"
@@ -170,7 +203,6 @@
             android:tag="double"
             app:tint="@color/LCWhite" />
 
-        <!-- Un paso atrás -->
         <ImageButton
             android:id="@+id/btnPrev"
             android:layout_width="48dp"
@@ -180,7 +212,6 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"/>
 
-        <!-- Un paso adelante -->
         <ImageButton
             android:id="@+id/btnNext"
             android:layout_width="48dp"
@@ -192,7 +223,6 @@
             android:padding="8dp"
             app:tint="@color/LCWhite"/>
 
-        <!-- Ir al final -->
         <ImageButton
             android:id="@+id/btnEnd"
             android:layout_width="48dp"

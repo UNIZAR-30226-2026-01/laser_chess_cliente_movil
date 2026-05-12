@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
@@ -16,7 +15,8 @@ import com.gracehopper.laserchessapp.ui.utils.ItemUtils
 class HistoryGameAdapter(
     private var games: List<GameResume>,
     private var userCache: Map<Long, AccountResponse>,
-    private val onViewClick: (GameResume) -> Unit
+    private val onViewClick: (GameResume) -> Unit,
+    private val onRivalClick: (GameResume) -> Unit = {}
 ) : RecyclerView.Adapter<HistoryGameAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -106,6 +106,14 @@ class HistoryGameAdapter(
 
         holder.btnViewGame.setOnClickListener {
             onViewClick(game)
+        }
+
+        if (game.matchType.uppercase() == "BOTS") {
+            holder.itemView.setOnClickListener(null)
+        } else {
+            holder.itemView.setOnClickListener {
+                onRivalClick(game)
+            }
         }
     }
 
