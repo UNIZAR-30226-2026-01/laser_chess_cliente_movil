@@ -269,8 +269,7 @@ class UserRepository(private val apiService: ApiService) {
                     getUserRatings(
                         userId = myAccount.accountId,
                         onSuccess = { ratings ->
-                            getUserXpInfo(
-                                userId = myAccount.accountId,
+                            getMyUserXpInfo(
                                 onSuccess = { xpInfo ->
                                     val profile = MyProfile(
                                         id = myAccount.accountId,
@@ -342,6 +341,11 @@ class UserRepository(private val apiService: ApiService) {
 
     }
 
+    /**
+     * Cambia la contraseña del usuario actual.
+     *
+     * @param request Objeto que contiene los datos de la solicitud de cambio de contraseña
+     */
     fun changePassword(
         request: ChangePasswordRequest,
         onSuccess: () -> Unit,
