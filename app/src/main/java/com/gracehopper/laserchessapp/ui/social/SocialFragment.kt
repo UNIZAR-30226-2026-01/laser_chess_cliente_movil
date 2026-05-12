@@ -404,8 +404,12 @@ class SocialFragment : Fragment() {
             when (UsernameValidator.validate(username)) {
 
                 UsernameValidationResult.Valid -> {
-                    sendFriendRequest(username)
-                    dialog.dismiss()
+                    if (username.equals("Hopper")) {
+                        editTextUsername.error = "No le puedes enviar solicitud de amistad a Hopper"
+                    } else {
+                        sendFriendRequest(username)
+                        dialog.dismiss()
+                    }
                 }
 
                 UsernameValidationResult.EmptyUsername -> {

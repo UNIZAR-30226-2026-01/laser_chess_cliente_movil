@@ -303,7 +303,7 @@ fun GameScreen(
 
                                             val visualRotation =
                                                 if (isRedPlayer) p.rotation
-                                                else (p.rotation + 180) % 360
+                                                else p.rotation + 180
 
                                             val rotation by animateFloatAsState(
                                                 targetValue = visualRotation.toFloat(),

@@ -44,9 +44,21 @@ class PendingChallengesAdapter(
                 textChallengeTitle.text = "${challenge.challengerUsername} quiere retomar una partida contigo"
                 textChallengeDetails.text = "Partida pausada"
             } else {
+
+                val boardName = com.gracehopper.laserchessapp.data.model.game.BoardLayouts.ALL_BOARD_NAMES
+                    .getOrElse(challenge.board) { "Ace" }
+                val startingSecs = challenge.startingTime / 1000
+                val timeCategory = when {
+                    startingSecs < 180  -> "Bullet"
+                    startingSecs < 600  -> "Blitz"
+                    startingSecs < 1800 -> "Rapid"
+                    startingSecs < 5400 -> "Classic"
+                    else                -> "Extended"
+                }
+
                 textChallengeTitle.text = "${challenge.challengerUsername} te ha retado a una partida"
                 textChallengeDetails.text =
-                    "Tablero ${challenge.board} · ${challenge.startingTime / 1000}s + ${challenge.timeIncrement}s"
+                    "Tablero $boardName · $timeCategory + ${challenge.timeIncrement/1000}s"
             }
 
             buttonAccept.setOnClickListener {

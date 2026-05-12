@@ -81,19 +81,30 @@ class WaitingGameDialogFragment : DialogFragment() {
         val startingTime = ActiveGameManager.currentStartingTime ?: 300
         val increment = ActiveGameManager.currentTimeIncrement ?: 0
 
+        val boardName = com.gracehopper.laserchessapp.data.model.game.BoardLayouts.ALL_BOARD_NAMES
+            .getOrElse(board) { "Ace" }
+        val timeCategory = when {
+            startingTime < 180  -> "Bullet"
+            startingTime < 600  -> "Blitz"
+            startingTime < 1800 -> "Rapid"
+            startingTime < 5400 -> "Classic"
+            else                -> "Extended"
+        }
+        val detailsText = "Tablero $boardName · $timeCategory +${increment}s"
+
         when (ActiveGameManager.currentMatchType) {
 
             ActiveGameManager.MatchType.RANKED,
             ActiveGameManager.MatchType.CASUAL -> {
 
                 textOpponent.text = "Buscando rival en el matchmaking..."
-                textDetails.text = "Tablero $board · ${startingTime}s + ${increment}s"
+                textDetails.text = detailsText
             }
 
             ActiveGameManager.MatchType.BOTS -> {
 
                 textOpponent.text = "Preparando partida contra IA..."
-                textDetails.text = "Tablero $board · ${startingTime}s + ${increment}s"
+                textDetails.text = detailsText
             }
 
             ActiveGameManager.MatchType.PRIVATE -> {
