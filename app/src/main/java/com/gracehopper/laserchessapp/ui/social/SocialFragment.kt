@@ -383,7 +383,8 @@ class SocialFragment : Fragment() {
         val buttonCloseDialog = dialogView.findViewById<ImageButton>(R.id.buttonCloseDialog)
         val textInvitationLink = dialogView.findViewById<TextView>(R.id.textInvitationLink)
 
-        val invitationLink = "https://laserchess.com/invite/User"
+        val myUsername = CurrentUserManager.getMyCurrentUsername()
+        val invitationLink = "https://laserchess.elcangrejo.es/add_friend/$myUsername"
 
         textInvitationLink.text = invitationLink
 

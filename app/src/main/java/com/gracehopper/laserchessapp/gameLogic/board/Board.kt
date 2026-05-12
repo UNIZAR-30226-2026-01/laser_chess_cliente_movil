@@ -1,6 +1,5 @@
 package com.gracehopper.laserchessapp.gameLogic.board
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import com.gracehopper.laserchessapp.gameLogic.pieces.Piece
 

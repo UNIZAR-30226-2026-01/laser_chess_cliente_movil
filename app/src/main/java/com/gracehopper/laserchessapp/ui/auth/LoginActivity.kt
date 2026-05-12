@@ -424,7 +424,7 @@ class LoginActivity : AppCompatActivity() {
 
             showLogin()
             clearRegisterForm()
-            loginCredential.setText(mail)
+            loginCredential.setText(username)
         },
         onError = { errorCode ->
             restoreRegisterButton()

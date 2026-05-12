@@ -13,7 +13,7 @@
         android:scaleType="center"
         android:scaleX="1.3"
         android:scaleY="1.3"
-        android:src="@drawable/bg_cats"
+        android:src="@drawable/bg_classic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

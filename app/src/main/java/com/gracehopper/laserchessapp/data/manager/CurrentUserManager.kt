@@ -93,6 +93,15 @@ object CurrentUserManager {
     }
 
     /**
+     * Obtiene el username del usuario actual.
+     *
+     * @return Username del usuario actual, o null si no se ha establecido
+     */
+    fun getMyCurrentUsername(): String? {
+        return _myProfile.value?.username
+    }
+
+    /**
      * Obtiene el mail del usuario actual.
      *
      * @return Mail del usuario actual, o null si no se ha establecido

@@ -36,19 +36,19 @@ object ItemUtils {
             8 -> ItemMetadata("Soretro", R.drawable.kin_r_soretro)
             9 -> ItemMetadata("Cats", R.drawable.kin_r_cats)
 
-            // AVATAR TODO: CAMBIAR NOMBRES CUANDO SE DECIDAN
-            10 -> ItemMetadata("robotito1", R.drawable.bot1)
-            11 -> ItemMetadata("robotito2", R.drawable.bot2)
-            12 -> ItemMetadata("robotito3", R.drawable.bot3)
+            // AVATAR
+            10 -> ItemMetadata("grace", R.drawable.bot1)
+            11 -> ItemMetadata("mimi", R.drawable.bot2)
+            12 -> ItemMetadata("bob", R.drawable.bot3)
             13 -> ItemMetadata("robotito4", R.drawable.bot4)
-            14 -> ItemMetadata("robotito5", R.drawable.bot5)
+            14 -> ItemMetadata("sónar", R.drawable.bot5)
             15 -> ItemMetadata("robotito6", R.drawable.bot6)
             16 -> ItemMetadata("robotito7", R.drawable.bot7)
-            17 -> ItemMetadata("robotito8", R.drawable.bot8)
+            17 -> ItemMetadata("davíh", R.drawable.bot8)
             18 -> ItemMetadata("robotito9", R.drawable.bot9)
-            19 -> ItemMetadata("robotito10", R.drawable.bot10)
-            20 -> ItemMetadata("robotito11", R.drawable.bot11)
-            21 -> ItemMetadata("mividaentera", R.drawable.bot12)
+            19 -> ItemMetadata("polix", R.drawable.bot10)
+            20 -> ItemMetadata("mudkip", R.drawable.bot11)
+            21 -> ItemMetadata("carolai", R.drawable.bot12)
 
             else -> throw IllegalArgumentException("Invalid item ID: $itemId")
         }
