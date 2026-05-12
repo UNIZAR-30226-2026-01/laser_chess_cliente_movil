@@ -84,8 +84,9 @@ class MainActivity : AppCompatActivity() {
     private val sseManager = SseManager(
         onChallengeReceived = { challengerUsername ->
             runOnUiThread {
+                AppEvents.challengesUpdated.tryEmit(Unit)
+
                 if (NotificationPreferences.isEnabled(applicationContext)) {
-                    AppEvents.challengeReceived.tryEmit(Unit)
                     AppNotificationHelper.showChallengeNotification(
                         applicationContext,
                         challengerUsername
@@ -95,8 +96,9 @@ class MainActivity : AppCompatActivity() {
         },
         onFriendRequestReceived = { requestUsername ->
             runOnUiThread {
+                AppEvents.friendRequestReceived.tryEmit(Unit)
+
                 if (NotificationPreferences.isEnabled(applicationContext)) {
-                    AppEvents.friendRequestReceived.tryEmit(Unit)
                     AppNotificationHelper.showFriendRequestNotification(
                         applicationContext,
                         requestUsername
@@ -106,13 +108,19 @@ class MainActivity : AppCompatActivity() {
         },
         onNewFriendshipReceived = { newFriendUsername ->
             runOnUiThread {
+                AppEvents.newFriendshipReceived.tryEmit(Unit)
+
                 if (NotificationPreferences.isEnabled(applicationContext)) {
-                    AppEvents.newFriendshipReceived.tryEmit(Unit)
                     AppNotificationHelper.showNewFriendshipNotification(
                         applicationContext,
                         newFriendUsername
                     )
                 }
+            }
+        },
+        onChallengesUpdated = {
+            runOnUiThread {
+                AppEvents.challengesUpdated.tryEmit(Unit)
             }
         },
         onError = {
@@ -191,10 +199,14 @@ class MainActivity : AppCompatActivity() {
         updateButtonSelection(2)
 
         initViews()
+        setupAdditionalButtons()
+
+        observeChallengeBadge()
+        loadChallengeBadge()
+
         observeCurrentUserProfile()
         loadMyProfileIfNeeded()
         setupProfileCard()
-        setupAdditionalButtons()
 
         handleNotificationIntent(intent)
     }
@@ -231,6 +243,8 @@ class MainActivity : AppCompatActivity() {
         if (NotificationPreferences.isEnabled(applicationContext)) {
             sseManager.reconnect()
         }
+
+        loadChallengeBadge()
 
         if (ActiveGameManager.currentState == ActiveGameManager.GameState.INACTIVE) {
             setupGameReconnection()
@@ -370,6 +384,36 @@ class MainActivity : AppCompatActivity() {
         if (existing != null) return
 
         RequestsDialogFragment().show(supportFragmentManager, "RequestsDialog")
+    }
+
+    private fun observeChallengeBadge() {
+        lifecycleScope.launch {
+            AppEvents.challengesUpdated.collect {
+                loadChallengeBadge()
+            }
+        }
+    }
+
+    private fun loadChallengeBadge() {
+        challengeRepository.getChallengeCount(
+            onSuccess = { count ->
+                runOnUiThread {
+                    if (count > 0) {
+                        txtBadgePendingChallenges.text =
+                            if (count > 99) "99+" else count.toString()
+
+                        txtBadgePendingChallenges.visibility = View.VISIBLE
+                    } else {
+                        txtBadgePendingChallenges.text = ""
+                        txtBadgePendingChallenges.visibility = View.GONE
+                    }
+                }
+            },
+            onError = {
+                txtBadgePendingChallenges.text = ""
+                txtBadgePendingChallenges.visibility = View.GONE
+            }
+        )
     }
 
     /**

@@ -66,12 +66,10 @@ class NotificationsDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    AppEvents.challengeReceived.collect {
-                        loadPendingChallenges()
-                    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                AppEvents.challengesUpdated.collect {
+                    loadPendingChallenges()
                 }
             }
         }
@@ -168,11 +166,12 @@ class NotificationsDialogFragment : DialogFragment() {
                 )
 
                 requireActivity().runOnUiThread {
-
                     opponentId = opponent.id
                     opponentAvatar = opponent.avatar.takeIf { it > 0 } ?: 1
                     opponentPieceSkin = opponent.pieceSkin
                     opponentBoardSkin = opponent.boardSkin
+
+                    setupChallengeCallbacks()
 
                     ActiveGameManager.acceptChallenge(
                         opponentInfo = opponentInfo,
@@ -180,9 +179,6 @@ class NotificationsDialogFragment : DialogFragment() {
                         startingTime = challenge.startingTime,
                         timeIncrement = challenge.timeIncrement
                     )
-
-                    setupChallengeCallbacks()
-
                 }
             },
             onError = {
@@ -215,15 +211,9 @@ class NotificationsDialogFragment : DialogFragment() {
                     when (event) {
 
                         is GameEvent.InitialState -> {
-
                             ActiveGameManager.initialStateConsumed = true
                             ActiveGameManager.markInGame()
 
-                            Toast.makeText(requireContext(),
-                                "La partida ha comenzado",
-                                Toast.LENGTH_SHORT).show()
-
-                            AppEvents.challengeReceived.tryEmit(Unit)
                             dismiss()
 
                             val intent = Intent(requireContext(), GameActivity::class.java).apply {
@@ -232,8 +222,8 @@ class NotificationsDialogFragment : DialogFragment() {
                                 putExtra("OPPONENT_PIECE_SKIN", opponentPieceSkin)
                                 putExtra("OPPONENT_BOARD_SKIN", opponentBoardSkin)
                             }
-                            startActivity(intent)
 
+                            startActivity(intent)
                         }
 
                         is GameEvent.Error -> {
@@ -255,7 +245,6 @@ class NotificationsDialogFragment : DialogFragment() {
 
                             ActiveGameManager.resetAll()
                             loadPendingChallenges()
-                            AppEvents.challengeReceived.tryEmit(Unit)
                         }
 
                         is GameEvent.ConnectionClosed -> {
@@ -284,65 +273,61 @@ class NotificationsDialogFragment : DialogFragment() {
     }
 
     private fun rejectChallenge(challenge: PendingChallengeResponse) {
-
         ActiveGameManager.setCallbacks(
             onConnected = {
                 requireActivity().runOnUiThread {
-                    Toast.makeText(requireContext(),
+                    Toast.makeText(
+                        requireContext(),
                         "Reto rechazado",
-                        Toast.LENGTH_SHORT).show()
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             },
             onMessageReceived = { event ->
                 requireActivity().runOnUiThread {
-
                     when (event) {
-
-                        is GameEvent.ChallengeRejected -> {
-                            Toast.makeText(requireContext(),
-                                "Reto rechazado",
-                                Toast.LENGTH_SHORT).show()
-
+                        GameEvent.ChallengeRejected,
+                        is GameEvent.ConnectionClosed -> {
                             ActiveGameManager.resetAll()
                             loadPendingChallenges()
-                            AppEvents.challengeReceived.tryEmit(Unit)
                         }
 
                         is GameEvent.Error -> {
-                            Toast.makeText(requireContext(),
+                            Toast.makeText(
+                                requireContext(),
                                 "Error al rechazar reto: ${event.message}",
-                                Toast.LENGTH_SHORT).show()
+                                Toast.LENGTH_SHORT
+                            ).show()
 
                             ActiveGameManager.resetAll()
-                        }
-
-                        is GameEvent.ConnectionClosed -> {
                             loadPendingChallenges()
                         }
 
-                        else -> {
-                            // ignorar otros eventos
-                        }
-
+                        else -> {}
                     }
                 }
             },
             onError = { error ->
                 requireActivity().runOnUiThread {
-                    Toast.makeText(requireContext(),
+                    Toast.makeText(
+                        requireContext(),
                         "Error al rechazar reto: $error",
-                        Toast.LENGTH_SHORT).show()
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    loadPendingChallenges()
                 }
             },
             onClosed = {
                 requireActivity().runOnUiThread {
                     loadPendingChallenges()
-                    AppEvents.challengeReceived.tryEmit(Unit)
                 }
             }
         )
 
-        ActiveGameManager.rejectChallenge(challengerUsername = challenge.challengerUsername)
+        ActiveGameManager.rejectChallenge(
+            challengerUsername = challenge.challengerUsername
+        )
 
     }
 

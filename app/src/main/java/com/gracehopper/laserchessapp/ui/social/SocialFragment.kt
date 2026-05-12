@@ -194,7 +194,8 @@ class SocialFragment : Fragment() {
                     binding.txtNumSolicitudes.visibility = View.GONE
                 } else {
                     binding.txtNumSolicitudes.visibility = View.VISIBLE
-                    binding.txtNumSolicitudes.text = response.toString()
+                    binding.txtNumSolicitudes.text =
+                        if (response > 99) "99+" else response.toString()
                 }
             },
             onError = {
@@ -377,7 +378,7 @@ class SocialFragment : Fragment() {
         val textInvitationLink = dialogView.findViewById<TextView>(R.id.textInvitationLink)
 
         val myUsername = CurrentUserManager.getMyCurrentUsername()
-        val invitationLink = "https://laserchess.elcangrejo.es/add_friend/$myUsername"
+        val invitationLink = "https://laserchess.elcangrejo.es/add-friend/$myUsername"
 
         textInvitationLink.text = invitationLink
 
