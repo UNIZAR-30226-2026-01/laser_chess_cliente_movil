@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.gracehopper.laserchessapp.R
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
 import com.gracehopper.laserchessapp.data.model.ranking.RankingEntry
@@ -87,19 +90,90 @@ class RankingFragment : Fragment() {
     }
 
     private fun setupDropdown() {
+        val lcGreen = ContextCompat.getColor(requireContext(), R.color.LCGreen)
 
-        val dropdownAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_list_item_1,
-            rankingModes.map { it.name }
-        )
+        val selector = binding.includeRankingModeSelector.root
+        val txtTitle = selector.findViewById<TextView>(R.id.txtSelectorTitle)
+        val imgIcon = selector.findViewById<ImageView>(R.id.imgSelectorIcon)
 
-        binding.dropdownRankingMode.setAdapter(dropdownAdapter)
-        binding.dropdownRankingMode.setText(rankingModes.first().name, false)
+        txtTitle.text = getRankingModeName(selectedMode)
+        imgIcon.setImageResource(R.drawable.ic_tiempo)
+        imgIcon.setColorFilter(lcGreen)
 
-        binding.dropdownRankingMode.setOnItemClickListener { _, _, position, _ ->
-            selectedMode = rankingModes[position]
-            loadRanking(selectedMode)
+        selector.setOnClickListener {
+            showRankingModeBottomSheet(lcGreen, txtTitle)
+        }
+    }
+
+    private fun showRankingModeBottomSheet(color: Int, targetView: TextView) {
+        val dialog = buildBottomSheet("Modo de ranking", color) { container, dlg ->
+            rankingModes.forEach { mode ->
+                addButton(container, dlg, getRankingModeName(mode)) {
+                    selectedMode = mode
+                    targetView.text = getRankingModeName(mode)
+                    loadRanking(selectedMode)
+                }
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun buildBottomSheet(
+        title: String,
+        titleColor: Int,
+        fillOptions: (container: LinearLayout, dialog: BottomSheetDialog) -> Unit
+    ): BottomSheetDialog {
+        val dialog = BottomSheetDialog(requireContext(), R.style.TemaBottomSheetTransparente)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_selector_desplegable, null)
+
+        dialogView.findViewById<TextView>(R.id.txtDialogTitle).apply {
+            text = title
+            setTextColor(titleColor)
+        }
+
+        val container = dialogView.findViewById<LinearLayout>(R.id.layoutOptionsContainer)
+        fillOptions(container, dialog)
+
+        dialog.setContentView(dialogView)
+        return dialog
+    }
+
+    private fun addButton(
+        container: LinearLayout,
+        dialog: BottomSheetDialog,
+        label: String,
+        onClick: () -> Unit
+    ) {
+        val button = com.google.android.material.button.MaterialButton(requireContext()).apply {
+            text = label
+            setTextColor(ContextCompat.getColor(context, R.color.LCWhite))
+            backgroundTintList = ContextCompat.getColorStateList(context, R.color.S2)
+            cornerRadius = 36
+
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(0, 0, 0, 16)
+            }
+
+            setOnClickListener {
+                onClick()
+                dialog.dismiss()
+            }
+        }
+
+        container.addView(button)
+    }
+
+    private fun getRankingModeName(mode: TimeMode): String {
+        return when (mode) {
+            TimeMode.BLITZ -> "Blitz"
+            TimeMode.RAPID -> "Rapid"
+            TimeMode.CLASSIC -> "Classic"
+            TimeMode.EXTENDED -> "Extended"
+            else -> mode.name
         }
     }
 
