@@ -210,8 +210,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
         app:layout_constraintTop_toBottomOf="@id/layoutTabs"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -220,12 +221,16 @@
         <!-- Sin partidas -->
         <TextView
             android:id="@+id/emptyInProgressMessage"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No tienes partidas pausadas"
+            android:text="@string/empty_paused_games_message"
+            android:textColor="@color/LCWhite"
             android:textSize="@dimen/text_medium"
-            android:visibility="gone"
-            android:layout_marginTop="16dp" />
+            android:visibility="visible"
+            android:textAlignment="center"
+            android:layout_marginHorizontal="16dp"
+            android:paddingHorizontal="10dp"
+            android:background="@drawable/bg_dark_pill_panel" />
 
         <!-- Lista de partidas en curso -->
         <androidx.recyclerview.widget.RecyclerView
