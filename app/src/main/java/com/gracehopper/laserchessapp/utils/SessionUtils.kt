@@ -3,6 +3,7 @@ package com.gracehopper.laserchessapp.utils
 import android.content.Context
 import android.content.Intent
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
+import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.ui.auth.LoginActivity
 
 /**
@@ -12,7 +13,7 @@ import com.gracehopper.laserchessapp.ui.auth.LoginActivity
  */
 fun redirectToLogin(context: Context) {
 
-    TokenManager.clear()
+    NetworkUtils.clearSession()
     CurrentUserManager.resetSessionExpiredFlag()
 
     val intent = Intent(context, LoginActivity::class.java).apply {

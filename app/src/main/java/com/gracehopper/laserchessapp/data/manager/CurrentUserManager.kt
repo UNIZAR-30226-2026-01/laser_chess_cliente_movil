@@ -3,7 +3,6 @@ package com.gracehopper.laserchessapp.data.manager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gracehopper.laserchessapp.data.model.user.MyProfile
-import com.gracehopper.laserchessapp.utils.TokenManager
 
 /**
  * Objeto singleton que almacena el perfil actual del usuario.
@@ -14,6 +13,7 @@ object CurrentUserManager {
     val myProfile: LiveData<MyProfile?> = _myProfile
 
     private val _sessionExpired = MutableLiveData(false)
+    val sessionExpired: LiveData<Boolean?> = _sessionExpired
 
     /**
      * Establece el perfil actual del usuario.

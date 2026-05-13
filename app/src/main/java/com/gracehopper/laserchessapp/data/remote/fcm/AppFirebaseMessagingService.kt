@@ -6,7 +6,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.DeviceRepository
 import com.gracehopper.laserchessapp.utils.AppNotificationHelper
-import com.gracehopper.laserchessapp.utils.TokenManager
+import com.gracehopper.laserchessapp.data.manager.TokenManager
 
 /**
  * Servicio de Firebase para recibir y manejar notificaciones push.

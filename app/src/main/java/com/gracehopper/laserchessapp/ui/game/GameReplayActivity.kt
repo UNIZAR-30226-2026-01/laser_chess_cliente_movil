@@ -27,7 +27,7 @@ import com.gracehopper.laserchessapp.gameLogic.laser.LaserUtils
 import com.gracehopper.laserchessapp.gameLogic.move.CoordsConverter
 import com.gracehopper.laserchessapp.gameLogic.move.MoveParser
 import com.gracehopper.laserchessapp.ui.utils.ItemUtils
-import com.gracehopper.laserchessapp.utils.TokenManager
+import com.gracehopper.laserchessapp.data.manager.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

@@ -36,7 +36,7 @@ import com.gracehopper.laserchessapp.data.repository.DeviceRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
 import com.gracehopper.laserchessapp.ui.main.MainActivity
 import com.gracehopper.laserchessapp.utils.NotificationPreferences
-import com.gracehopper.laserchessapp.utils.TokenManager
+import com.gracehopper.laserchessapp.data.manager.TokenManager
 import com.gracehopper.laserchessapp.utils.redirectToLogin
 import com.gracehopper.laserchessapp.utils.validation.MailValidationResult
 import com.gracehopper.laserchessapp.utils.validation.MailValidator

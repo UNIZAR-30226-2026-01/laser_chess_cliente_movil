@@ -169,11 +169,17 @@ fun GameScreen(
                                         contentAlignment = Alignment.Center
                                     ) {
 
-                                        val isRedRune =
+                                        val isRedRune = if (isRedPlayer) {
                                             row == 0 || (row == 8 && (col == 0 || col == 7))
-
-                                        val isBlueRune =
+                                        } else {
                                             row == 9 || (row == 1 && (col == 0 || col == 7))
+                                        }
+
+                                        val isBlueRune = if (isRedPlayer) {
+                                            row == 9 || (row == 1 && (col == 0 || col == 7))
+                                        } else {
+                                            row == 0 || (row == 8 && (col == 0 || col == 7))
+                                        }
 
                                         if (isRedRune || isBlueRune) {
 

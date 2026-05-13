@@ -23,7 +23,7 @@ import com.gracehopper.laserchessapp.data.remote.ApiService
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment
-import com.gracehopper.laserchessapp.utils.TokenManager
+import com.gracehopper.laserchessapp.data.manager.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

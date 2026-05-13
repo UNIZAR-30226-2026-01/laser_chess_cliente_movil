@@ -42,6 +42,8 @@ import com.gracehopper.laserchessapp.utils.AppEvents
 import com.gracehopper.laserchessapp.utils.AppNotificationHelper
 import com.gracehopper.laserchessapp.utils.NotificationPreferences
 import androidx.lifecycle.lifecycleScope
+import com.gracehopper.laserchessapp.data.manager.TokenManager
+import com.gracehopper.laserchessapp.utils.redirectToLogin
 import kotlinx.coroutines.launch
 
 /**
@@ -181,6 +183,8 @@ class MainActivity : AppCompatActivity() {
         AppNotificationHelper.createChannels(this)
         requestNotificationPermissionIfNeeded()
 
+        observeSessionExpired()
+
         viewPager2 = findViewById(R.id.viewPager2)
         viewPager2.adapter = ViewPagerAdapter(this)
 
@@ -231,6 +235,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
+        if (!TokenManager.isLoggedIn()) {
+            redirectToLogin(this)
+            return
+        }
 
         Log.d("MAIN_ACTIVITY", "onStart -> online + connect SSE")
         eventStatusRepository.markOnline()
@@ -404,9 +413,17 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             },
-            onError = {
-                txtBadgePendingChallenges.text = ""
-                txtBadgePendingChallenges.visibility = View.GONE
+            onError = { code ->
+                runOnUiThread {
+                    if (code == 401) {
+                        NetworkUtils.clearSession()
+                        redirectToLogin(this)
+                        return@runOnUiThread
+                    }
+
+                    txtBadgePendingChallenges.text = ""
+                    txtBadgePendingChallenges.visibility = View.GONE
+                }
             }
         )
     }
@@ -458,11 +475,8 @@ class MainActivity : AppCompatActivity() {
             },
             onError = {
                 runOnUiThread {
-                    Toast.makeText(
-                        this,
-                        "No se pudo cargar tu perfil",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    NetworkUtils.clearSession()
+                    redirectToLogin(this)
                 }
             }
         )
@@ -530,6 +544,14 @@ class MainActivity : AppCompatActivity() {
         )
 
         ActiveGameManager.reconnectGame()
+    }
+
+    private fun observeSessionExpired() {
+        CurrentUserManager.sessionExpired.observe(this) { expired ->
+            if (expired == true) {
+                redirectToLogin(this)
+            }
+        }
     }
 
 }

@@ -1,10 +1,9 @@
-package com.gracehopper.laserchessapp.utils
+package com.gracehopper.laserchessapp.data.manager
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 
-//Se necesita para manejar la nueva lógica de los tokens
 object TokenManager {
     private const val PREF_NAME = "auth_prefs"
     private const val KEY_ACCESS_TOKEN = "access_token"

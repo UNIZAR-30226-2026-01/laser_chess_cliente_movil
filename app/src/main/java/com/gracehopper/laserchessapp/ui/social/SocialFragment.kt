@@ -32,7 +32,7 @@ import com.gracehopper.laserchessapp.data.remote.NetworkUtils
 import com.gracehopper.laserchessapp.data.repository.FriendRepository
 import com.gracehopper.laserchessapp.data.repository.GameHistoryRepository
 import com.gracehopper.laserchessapp.data.repository.UserRepository
-import com.gracehopper.laserchessapp.utils.TokenManager
+import com.gracehopper.laserchessapp.data.manager.TokenManager
 import com.gracehopper.laserchessapp.databinding.FragmentSocialBinding
 import com.gracehopper.laserchessapp.ui.game.WaitingGameDialogFragment
 import com.gracehopper.laserchessapp.ui.user.UserProfileDialogFragment

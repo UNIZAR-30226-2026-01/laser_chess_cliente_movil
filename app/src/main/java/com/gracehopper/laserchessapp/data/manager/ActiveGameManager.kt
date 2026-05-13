@@ -8,7 +8,6 @@ import com.gracehopper.laserchessapp.data.model.game.GamePlayerInfo
 import com.gracehopper.laserchessapp.data.model.game.WSServerMessage
 import com.gracehopper.laserchessapp.data.remote.websocket.FriendlyGameWebSocket
 import com.gracehopper.laserchessapp.data.remote.websocket.FriendlyGameWebSocketListener
-import com.gracehopper.laserchessapp.utils.TokenManager
 
 /**
  * Objeto singleton que gestiona el estado de una partida activa multijugador.

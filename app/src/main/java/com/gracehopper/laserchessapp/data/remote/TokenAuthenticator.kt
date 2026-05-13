@@ -1,7 +1,7 @@
 package com.gracehopper.laserchessapp.data.remote
 
 import com.gracehopper.laserchessapp.data.manager.CurrentUserManager
-import com.gracehopper.laserchessapp.utils.TokenManager
+import com.gracehopper.laserchessapp.data.manager.TokenManager
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
@@ -64,6 +64,7 @@ class TokenAuthenticator : Authenticator {
 
     private fun clearSession() {
         TokenManager.clear()
+        NetworkUtils.clearCookies()
         CurrentUserManager.expireSession()
     }
 

@@ -3,7 +3,7 @@ package com.gracehopper.laserchessapp
 import android.app.Application
 import android.util.Log
 import com.gracehopper.laserchessapp.data.remote.NetworkUtils
-import com.gracehopper.laserchessapp.utils.TokenManager
+import com.gracehopper.laserchessapp.data.manager.TokenManager
 import androidx.core.content.edit
 
 /**

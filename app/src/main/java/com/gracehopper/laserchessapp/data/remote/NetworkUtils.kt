@@ -1,7 +1,7 @@
 package com.gracehopper.laserchessapp.data.remote
 
 import android.content.Context
-import com.gracehopper.laserchessapp.utils.TokenManager
+import com.gracehopper.laserchessapp.data.manager.TokenManager
 import okhttp3.OkHttpClient
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
