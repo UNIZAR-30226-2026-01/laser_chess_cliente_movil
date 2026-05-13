@@ -4,17 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="16dp"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp">
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
 
     <!-- TABLERO -->
     <FrameLayout
         android:id="@+id/boardContainerCustomize"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         android:background="@color/S3"
-        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintWidth_percent="0.76"
         app:layout_constraintDimensionRatio="4:5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,29 +24,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
-            android:contentDescription="Board"/>
+            android:contentDescription="@string/board_skin" />
 
     </FrameLayout>
-
 
     <!-- SELECTOR DE PIEZAS -->
     <LinearLayout
         android:id="@+id/piecesSelectorContainer"
-        android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:layout_width="0dp"
+        android:layout_height="76dp"
+        android:layout_marginTop="14dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:paddingHorizontal="10dp"
+        android:paddingHorizontal="8dp"
         android:background="@drawable/bg_shop_section"
         app:layout_constraintTop_toBottomOf="@id/boardContainerCustomize"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp" >
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
             android:id="@+id/btnPreviousPieces"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_arrow_left"
             android:contentDescription="@string/previous"
@@ -65,9 +63,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Piezas · Soretro"
-                android:textColor="#FFFFFF"
-                android:textSize="10sp"
+                android:textColor="@color/LCWhite"
+                android:textSize="12sp"
                 android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:layout_marginBottom="4dp" />
 
             <LinearLayout
@@ -79,37 +79,42 @@
 
                 <ImageView
                     android:id="@+id/imgPiecePreview1"
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:layout_marginHorizontal="5dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginHorizontal="2dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_piece_placeholder" />
 
                 <ImageView
                     android:id="@+id/imgPiecePreview2"
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:layout_marginHorizontal="5dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginHorizontal="2dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_piece_placeholder" />
 
                 <ImageView
                     android:id="@+id/imgPiecePreview3"
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:layout_marginHorizontal="5dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginHorizontal="2dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_piece_placeholder" />
 
                 <ImageView
                     android:id="@+id/imgPiecePreview4"
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:layout_marginHorizontal="5dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginHorizontal="2dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_piece_placeholder" />
 
                 <ImageView
                     android:id="@+id/imgPiecePreview5"
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:layout_marginHorizontal="5dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginHorizontal="2dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_piece_placeholder" />
 
             </LinearLayout>
@@ -117,8 +122,8 @@
 
         <ImageButton
             android:id="@+id/btnNextPieces"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_arrow_left"
             android:rotation="180"
@@ -127,19 +132,20 @@
 
     </LinearLayout>
 
-
-    <!-- FILA INFERIOR: TABLERO / AVATAR / VICTORIA -->
+    <!-- FILA INFERIOR -->
     <LinearLayout
         android:id="@+id/bottomSelectorsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="110dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:minHeight="104dp"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal"
         android:gravity="center"
         android:baselineAligned="false"
         app:layout_constraintTop_toBottomOf="@id/piecesSelectorContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" >
+        app:layout_constraintEnd_toEndOf="parent">
 
         <!-- SELECTOR TABLERO -->
         <LinearLayout
@@ -147,7 +153,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginEnd="6dp"
+            android:layout_marginEnd="5dp"
             android:orientation="vertical"
             android:gravity="center"
             android:padding="6dp"
@@ -161,7 +167,9 @@
                 android:textColor="@color/LCWhite"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                android:gravity="center" />
+                android:gravity="center"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -172,7 +180,7 @@
 
                 <ImageButton
                     android:id="@+id/btnPreviousBoard"
-                    android:layout_width="24dp"
+                    android:layout_width="22dp"
                     android:layout_height="36dp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_arrow_left"
@@ -181,15 +189,15 @@
 
                 <ImageView
                     android:id="@+id/imgBoardPreview"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginHorizontal="2dp"
-                    android:scaleType="centerCrop"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
+                    android:layout_marginHorizontal="1dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_board_placeholder" />
 
                 <ImageButton
                     android:id="@+id/btnNextBoard"
-                    android:layout_width="24dp"
+                    android:layout_width="22dp"
                     android:layout_height="36dp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_arrow_left"
@@ -200,14 +208,13 @@
             </LinearLayout>
         </LinearLayout>
 
-
         <!-- SELECTOR AVATAR -->
         <LinearLayout
             android:id="@+id/avatarContainer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginHorizontal="6dp"
+            android:layout_marginHorizontal="5dp"
             android:orientation="vertical"
             android:gravity="center"
             android:padding="6dp"
@@ -217,11 +224,13 @@
                 android:id="@+id/txtAvatarTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Avatar · mr pollo"
+                android:text="Avatar ·"
                 android:textColor="@color/LCWhite"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                android:gravity="center" />
+                android:gravity="center"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -232,7 +241,7 @@
 
                 <ImageButton
                     android:id="@+id/btnPreviousAvatar"
-                    android:layout_width="24dp"
+                    android:layout_width="22dp"
                     android:layout_height="36dp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_arrow_left"
@@ -241,15 +250,15 @@
 
                 <ImageView
                     android:id="@+id/imgAvatarPreview"
-                    android:layout_width="54dp"
-                    android:layout_height="54dp"
-                    android:layout_marginHorizontal="2dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginHorizontal="1dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_avatar" />
 
                 <ImageButton
                     android:id="@+id/btnNextAvatar"
-                    android:layout_width="24dp"
+                    android:layout_width="22dp"
                     android:layout_height="36dp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_arrow_left"
@@ -260,14 +269,13 @@
             </LinearLayout>
         </LinearLayout>
 
-
         <!-- SELECTOR ANIMACIÓN -->
         <LinearLayout
             android:id="@+id/animationSkinContainer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="5dp"
             android:orientation="vertical"
             android:gravity="center"
             android:padding="6dp"
@@ -278,10 +286,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Victoria · Soretro"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/LCWhite"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                android:gravity="center" />
+                android:gravity="center"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -292,7 +302,7 @@
 
                 <ImageButton
                     android:id="@+id/btnPreviousAnimation"
-                    android:layout_width="24dp"
+                    android:layout_width="22dp"
                     android:layout_height="36dp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_arrow_left"
@@ -301,15 +311,15 @@
 
                 <ImageView
                     android:id="@+id/imgAnimationPreview"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginHorizontal="2dp"
-                    android:scaleType="centerInside"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
+                    android:layout_marginHorizontal="1dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_piece_placeholder" />
 
                 <ImageButton
                     android:id="@+id/btnNextAnimation"
-                    android:layout_width="24dp"
+                    android:layout_width="22dp"
                     android:layout_height="36dp"
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_arrow_left"
