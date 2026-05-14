@@ -129,7 +129,21 @@ class LoginActivity : AppCompatActivity() {
             authRepository.refreshToken(
                 onSuccess = {
                     Log.d("SESSION", "Refresh inicial OK")
-                    goToMain()
+
+                    userRepository.getMyProfile(
+                        onSuccess = { profile ->
+                            TokenManager.saveUserId(profile.id)
+                            goToMain()
+                        },
+                        onError = {
+                            restoreLoginButton()
+                            Toast.makeText(
+                                this,
+                                "No se pudo cargar la sesión",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    )
                 },
                 onError = {
                     Log.w("SESSION", "No hay sesión recuperable")
@@ -265,7 +279,20 @@ class LoginActivity : AppCompatActivity() {
                 loginLayout.visibility = View.GONE
                 registerLayout.visibility = View.GONE
 
-                goToMain()
+                userRepository.getMyProfile(
+                    onSuccess = { profile ->
+                        TokenManager.saveUserId(profile.id)
+                        goToMain()
+                    },
+                    onError = {
+                        restoreLoginButton()
+                        Toast.makeText(
+                            this,
+                            "No se pudo cargar la sesión",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                )
             },
             onError = { errorCode ->
                 restoreLoginButton()
